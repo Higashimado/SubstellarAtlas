@@ -1,0 +1,5549 @@
+[
+  {
+    "en": "Bao'an",
+    "ascii": "Bao'an",
+    "lat": 22.5521,
+    "lon": 113.8829,
+    "pop": 4476554,
+    "extras": []
+  },
+  {
+    "en": "Minhang",
+    "ascii": "Minhang",
+    "lat": 31.1088,
+    "lon": 121.3747,
+    "pop": 2716600,
+    "extras": []
+  },
+  {
+    "en": "Baoshan",
+    "ascii": "Baoshan",
+    "lat": 31.4085,
+    "lon": 121.4896,
+    "pop": 2265900,
+    "extras": []
+  },
+  {
+    "en": "Songjiang",
+    "ascii": "Songjiang",
+    "lat": 31.0344,
+    "lon": 121.2233,
+    "pop": 1973500,
+    "extras": []
+  },
+  {
+    "en": "Jiading",
+    "ascii": "Jiading",
+    "lat": 31.3858,
+    "lon": 121.2447,
+    "pop": 1886100,
+    "extras": []
+  },
+  {
+    "en": "Changshu",
+    "ascii": "Changshu",
+    "lat": 31.6462,
+    "lon": 120.7422,
+    "pop": 1677050,
+    "extras": []
+  },
+  {
+    "en": "Cixi",
+    "ascii": "Cixi",
+    "lat": 30.1764,
+    "lon": 121.2457,
+    "pop": 1457510,
+    "extras": []
+  },
+  {
+    "en": "Qingpu",
+    "ascii": "Qingpu",
+    "lat": 31.1539,
+    "lon": 121.1141,
+    "pop": 1271424,
+    "extras": []
+  },
+  {
+    "en": "Putuo",
+    "ascii": "Putuo",
+    "lat": 31.251,
+    "lon": 121.3897,
+    "pop": 1239100,
+    "extras": []
+  },
+  {
+    "en": "Yangpu",
+    "ascii": "Yangpu",
+    "lat": 31.2619,
+    "lon": 121.519,
+    "pop": 1210800,
+    "extras": []
+  },
+  {
+    "en": "Luohu District",
+    "ascii": "Luohu District",
+    "lat": 22.5472,
+    "lon": 114.1315,
+    "pop": 1143801,
+    "extras": []
+  },
+  {
+    "en": "Xuhui",
+    "ascii": "Xuhui",
+    "lat": 31.1959,
+    "lon": 121.4471,
+    "pop": 1109800,
+    "extras": []
+  },
+  {
+    "en": "Zhu Cheng City",
+    "ascii": "Zhu Cheng City",
+    "lat": 35.995,
+    "lon": 119.4026,
+    "pop": 1000000,
+    "extras": []
+  },
+  {
+    "en": "Jing'an",
+    "ascii": "Jing'an",
+    "lat": 31.22,
+    "lon": 121.4158,
+    "pop": 936500,
+    "extras": [
+      "Jing’an"
+    ]
+  },
+  {
+    "en": "Zhabei",
+    "ascii": "Zhabei",
+    "lat": 31.2586,
+    "lon": 121.4597,
+    "pop": 840000,
+    "extras": []
+  },
+  {
+    "en": "Taicang",
+    "ascii": "Taicang",
+    "lat": 31.4478,
+    "lon": 121.0939,
+    "pop": 831113,
+    "extras": []
+  },
+  {
+    "en": "Changzhi",
+    "ascii": "Changzhi",
+    "lat": 35.2089,
+    "lon": 111.7386,
+    "pop": 699514,
+    "extras": [
+      "Чанчжи"
+    ]
+  },
+  {
+    "en": "Changning",
+    "ascii": "Changning",
+    "lat": 31.2174,
+    "lon": 121.4211,
+    "pop": 694900,
+    "extras": []
+  },
+  {
+    "en": "Hongkou",
+    "ascii": "Hongkou",
+    "lat": 31.25,
+    "lon": 121.4892,
+    "pop": 687500,
+    "extras": []
+  },
+  {
+    "en": "Panshan",
+    "ascii": "Panshan",
+    "lat": 41.1881,
+    "lon": 122.0494,
+    "pop": 625040,
+    "extras": []
+  },
+  {
+    "en": "Jiaozhou",
+    "ascii": "Jiaozhou",
+    "lat": 36.2839,
+    "lon": 120.0033,
+    "pop": 619266,
+    "extras": []
+  },
+  {
+    "en": "Guli",
+    "ascii": "Guli",
+    "lat": 28.8816,
+    "lon": 120.0331,
+    "pop": 536000,
+    "extras": [
+      "Гули"
+    ]
+  },
+  {
+    "en": "Mianzhu, Deyang, Sichuan",
+    "ascii": "Mianzhu, Deyang, Sichuan",
+    "lat": 31.3379,
+    "lon": 104.2206,
+    "pop": 510000,
+    "extras": []
+  },
+  {
+    "en": "Chengguan Qu",
+    "ascii": "Chengguan Qu",
+    "lat": 29.6384,
+    "lon": 91.0444,
+    "pop": 478275,
+    "extras": [
+      "Chéngguān Qū"
+    ]
+  },
+  {
+    "en": "Shouguang",
+    "ascii": "Shouguang",
+    "lat": 36.88,
+    "lon": 118.7375,
+    "pop": 473620,
+    "extras": [
+      "Шоугуан"
+    ]
+  },
+  {
+    "en": "Wafangdian",
+    "ascii": "Wafangdian",
+    "lat": 39.6183,
+    "lon": 122.0081,
+    "pop": 454338,
+    "extras": []
+  },
+  {
+    "en": "Yongji",
+    "ascii": "Yongji",
+    "lat": 34.8661,
+    "lon": 110.4403,
+    "pop": 452000,
+    "extras": []
+  },
+  {
+    "en": "Basuo",
+    "ascii": "Basuo",
+    "lat": 19.1027,
+    "lon": 108.6657,
+    "pop": 444458,
+    "extras": []
+  },
+  {
+    "en": "Bei'an",
+    "ascii": "Bei'an",
+    "lat": 48.2667,
+    "lon": 126.6,
+    "pop": 436444,
+    "extras": [
+      "Bei’an"
+    ]
+  },
+  {
+    "en": "Guyuan",
+    "ascii": "Guyuan",
+    "lat": 36.0067,
+    "lon": 106.2808,
+    "pop": 411854,
+    "extras": [
+      "구위안 시",
+      "Гуюань"
+    ]
+  },
+  {
+    "en": "Gaomi",
+    "ascii": "Gaomi",
+    "lat": 36.3833,
+    "lon": 119.7528,
+    "pop": 391986,
+    "extras": []
+  },
+  {
+    "en": "Fenghuang",
+    "ascii": "Fenghuang",
+    "lat": 27.9356,
+    "lon": 109.5996,
+    "pop": 370000,
+    "extras": [
+      "Фенхуань"
+    ]
+  },
+  {
+    "en": "Anqiu",
+    "ascii": "Anqiu",
+    "lat": 36.4342,
+    "lon": 119.1925,
+    "pop": 364208,
+    "extras": []
+  },
+  {
+    "en": "Nanqiao",
+    "ascii": "Nanqiao",
+    "lat": 30.9161,
+    "lon": 121.4494,
+    "pop": 361185,
+    "extras": []
+  },
+  {
+    "en": "Pengze",
+    "ascii": "Pengze",
+    "lat": 29.8989,
+    "lon": 116.5457,
+    "pop": 350000,
+    "extras": []
+  },
+  {
+    "en": "Daye",
+    "ascii": "Daye",
+    "lat": 30.0833,
+    "lon": 114.95,
+    "pop": 347406,
+    "extras": []
+  },
+  {
+    "en": "Yunlong",
+    "ascii": "Yunlong",
+    "lat": 34.2528,
+    "lon": 117.2517,
+    "pop": 345393,
+    "extras": []
+  },
+  {
+    "en": "Pizhou",
+    "ascii": "Pizhou",
+    "lat": 34.3114,
+    "lon": 117.9503,
+    "pop": 343421,
+    "extras": []
+  },
+  {
+    "en": "Laixi",
+    "ascii": "Laixi",
+    "lat": 36.8592,
+    "lon": 120.5269,
+    "pop": 341470,
+    "extras": []
+  },
+  {
+    "en": "Linqu",
+    "ascii": "Linqu",
+    "lat": 36.5156,
+    "lon": 118.5397,
+    "pop": 299646,
+    "extras": []
+  },
+  {
+    "en": "Qibao",
+    "ascii": "Qibao",
+    "lat": 31.1527,
+    "lon": 121.3569,
+    "pop": 283352,
+    "extras": []
+  },
+  {
+    "en": "Longling County",
+    "ascii": "Longling County",
+    "lat": 24.5866,
+    "lon": 98.6893,
+    "pop": 270000,
+    "extras": []
+  },
+  {
+    "en": "Hulan Ergi",
+    "ascii": "Hulan Ergi",
+    "lat": 47.2042,
+    "lon": 123.6333,
+    "pop": 265344,
+    "extras": []
+  },
+  {
+    "en": "Dongtai",
+    "ascii": "Dongtai",
+    "lat": 32.8523,
+    "lon": 120.3095,
+    "pop": 262873,
+    "extras": []
+  },
+  {
+    "en": "Changle",
+    "ascii": "Changle",
+    "lat": 36.7058,
+    "lon": 118.8275,
+    "pop": 259161,
+    "extras": []
+  },
+  {
+    "en": "Jining",
+    "ascii": "Jining",
+    "lat": 41.0275,
+    "lon": 113.1058,
+    "pop": 258757,
+    "extras": [
+      "Цзинин"
+    ]
+  },
+  {
+    "en": "Rugao",
+    "ascii": "Rugao",
+    "lat": 32.3704,
+    "lon": 120.5765,
+    "pop": 257400,
+    "extras": []
+  },
+  {
+    "en": "Suicheng",
+    "ascii": "Suicheng",
+    "lat": 33.8963,
+    "lon": 117.9331,
+    "pop": 256665,
+    "extras": []
+  },
+  {
+    "en": "Yanzhou",
+    "ascii": "Yanzhou",
+    "lat": 35.5528,
+    "lon": 116.8286,
+    "pop": 254788,
+    "extras": []
+  },
+  {
+    "en": "Huayin",
+    "ascii": "Huayin",
+    "lat": 34.5653,
+    "lon": 110.0664,
+    "pop": 242488,
+    "extras": []
+  },
+  {
+    "en": "Jiyuan",
+    "ascii": "Jiyuan",
+    "lat": 35.0891,
+    "lon": 112.5882,
+    "pop": 242143,
+    "extras": []
+  },
+  {
+    "en": "Xiantao",
+    "ascii": "Xiantao",
+    "lat": 30.3708,
+    "lon": 113.4429,
+    "pop": 239406,
+    "extras": []
+  },
+  {
+    "en": "Qingzhou",
+    "ascii": "Qingzhou",
+    "lat": 36.6967,
+    "lon": 118.4797,
+    "pop": 236406,
+    "extras": [
+      "Цинчжоу"
+    ]
+  },
+  {
+    "en": "Yuci",
+    "ascii": "Yuci",
+    "lat": 37.6803,
+    "lon": 112.7319,
+    "pop": 235929,
+    "extras": []
+  },
+  {
+    "en": "Jingling",
+    "ascii": "Jingling",
+    "lat": 30.65,
+    "lon": 113.1,
+    "pop": 224871,
+    "extras": []
+  },
+  {
+    "en": "Xintai",
+    "ascii": "Xintai",
+    "lat": 35.9006,
+    "lon": 117.7519,
+    "pop": 222459,
+    "extras": []
+  },
+  {
+    "en": "Wuxue",
+    "ascii": "Wuxue",
+    "lat": 29.8506,
+    "lon": 115.5525,
+    "pop": 220661,
+    "extras": []
+  },
+  {
+    "en": "Yintai",
+    "ascii": "Yintai",
+    "lat": 35.1152,
+    "lon": 109.097,
+    "pop": 217509,
+    "extras": []
+  },
+  {
+    "en": "Jinzhou",
+    "ascii": "Jinzhou",
+    "lat": 39.1,
+    "lon": 121.7167,
+    "pop": 215386,
+    "extras": [
+      "Цзиньчжоу"
+    ]
+  },
+  {
+    "en": "Hangu",
+    "ascii": "Hangu",
+    "lat": 39.2489,
+    "lon": 117.7892,
+    "pop": 208369,
+    "extras": [
+      "Ханга"
+    ]
+  },
+  {
+    "en": "Nyingchi",
+    "ascii": "Nyingchi",
+    "lat": 29.6489,
+    "lon": 94.3551,
+    "pop": 200000,
+    "extras": []
+  },
+  {
+    "en": "Beiliu",
+    "ascii": "Beiliu",
+    "lat": 22.7072,
+    "lon": 110.3492,
+    "pop": 199769,
+    "extras": []
+  },
+  {
+    "en": "Peicheng",
+    "ascii": "Peicheng",
+    "lat": 34.7361,
+    "lon": 116.9247,
+    "pop": 195363,
+    "extras": []
+  },
+  {
+    "en": "Ezhou",
+    "ascii": "Ezhou",
+    "lat": 30.4,
+    "lon": 114.8333,
+    "pop": 193652,
+    "extras": []
+  },
+  {
+    "en": "Haicheng",
+    "ascii": "Haicheng",
+    "lat": 40.8516,
+    "lon": 122.7475,
+    "pop": 191651,
+    "extras": []
+  },
+  {
+    "en": "Beipiao",
+    "ascii": "Beipiao",
+    "lat": 41.7919,
+    "lon": 120.7792,
+    "pop": 190315,
+    "extras": []
+  },
+  {
+    "en": "Laizhou",
+    "ascii": "Laizhou",
+    "lat": 37.1807,
+    "lon": 119.9422,
+    "pop": 188000,
+    "extras": []
+  },
+  {
+    "en": "Zaoyang",
+    "ascii": "Zaoyang",
+    "lat": 32.1272,
+    "lon": 112.7542,
+    "pop": 184509,
+    "extras": []
+  },
+  {
+    "en": "Zhenping",
+    "ascii": "Zhenping",
+    "lat": 33.0346,
+    "lon": 112.2276,
+    "pop": 181528,
+    "extras": []
+  },
+  {
+    "en": "Pingwu County",
+    "ascii": "Pingwu County",
+    "lat": 32.4073,
+    "lon": 104.5274,
+    "pop": 180000,
+    "extras": []
+  },
+  {
+    "en": "Xindi",
+    "ascii": "Xindi",
+    "lat": 29.8167,
+    "lon": 113.4667,
+    "pop": 175761,
+    "extras": []
+  },
+  {
+    "en": "Dongling",
+    "ascii": "Dongling",
+    "lat": 41.8144,
+    "lon": 123.5758,
+    "pop": 171454,
+    "extras": [
+      "Донлин"
+    ]
+  },
+  {
+    "en": "Laiyang",
+    "ascii": "Laiyang",
+    "lat": 36.9758,
+    "lon": 120.7136,
+    "pop": 169594,
+    "extras": []
+  },
+  {
+    "en": "Ulanhot",
+    "ascii": "Ulanhot",
+    "lat": 46.0833,
+    "lon": 122.0833,
+    "pop": 165846,
+    "extras": [
+      "أولان هوت"
+    ]
+  },
+  {
+    "en": "Songcheng",
+    "ascii": "Songcheng",
+    "lat": 26.8819,
+    "lon": 120.0011,
+    "pop": 165730,
+    "extras": []
+  },
+  {
+    "en": "Fengcheng",
+    "ascii": "Fengcheng",
+    "lat": 34.7039,
+    "lon": 116.5872,
+    "pop": 161850,
+    "extras": []
+  },
+  {
+    "en": "Zhicheng",
+    "ascii": "Zhicheng",
+    "lat": 30.2956,
+    "lon": 111.5047,
+    "pop": 159383,
+    "extras": []
+  },
+  {
+    "en": "Lianghu",
+    "ascii": "Lianghu",
+    "lat": 29.9915,
+    "lon": 120.8985,
+    "pop": 155000,
+    "extras": []
+  },
+  {
+    "en": "Guangshui",
+    "ascii": "Guangshui",
+    "lat": 31.6199,
+    "lon": 113.9978,
+    "pop": 154771,
+    "extras": []
+  },
+  {
+    "en": "Wujiaqu",
+    "ascii": "Wujiaqu",
+    "lat": 44.1628,
+    "lon": 87.5217,
+    "pop": 154400,
+    "extras": []
+  },
+  {
+    "en": "Boshan",
+    "ascii": "Boshan",
+    "lat": 36.4833,
+    "lon": 117.8333,
+    "pop": 153596,
+    "extras": []
+  },
+  {
+    "en": "Pengpu",
+    "ascii": "Pengpu",
+    "lat": 31.2855,
+    "lon": 121.4367,
+    "pop": 152725,
+    "extras": []
+  },
+  {
+    "en": "Beining",
+    "ascii": "Beining",
+    "lat": 41.5956,
+    "lon": 121.7928,
+    "pop": 152033,
+    "extras": []
+  },
+  {
+    "en": "Sujiatun",
+    "ascii": "Sujiatun",
+    "lat": 41.6592,
+    "lon": 123.3392,
+    "pop": 148113,
+    "extras": [
+      "Суцзятунь"
+    ]
+  },
+  {
+    "en": "Gongzhuling",
+    "ascii": "Gongzhuling",
+    "lat": 43.5007,
+    "lon": 124.8198,
+    "pop": 140909,
+    "extras": [
+      "Гунчжулин"
+    ]
+  },
+  {
+    "en": "Fuyu",
+    "ascii": "Fuyu",
+    "lat": 45.1833,
+    "lon": 124.8167,
+    "pop": 138704,
+    "extras": []
+  },
+  {
+    "en": "Jiashan",
+    "ascii": "Jiashan",
+    "lat": 30.8492,
+    "lon": 120.9258,
+    "pop": 137112,
+    "extras": []
+  },
+  {
+    "en": "Jiagedaqi",
+    "ascii": "Jiagedaqi",
+    "lat": 50.4167,
+    "lon": 124.1167,
+    "pop": 135760,
+    "extras": [
+      "자거다치 구",
+      "Jagdaqi"
+    ]
+  },
+  {
+    "en": "Jiawang",
+    "ascii": "Jiawang",
+    "lat": 34.4328,
+    "lon": 117.4419,
+    "pop": 133861,
+    "extras": []
+  },
+  {
+    "en": "Puqi",
+    "ascii": "Puqi",
+    "lat": 29.7167,
+    "lon": 113.8833,
+    "pop": 132891,
+    "extras": []
+  },
+  {
+    "en": "Dawukou",
+    "ascii": "Dawukou",
+    "lat": 39.0419,
+    "lon": 106.3958,
+    "pop": 131880,
+    "extras": []
+  },
+  {
+    "en": "Wuda",
+    "ascii": "Wuda",
+    "lat": 39.4994,
+    "lon": 106.7117,
+    "pop": 129922,
+    "extras": []
+  },
+  {
+    "en": "Shache",
+    "ascii": "Shache",
+    "lat": 38.4167,
+    "lon": 77.2406,
+    "pop": 128145,
+    "extras": []
+  },
+  {
+    "en": "Jiangyou",
+    "ascii": "Jiangyou",
+    "lat": 31.7667,
+    "lon": 104.7167,
+    "pop": 127225,
+    "extras": []
+  },
+  {
+    "en": "Jingzhi",
+    "ascii": "Jingzhi",
+    "lat": 36.31,
+    "lon": 119.3875,
+    "pop": 126703,
+    "extras": []
+  },
+  {
+    "en": "Xiazhen",
+    "ascii": "Xiazhen",
+    "lat": 34.8022,
+    "lon": 117.1117,
+    "pop": 125667,
+    "extras": []
+  },
+  {
+    "en": "Shahecheng",
+    "ascii": "Shahecheng",
+    "lat": 36.9383,
+    "lon": 114.5058,
+    "pop": 125132,
+    "extras": []
+  },
+  {
+    "en": "Jiupu",
+    "ascii": "Jiupu",
+    "lat": 41.0667,
+    "lon": 122.95,
+    "pop": 123843,
+    "extras": []
+  },
+  {
+    "en": "Huangzhou",
+    "ascii": "Huangzhou",
+    "lat": 30.45,
+    "lon": 114.8,
+    "pop": 122563,
+    "extras": [
+      "Хуанчжоу"
+    ]
+  },
+  {
+    "en": "Xiulin",
+    "ascii": "Xiulin",
+    "lat": 29.7167,
+    "lon": 112.4,
+    "pop": 122411,
+    "extras": []
+  },
+  {
+    "en": "Zhoucun",
+    "ascii": "Zhoucun",
+    "lat": 36.8167,
+    "lon": 117.8167,
+    "pop": 122402,
+    "extras": []
+  },
+  {
+    "en": "Xilin Hot",
+    "ascii": "Xilin Hot",
+    "lat": 43.9667,
+    "lon": 116.0333,
+    "pop": 120965,
+    "extras": []
+  },
+  {
+    "en": "Lichuan",
+    "ascii": "Lichuan",
+    "lat": 30.3,
+    "lon": 108.85,
+    "pop": 120587,
+    "extras": [
+      "Личуань"
+    ]
+  },
+  {
+    "en": "Fengcheng",
+    "ascii": "Fengcheng",
+    "lat": 40.4536,
+    "lon": 124.0717,
+    "pop": 120514,
+    "extras": []
+  },
+  {
+    "en": "Bao'an Centre",
+    "ascii": "Bao'an Centre",
+    "lat": 22.5795,
+    "lon": 113.9163,
+    "pop": 120170,
+    "extras": []
+  },
+  {
+    "en": "Zhujing",
+    "ascii": "Zhujing",
+    "lat": 30.901,
+    "lon": 121.1597,
+    "pop": 120084,
+    "extras": []
+  },
+  {
+    "en": "Longjing",
+    "ascii": "Longjing",
+    "lat": 42.7713,
+    "lon": 129.4231,
+    "pop": 117185,
+    "extras": []
+  },
+  {
+    "en": "Chenggu",
+    "ascii": "Chenggu",
+    "lat": 33.1492,
+    "lon": 107.3258,
+    "pop": 116375,
+    "extras": []
+  },
+  {
+    "en": "Yakeshi",
+    "ascii": "Yakeshi",
+    "lat": 49.2833,
+    "lon": 120.7333,
+    "pop": 116284,
+    "extras": [
+      "Якэши"
+    ]
+  },
+  {
+    "en": "Anliu",
+    "ascii": "Anliu",
+    "lat": 23.6982,
+    "lon": 115.6795,
+    "pop": 115560,
+    "extras": []
+  },
+  {
+    "en": "Mingshui",
+    "ascii": "Mingshui",
+    "lat": 36.7167,
+    "lon": 117.5,
+    "pop": 114858,
+    "extras": []
+  },
+  {
+    "en": "Wayaobu",
+    "ascii": "Wayaobu",
+    "lat": 37.1361,
+    "lon": 109.6597,
+    "pop": 113698,
+    "extras": []
+  },
+  {
+    "en": "Maba",
+    "ascii": "Maba",
+    "lat": 24.6841,
+    "lon": 113.5984,
+    "pop": 113609,
+    "extras": []
+  },
+  {
+    "en": "Chengqiao",
+    "ascii": "Chengqiao",
+    "lat": 31.6308,
+    "lon": 121.3925,
+    "pop": 113442,
+    "extras": []
+  },
+  {
+    "en": "Kaiyuan",
+    "ascii": "Kaiyuan",
+    "lat": 42.5331,
+    "lon": 124.0403,
+    "pop": 112462,
+    "extras": [
+      "Кайюань"
+    ]
+  },
+  {
+    "en": "Chongfu",
+    "ascii": "Chongfu",
+    "lat": 30.5311,
+    "lon": 120.4309,
+    "pop": 112060,
+    "extras": [
+      "Chóngfú"
+    ]
+  },
+  {
+    "en": "Datun",
+    "ascii": "Datun",
+    "lat": 34.8092,
+    "lon": 116.9017,
+    "pop": 110258,
+    "extras": [
+      "Датун"
+    ]
+  },
+  {
+    "en": "Linshui",
+    "ascii": "Linshui",
+    "lat": 36.4247,
+    "lon": 114.2047,
+    "pop": 109955,
+    "extras": []
+  },
+  {
+    "en": "Jianchang",
+    "ascii": "Jianchang",
+    "lat": 27.5583,
+    "lon": 116.6398,
+    "pop": 109108,
+    "extras": []
+  },
+  {
+    "en": "Zhongxiang",
+    "ascii": "Zhongxiang",
+    "lat": 31.1661,
+    "lon": 112.5831,
+    "pop": 108883,
+    "extras": []
+  },
+  {
+    "en": "Jalai Nur",
+    "ascii": "Jalai Nur",
+    "lat": 49.45,
+    "lon": 117.7,
+    "pop": 107828,
+    "extras": [
+      "Чжалайнор"
+    ]
+  },
+  {
+    "en": "Buhe",
+    "ascii": "Buhe",
+    "lat": 30.2876,
+    "lon": 112.2298,
+    "pop": 106347,
+    "extras": [
+      "Бухэ"
+    ]
+  },
+  {
+    "en": "Xinghua",
+    "ascii": "Xinghua",
+    "lat": 32.9392,
+    "lon": 119.8342,
+    "pop": 105918,
+    "extras": [
+      "Синхуа"
+    ]
+  },
+  {
+    "en": "Yidu",
+    "ascii": "Yidu",
+    "lat": 36.7712,
+    "lon": 118.4245,
+    "pop": 105070,
+    "extras": []
+  },
+  {
+    "en": "Salaqi",
+    "ascii": "Salaqi",
+    "lat": 40.5414,
+    "lon": 110.5108,
+    "pop": 104090,
+    "extras": []
+  },
+  {
+    "en": "Jishu",
+    "ascii": "Jishu",
+    "lat": 44.3167,
+    "lon": 126.8,
+    "pop": 103988,
+    "extras": []
+  },
+  {
+    "en": "Bashan",
+    "ascii": "Bashan",
+    "lat": 27.7682,
+    "lon": 116.0502,
+    "pop": 103748,
+    "extras": []
+  },
+  {
+    "en": "Hedong",
+    "ascii": "Hedong",
+    "lat": 23.9196,
+    "lon": 115.7801,
+    "pop": 101825,
+    "extras": []
+  },
+  {
+    "en": "Huacheng",
+    "ascii": "Huacheng",
+    "lat": 24.067,
+    "lon": 115.6131,
+    "pop": 101165,
+    "extras": []
+  },
+  {
+    "en": "Xinzhai",
+    "ascii": "Xinzhai",
+    "lat": 36.4,
+    "lon": 118.6167,
+    "pop": 100168,
+    "extras": []
+  },
+  {
+    "en": "Qincheng",
+    "ascii": "Qincheng",
+    "lat": 27.2127,
+    "lon": 116.5301,
+    "pop": 99987,
+    "extras": []
+  },
+  {
+    "en": "Dongsheng",
+    "ascii": "Dongsheng",
+    "lat": 39.8161,
+    "lon": 109.9776,
+    "pop": 99809,
+    "extras": [
+      "Дуншэн"
+    ]
+  },
+  {
+    "en": "Linghe",
+    "ascii": "Linghe",
+    "lat": 36.3642,
+    "lon": 119.0769,
+    "pop": 99069,
+    "extras": []
+  },
+  {
+    "en": "Xingcheng",
+    "ascii": "Xingcheng",
+    "lat": 40.6167,
+    "lon": 120.7167,
+    "pop": 98968,
+    "extras": [
+      "Синчэн"
+    ]
+  },
+  {
+    "en": "Yeyuan",
+    "ascii": "Yeyuan",
+    "lat": 36.4167,
+    "lon": 118.5,
+    "pop": 97936,
+    "extras": []
+  },
+  {
+    "en": "Guanhu",
+    "ascii": "Guanhu",
+    "lat": 34.4253,
+    "lon": 117.9953,
+    "pop": 97705,
+    "extras": []
+  },
+  {
+    "en": "Houzhen",
+    "ascii": "Houzhen",
+    "lat": 36.9914,
+    "lon": 118.9658,
+    "pop": 96737,
+    "extras": []
+  },
+  {
+    "en": "Gongguan",
+    "ascii": "Gongguan",
+    "lat": 21.8,
+    "lon": 109.6,
+    "pop": 96492,
+    "extras": []
+  },
+  {
+    "en": "Jinsha",
+    "ascii": "Jinsha",
+    "lat": 32.0898,
+    "lon": 121.0736,
+    "pop": 95647,
+    "extras": [
+      "Цзиньша"
+    ]
+  },
+  {
+    "en": "Shenjiamen",
+    "ascii": "Shenjiamen",
+    "lat": 29.9576,
+    "lon": 122.298,
+    "pop": 95433,
+    "extras": []
+  },
+  {
+    "en": "Xiaoshan",
+    "ascii": "Xiaoshan",
+    "lat": 30.1675,
+    "lon": 120.2588,
+    "pop": 95234,
+    "extras": [
+      "Сяошань"
+    ]
+  },
+  {
+    "en": "Dunhou",
+    "ascii": "Dunhou",
+    "lat": 27.05,
+    "lon": 114.9,
+    "pop": 94445,
+    "extras": []
+  },
+  {
+    "en": "Yishui",
+    "ascii": "Yishui",
+    "lat": 35.7847,
+    "lon": 118.6281,
+    "pop": 94115,
+    "extras": []
+  },
+  {
+    "en": "Daotian",
+    "ascii": "Daotian",
+    "lat": 36.8339,
+    "lon": 118.8978,
+    "pop": 93728,
+    "extras": []
+  },
+  {
+    "en": "Baijiantan",
+    "ascii": "Baijiantan",
+    "lat": 45.693,
+    "lon": 85.1394,
+    "pop": 93697,
+    "extras": []
+  },
+  {
+    "en": "Dalai",
+    "ascii": "Dalai",
+    "lat": 45.5,
+    "lon": 124.3,
+    "pop": 93297,
+    "extras": []
+  },
+  {
+    "en": "Tangwu",
+    "ascii": "Tangwu",
+    "lat": 36.4467,
+    "lon": 118.8597,
+    "pop": 93260,
+    "extras": []
+  },
+  {
+    "en": "Jiayue",
+    "ascii": "Jiayue",
+    "lat": 36.0236,
+    "lon": 119.1761,
+    "pop": 93228,
+    "extras": []
+  },
+  {
+    "en": "Yingqiu",
+    "ascii": "Yingqiu",
+    "lat": 36.5266,
+    "lon": 118.9929,
+    "pop": 92564,
+    "extras": []
+  },
+  {
+    "en": "Dongcun",
+    "ascii": "Dongcun",
+    "lat": 36.7767,
+    "lon": 121.1597,
+    "pop": 92282,
+    "extras": []
+  },
+  {
+    "en": "Danjiangkou",
+    "ascii": "Danjiangkou",
+    "lat": 32.5428,
+    "lon": 111.5086,
+    "pop": 92008,
+    "extras": [
+      "Даньцзянкоу"
+    ]
+  },
+  {
+    "en": "Huazhou",
+    "ascii": "Huazhou",
+    "lat": 21.6333,
+    "lon": 110.5833,
+    "pop": 91701,
+    "extras": []
+  },
+  {
+    "en": "Xingren",
+    "ascii": "Xingren",
+    "lat": 25.4333,
+    "lon": 105.2333,
+    "pop": 91579,
+    "extras": []
+  },
+  {
+    "en": "Tanfang",
+    "ascii": "Tanfang",
+    "lat": 36.6998,
+    "lon": 118.6709,
+    "pop": 91460,
+    "extras": []
+  },
+  {
+    "en": "Lingyuan",
+    "ascii": "Lingyuan",
+    "lat": 41.24,
+    "lon": 119.4011,
+    "pop": 91418,
+    "extras": []
+  },
+  {
+    "en": "Hanting",
+    "ascii": "Hanting",
+    "lat": 36.7708,
+    "lon": 119.2108,
+    "pop": 90637,
+    "extras": []
+  },
+  {
+    "en": "Xihe",
+    "ascii": "Xihe",
+    "lat": 31.6864,
+    "lon": 113.4659,
+    "pop": 90422,
+    "extras": []
+  },
+  {
+    "en": "Sishui",
+    "ascii": "Sishui",
+    "lat": 35.6489,
+    "lon": 117.2758,
+    "pop": 90175,
+    "extras": []
+  },
+  {
+    "en": "Gantang",
+    "ascii": "Gantang",
+    "lat": 27.4375,
+    "lon": 111.9731,
+    "pop": 90000,
+    "extras": []
+  },
+  {
+    "en": "Huaidian",
+    "ascii": "Huaidian",
+    "lat": 33.4333,
+    "lon": 115.0333,
+    "pop": 89978,
+    "extras": []
+  },
+  {
+    "en": "Baisha",
+    "ascii": "Baisha",
+    "lat": 21.7167,
+    "lon": 109.6833,
+    "pop": 89759,
+    "extras": []
+  },
+  {
+    "en": "Xiazhuang",
+    "ascii": "Xiazhuang",
+    "lat": 36.4492,
+    "lon": 119.8356,
+    "pop": 88710,
+    "extras": []
+  },
+  {
+    "en": "Dongxing",
+    "ascii": "Dongxing",
+    "lat": 21.55,
+    "lon": 107.9667,
+    "pop": 88607,
+    "extras": [
+      "Đông Hưng"
+    ]
+  },
+  {
+    "en": "Linjiacun",
+    "ascii": "Linjiacun",
+    "lat": 35.9939,
+    "lon": 119.6503,
+    "pop": 88509,
+    "extras": []
+  },
+  {
+    "en": "Honghe",
+    "ascii": "Honghe",
+    "lat": 36.4028,
+    "lon": 118.9181,
+    "pop": 88458,
+    "extras": []
+  },
+  {
+    "en": "Hanchuan",
+    "ascii": "Hanchuan",
+    "lat": 30.65,
+    "lon": 113.7667,
+    "pop": 87737,
+    "extras": []
+  },
+  {
+    "en": "Tiefu",
+    "ascii": "Tiefu",
+    "lat": 34.5333,
+    "lon": 118.0333,
+    "pop": 87689,
+    "extras": []
+  },
+  {
+    "en": "Xujiang",
+    "ascii": "Xujiang",
+    "lat": 26.8395,
+    "lon": 116.3201,
+    "pop": 87459,
+    "extras": []
+  },
+  {
+    "en": "Mishan",
+    "ascii": "Mishan",
+    "lat": 45.55,
+    "lon": 131.8833,
+    "pop": 87257,
+    "extras": [
+      "Мишань"
+    ]
+  },
+  {
+    "en": "Shizilu",
+    "ascii": "Shizilu",
+    "lat": 35.1711,
+    "lon": 118.8289,
+    "pop": 86749,
+    "extras": []
+  },
+  {
+    "en": "Anlong",
+    "ascii": "Anlong",
+    "lat": 25.1,
+    "lon": 105.5167,
+    "pop": 86416,
+    "extras": []
+  },
+  {
+    "en": "Helong",
+    "ascii": "Helong",
+    "lat": 42.5397,
+    "lon": 128.9972,
+    "pop": 85756,
+    "extras": [
+      "Хэлуне"
+    ]
+  },
+  {
+    "en": "Nanding",
+    "ascii": "Nanding",
+    "lat": 36.7483,
+    "lon": 118.0558,
+    "pop": 85495,
+    "extras": []
+  },
+  {
+    "en": "Laojunmiao",
+    "ascii": "Laojunmiao",
+    "lat": 39.8333,
+    "lon": 97.7333,
+    "pop": 84769,
+    "extras": []
+  },
+  {
+    "en": "Dacheng",
+    "ascii": "Dacheng",
+    "lat": 19.5093,
+    "lon": 109.3928,
+    "pop": 84620,
+    "extras": []
+  },
+  {
+    "en": "Mianyang",
+    "ascii": "Mianyang",
+    "lat": 33.157,
+    "lon": 106.6945,
+    "pop": 84606,
+    "extras": []
+  },
+  {
+    "en": "Dazhong",
+    "ascii": "Dazhong",
+    "lat": 33.1997,
+    "lon": 120.4578,
+    "pop": 84323,
+    "extras": []
+  },
+  {
+    "en": "Dongxia",
+    "ascii": "Dongxia",
+    "lat": 36.7492,
+    "lon": 118.5827,
+    "pop": 84083,
+    "extras": []
+  },
+  {
+    "en": "Yinma",
+    "ascii": "Yinma",
+    "lat": 36.6608,
+    "lon": 119.4625,
+    "pop": 83872,
+    "extras": []
+  },
+  {
+    "en": "Wensu",
+    "ascii": "Wensu",
+    "lat": 41.2755,
+    "lon": 80.2361,
+    "pop": 83110,
+    "extras": []
+  },
+  {
+    "en": "Hecun",
+    "ascii": "Hecun",
+    "lat": 36.5333,
+    "lon": 114.1111,
+    "pop": 83009,
+    "extras": []
+  },
+  {
+    "en": "Ningyang",
+    "ascii": "Ningyang",
+    "lat": 35.7642,
+    "lon": 116.7914,
+    "pop": 82994,
+    "extras": []
+  },
+  {
+    "en": "Yuanping",
+    "ascii": "Yuanping",
+    "lat": 38.7153,
+    "lon": 112.7575,
+    "pop": 82883,
+    "extras": []
+  },
+  {
+    "en": "Aoxi",
+    "ascii": "Aoxi",
+    "lat": 27.4259,
+    "lon": 115.8364,
+    "pop": 82717,
+    "extras": []
+  },
+  {
+    "en": "Liping",
+    "ascii": "Liping",
+    "lat": 26.2311,
+    "lon": 109.1314,
+    "pop": 82710,
+    "extras": []
+  },
+  {
+    "en": "Changqing",
+    "ascii": "Changqing",
+    "lat": 36.5575,
+    "lon": 116.7272,
+    "pop": 82598,
+    "extras": [
+      "Чанцин"
+    ]
+  },
+  {
+    "en": "Dali Old Town",
+    "ascii": "Dali Old Town",
+    "lat": 25.6886,
+    "lon": 100.1589,
+    "pop": 82566,
+    "extras": []
+  },
+  {
+    "en": "Xindian",
+    "ascii": "Xindian",
+    "lat": 36.7975,
+    "lon": 118.2944,
+    "pop": 82555,
+    "extras": []
+  },
+  {
+    "en": "Yima",
+    "ascii": "Yima",
+    "lat": 34.7381,
+    "lon": 111.8839,
+    "pop": 82509,
+    "extras": [
+      "Йимы"
+    ]
+  },
+  {
+    "en": "Qiaoguan",
+    "ascii": "Qiaoguan",
+    "lat": 36.5644,
+    "lon": 118.8839,
+    "pop": 82467,
+    "extras": []
+  },
+  {
+    "en": "Anguo",
+    "ascii": "Anguo",
+    "lat": 34.8306,
+    "lon": 116.8194,
+    "pop": 82181,
+    "extras": []
+  },
+  {
+    "en": "Yudong",
+    "ascii": "Yudong",
+    "lat": 29.385,
+    "lon": 106.5194,
+    "pop": 81408,
+    "extras": [
+      "Юйдун"
+    ]
+  },
+  {
+    "en": "Xiugu",
+    "ascii": "Xiugu",
+    "lat": 27.9113,
+    "lon": 116.7764,
+    "pop": 81153,
+    "extras": []
+  },
+  {
+    "en": "Feicheng",
+    "ascii": "Feicheng",
+    "lat": 35.2606,
+    "lon": 117.9675,
+    "pop": 80929,
+    "extras": []
+  },
+  {
+    "en": "Shanting",
+    "ascii": "Shanting",
+    "lat": 35.0753,
+    "lon": 117.4578,
+    "pop": 80843,
+    "extras": []
+  },
+  {
+    "en": "Nianzhuang",
+    "ascii": "Nianzhuang",
+    "lat": 34.2972,
+    "lon": 117.7722,
+    "pop": 80617,
+    "extras": []
+  },
+  {
+    "en": "Zhuanghe",
+    "ascii": "Zhuanghe",
+    "lat": 39.7008,
+    "lon": 122.9911,
+    "pop": 80384,
+    "extras": []
+  },
+  {
+    "en": "Baoying",
+    "ascii": "Baoying",
+    "lat": 33.2292,
+    "lon": 119.3092,
+    "pop": 80292,
+    "extras": []
+  },
+  {
+    "en": "Dashiqiao",
+    "ascii": "Dashiqiao",
+    "lat": 40.6373,
+    "lon": 122.5025,
+    "pop": 80223,
+    "extras": []
+  },
+  {
+    "en": "Xichang",
+    "ascii": "Xichang",
+    "lat": 21.6333,
+    "lon": 108.95,
+    "pop": 80064,
+    "extras": []
+  },
+  {
+    "en": "Huanglou",
+    "ascii": "Huanglou",
+    "lat": 36.6471,
+    "lon": 118.6055,
+    "pop": 80055,
+    "extras": []
+  },
+  {
+    "en": "Dushan",
+    "ascii": "Dushan",
+    "lat": 25.8333,
+    "lon": 107.5333,
+    "pop": 80045,
+    "extras": []
+  },
+  {
+    "en": "Songlou",
+    "ascii": "Songlou",
+    "lat": 34.5723,
+    "lon": 116.6024,
+    "pop": 79763,
+    "extras": []
+  },
+  {
+    "en": "Taishing",
+    "ascii": "Taixing",
+    "lat": 32.1667,
+    "lon": 120.0136,
+    "pop": 79655,
+    "extras": []
+  },
+  {
+    "en": "Wuyang",
+    "ascii": "Wuyang",
+    "lat": 31.9925,
+    "lon": 116.2472,
+    "pop": 79070,
+    "extras": []
+  },
+  {
+    "en": "Chaigou",
+    "ascii": "Chaigou",
+    "lat": 36.2489,
+    "lon": 119.6242,
+    "pop": 79043,
+    "extras": []
+  },
+  {
+    "en": "Xinzhou",
+    "ascii": "Xinzhou",
+    "lat": 30.8667,
+    "lon": 114.8,
+    "pop": 78767,
+    "extras": []
+  },
+  {
+    "en": "Shitanjing",
+    "ascii": "Shitanjing",
+    "lat": 39.2342,
+    "lon": 106.3439,
+    "pop": 78765,
+    "extras": []
+  },
+  {
+    "en": "Hengbei",
+    "ascii": "Hengbei",
+    "lat": 23.8797,
+    "lon": 115.7255,
+    "pop": 78575,
+    "extras": []
+  },
+  {
+    "en": "Yishan",
+    "ascii": "Yishan",
+    "lat": 36.2211,
+    "lon": 118.6966,
+    "pop": 78408,
+    "extras": []
+  },
+  {
+    "en": "Pingyi",
+    "ascii": "Pingyi",
+    "lat": 35.5006,
+    "lon": 117.6308,
+    "pop": 78254,
+    "extras": []
+  },
+  {
+    "en": "Linping",
+    "ascii": "Linping",
+    "lat": 30.4225,
+    "lon": 120.2972,
+    "pop": 78180,
+    "extras": []
+  },
+  {
+    "en": "Huankou",
+    "ascii": "Huankou",
+    "lat": 34.87,
+    "lon": 116.6697,
+    "pop": 77758,
+    "extras": []
+  },
+  {
+    "en": "Feicheng",
+    "ascii": "Feicheng",
+    "lat": 36.2486,
+    "lon": 116.7658,
+    "pop": 77606,
+    "extras": []
+  },
+  {
+    "en": "Jishui",
+    "ascii": "Jishui",
+    "lat": 33.7333,
+    "lon": 115.4,
+    "pop": 77540,
+    "extras": []
+  },
+  {
+    "en": "Baicheng",
+    "ascii": "Baicheng",
+    "lat": 36.3274,
+    "lon": 119.7788,
+    "pop": 77235,
+    "extras": []
+  },
+  {
+    "en": "Damiao",
+    "ascii": "Damiao",
+    "lat": 34.2641,
+    "lon": 117.3638,
+    "pop": 77179,
+    "extras": []
+  },
+  {
+    "en": "Jiexiu",
+    "ascii": "Jiexiu",
+    "lat": 37.0244,
+    "lon": 111.9125,
+    "pop": 77178,
+    "extras": [
+      "제슈 시",
+      "Giới Hưu",
+      "Цзесю"
+    ]
+  },
+  {
+    "en": "Hunchun",
+    "ascii": "Hunchun",
+    "lat": 42.8674,
+    "lon": 130.3569,
+    "pop": 77028,
+    "extras": [
+      "Хуньчунь"
+    ]
+  },
+  {
+    "en": "Sandu",
+    "ascii": "Sandu",
+    "lat": 19.7894,
+    "lon": 109.215,
+    "pop": 76757,
+    "extras": []
+  },
+  {
+    "en": "Zhaodun",
+    "ascii": "Zhaodun",
+    "lat": 34.3027,
+    "lon": 117.857,
+    "pop": 76691,
+    "extras": []
+  },
+  {
+    "en": "Yaxing",
+    "ascii": "Yaxing",
+    "lat": 19.4478,
+    "lon": 109.2627,
+    "pop": 76427,
+    "extras": []
+  },
+  {
+    "en": "Qiuji",
+    "ascii": "Qiuji",
+    "lat": 33.8,
+    "lon": 118,
+    "pop": 76343,
+    "extras": []
+  },
+  {
+    "en": "Shouxian",
+    "ascii": "Shouxian",
+    "lat": 34.8465,
+    "lon": 116.4588,
+    "pop": 76030,
+    "extras": []
+  },
+  {
+    "en": "Kanjia",
+    "ascii": "Kanjia",
+    "lat": 36.3723,
+    "lon": 119.5821,
+    "pop": 75669,
+    "extras": []
+  },
+  {
+    "en": "Chaoyang",
+    "ascii": "Chaoyang",
+    "lat": 42.6622,
+    "lon": 126.0263,
+    "pop": 75347,
+    "extras": [
+      "Чаоян"
+    ]
+  },
+  {
+    "en": "Huilong",
+    "ascii": "Huilong",
+    "lat": 31.8111,
+    "lon": 121.655,
+    "pop": 74818,
+    "extras": [
+      "Квидонга"
+    ]
+  },
+  {
+    "en": "Beidao",
+    "ascii": "Beidao",
+    "lat": 34.5686,
+    "lon": 105.8933,
+    "pop": 74767,
+    "extras": []
+  },
+  {
+    "en": "Shancheng",
+    "ascii": "Shancheng",
+    "lat": 34.7953,
+    "lon": 116.0817,
+    "pop": 74459,
+    "extras": []
+  },
+  {
+    "en": "Zhangzhai",
+    "ascii": "Zhangzhai",
+    "lat": 34.6167,
+    "lon": 116.95,
+    "pop": 74433,
+    "extras": []
+  },
+  {
+    "en": "Xinmin",
+    "ascii": "Xinmin",
+    "lat": 41.9908,
+    "lon": 122.8253,
+    "pop": 74139,
+    "extras": [
+      "Синьминь"
+    ]
+  },
+  {
+    "en": "Zhangzhuang",
+    "ascii": "Zhangzhuang",
+    "lat": 34.5194,
+    "lon": 117.0056,
+    "pop": 74114,
+    "extras": []
+  },
+  {
+    "en": "Yunyang",
+    "ascii": "Yunyang",
+    "lat": 33.4474,
+    "lon": 112.7142,
+    "pop": 73922,
+    "extras": []
+  },
+  {
+    "en": "Lanxi",
+    "ascii": "Lanxi",
+    "lat": 29.2159,
+    "lon": 119.4716,
+    "pop": 73706,
+    "extras": []
+  },
+  {
+    "en": "Genhe",
+    "ascii": "Genhe",
+    "lat": 50.7833,
+    "lon": 121.5167,
+    "pop": 73631,
+    "extras": []
+  },
+  {
+    "en": "Heguan",
+    "ascii": "Heguan",
+    "lat": 36.89,
+    "lon": 118.5738,
+    "pop": 73470,
+    "extras": []
+  },
+  {
+    "en": "Shixing",
+    "ascii": "Shixing",
+    "lat": 24.9482,
+    "lon": 114.0657,
+    "pop": 72996,
+    "extras": []
+  },
+  {
+    "en": "Dongdu",
+    "ascii": "Dongdu",
+    "lat": 35.85,
+    "lon": 117.7,
+    "pop": 72957,
+    "extras": []
+  },
+  {
+    "en": "Dongkan",
+    "ascii": "Dongkan",
+    "lat": 33.9997,
+    "lon": 119.8308,
+    "pop": 72789,
+    "extras": []
+  },
+  {
+    "en": "Jiangzhuang",
+    "ascii": "Jiangzhuang",
+    "lat": 36.4944,
+    "lon": 119.7942,
+    "pop": 72453,
+    "extras": []
+  },
+  {
+    "en": "Xinzhi",
+    "ascii": "Xinzhi",
+    "lat": 36.4989,
+    "lon": 111.7047,
+    "pop": 72303,
+    "extras": []
+  },
+  {
+    "en": "Zhoucheng",
+    "ascii": "Zhoucheng",
+    "lat": 35.9122,
+    "lon": 116.3117,
+    "pop": 72070,
+    "extras": []
+  },
+  {
+    "en": "Caidian",
+    "ascii": "Caidian",
+    "lat": 30.5833,
+    "lon": 114.0333,
+    "pop": 71891,
+    "extras": []
+  },
+  {
+    "en": "Xiuyan",
+    "ascii": "Xiuyan",
+    "lat": 40.2928,
+    "lon": 123.2744,
+    "pop": 71614,
+    "extras": []
+  },
+  {
+    "en": "Huashan",
+    "ascii": "Huashan",
+    "lat": 34.63,
+    "lon": 116.7358,
+    "pop": 71281,
+    "extras": []
+  },
+  {
+    "en": "Anlu",
+    "ascii": "Anlu",
+    "lat": 31.2575,
+    "lon": 113.6783,
+    "pop": 71198,
+    "extras": []
+  },
+  {
+    "en": "Kuandian",
+    "ascii": "Kuandian",
+    "lat": 40.7286,
+    "lon": 124.7847,
+    "pop": 70867,
+    "extras": []
+  },
+  {
+    "en": "Shenzhen City Centre",
+    "ascii": "Shenzhen City Centre",
+    "lat": 22.5359,
+    "lon": 114.0771,
+    "pop": 70826,
+    "extras": []
+  },
+  {
+    "en": "Poyang",
+    "ascii": "Poyang",
+    "lat": 28.9924,
+    "lon": 116.6675,
+    "pop": 70787,
+    "extras": [
+      "Поянху"
+    ]
+  },
+  {
+    "en": "Gongchangling",
+    "ascii": "Gongchangling",
+    "lat": 41.1167,
+    "lon": 123.45,
+    "pop": 70761,
+    "extras": []
+  },
+  {
+    "en": "Shiguai",
+    "ascii": "Shiguai",
+    "lat": 40.7058,
+    "lon": 110.2856,
+    "pop": 70357,
+    "extras": []
+  },
+  {
+    "en": "Fuyang",
+    "ascii": "Fuyang",
+    "lat": 30.0533,
+    "lon": 119.9519,
+    "pop": 70183,
+    "extras": [
+      "Фуянь"
+    ]
+  },
+  {
+    "en": "Haining",
+    "ascii": "Haining",
+    "lat": 30.5363,
+    "lon": 120.6864,
+    "pop": 70171,
+    "extras": []
+  },
+  {
+    "en": "Shankou",
+    "ascii": "Shankou",
+    "lat": 21.6,
+    "lon": 109.7167,
+    "pop": 70153,
+    "extras": []
+  },
+  {
+    "en": "Fengping",
+    "ascii": "Fengping",
+    "lat": 24.3974,
+    "lon": 98.5177,
+    "pop": 69586,
+    "extras": []
+  },
+  {
+    "en": "Chengxian Chengguanzhen",
+    "ascii": "Chengxian Chengguanzhen",
+    "lat": 33.7478,
+    "lon": 105.7329,
+    "pop": 69427,
+    "extras": []
+  },
+  {
+    "en": "Jiehu",
+    "ascii": "Jiehu",
+    "lat": 35.5428,
+    "lon": 118.455,
+    "pop": 69245,
+    "extras": []
+  },
+  {
+    "en": "Linjiang",
+    "ascii": "Linjiang",
+    "lat": 41.8069,
+    "lon": 126.9078,
+    "pop": 69149,
+    "extras": [
+      "Линьцзяне"
+    ]
+  },
+  {
+    "en": "Xiaoshi",
+    "ascii": "Xiaoshi",
+    "lat": 41.2971,
+    "lon": 124.1209,
+    "pop": 68994,
+    "extras": []
+  },
+  {
+    "en": "Heishan",
+    "ascii": "Heishan",
+    "lat": 41.6892,
+    "lon": 122.1128,
+    "pop": 68603,
+    "extras": []
+  },
+  {
+    "en": "Pengcheng",
+    "ascii": "Pengcheng",
+    "lat": 36.4311,
+    "lon": 114.17,
+    "pop": 68442,
+    "extras": []
+  },
+  {
+    "en": "Mingguang",
+    "ascii": "Mingguang",
+    "lat": 32.7802,
+    "lon": 117.9638,
+    "pop": 68351,
+    "extras": []
+  },
+  {
+    "en": "Minggang",
+    "ascii": "Minggang",
+    "lat": 32.4586,
+    "lon": 114.0486,
+    "pop": 67945,
+    "extras": []
+  },
+  {
+    "en": "Tangzhai",
+    "ascii": "Tangzhai",
+    "lat": 34.4328,
+    "lon": 116.5911,
+    "pop": 67936,
+    "extras": []
+  },
+  {
+    "en": "Xunyang",
+    "ascii": "Xunyang",
+    "lat": 32.8239,
+    "lon": 109.3653,
+    "pop": 67929,
+    "extras": []
+  },
+  {
+    "en": "Songjianghe",
+    "ascii": "Songjianghe",
+    "lat": 42.1859,
+    "lon": 127.479,
+    "pop": 67672,
+    "extras": []
+  },
+  {
+    "en": "Luorong",
+    "ascii": "Luorong",
+    "lat": 24.4058,
+    "lon": 109.6086,
+    "pop": 67593,
+    "extras": []
+  },
+  {
+    "en": "Lueeyang Chengguanzhen",
+    "ascii": "Lueeyang Chengguanzhen",
+    "lat": 33.3321,
+    "lon": 106.155,
+    "pop": 67496,
+    "extras": [
+      "Lüeyang Chengguanzhen"
+    ]
+  },
+  {
+    "en": "Gaoliu",
+    "ascii": "Gaoliu",
+    "lat": 36.8,
+    "lon": 118.5,
+    "pop": 67339,
+    "extras": []
+  },
+  {
+    "en": "Xinzhou",
+    "ascii": "Xinzhou",
+    "lat": 19.7145,
+    "lon": 109.3115,
+    "pop": 67316,
+    "extras": []
+  },
+  {
+    "en": "Pingzhuang",
+    "ascii": "Pingzhuang",
+    "lat": 42.0372,
+    "lon": 119.2889,
+    "pop": 67273,
+    "extras": []
+  },
+  {
+    "en": "Tianliu",
+    "ascii": "Tianliu",
+    "lat": 37,
+    "lon": 118.7833,
+    "pop": 67165,
+    "extras": []
+  },
+  {
+    "en": "Wanggou",
+    "ascii": "Wanggou",
+    "lat": 34.6715,
+    "lon": 116.4921,
+    "pop": 67140,
+    "extras": []
+  },
+  {
+    "en": "Shajing Town",
+    "ascii": "Shajing Town",
+    "lat": 22.7385,
+    "lon": 113.8076,
+    "pop": 67093,
+    "extras": []
+  },
+  {
+    "en": "Shaozhuang",
+    "ascii": "Shaozhuang",
+    "lat": 36.747,
+    "lon": 118.3166,
+    "pop": 66728,
+    "extras": []
+  },
+  {
+    "en": "Chengyang",
+    "ascii": "Chengyang",
+    "lat": 35.5794,
+    "lon": 118.8328,
+    "pop": 66588,
+    "extras": []
+  },
+  {
+    "en": "Sanchazi",
+    "ascii": "Sanchazi",
+    "lat": 42.0817,
+    "lon": 126.6003,
+    "pop": 66576,
+    "extras": []
+  },
+  {
+    "en": "Daxu",
+    "ascii": "Daxu",
+    "lat": 34.2824,
+    "lon": 117.5527,
+    "pop": 66563,
+    "extras": []
+  },
+  {
+    "en": "Huinan",
+    "ascii": "Huinan",
+    "lat": 42.6225,
+    "lon": 126.2614,
+    "pop": 66315,
+    "extras": []
+  },
+  {
+    "en": "Beimeng",
+    "ascii": "Beimeng",
+    "lat": 36.6044,
+    "lon": 119.4956,
+    "pop": 66277,
+    "extras": []
+  },
+  {
+    "en": "Huanren",
+    "ascii": "Huanren",
+    "lat": 41.2647,
+    "lon": 125.3667,
+    "pop": 66147,
+    "extras": []
+  },
+  {
+    "en": "Yaoji",
+    "ascii": "Yaoji",
+    "lat": 34.0667,
+    "lon": 117.8167,
+    "pop": 65897,
+    "extras": []
+  },
+  {
+    "en": "Mengyin",
+    "ascii": "Mengyin",
+    "lat": 35.7069,
+    "lon": 117.9264,
+    "pop": 65889,
+    "extras": []
+  },
+  {
+    "en": "Jietou",
+    "ascii": "Jietou",
+    "lat": 25.4274,
+    "lon": 98.6532,
+    "pop": 65843,
+    "extras": []
+  },
+  {
+    "en": "Bayiji",
+    "ascii": "Bayiji",
+    "lat": 34.2667,
+    "lon": 117.6833,
+    "pop": 65830,
+    "extras": []
+  },
+  {
+    "en": "Shangkou",
+    "ascii": "Shangkou",
+    "lat": 36.9656,
+    "lon": 118.8831,
+    "pop": 65770,
+    "extras": []
+  },
+  {
+    "en": "Dashitou",
+    "ascii": "Dashitou",
+    "lat": 43.3067,
+    "lon": 128.5114,
+    "pop": 65683,
+    "extras": []
+  },
+  {
+    "en": "Huanghua",
+    "ascii": "Huanghua",
+    "lat": 35.8892,
+    "lon": 119.4578,
+    "pop": 65646,
+    "extras": []
+  },
+  {
+    "en": "Babu",
+    "ascii": "Babu",
+    "lat": 24.4167,
+    "lon": 111.5167,
+    "pop": 65603,
+    "extras": [
+      "Бабу"
+    ]
+  },
+  {
+    "en": "Yebaishou",
+    "ascii": "Yebaishou",
+    "lat": 41.3975,
+    "lon": 119.6408,
+    "pop": 65536,
+    "extras": []
+  },
+  {
+    "en": "Bianzhuang",
+    "ascii": "Bianzhuang",
+    "lat": 34.8486,
+    "lon": 118.0447,
+    "pop": 65381,
+    "extras": []
+  },
+  {
+    "en": "Suyangshan",
+    "ascii": "Suyangshan",
+    "lat": 34.3928,
+    "lon": 117.7556,
+    "pop": 65333,
+    "extras": []
+  },
+  {
+    "en": "Hepingjie",
+    "ascii": "Hepingjie",
+    "lat": 42.0597,
+    "lon": 126.9158,
+    "pop": 65298,
+    "extras": []
+  },
+  {
+    "en": "Liuxin",
+    "ascii": "Liuxin",
+    "lat": 34.3686,
+    "lon": 117.115,
+    "pop": 65258,
+    "extras": []
+  },
+  {
+    "en": "Caoqiao",
+    "ascii": "Caoqiao",
+    "lat": 34.3405,
+    "lon": 118.1104,
+    "pop": 65243,
+    "extras": []
+  },
+  {
+    "en": "Kunyang",
+    "ascii": "Kunyang",
+    "lat": 27.6658,
+    "lon": 120.5658,
+    "pop": 65009,
+    "extras": []
+  },
+  {
+    "en": "Shikang",
+    "ascii": "Shikang",
+    "lat": 21.7667,
+    "lon": 109.3167,
+    "pop": 64818,
+    "extras": []
+  },
+  {
+    "en": "Fenggang",
+    "ascii": "Fenggang",
+    "lat": 27.5457,
+    "lon": 116.2146,
+    "pop": 64715,
+    "extras": []
+  },
+  {
+    "en": "Picheng",
+    "ascii": "Picheng",
+    "lat": 34.4667,
+    "lon": 117.9667,
+    "pop": 64585,
+    "extras": []
+  },
+  {
+    "en": "Dengbu",
+    "ascii": "Dengbu",
+    "lat": 28.2084,
+    "lon": 116.8172,
+    "pop": 63814,
+    "extras": []
+  },
+  {
+    "en": "Yangcun",
+    "ascii": "Yangcun",
+    "lat": 39.3639,
+    "lon": 117.0603,
+    "pop": 63756,
+    "extras": []
+  },
+  {
+    "en": "Lulou",
+    "ascii": "Lulou",
+    "lat": 34.7167,
+    "lon": 116.7667,
+    "pop": 63704,
+    "extras": []
+  },
+  {
+    "en": "Xiazhuang",
+    "ascii": "Xiazhuang",
+    "lat": 34.9161,
+    "lon": 118.6389,
+    "pop": 63285,
+    "extras": []
+  },
+  {
+    "en": "Changcheng",
+    "ascii": "Changcheng",
+    "lat": 36.0906,
+    "lon": 119.4517,
+    "pop": 63208,
+    "extras": []
+  },
+  {
+    "en": "Liuku",
+    "ascii": "Liuku",
+    "lat": 25.8505,
+    "lon": 98.8557,
+    "pop": 63013,
+    "extras": []
+  },
+  {
+    "en": "Shizhai",
+    "ascii": "Shizhai",
+    "lat": 34.8056,
+    "lon": 116.6389,
+    "pop": 62956,
+    "extras": []
+  },
+  {
+    "en": "Jinggou",
+    "ascii": "Jinggou",
+    "lat": 36.2818,
+    "lon": 119.5519,
+    "pop": 62917,
+    "extras": []
+  },
+  {
+    "en": "Fanlou",
+    "ascii": "Fanlou",
+    "lat": 34.4809,
+    "lon": 116.8525,
+    "pop": 62859,
+    "extras": []
+  },
+  {
+    "en": "Changle",
+    "ascii": "Changle",
+    "lat": 21.8333,
+    "lon": 109.4167,
+    "pop": 62763,
+    "extras": []
+  },
+  {
+    "en": "Miaojie",
+    "ascii": "Miaojie",
+    "lat": 25.3123,
+    "lon": 100.2798,
+    "pop": 62540,
+    "extras": []
+  },
+  {
+    "en": "Yucheng",
+    "ascii": "Yucheng",
+    "lat": 34.9289,
+    "lon": 116.4653,
+    "pop": 62365,
+    "extras": [
+      "Юйчэн"
+    ]
+  },
+  {
+    "en": "Pingyin",
+    "ascii": "Pingyin",
+    "lat": 36.2831,
+    "lon": 116.4453,
+    "pop": 62050,
+    "extras": []
+  },
+  {
+    "en": "Qingshuping",
+    "ascii": "Qingshuping",
+    "lat": 27.3808,
+    "lon": 112.0206,
+    "pop": 62000,
+    "extras": []
+  },
+  {
+    "en": "Zhangji",
+    "ascii": "Zhangji",
+    "lat": 34.1375,
+    "lon": 117.3756,
+    "pop": 61929,
+    "extras": []
+  },
+  {
+    "en": "Fengyi",
+    "ascii": "Fengyi",
+    "lat": 25.584,
+    "lon": 100.3118,
+    "pop": 61890,
+    "extras": []
+  },
+  {
+    "en": "Nandu",
+    "ascii": "Nandu",
+    "lat": 22.8525,
+    "lon": 110.8233,
+    "pop": 61881,
+    "extras": []
+  },
+  {
+    "en": "Taoluo",
+    "ascii": "Taoluo",
+    "lat": 35.2739,
+    "lon": 119.3703,
+    "pop": 61852,
+    "extras": []
+  },
+  {
+    "en": "Xiangzhou",
+    "ascii": "Xiangzhou",
+    "lat": 36.1644,
+    "lon": 119.4189,
+    "pop": 61748,
+    "extras": []
+  },
+  {
+    "en": "Alihe",
+    "ascii": "Oroqen Zizhiqi",
+    "lat": 50.5667,
+    "lon": 123.7167,
+    "pop": 61582,
+    "extras": [
+      "Алихэ"
+    ]
+  },
+  {
+    "en": "Jianguang",
+    "ascii": "Jianguang",
+    "lat": 28.1938,
+    "lon": 115.7836,
+    "pop": 61469,
+    "extras": []
+  },
+  {
+    "en": "Dongning",
+    "ascii": "Dongning",
+    "lat": 44.0844,
+    "lon": 131.1184,
+    "pop": 61440,
+    "extras": []
+  },
+  {
+    "en": "Tianchang",
+    "ascii": "Tianchang",
+    "lat": 37.9981,
+    "lon": 114.0156,
+    "pop": 61292,
+    "extras": []
+  },
+  {
+    "en": "Xifeng",
+    "ascii": "Xifeng",
+    "lat": 42.7372,
+    "lon": 124.7222,
+    "pop": 61087,
+    "extras": []
+  },
+  {
+    "en": "Datong",
+    "ascii": "Datong",
+    "lat": 32.6208,
+    "lon": 117.0632,
+    "pop": 61085,
+    "extras": [
+      "Датун"
+    ]
+  },
+  {
+    "en": "Nanhu",
+    "ascii": "Nanhu",
+    "lat": 35.4878,
+    "lon": 119.3458,
+    "pop": 61034,
+    "extras": []
+  },
+  {
+    "en": "Yicheng",
+    "ascii": "Yicheng",
+    "lat": 31.7047,
+    "lon": 112.2561,
+    "pop": 61027,
+    "extras": []
+  },
+  {
+    "en": "Erdaojiang",
+    "ascii": "Erdaojiang",
+    "lat": 41.7764,
+    "lon": 126.0319,
+    "pop": 60831,
+    "extras": []
+  },
+  {
+    "en": "Xixiang",
+    "ascii": "Xixiang",
+    "lat": 35.1628,
+    "lon": 112.865,
+    "pop": 60745,
+    "extras": []
+  },
+  {
+    "en": "Yaowan",
+    "ascii": "Yaowan",
+    "lat": 34.1833,
+    "lon": 118.0667,
+    "pop": 60668,
+    "extras": []
+  },
+  {
+    "en": "Mujiayingzi",
+    "ascii": "Mujiayingzi",
+    "lat": 42.1167,
+    "lon": 118.7833,
+    "pop": 60627,
+    "extras": []
+  },
+  {
+    "en": "Taitou",
+    "ascii": "Taitou",
+    "lat": 37.0273,
+    "lon": 118.6339,
+    "pop": 60354,
+    "extras": []
+  },
+  {
+    "en": "Wujing",
+    "ascii": "Wujing",
+    "lat": 36.45,
+    "lon": 118.4,
+    "pop": 60260,
+    "extras": []
+  },
+  {
+    "en": "Zhijiang",
+    "ascii": "Zhijiang",
+    "lat": 30.4214,
+    "lon": 111.7533,
+    "pop": 60169,
+    "extras": []
+  },
+  {
+    "en": "Gucheng",
+    "ascii": "Gucheng",
+    "lat": 36.9535,
+    "lon": 118.7625,
+    "pop": 60149,
+    "extras": []
+  },
+  {
+    "en": "Taozhuang",
+    "ascii": "Taozhuang",
+    "lat": 34.85,
+    "lon": 117.3333,
+    "pop": 60137,
+    "extras": []
+  },
+  {
+    "en": "Zhujiajiao",
+    "ascii": "Zhujiajiao",
+    "lat": 31.1076,
+    "lon": 121.057,
+    "pop": 60000,
+    "extras": [
+      "Чжуцзяцзяо"
+    ]
+  },
+  {
+    "en": "Baimajing",
+    "ascii": "Baimajing",
+    "lat": 19.712,
+    "lon": 109.218,
+    "pop": 59585,
+    "extras": []
+  },
+  {
+    "en": "Wenshang",
+    "ascii": "Wenshang",
+    "lat": 35.7275,
+    "lon": 116.4961,
+    "pop": 59455,
+    "extras": []
+  },
+  {
+    "en": "Huiqu",
+    "ascii": "Huiqu",
+    "lat": 36.2714,
+    "lon": 119.049,
+    "pop": 59323,
+    "extras": []
+  },
+  {
+    "en": "Panlongcheng Jingji Kaifaqu",
+    "ascii": "Panlongcheng Jingji Kaifaqu",
+    "lat": 30.6931,
+    "lon": 114.2707,
+    "pop": 59207,
+    "extras": [
+      "Pánlóngchéng Jīngjì Kāifāqū"
+    ]
+  },
+  {
+    "en": "Hongjiang",
+    "ascii": "Hongjiang",
+    "lat": 27.11,
+    "lon": 109.9956,
+    "pop": 59199,
+    "extras": []
+  },
+  {
+    "en": "Tashan",
+    "ascii": "Tashan",
+    "lat": 34.3361,
+    "lon": 117.5667,
+    "pop": 59162,
+    "extras": []
+  },
+  {
+    "en": "Haizhou",
+    "ascii": "Haizhou",
+    "lat": 34.5817,
+    "lon": 119.1289,
+    "pop": 59098,
+    "extras": []
+  },
+  {
+    "en": "Longgu",
+    "ascii": "Longgu",
+    "lat": 34.9033,
+    "lon": 116.8067,
+    "pop": 59086,
+    "extras": []
+  },
+  {
+    "en": "Yigou",
+    "ascii": "Yigou",
+    "lat": 35.8114,
+    "lon": 114.3167,
+    "pop": 59073,
+    "extras": []
+  },
+  {
+    "en": "Xiaoweizhai",
+    "ascii": "Xiaoweizhai",
+    "lat": 26.1903,
+    "lon": 107.5125,
+    "pop": 58913,
+    "extras": []
+  },
+  {
+    "en": "Suozhen",
+    "ascii": "Suozhen",
+    "lat": 36.9539,
+    "lon": 118.1047,
+    "pop": 58766,
+    "extras": []
+  },
+  {
+    "en": "Shiqiaozi",
+    "ascii": "Shiqiaozi",
+    "lat": 36.1617,
+    "lon": 119.2631,
+    "pop": 58538,
+    "extras": []
+  },
+  {
+    "en": "Fenyi",
+    "ascii": "Fenyi",
+    "lat": 27.8112,
+    "lon": 114.6681,
+    "pop": 58478,
+    "extras": []
+  },
+  {
+    "en": "Xinglongshan",
+    "ascii": "Xinglongshan",
+    "lat": 43.9561,
+    "lon": 125.4661,
+    "pop": 58432,
+    "extras": []
+  },
+  {
+    "en": "Shibuzi",
+    "ascii": "Shibuzi",
+    "lat": 36.1239,
+    "lon": 119.1028,
+    "pop": 58333,
+    "extras": []
+  },
+  {
+    "en": "Lixian",
+    "ascii": "Lixian",
+    "lat": 34.19,
+    "lon": 105.1725,
+    "pop": 58300,
+    "extras": []
+  },
+  {
+    "en": "Dongxi",
+    "ascii": "Dongxi",
+    "lat": 28.7614,
+    "lon": 106.6611,
+    "pop": 58169,
+    "extras": []
+  },
+  {
+    "en": "Hancheng",
+    "ascii": "Hancheng",
+    "lat": 35.4603,
+    "lon": 110.4292,
+    "pop": 58049,
+    "extras": []
+  },
+  {
+    "en": "Santangpu",
+    "ascii": "Santangpu",
+    "lat": 27.4056,
+    "lon": 111.9869,
+    "pop": 58000,
+    "extras": []
+  },
+  {
+    "en": "Jing'an",
+    "ascii": "Jing'an",
+    "lat": 34.4962,
+    "lon": 116.9225,
+    "pop": 57825,
+    "extras": []
+  },
+  {
+    "en": "Maocun",
+    "ascii": "Maocun",
+    "lat": 34.3767,
+    "lon": 117.2506,
+    "pop": 57649,
+    "extras": []
+  },
+  {
+    "en": "Huangpi",
+    "ascii": "Huangpi",
+    "lat": 30.8845,
+    "lon": 114.3779,
+    "pop": 57554,
+    "extras": []
+  },
+  {
+    "en": "Yantongshan",
+    "ascii": "Yantongshan",
+    "lat": 43.2919,
+    "lon": 126.0094,
+    "pop": 57515,
+    "extras": []
+  },
+  {
+    "en": "Guiren",
+    "ascii": "Guiren",
+    "lat": 33.6697,
+    "lon": 118.1889,
+    "pop": 57446,
+    "extras": []
+  },
+  {
+    "en": "Zhongxing",
+    "ascii": "Zhongxing",
+    "lat": 33.7039,
+    "lon": 118.6792,
+    "pop": 57338,
+    "extras": []
+  },
+  {
+    "en": "Yingli",
+    "ascii": "Yingli",
+    "lat": 37.065,
+    "lon": 118.8103,
+    "pop": 57091,
+    "extras": []
+  },
+  {
+    "en": "Baishishan",
+    "ascii": "Baishishan",
+    "lat": 43.5833,
+    "lon": 127.5667,
+    "pop": 56992,
+    "extras": []
+  },
+  {
+    "en": "Zhuzhai",
+    "ascii": "Zhuzhai",
+    "lat": 34.7611,
+    "lon": 116.8139,
+    "pop": 56908,
+    "extras": []
+  },
+  {
+    "en": "Jinji",
+    "ascii": "Jinji",
+    "lat": 23.2281,
+    "lon": 110.8261,
+    "pop": 56816,
+    "extras": []
+  },
+  {
+    "en": "Weining",
+    "ascii": "Weining",
+    "lat": 26.85,
+    "lon": 104.2333,
+    "pop": 56744,
+    "extras": [
+      "Вэйнин"
+    ]
+  },
+  {
+    "en": "Yashan",
+    "ascii": "Yashan",
+    "lat": 22.1975,
+    "lon": 109.9419,
+    "pop": 56629,
+    "extras": []
+  },
+  {
+    "en": "Changleng",
+    "ascii": "Changleng",
+    "lat": 28.7,
+    "lon": 115.8167,
+    "pop": 56429,
+    "extras": []
+  },
+  {
+    "en": "Sanchuan",
+    "ascii": "Sanchuan",
+    "lat": 26.7504,
+    "lon": 100.6589,
+    "pop": 56345,
+    "extras": []
+  },
+  {
+    "en": "Sitou",
+    "ascii": "Sitou",
+    "lat": 36.3128,
+    "lon": 118.4119,
+    "pop": 56289,
+    "extras": []
+  },
+  {
+    "en": "Gaogou",
+    "ascii": "Gaogou",
+    "lat": 34.0175,
+    "lon": 119.1886,
+    "pop": 56214,
+    "extras": []
+  },
+  {
+    "en": "Linghai",
+    "ascii": "Linghai",
+    "lat": 41.1653,
+    "lon": 121.3667,
+    "pop": 56176,
+    "extras": []
+  },
+  {
+    "en": "Xuzhuang",
+    "ascii": "Xuzhuang",
+    "lat": 34.2961,
+    "lon": 117.458,
+    "pop": 56099,
+    "extras": []
+  },
+  {
+    "en": "Qinnan",
+    "ascii": "Qinnan",
+    "lat": 33.2531,
+    "lon": 119.9133,
+    "pop": 55975,
+    "extras": []
+  },
+  {
+    "en": "Dalianwan",
+    "ascii": "Dalianwan",
+    "lat": 39.0286,
+    "lon": 121.695,
+    "pop": 55841,
+    "extras": []
+  },
+  {
+    "en": "Zhuyi",
+    "ascii": "Zhuyi",
+    "lat": 31.0254,
+    "lon": 109.3856,
+    "pop": 55627,
+    "extras": []
+  },
+  {
+    "en": "Lanshan",
+    "ascii": "Lanshan",
+    "lat": 33.9361,
+    "lon": 117.725,
+    "pop": 55442,
+    "extras": []
+  },
+  {
+    "en": "Anjiang",
+    "ascii": "Anjiang",
+    "lat": 27.3194,
+    "lon": 110.1031,
+    "pop": 55421,
+    "extras": []
+  },
+  {
+    "en": "Ahu",
+    "ascii": "Ahu",
+    "lat": 34.3766,
+    "lon": 118.6031,
+    "pop": 55298,
+    "extras": []
+  },
+  {
+    "en": "Liguo",
+    "ascii": "Liguo",
+    "lat": 34.5529,
+    "lon": 117.333,
+    "pop": 54960,
+    "extras": []
+  },
+  {
+    "en": "Huangnihe",
+    "ascii": "Huangnihe",
+    "lat": 43.5583,
+    "lon": 128.0239,
+    "pop": 54959,
+    "extras": []
+  },
+  {
+    "en": "Liuji",
+    "ascii": "Liuji",
+    "lat": 34.3583,
+    "lon": 117.0528,
+    "pop": 54785,
+    "extras": []
+  },
+  {
+    "en": "Liangzhai",
+    "ascii": "Liangzhai",
+    "lat": 34.5,
+    "lon": 116.75,
+    "pop": 54742,
+    "extras": []
+  },
+  {
+    "en": "Liaozhong",
+    "ascii": "Liaozhong",
+    "lat": 41.5061,
+    "lon": 122.7242,
+    "pop": 54691,
+    "extras": []
+  },
+  {
+    "en": "Wangji",
+    "ascii": "Wangji",
+    "lat": 33.9833,
+    "lon": 117.75,
+    "pop": 54578,
+    "extras": []
+  },
+  {
+    "en": "Fangcun",
+    "ascii": "Fangcun",
+    "lat": 34.0864,
+    "lon": 117.4736,
+    "pop": 54035,
+    "extras": []
+  },
+  {
+    "en": "Yongjian",
+    "ascii": "Yongjian",
+    "lat": 25.4254,
+    "lon": 100.2124,
+    "pop": 53970,
+    "extras": []
+  },
+  {
+    "en": "Xiazhuang",
+    "ascii": "Xiazhuang",
+    "lat": 25.4,
+    "lon": 100.8333,
+    "pop": 53954,
+    "extras": []
+  },
+  {
+    "en": "Lingcheng",
+    "ascii": "Lingcheng",
+    "lat": 33.8164,
+    "lon": 118.1136,
+    "pop": 53841,
+    "extras": []
+  },
+  {
+    "en": "Buzhuang",
+    "ascii": "Buzhuang",
+    "lat": 36.9122,
+    "lon": 119.5566,
+    "pop": 53474,
+    "extras": []
+  },
+  {
+    "en": "Shiquan",
+    "ascii": "Shiquan",
+    "lat": 33.0408,
+    "lon": 108.2364,
+    "pop": 53422,
+    "extras": []
+  },
+  {
+    "en": "Yangtun",
+    "ascii": "Yangtun",
+    "lat": 34.8833,
+    "lon": 116.8833,
+    "pop": 53417,
+    "extras": []
+  },
+  {
+    "en": "Yousuo",
+    "ascii": "Yousuo",
+    "lat": 26.0253,
+    "lon": 100.0677,
+    "pop": 53233,
+    "extras": []
+  },
+  {
+    "en": "Zhaozhuang",
+    "ascii": "Zhaozhuang",
+    "lat": 34.7389,
+    "lon": 116.4556,
+    "pop": 53193,
+    "extras": []
+  },
+  {
+    "en": "Tangzhang",
+    "ascii": "Tangzhang",
+    "lat": 34.1478,
+    "lon": 117.254,
+    "pop": 52985,
+    "extras": []
+  },
+  {
+    "en": "Lingwu",
+    "ascii": "Lingwu",
+    "lat": 38.1019,
+    "lon": 106.3402,
+    "pop": 52863,
+    "extras": []
+  },
+  {
+    "en": "Taoyuan",
+    "ascii": "Taoyuan",
+    "lat": 33.8528,
+    "lon": 117.7703,
+    "pop": 52861,
+    "extras": []
+  },
+  {
+    "en": "Beisu",
+    "ascii": "Beisu",
+    "lat": 38.1548,
+    "lon": 114.8069,
+    "pop": 52752,
+    "extras": []
+  },
+  {
+    "en": "Malingshan",
+    "ascii": "Malingshan",
+    "lat": 34.2035,
+    "lon": 118.3565,
+    "pop": 52711,
+    "extras": []
+  },
+  {
+    "en": "Hualong",
+    "ascii": "Hualong",
+    "lat": 36.9459,
+    "lon": 118.5886,
+    "pop": 52660,
+    "extras": []
+  },
+  {
+    "en": "Puji",
+    "ascii": "Puji",
+    "lat": 36.1319,
+    "lon": 119.7211,
+    "pop": 52563,
+    "extras": []
+  },
+  {
+    "en": "Xingqiao",
+    "ascii": "Xingqiao",
+    "lat": 30.3994,
+    "lon": 120.2517,
+    "pop": 52400,
+    "extras": []
+  },
+  {
+    "en": "Dapeng",
+    "ascii": "Dapeng",
+    "lat": 34.2844,
+    "lon": 117.0752,
+    "pop": 52219,
+    "extras": []
+  },
+  {
+    "en": "Sanzhuang",
+    "ascii": "Sanzhuang",
+    "lat": 35.5033,
+    "lon": 119.1717,
+    "pop": 52214,
+    "extras": []
+  },
+  {
+    "en": "Jitai",
+    "ascii": "Jitai",
+    "lat": 36.7572,
+    "lon": 118.7387,
+    "pop": 52144,
+    "extras": []
+  },
+  {
+    "en": "Zizhuang",
+    "ascii": "Zizhuang",
+    "lat": 34.3615,
+    "lon": 117.4882,
+    "pop": 52063,
+    "extras": []
+  },
+  {
+    "en": "Liangji",
+    "ascii": "Liangji",
+    "lat": 33.9639,
+    "lon": 117.9694,
+    "pop": 52048,
+    "extras": []
+  },
+  {
+    "en": "Dashahe",
+    "ascii": "Dashahe",
+    "lat": 34.5385,
+    "lon": 116.6245,
+    "pop": 51916,
+    "extras": []
+  },
+  {
+    "en": "Weimiao",
+    "ascii": "Weimiao",
+    "lat": 34.5833,
+    "lon": 117.0667,
+    "pop": 51820,
+    "extras": []
+  },
+  {
+    "en": "Qishan",
+    "ascii": "Qishan",
+    "lat": 34.6333,
+    "lon": 116.8,
+    "pop": 51750,
+    "extras": []
+  },
+  {
+    "en": "Zepu",
+    "ascii": "Zepu",
+    "lat": 38.1887,
+    "lon": 77.2708,
+    "pop": 51691,
+    "extras": []
+  },
+  {
+    "en": "Liuquan",
+    "ascii": "Liuquan",
+    "lat": 34.4342,
+    "lon": 117.2983,
+    "pop": 51657,
+    "extras": []
+  },
+  {
+    "en": "Zhefang",
+    "ascii": "Zhefang",
+    "lat": 24.2667,
+    "lon": 98.2833,
+    "pop": 51477,
+    "extras": []
+  },
+  {
+    "en": "Gangshang",
+    "ascii": "Gangshang",
+    "lat": 34.5215,
+    "lon": 118.1184,
+    "pop": 51114,
+    "extras": []
+  },
+  {
+    "en": "Guanshan",
+    "ascii": "Guanshan",
+    "lat": 33.7983,
+    "lon": 117.8664,
+    "pop": 51086,
+    "extras": []
+  },
+  {
+    "en": "Guanzhuang",
+    "ascii": "Guanzhuang",
+    "lat": 36.2633,
+    "lon": 119.1939,
+    "pop": 50826,
+    "extras": []
+  },
+  {
+    "en": "Shanji",
+    "ascii": "Shanji",
+    "lat": 34.2047,
+    "lon": 117.5956,
+    "pop": 50617,
+    "extras": []
+  },
+  {
+    "en": "Hanyuan",
+    "ascii": "Hanyuan",
+    "lat": 32.834,
+    "lon": 106.2504,
+    "pop": 50440,
+    "extras": []
+  },
+  {
+    "en": "Changdian",
+    "ascii": "Changdian",
+    "lat": 34.7759,
+    "lon": 116.5834,
+    "pop": 49772,
+    "extras": []
+  },
+  {
+    "en": "Xinglou",
+    "ascii": "Xinglou",
+    "lat": 34.5667,
+    "lon": 117.8278,
+    "pop": 49653,
+    "extras": []
+  },
+  {
+    "en": "Mihe",
+    "ascii": "Mihe",
+    "lat": 36.621,
+    "lon": 118.5287,
+    "pop": 49545,
+    "extras": []
+  },
+  {
+    "en": "Dongcheng",
+    "ascii": "Dongcheng",
+    "lat": 19.7087,
+    "lon": 109.4561,
+    "pop": 49252,
+    "extras": []
+  },
+  {
+    "en": "Jinjiang",
+    "ascii": "Jinjiang",
+    "lat": 28.4005,
+    "lon": 116.8998,
+    "pop": 49245,
+    "extras": []
+  },
+  {
+    "en": "Jiawang Zhen",
+    "ascii": "Jiawang Zhen",
+    "lat": 34.422,
+    "lon": 117.4676,
+    "pop": 49005,
+    "extras": []
+  },
+  {
+    "en": "Gupi",
+    "ascii": "Gupi",
+    "lat": 34.1139,
+    "lon": 117.8828,
+    "pop": 48748,
+    "extras": []
+  },
+  {
+    "en": "Xinhe",
+    "ascii": "Xinhe",
+    "lat": 34.1861,
+    "lon": 117.9878,
+    "pop": 48712,
+    "extras": []
+  },
+  {
+    "en": "Ningdong",
+    "ascii": "Ningdong",
+    "lat": 38.1614,
+    "lon": 106.585,
+    "pop": 48587,
+    "extras": []
+  },
+  {
+    "en": "Gaoliu",
+    "ascii": "Gaoliu",
+    "lat": 34.3167,
+    "lon": 118.5167,
+    "pop": 48485,
+    "extras": []
+  },
+  {
+    "en": "Liutuan",
+    "ascii": "Liutuan",
+    "lat": 36.9333,
+    "lon": 119.3833,
+    "pop": 48469,
+    "extras": []
+  },
+  {
+    "en": "Chenlou",
+    "ascii": "Chenlou",
+    "lat": 34.3889,
+    "lon": 118.05,
+    "pop": 48327,
+    "extras": []
+  },
+  {
+    "en": "Qing'an",
+    "ascii": "Qing'an",
+    "lat": 33.9694,
+    "lon": 117.8806,
+    "pop": 48234,
+    "extras": [
+      "Qing’an"
+    ]
+  },
+  {
+    "en": "Qianliu",
+    "ascii": "Qianliu",
+    "lat": 22.9,
+    "lon": 100.2,
+    "pop": 48090,
+    "extras": []
+  },
+  {
+    "en": "Weiji",
+    "ascii": "Weiji",
+    "lat": 34.0333,
+    "lon": 117.95,
+    "pop": 48069,
+    "extras": []
+  },
+  {
+    "en": "Wangfen",
+    "ascii": "Wangfen",
+    "lat": 36.55,
+    "lon": 118.3833,
+    "pop": 48052,
+    "extras": []
+  },
+  {
+    "en": "Shunhe",
+    "ascii": "Shunhe",
+    "lat": 34.8418,
+    "lon": 116.5572,
+    "pop": 47330,
+    "extras": []
+  },
+  {
+    "en": "Gongqingcheng",
+    "ascii": "Gongqingcheng",
+    "lat": 29.2492,
+    "lon": 115.8095,
+    "pop": 47284,
+    "extras": []
+  },
+  {
+    "en": "Hekou",
+    "ascii": "Hekou",
+    "lat": 34.5778,
+    "lon": 116.8139,
+    "pop": 47281,
+    "extras": []
+  },
+  {
+    "en": "Hanwang",
+    "ascii": "Hanwang",
+    "lat": 34.1944,
+    "lon": 117.0833,
+    "pop": 47205,
+    "extras": []
+  },
+  {
+    "en": "Sunlou",
+    "ascii": "Sunlou",
+    "lat": 34.6667,
+    "lon": 116.5833,
+    "pop": 46941,
+    "extras": []
+  },
+  {
+    "en": "Nanpeng",
+    "ascii": "Nanpeng",
+    "lat": 29.3347,
+    "lon": 106.6522,
+    "pop": 46786,
+    "extras": []
+  },
+  {
+    "en": "Shaji",
+    "ascii": "Shaji",
+    "lat": 33.9,
+    "lon": 118.1333,
+    "pop": 46696,
+    "extras": []
+  },
+  {
+    "en": "Sankeshu",
+    "ascii": "Sankeshu",
+    "lat": 26.5637,
+    "lon": 108.0659,
+    "pop": 46402,
+    "extras": []
+  },
+  {
+    "en": "Biantang",
+    "ascii": "Biantang",
+    "lat": 34.4233,
+    "lon": 117.6454,
+    "pop": 46260,
+    "extras": []
+  },
+  {
+    "en": "Chefushan",
+    "ascii": "Chefushan",
+    "lat": 34.4753,
+    "lon": 117.7512,
+    "pop": 45844,
+    "extras": []
+  },
+  {
+    "en": "Shuanggou",
+    "ascii": "Shuanggou",
+    "lat": 34.0353,
+    "lon": 117.5781,
+    "pop": 45697,
+    "extras": []
+  },
+  {
+    "en": "Gudong",
+    "ascii": "Gudong",
+    "lat": 25.3417,
+    "lon": 98.483,
+    "pop": 45528,
+    "extras": []
+  },
+  {
+    "en": "Pingli",
+    "ascii": "Pingli",
+    "lat": 32.3847,
+    "lon": 109.3456,
+    "pop": 45493,
+    "extras": []
+  },
+  {
+    "en": "Zouzhuang",
+    "ascii": "Zouzhuang",
+    "lat": 34.6,
+    "lon": 118.05,
+    "pop": 45461,
+    "extras": []
+  },
+  {
+    "en": "Dangjiang",
+    "ascii": "Dangjiang",
+    "lat": 21.65,
+    "lon": 109.1167,
+    "pop": 45408,
+    "extras": []
+  },
+  {
+    "en": "Nongzhang",
+    "ascii": "Nongzhang",
+    "lat": 24.616,
+    "lon": 97.8822,
+    "pop": 45270,
+    "extras": []
+  },
+  {
+    "en": "Yanguan",
+    "ascii": "Yanguan",
+    "lat": 34.2639,
+    "lon": 105.4639,
+    "pop": 44954,
+    "extras": []
+  },
+  {
+    "en": "Shangyun",
+    "ascii": "Shangyun",
+    "lat": 23.0519,
+    "lon": 99.8284,
+    "pop": 44918,
+    "extras": []
+  },
+  {
+    "en": "Dahuangshan",
+    "ascii": "Dahuangshan",
+    "lat": 34.2934,
+    "lon": 117.3444,
+    "pop": 44771,
+    "extras": []
+  },
+  {
+    "en": "Hegou",
+    "ascii": "Hegou",
+    "lat": 34.4083,
+    "lon": 118.1222,
+    "pop": 44747,
+    "extras": []
+  },
+  {
+    "en": "Qisha",
+    "ascii": "Qisha",
+    "lat": 21.575,
+    "lon": 108.479,
+    "pop": 44561,
+    "extras": []
+  },
+  {
+    "en": "Jiushan",
+    "ascii": "Jiushan",
+    "lat": 36.1961,
+    "lon": 118.465,
+    "pop": 44420,
+    "extras": []
+  },
+  {
+    "en": "Xindian",
+    "ascii": "Xindian",
+    "lat": 34.1428,
+    "lon": 118.3353,
+    "pop": 44409,
+    "extras": []
+  },
+  {
+    "en": "Qingshanquan",
+    "ascii": "Qingshanquan",
+    "lat": 34.4164,
+    "lon": 117.3631,
+    "pop": 44314,
+    "extras": []
+  },
+  {
+    "en": "Beiwangli",
+    "ascii": "Beiwangli",
+    "lat": 38.6208,
+    "lon": 115.3964,
+    "pop": 44112,
+    "extras": []
+  },
+  {
+    "en": "Gaozuo",
+    "ascii": "Gaozuo",
+    "lat": 33.9031,
+    "lon": 118.0397,
+    "pop": 43419,
+    "extras": []
+  },
+  {
+    "en": "Zhigou",
+    "ascii": "Zhigou",
+    "lat": 35.9167,
+    "lon": 119.2167,
+    "pop": 43152,
+    "extras": []
+  },
+  {
+    "en": "Huangji",
+    "ascii": "Huangji",
+    "lat": 34.4333,
+    "lon": 116.9833,
+    "pop": 43038,
+    "extras": []
+  },
+  {
+    "en": "Zhengji",
+    "ascii": "Zhengji",
+    "lat": 34.4372,
+    "lon": 117.0389,
+    "pop": 43021,
+    "extras": []
+  },
+  {
+    "en": "Jiangping",
+    "ascii": "Jiangping",
+    "lat": 21.6,
+    "lon": 108.15,
+    "pop": 42985,
+    "extras": []
+  },
+  {
+    "en": "Baichihe",
+    "ascii": "Baichihe",
+    "lat": 36.1156,
+    "lon": 119.5333,
+    "pop": 42913,
+    "extras": []
+  },
+  {
+    "en": "Tushan",
+    "ascii": "Tushan",
+    "lat": 34.2208,
+    "lon": 117.8369,
+    "pop": 42853,
+    "extras": []
+  },
+  {
+    "en": "Ergun",
+    "ascii": "E'erguna",
+    "lat": 50.2236,
+    "lon": 120.1709,
+    "pop": 42435,
+    "extras": [
+      "E’erguna",
+      "Лабудалинь"
+    ]
+  },
+  {
+    "en": "Daizhuang",
+    "ascii": "Daizhuang",
+    "lat": 34.5139,
+    "lon": 117.8528,
+    "pop": 42410,
+    "extras": []
+  },
+  {
+    "en": "Qushi",
+    "ascii": "Qushi",
+    "lat": 25.2167,
+    "lon": 98.6,
+    "pop": 42380,
+    "extras": []
+  },
+  {
+    "en": "Guangtong",
+    "ascii": "Guangtong",
+    "lat": 25.1686,
+    "lon": 101.7486,
+    "pop": 42306,
+    "extras": []
+  },
+  {
+    "en": "Mali",
+    "ascii": "Mali",
+    "lat": 34.6646,
+    "lon": 104.6978,
+    "pop": 42260,
+    "extras": []
+  },
+  {
+    "en": "Wangyuan",
+    "ascii": "Wangyuan",
+    "lat": 38.3841,
+    "lon": 106.272,
+    "pop": 42022,
+    "extras": []
+  },
+  {
+    "en": "Yinggen",
+    "ascii": "Yinggen",
+    "lat": 19.0383,
+    "lon": 109.84,
+    "pop": 41835,
+    "extras": []
+  },
+  {
+    "en": "Wuduan",
+    "ascii": "Wuduan",
+    "lat": 34.5744,
+    "lon": 117.0953,
+    "pop": 41803,
+    "extras": []
+  },
+  {
+    "en": "Shiji",
+    "ascii": "Shiji",
+    "lat": 34.2,
+    "lon": 118.4833,
+    "pop": 41652,
+    "extras": []
+  },
+  {
+    "en": "Naliang",
+    "ascii": "Naliang",
+    "lat": 21.6667,
+    "lon": 107.8667,
+    "pop": 41577,
+    "extras": []
+  },
+  {
+    "en": "Chongxing",
+    "ascii": "Chongxing",
+    "lat": 38.0333,
+    "lon": 106.3,
+    "pop": 41212,
+    "extras": []
+  },
+  {
+    "en": "Anyuan",
+    "ascii": "Anyuan",
+    "lat": 34.8808,
+    "lon": 105.2764,
+    "pop": 40828,
+    "extras": []
+  },
+  {
+    "en": "Sihu",
+    "ascii": "Sihu",
+    "lat": 34.6263,
+    "lon": 117.9714,
+    "pop": 40430,
+    "extras": []
+  },
+  {
+    "en": "Mutang",
+    "ascii": "Mutang",
+    "lat": 19.8076,
+    "lon": 109.3454,
+    "pop": 40373,
+    "extras": []
+  },
+  {
+    "en": "Shiwan",
+    "ascii": "Shiwan",
+    "lat": 21.75,
+    "lon": 109.2,
+    "pop": 40330,
+    "extras": []
+  },
+  {
+    "en": "Mingguang",
+    "ascii": "Mingguang",
+    "lat": 25.4931,
+    "lon": 98.5415,
+    "pop": 40221,
+    "extras": []
+  },
+  {
+    "en": "Gangtou",
+    "ascii": "Gangtou",
+    "lat": 34.3174,
+    "lon": 118.2072,
+    "pop": 39999,
+    "extras": []
+  },
+  {
+    "en": "Chenghai",
+    "ascii": "Chenghai",
+    "lat": 26.4617,
+    "lon": 100.6786,
+    "pop": 39766,
+    "extras": []
+  },
+  {
+    "en": "Liji",
+    "ascii": "Liji",
+    "lat": 33.7667,
+    "lon": 117.7833,
+    "pop": 39691,
+    "extras": []
+  },
+  {
+    "en": "Huixian Chengguanzhen",
+    "ascii": "Huixian Chengguanzhen",
+    "lat": 33.7683,
+    "lon": 106.0808,
+    "pop": 39643,
+    "extras": []
+  },
+  {
+    "en": "Xilinji",
+    "ascii": "Xilinji",
+    "lat": 52.9906,
+    "lon": 123.2352,
+    "pop": 39310,
+    "extras": []
+  },
+  {
+    "en": "Mangbang",
+    "ascii": "Mangbang",
+    "lat": 24.9319,
+    "lon": 98.6701,
+    "pop": 39273,
+    "extras": []
+  },
+  {
+    "en": "Lequn",
+    "ascii": "Lequn",
+    "lat": 22.5776,
+    "lon": 113.8739,
+    "pop": 39271,
+    "extras": []
+  },
+  {
+    "en": "Jinzhongzi",
+    "ascii": "Jinzhongzi",
+    "lat": 36.3346,
+    "lon": 119.2581,
+    "pop": 39054,
+    "extras": []
+  },
+  {
+    "en": "Shili",
+    "ascii": "Shili",
+    "lat": 33.9518,
+    "lon": 105.2925,
+    "pop": 38961,
+    "extras": []
+  },
+  {
+    "en": "Balu",
+    "ascii": "Balu",
+    "lat": 34.1887,
+    "lon": 117.9127,
+    "pop": 38894,
+    "extras": []
+  },
+  {
+    "en": "Anxiang",
+    "ascii": "Anxiang",
+    "lat": 38.3834,
+    "lon": 114.5405,
+    "pop": 38345,
+    "extras": []
+  },
+  {
+    "en": "Xinxing",
+    "ascii": "Xinxing",
+    "lat": 36.0492,
+    "lon": 119.5414,
+    "pop": 38200,
+    "extras": []
+  },
+  {
+    "en": "Zhancheng",
+    "ascii": "Zhancheng",
+    "lat": 34.175,
+    "lon": 117.7629,
+    "pop": 38164,
+    "extras": []
+  },
+  {
+    "en": "Miaozi",
+    "ascii": "Miaozi",
+    "lat": 36.6386,
+    "lon": 118.2314,
+    "pop": 38147,
+    "extras": []
+  },
+  {
+    "en": "Fate",
+    "ascii": "Fate",
+    "lat": 44.4833,
+    "lon": 126.5,
+    "pop": 38105,
+    "extras": []
+  },
+  {
+    "en": "Longshan",
+    "ascii": "Longshan",
+    "lat": 35.0319,
+    "lon": 106.0806,
+    "pop": 37976,
+    "extras": []
+  },
+  {
+    "en": "Jinshan",
+    "ascii": "Jinshan",
+    "lat": 34.8114,
+    "lon": 105.4344,
+    "pop": 37727,
+    "extras": []
+  },
+  {
+    "en": "Yingpan",
+    "ascii": "Yingpan",
+    "lat": 26.45,
+    "lon": 99.15,
+    "pop": 37406,
+    "extras": []
+  },
+  {
+    "en": "Hanyuan",
+    "ascii": "Hanyuan",
+    "lat": 34.0108,
+    "lon": 105.2919,
+    "pop": 37284,
+    "extras": []
+  },
+  {
+    "en": "Wayao",
+    "ascii": "Wayao",
+    "lat": 34.3833,
+    "lon": 118.2333,
+    "pop": 37080,
+    "extras": []
+  },
+  {
+    "en": "Tange",
+    "ascii": "Tange",
+    "lat": 34.6276,
+    "lon": 104.8406,
+    "pop": 37074,
+    "extras": []
+  },
+  {
+    "en": "Qina",
+    "ascii": "Qina",
+    "lat": 26.3094,
+    "lon": 100.6251,
+    "pop": 36823,
+    "extras": []
+  },
+  {
+    "en": "Zhutang",
+    "ascii": "Zhutang",
+    "lat": 22.7152,
+    "lon": 99.8071,
+    "pop": 35766,
+    "extras": []
+  },
+  {
+    "en": "Shidui",
+    "ascii": "Shidui",
+    "lat": 36.3933,
+    "lon": 119.3086,
+    "pop": 35367,
+    "extras": []
+  },
+  {
+    "en": "Mapo",
+    "ascii": "Mapo",
+    "lat": 34.5167,
+    "lon": 117.0667,
+    "pop": 35358,
+    "extras": []
+  },
+  {
+    "en": "Puqiakeqi",
+    "ascii": "Puqiakeqi",
+    "lat": 37.3174,
+    "lon": 79.7053,
+    "pop": 35142,
+    "extras": []
+  },
+  {
+    "en": "Heqiao",
+    "ascii": "Heqiao",
+    "lat": 34.4528,
+    "lon": 116.9,
+    "pop": 35118,
+    "extras": []
+  },
+  {
+    "en": "Yizhuang",
+    "ascii": "Yizhuang",
+    "lat": 34.1565,
+    "lon": 117.5937,
+    "pop": 34968,
+    "extras": []
+  },
+  {
+    "en": "Haitou",
+    "ascii": "Haitou",
+    "lat": 19.5056,
+    "lon": 108.9505,
+    "pop": 34648,
+    "extras": []
+  },
+  {
+    "en": "Wuying",
+    "ascii": "Wuying",
+    "lat": 35.0149,
+    "lon": 105.8988,
+    "pop": 34509,
+    "extras": []
+  },
+  {
+    "en": "Lianhua",
+    "ascii": "Lianhua",
+    "lat": 35.0616,
+    "lon": 105.7911,
+    "pop": 34447,
+    "extras": []
+  },
+  {
+    "en": "Zhelou",
+    "ascii": "Zhelou",
+    "lat": 24.9667,
+    "lon": 105.8167,
+    "pop": 34250,
+    "extras": []
+  },
+  {
+    "en": "Liushan",
+    "ascii": "Liushan",
+    "lat": 36.4497,
+    "lon": 118.7602,
+    "pop": 33992,
+    "extras": []
+  },
+  {
+    "en": "Wushan",
+    "ascii": "Wushan",
+    "lat": 36.2473,
+    "lon": 118.8383,
+    "pop": 33881,
+    "extras": []
+  },
+  {
+    "en": "Baocheng",
+    "ascii": "Baocheng",
+    "lat": 18.6403,
+    "lon": 109.6994,
+    "pop": 33138,
+    "extras": []
+  },
+  {
+    "en": "Shawei",
+    "ascii": "Shawei",
+    "lat": 22.52,
+    "lon": 114.0338,
+    "pop": 32980,
+    "extras": []
+  },
+  {
+    "en": "Wuhe",
+    "ascii": "Wuhe",
+    "lat": 24.8591,
+    "lon": 98.6678,
+    "pop": 32858,
+    "extras": []
+  },
+  {
+    "en": "Guofu",
+    "ascii": "Guofu",
+    "lat": 28.85,
+    "lon": 106.6014,
+    "pop": 32831,
+    "extras": []
+  },
+  {
+    "en": "Heba",
+    "ascii": "Heba",
+    "lat": 33.9362,
+    "lon": 105.2163,
+    "pop": 32538,
+    "extras": []
+  },
+  {
+    "en": "Haojiaqiao",
+    "ascii": "Haojiaqiao",
+    "lat": 38.0167,
+    "lon": 106.2833,
+    "pop": 32507,
+    "extras": []
+  },
+  {
+    "en": "Shaodian",
+    "ascii": "Shaodian",
+    "lat": 34.1333,
+    "lon": 118.4333,
+    "pop": 32448,
+    "extras": []
+  },
+  {
+    "en": "Rongjiang",
+    "ascii": "Rongjiang",
+    "lat": 26.55,
+    "lon": 101.25,
+    "pop": 32291,
+    "extras": []
+  },
+  {
+    "en": "Huzhai",
+    "ascii": "Huzhai",
+    "lat": 34.6694,
+    "lon": 117.0083,
+    "pop": 32231,
+    "extras": []
+  },
+  {
+    "en": "Anfu",
+    "ascii": "Anfu",
+    "lat": 34.9728,
+    "lon": 105.6303,
+    "pop": 32146,
+    "extras": []
+  },
+  {
+    "en": "Shunzhou",
+    "ascii": "Shunzhou",
+    "lat": 26.6212,
+    "lon": 100.5543,
+    "pop": 32074,
+    "extras": []
+  },
+  {
+    "en": "Jiangzhuang",
+    "ascii": "Jiangzhuang",
+    "lat": 34.4917,
+    "lon": 117.3972,
+    "pop": 31991,
+    "extras": []
+  },
+  {
+    "en": "Baliwan",
+    "ascii": "Baliwan",
+    "lat": 34.8476,
+    "lon": 105.3704,
+    "pop": 31856,
+    "extras": []
+  },
+  {
+    "en": "Dasheng",
+    "ascii": "Dasheng",
+    "lat": 36.32,
+    "lon": 118.8554,
+    "pop": 31797,
+    "extras": []
+  },
+  {
+    "en": "Taolin",
+    "ascii": "Taolin",
+    "lat": 35.8001,
+    "lon": 119.534,
+    "pop": 31795,
+    "extras": []
+  },
+  {
+    "en": "Zhonghe",
+    "ascii": "Zhonghe",
+    "lat": 19.7428,
+    "lon": 109.3449,
+    "pop": 31646,
+    "extras": []
+  },
+  {
+    "en": "Yengisar",
+    "ascii": "Yengisar",
+    "lat": 38.9258,
+    "lon": 76.1714,
+    "pop": 31113,
+    "extras": []
+  },
+  {
+    "en": "Shuangtang",
+    "ascii": "Shuangtang",
+    "lat": 34.3653,
+    "lon": 118.4747,
+    "pop": 30958,
+    "extras": []
+  },
+  {
+    "en": "Shagang",
+    "ascii": "Shagang",
+    "lat": 21.6667,
+    "lon": 109.0333,
+    "pop": 30710,
+    "extras": []
+  },
+  {
+    "en": "Chahe",
+    "ascii": "Chahe",
+    "lat": 34.5333,
+    "lon": 117.8833,
+    "pop": 30094,
+    "extras": []
+  },
+  {
+    "en": "Taiping",
+    "ascii": "Taiping",
+    "lat": 24.6612,
+    "lon": 97.8526,
+    "pop": 30032,
+    "extras": []
+  },
+  {
+    "en": "Xihu",
+    "ascii": "Xihu",
+    "lat": 35.4493,
+    "lon": 119.2361,
+    "pop": 29978,
+    "extras": []
+  },
+  {
+    "en": "Luoyu",
+    "ascii": "Luoyu",
+    "lat": 33.841,
+    "lon": 105.2312,
+    "pop": 29955,
+    "extras": []
+  },
+  {
+    "en": "Jingui",
+    "ascii": "Jingui",
+    "lat": 38.5,
+    "lon": 106.4167,
+    "pop": 29796,
+    "extras": []
+  },
+  {
+    "en": "Dachang Shandao",
+    "ascii": "Dachang Shandao",
+    "lat": 39.2756,
+    "lon": 122.6,
+    "pop": 29717,
+    "extras": []
+  },
+  {
+    "en": "Nuozhadu",
+    "ascii": "Nuozhadu",
+    "lat": 22.5782,
+    "lon": 100.2693,
+    "pop": 29703,
+    "extras": []
+  },
+  {
+    "en": "Xindian",
+    "ascii": "Xindian",
+    "lat": 25.2814,
+    "lon": 101.5583,
+    "pop": 29297,
+    "extras": []
+  },
+  {
+    "en": "Shiqiao",
+    "ascii": "Shiqiao",
+    "lat": 34.1539,
+    "lon": 105.1297,
+    "pop": 29050,
+    "extras": []
+  },
+  {
+    "en": "Tiaoshi",
+    "ascii": "Tiaoshi",
+    "lat": 29.2772,
+    "lon": 106.6425,
+    "pop": 28825,
+    "extras": []
+  },
+  {
+    "en": "Heshan",
+    "ascii": "Heshan",
+    "lat": 35.5234,
+    "lon": 119.5101,
+    "pop": 28784,
+    "extras": []
+  },
+  {
+    "en": "Ruidian",
+    "ascii": "Ruidian",
+    "lat": 25.5317,
+    "lon": 98.4086,
+    "pop": 28612,
+    "extras": []
+  },
+  {
+    "en": "Zheshan",
+    "ascii": "Zheshan",
+    "lat": 36.1488,
+    "lon": 118.9514,
+    "pop": 28333,
+    "extras": []
+  },
+  {
+    "en": "Hadapu Zhen",
+    "ascii": "Hadapu Zhen",
+    "lat": 34.2313,
+    "lon": 104.223,
+    "pop": 28292,
+    "extras": []
+  },
+  {
+    "en": "Leifeng",
+    "ascii": "Leifeng",
+    "lat": 28.2,
+    "lon": 112.8461,
+    "pop": 28014,
+    "extras": []
+  },
+  {
+    "en": "Yitang",
+    "ascii": "Yitang",
+    "lat": 34.2583,
+    "lon": 117.8889,
+    "pop": 28002,
+    "extras": []
+  },
+  {
+    "en": "Yinqiao Zhen",
+    "ascii": "Yinqiao Zhen",
+    "lat": 25.7543,
+    "lon": 100.1235,
+    "pop": 28002,
+    "extras": []
+  },
+  {
+    "en": "Jinqiao",
+    "ascii": "Jinqiao",
+    "lat": 31.2709,
+    "lon": 121.5933,
+    "pop": 28000,
+    "extras": []
+  },
+  {
+    "en": "Kuangshi",
+    "ascii": "Kuangshi",
+    "lat": 38.0725,
+    "lon": 114.0461,
+    "pop": 27836,
+    "extras": []
+  },
+  {
+    "en": "Guangcun",
+    "ascii": "Guangcun",
+    "lat": 19.6419,
+    "lon": 109.3545,
+    "pop": 27803,
+    "extras": []
+  },
+  {
+    "en": "Lijun",
+    "ascii": "Lijun",
+    "lat": 38.1858,
+    "lon": 106.12,
+    "pop": 27723,
+    "extras": []
+  },
+  {
+    "en": "Dashi",
+    "ascii": "Dashi",
+    "lat": 34.8975,
+    "lon": 105.1864,
+    "pop": 27474,
+    "extras": []
+  },
+  {
+    "en": "Kuanchuan",
+    "ascii": "Kuanchuan",
+    "lat": 34.1664,
+    "lon": 105.5411,
+    "pop": 27438,
+    "extras": []
+  },
+  {
+    "en": "Mazhan",
+    "ascii": "Mazhan",
+    "lat": 25.2114,
+    "lon": 98.484,
+    "pop": 27373,
+    "extras": []
+  },
+  {
+    "en": "Jiangxi",
+    "ascii": "Jiangxi",
+    "lat": 33.9993,
+    "lon": 105.1999,
+    "pop": 27098,
+    "extras": []
+  },
+  {
+    "en": "Puchuan",
+    "ascii": "Puchuan",
+    "lat": 24.7031,
+    "lon": 98.5701,
+    "pop": 27049,
+    "extras": []
+  },
+  {
+    "en": "Zuitai",
+    "ascii": "Zuitai",
+    "lat": 33.3308,
+    "lon": 105.6047,
+    "pop": 27027,
+    "extras": []
+  },
+  {
+    "en": "Weidian",
+    "ascii": "Weidian",
+    "lat": 35.1024,
+    "lon": 105.5656,
+    "pop": 26896,
+    "extras": []
+  },
+  {
+    "en": "Shuikou",
+    "ascii": "Shuikou",
+    "lat": 25.9128,
+    "lon": 109.3136,
+    "pop": 26827,
+    "extras": []
+  },
+  {
+    "en": "Dafengdong",
+    "ascii": "Dafengdong",
+    "lat": 26.7119,
+    "lon": 107.8114,
+    "pop": 26460,
+    "extras": []
+  },
+  {
+    "en": "Yuanyang",
+    "ascii": "Yuanyang",
+    "lat": 34.7877,
+    "lon": 104.7753,
+    "pop": 26352,
+    "extras": []
+  },
+  {
+    "en": "Longchi",
+    "ascii": "Longchi",
+    "lat": 36.9453,
+    "lon": 119.3253,
+    "pop": 25923,
+    "extras": []
+  },
+  {
+    "en": "Luotang",
+    "ascii": "Luotang",
+    "lat": 33.0677,
+    "lon": 105.2649,
+    "pop": 25871,
+    "extras": []
+  },
+  {
+    "en": "Yanzibu",
+    "ascii": "Yanzibu",
+    "lat": 34.5056,
+    "lon": 117.7022,
+    "pop": 25714,
+    "extras": []
+  },
+  {
+    "en": "Xiasi",
+    "ascii": "Xiasi",
+    "lat": 26.5167,
+    "lon": 107.7833,
+    "pop": 25490,
+    "extras": []
+  },
+  {
+    "en": "Fuhuan",
+    "ascii": "Fuhuan",
+    "lat": 28.8338,
+    "lon": 106.7554,
+    "pop": 25164,
+    "extras": []
+  },
+  {
+    "en": "Changxin",
+    "ascii": "Changxin",
+    "lat": 38.6747,
+    "lon": 106.3297,
+    "pop": 25095,
+    "extras": []
+  },
+  {
+    "en": "Lushan",
+    "ascii": "Lushan",
+    "lat": 26.65,
+    "lon": 107.7833,
+    "pop": 25074,
+    "extras": []
+  },
+  {
+    "en": "Longcheng",
+    "ascii": "Longcheng",
+    "lat": 35.001,
+    "lon": 105.9734,
+    "pop": 25055,
+    "extras": []
+  },
+  {
+    "en": "Bojia",
+    "ascii": "Bojia",
+    "lat": 26.4672,
+    "lon": 111.9681,
+    "pop": 25000,
+    "extras": []
+  },
+  {
+    "en": "Renhe",
+    "ascii": "Renhe",
+    "lat": 26.4167,
+    "lon": 101.0167,
+    "pop": 24903,
+    "extras": []
+  },
+  {
+    "en": "Hehua",
+    "ascii": "Hehua",
+    "lat": 24.9702,
+    "lon": 98.3937,
+    "pop": 24814,
+    "extras": []
+  },
+  {
+    "en": "Chentuan",
+    "ascii": "Chentuan",
+    "lat": 35.5047,
+    "lon": 119.2669,
+    "pop": 24706,
+    "extras": []
+  },
+  {
+    "en": "Minning",
+    "ascii": "Minning",
+    "lat": 38.2487,
+    "lon": 105.9707,
+    "pop": 24696,
+    "extras": []
+  },
+  {
+    "en": "Pianjiao",
+    "ascii": "Pianjiao",
+    "lat": 26.0167,
+    "lon": 100.5833,
+    "pop": 24575,
+    "extras": []
+  },
+  {
+    "en": "Xiyu",
+    "ascii": "Xiyu",
+    "lat": 34.0516,
+    "lon": 105.3036,
+    "pop": 24452,
+    "extras": []
+  },
+  {
+    "en": "Wangwu",
+    "ascii": "Wangwu",
+    "lat": 19.6562,
+    "lon": 109.2907,
+    "pop": 24274,
+    "extras": []
+  },
+  {
+    "en": "Shandan",
+    "ascii": "Shandan",
+    "lat": 34.7511,
+    "lon": 104.8313,
+    "pop": 24235,
+    "extras": []
+  },
+  {
+    "en": "Ligang",
+    "ascii": "Ligang",
+    "lat": 38.6464,
+    "lon": 106.4304,
+    "pop": 24165,
+    "extras": []
+  },
+  {
+    "en": "Nanling",
+    "ascii": "Nanling",
+    "lat": 22.7112,
+    "lon": 99.9956,
+    "pop": 24059,
+    "extras": []
+  },
+  {
+    "en": "Xingdaohu",
+    "ascii": "Xingdaohu",
+    "lat": 21.7148,
+    "lon": 109.1321,
+    "pop": 24048,
+    "extras": []
+  },
+  {
+    "en": "Gantang",
+    "ascii": "Gantang",
+    "lat": 26.7156,
+    "lon": 109.7689,
+    "pop": 24000,
+    "extras": []
+  },
+  {
+    "en": "Xingfeng",
+    "ascii": "Xingfeng",
+    "lat": 34.8611,
+    "lon": 105.8375,
+    "pop": 23922,
+    "extras": []
+  },
+  {
+    "en": "Luhe",
+    "ascii": "Luhe",
+    "lat": 34.0092,
+    "lon": 105.3402,
+    "pop": 23852,
+    "extras": []
+  },
+  {
+    "en": "Lanyang",
+    "ascii": "Lanyang",
+    "lat": 19.4614,
+    "lon": 109.6604,
+    "pop": 23711,
+    "extras": []
+  },
+  {
+    "en": "Jiuhe",
+    "ascii": "Jiuhe",
+    "lat": 26.7627,
+    "lon": 99.9919,
+    "pop": 23680,
+    "extras": []
+  },
+  {
+    "en": "Nanfeng",
+    "ascii": "Nanfeng",
+    "lat": 19.4102,
+    "lon": 109.5502,
+    "pop": 23669,
+    "extras": []
+  },
+  {
+    "en": "Fujia",
+    "ascii": "Fujia",
+    "lat": 33.8189,
+    "lon": 105.9536,
+    "pop": 23660,
+    "extras": []
+  },
+  {
+    "en": "Xinlin",
+    "ascii": "Xinlin",
+    "lat": 51.6667,
+    "lon": 124.4,
+    "pop": 23533,
+    "extras": [
+      "Синьлинь"
+    ]
+  },
+  {
+    "en": "Wangpu",
+    "ascii": "Wangpu",
+    "lat": 35.0571,
+    "lon": 105.4359,
+    "pop": 23414,
+    "extras": []
+  },
+  {
+    "en": "Xiaying",
+    "ascii": "Xiaying",
+    "lat": 37.0425,
+    "lon": 119.4765,
+    "pop": 23395,
+    "extras": []
+  },
+  {
+    "en": "Guanlong",
+    "ascii": "Guanlong",
+    "lat": 22.5878,
+    "lon": 113.944,
+    "pop": 23100,
+    "extras": []
+  },
+  {
+    "en": "Lintan Chengguanzhen",
+    "ascii": "Lintan Chengguanzhen",
+    "lat": 34.6889,
+    "lon": 103.3524,
+    "pop": 23035,
+    "extras": []
+  },
+  {
+    "en": "Labuleng",
+    "ascii": "Labuleng",
+    "lat": 35.2013,
+    "lon": 102.5212,
+    "pop": 22970,
+    "extras": []
+  },
+  {
+    "en": "Tongyangdao",
+    "ascii": "Tongyangdao",
+    "lat": 41.7703,
+    "lon": 109.9699,
+    "pop": 22681,
+    "extras": []
+  },
+  {
+    "en": "Beihai",
+    "ascii": "Beihai",
+    "lat": 25.0801,
+    "lon": 98.5775,
+    "pop": 22668,
+    "extras": []
+  },
+  {
+    "en": "Shibao",
+    "ascii": "Shibao",
+    "lat": 34.1079,
+    "lon": 105.3159,
+    "pop": 22621,
+    "extras": []
+  },
+  {
+    "en": "Panghai",
+    "ascii": "Panghai",
+    "lat": 26.7269,
+    "lon": 108.0636,
+    "pop": 22306,
+    "extras": []
+  },
+  {
+    "en": "Wangyin",
+    "ascii": "Wangyin",
+    "lat": 34.8339,
+    "lon": 105.7617,
+    "pop": 22131,
+    "extras": []
+  },
+  {
+    "en": "Zhongchao",
+    "ascii": "Zhongchao",
+    "lat": 26.1375,
+    "lon": 109.22,
+    "pop": 22129,
+    "extras": []
+  },
+  {
+    "en": "Chapchal",
+    "ascii": "Chapchal",
+    "lat": 43.8356,
+    "lon": 81.1476,
+    "pop": 22111,
+    "extras": []
+  },
+  {
+    "en": "Yongxing",
+    "ascii": "Yongxing",
+    "lat": 34.2078,
+    "lon": 105.3289,
+    "pop": 22079,
+    "extras": []
+  },
+  {
+    "en": "Paosha",
+    "ascii": "Paosha",
+    "lat": 33.7235,
+    "lon": 105.6757,
+    "pop": 21907,
+    "extras": []
+  },
+  {
+    "en": "Fubang",
+    "ascii": "Fubang",
+    "lat": 22.9042,
+    "lon": 99.8029,
+    "pop": 21828,
+    "extras": []
+  },
+  {
+    "en": "Renxian",
+    "ascii": "Renxian",
+    "lat": 30.6609,
+    "lon": 107.679,
+    "pop": 21499,
+    "extras": []
+  },
+  {
+    "en": "Shangchong",
+    "ascii": "Shangchong",
+    "lat": 26.2532,
+    "lon": 108.6579,
+    "pop": 21425,
+    "extras": []
+  },
+  {
+    "en": "Liuping",
+    "ascii": "Liuping",
+    "lat": 34.8914,
+    "lon": 105.7192,
+    "pop": 21406,
+    "extras": []
+  },
+  {
+    "en": "Judian",
+    "ascii": "Judian",
+    "lat": 27.3061,
+    "lon": 99.6491,
+    "pop": 21368,
+    "extras": []
+  },
+  {
+    "en": "Hongzhou",
+    "ascii": "Hongzhou",
+    "lat": 26.1258,
+    "lon": 109.4089,
+    "pop": 21293,
+    "extras": []
+  },
+  {
+    "en": "Haidong Zhen",
+    "ascii": "Haidong Zhen",
+    "lat": 25.7098,
+    "lon": 100.2606,
+    "pop": 21274,
+    "extras": []
+  },
+  {
+    "en": "Xinyingpan",
+    "ascii": "Xinyingpan",
+    "lat": 27.1676,
+    "lon": 100.9201,
+    "pop": 21008,
+    "extras": []
+  },
+  {
+    "en": "Shigu",
+    "ascii": "Shigu",
+    "lat": 26.8685,
+    "lon": 99.9563,
+    "pop": 21006,
+    "extras": []
+  },
+  {
+    "en": "Yongning",
+    "ascii": "Yongning",
+    "lat": 27.8333,
+    "lon": 100.6667,
+    "pop": 20852,
+    "extras": []
+  },
+  {
+    "en": "Wanqiao Zhen",
+    "ascii": "Wanqiao Zhen",
+    "lat": 25.7892,
+    "lon": 100.1228,
+    "pop": 20784,
+    "extras": []
+  },
+  {
+    "en": "Heqing",
+    "ascii": "Heqing",
+    "lat": 19.5283,
+    "lon": 109.6328,
+    "pop": 20729,
+    "extras": []
+  },
+  {
+    "en": "Wenheng",
+    "ascii": "Wenheng",
+    "lat": 25.6674,
+    "lon": 116.7543,
+    "pop": 20542,
+    "extras": []
+  },
+  {
+    "en": "Xincheng",
+    "ascii": "Xincheng",
+    "lat": 34.6743,
+    "lon": 103.5868,
+    "pop": 20535,
+    "extras": []
+  },
+  {
+    "en": "Wutongshu",
+    "ascii": "Wutongshu",
+    "lat": 38.1833,
+    "lon": 106.2833,
+    "pop": 20506,
+    "extras": []
+  },
+  {
+    "en": "Baijiawan",
+    "ascii": "Baijiawan",
+    "lat": 34.6958,
+    "lon": 105.2889,
+    "pop": 20486,
+    "extras": []
+  },
+  {
+    "en": "Burqin",
+    "ascii": "Burqin",
+    "lat": 47.7028,
+    "lon": 86.8638,
+    "pop": 20205,
+    "extras": []
+  },
+  {
+    "en": "Shilongba",
+    "ascii": "Shilongba",
+    "lat": 26.5793,
+    "lon": 101.3632,
+    "pop": 20074,
+    "extras": []
+  },
+  {
+    "en": "Hongqiao",
+    "ascii": "Hongqiao",
+    "lat": 27.4298,
+    "lon": 100.797,
+    "pop": 20060,
+    "extras": []
+  },
+  {
+    "en": "Tuqiang",
+    "ascii": "Tuqiang",
+    "lat": 52.9,
+    "lon": 122.7667,
+    "pop": 20056,
+    "extras": []
+  },
+  {
+    "en": "Xinglong",
+    "ascii": "Xinglong",
+    "lat": 34.0382,
+    "lon": 105.3442,
+    "pop": 19803,
+    "extras": []
+  },
+  {
+    "en": "Fuyun",
+    "ascii": "Fuyun",
+    "lat": 46.9919,
+    "lon": 89.5212,
+    "pop": 19772,
+    "extras": []
+  },
+  {
+    "en": "Lichuan Zhen",
+    "ascii": "Lichuan Zhen",
+    "lat": 34.2485,
+    "lon": 104.3195,
+    "pop": 19701,
+    "extras": []
+  },
+  {
+    "en": "Waina",
+    "ascii": "Waina",
+    "lat": 33.2064,
+    "lon": 105.0497,
+    "pop": 19394,
+    "extras": []
+  },
+  {
+    "en": "Jiangluo",
+    "ascii": "Jiangluo",
+    "lat": 33.9014,
+    "lon": 105.8219,
+    "pop": 19204,
+    "extras": []
+  },
+  {
+    "en": "Suhe",
+    "ascii": "Suhe",
+    "lat": 34.0625,
+    "lon": 105.2221,
+    "pop": 18901,
+    "extras": []
+  },
+  {
+    "en": "Longchang",
+    "ascii": "Longchang",
+    "lat": 26.6667,
+    "lon": 107.9167,
+    "pop": 18563,
+    "extras": []
+  },
+  {
+    "en": "Nuofu",
+    "ascii": "Nuofu",
+    "lat": 22.22,
+    "lon": 99.6996,
+    "pop": 18529,
+    "extras": []
+  },
+  {
+    "en": "Qianhu",
+    "ascii": "Qianhu",
+    "lat": 34.8047,
+    "lon": 105.5778,
+    "pop": 18501,
+    "extras": []
+  },
+  {
+    "en": "Wushipai",
+    "ascii": "Wushipai",
+    "lat": 22.5238,
+    "lon": 113.9097,
+    "pop": 18400,
+    "extras": []
+  },
+  {
+    "en": "Kaitang",
+    "ascii": "Kaitang",
+    "lat": 26.7203,
+    "lon": 108.1297,
+    "pop": 18394,
+    "extras": []
+  },
+  {
+    "en": "Lingquan",
+    "ascii": "Lingquan",
+    "lat": 49.4052,
+    "lon": 117.677,
+    "pop": 18336,
+    "extras": []
+  },
+  {
+    "en": "Shaoyu",
+    "ascii": "Shaoyu",
+    "lat": 34.0641,
+    "lon": 105.3651,
+    "pop": 18327,
+    "extras": []
+  },
+  {
+    "en": "Jiuchao",
+    "ascii": "Jiuchao",
+    "lat": 26.0908,
+    "lon": 108.7653,
+    "pop": 18314,
+    "extras": []
+  },
+  {
+    "en": "Yongping",
+    "ascii": "Yongping",
+    "lat": 34.2899,
+    "lon": 105.2723,
+    "pop": 18279,
+    "extras": []
+  },
+  {
+    "en": "Gaolou",
+    "ascii": "Gaolou",
+    "lat": 34.7608,
+    "lon": 104.6767,
+    "pop": 18170,
+    "extras": []
+  },
+  {
+    "en": "Bibo",
+    "ascii": "Bibo",
+    "lat": 26.5308,
+    "lon": 107.6314,
+    "pop": 18121,
+    "extras": []
+  },
+  {
+    "en": "Xiaochuan",
+    "ascii": "Xiaochuan",
+    "lat": 33.6806,
+    "lon": 105.5616,
+    "pop": 18098,
+    "extras": []
+  },
+  {
+    "en": "Wangyao",
+    "ascii": "Wangyao",
+    "lat": 34.885,
+    "lon": 105.5417,
+    "pop": 17925,
+    "extras": []
+  },
+  {
+    "en": "Liulin",
+    "ascii": "Liulin",
+    "lat": 34.5897,
+    "lon": 103.5042,
+    "pop": 17731,
+    "extras": []
+  },
+  {
+    "en": "Paipu",
+    "ascii": "Paipu",
+    "lat": 19.6398,
+    "lon": 109.1586,
+    "pop": 17577,
+    "extras": []
+  },
+  {
+    "en": "Eman",
+    "ascii": "Eman",
+    "lat": 19.8572,
+    "lon": 109.2627,
+    "pop": 17317,
+    "extras": []
+  },
+  {
+    "en": "Huimin",
+    "ascii": "Huimin",
+    "lat": 22.2614,
+    "lon": 100.0829,
+    "pop": 17303,
+    "extras": []
+  },
+  {
+    "en": "Siwei",
+    "ascii": "Siwei",
+    "lat": 38.0166,
+    "lon": 114.1533,
+    "pop": 17200,
+    "extras": []
+  },
+  {
+    "en": "Wanshui",
+    "ascii": "Wanshui",
+    "lat": 26.7353,
+    "lon": 107.9872,
+    "pop": 17141,
+    "extras": []
+  },
+  {
+    "en": "Shajing Residential District",
+    "ascii": "Shajing Residential District",
+    "lat": 22.7318,
+    "lon": 113.8119,
+    "pop": 17093,
+    "extras": []
+  },
+  {
+    "en": "Long'e",
+    "ascii": "Long'e",
+    "lat": 25.8072,
+    "lon": 109.2125,
+    "pop": 16928,
+    "extras": [
+      "Long’e"
+    ]
+  },
+  {
+    "en": "Dalain Hob",
+    "ascii": "Dalain Hob",
+    "lat": 41.9653,
+    "lon": 101.0639,
+    "pop": 16927,
+    "extras": []
+  },
+  {
+    "en": "Shenzhenwan",
+    "ascii": "Shenzhenwan",
+    "lat": 22.4871,
+    "lon": 113.9396,
+    "pop": 16921,
+    "extras": []
+  },
+  {
+    "en": "Zhouxi",
+    "ascii": "Zhouxi",
+    "lat": 26.4833,
+    "lon": 107.9167,
+    "pop": 16859,
+    "extras": []
+  },
+  {
+    "en": "Zhuzilin",
+    "ascii": "Zhuzilin",
+    "lat": 22.5381,
+    "lon": 114.015,
+    "pop": 16800,
+    "extras": []
+  },
+  {
+    "en": "Ehen Hudag",
+    "ascii": "Ehen Hudag",
+    "lat": 39.2107,
+    "lon": 101.669,
+    "pop": 16798,
+    "extras": []
+  },
+  {
+    "en": "Shuangjiang",
+    "ascii": "Shuangjiang",
+    "lat": 25.9667,
+    "lon": 108.9242,
+    "pop": 16773,
+    "extras": []
+  },
+  {
+    "en": "Lixin",
+    "ascii": "Lixin",
+    "lat": 34.9122,
+    "lon": 105.0806,
+    "pop": 16753,
+    "extras": []
+  },
+  {
+    "en": "Zhaoxing",
+    "ascii": "Zhaoxing",
+    "lat": 25.9108,
+    "lon": 109.1764,
+    "pop": 16737,
+    "extras": []
+  },
+  {
+    "en": "Xigaoshan",
+    "ascii": "Xigaoshan",
+    "lat": 33.7348,
+    "lon": 105.3882,
+    "pop": 16550,
+    "extras": []
+  },
+  {
+    "en": "Ersheng",
+    "ascii": "Ersheng",
+    "lat": 29.4658,
+    "lon": 106.7708,
+    "pop": 16461,
+    "extras": []
+  },
+  {
+    "en": "Erenhot",
+    "ascii": "Erenhot",
+    "lat": 43.6475,
+    "lon": 111.9767,
+    "pop": 16427,
+    "extras": [
+      "Эрэн-Хото"
+    ]
+  },
+  {
+    "en": "Xinhua",
+    "ascii": "Xinhua",
+    "lat": 24.7525,
+    "lon": 98.483,
+    "pop": 16336,
+    "extras": []
+  },
+  {
+    "en": "Jifeng",
+    "ascii": "Jifeng",
+    "lat": 33.6553,
+    "lon": 105.6579,
+    "pop": 16273,
+    "extras": []
+  },
+  {
+    "en": "Bikou",
+    "ascii": "Bikou",
+    "lat": 32.7458,
+    "lon": 105.2414,
+    "pop": 16247,
+    "extras": []
+  },
+  {
+    "en": "Mujia",
+    "ascii": "Mujia",
+    "lat": 22.991,
+    "lon": 99.6345,
+    "pop": 16180,
+    "extras": []
+  },
+  {
+    "en": "Dazhuang",
+    "ascii": "Dazhuang",
+    "lat": 34.9589,
+    "lon": 105.3361,
+    "pop": 16156,
+    "extras": []
+  },
+  {
+    "en": "Dianga",
+    "ascii": "Dianga",
+    "lat": 34.0636,
+    "lon": 103.2136,
+    "pop": 15993,
+    "extras": []
+  },
+  {
+    "en": "Dashan",
+    "ascii": "Dashan",
+    "lat": 23.0024,
+    "lon": 100.1149,
+    "pop": 15980,
+    "extras": []
+  },
+  {
+    "en": "Yumen",
+    "ascii": "Yumen",
+    "lat": 40.2915,
+    "lon": 97.0454,
+    "pop": 15612,
+    "extras": [
+      "Yùmén"
+    ]
+  },
+  {
+    "en": "Wujia",
+    "ascii": "Wujia",
+    "lat": 21.7667,
+    "lon": 109.0333,
+    "pop": 15549,
+    "extras": []
+  },
+  {
+    "en": "Fazhanhe",
+    "ascii": "Fazhanhe",
+    "lat": 22.3342,
+    "lon": 100.1731,
+    "pop": 15483,
+    "extras": []
+  },
+  {
+    "en": "Yulong",
+    "ascii": "Yulong",
+    "lat": 33.51,
+    "lon": 105.1812,
+    "pop": 15397,
+    "extras": []
+  },
+  {
+    "en": "Donghui",
+    "ascii": "Donghui",
+    "lat": 22.4405,
+    "lon": 99.8001,
+    "pop": 15380,
+    "extras": []
+  }
+]

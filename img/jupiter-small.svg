@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="142 327 16 16">
+<clipPath id="jcl150_335"><circle cx="150" cy="335" r="8"/></clipPath>
+<g clip-path="url(#jcl150_335)">
+<rect x="142" y="327" width="16" height="16" fill="#e7ddb4"/>
+<rect x="142" y="331.7" width="16" height="1.4" fill="#c69a52" opacity="0.95"/>
+<rect x="142" y="334.2" width="16" height="1.6" fill="#e6c651" opacity="0.95"/>
+<rect x="142" y="336.5" width="16" height="1.4" fill="#c69a52" opacity="0.95"/>
+<ellipse cx="152.4" cy="337.2" rx="1.6" ry="0.9" fill="#c06b51" opacity="0.95"/>
+<path d="M150.0 327.0 A8 8 0 0 1 150.0 343.0 A7.4 8 0 0 0 150.0 327.0 Z" fill="#1c2733" opacity="0.16"/>
+</g>
+<circle cx="150" cy="335" r="8" fill="none" stroke="#8a7a52" stroke-width="0.6" opacity="0.7"/>
+</svg>

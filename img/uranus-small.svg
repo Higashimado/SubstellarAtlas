@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="432 330 16 16">
+<clipPath id="ul440_338"><circle cx="440" cy="338" r="8"/></clipPath>
+<g clip-path="url(#ul440_338)">
+<rect x="432" y="330" width="16" height="16" fill="#a8d3d6"/>
+<ellipse cx="438.4" cy="336.4" rx="6.0" ry="5.4" fill="#c8e2e3" opacity="0.22" transform="rotate(0 438.4 336.4)"/>
+<circle cx="440" cy="338" r="7.0" fill="none" stroke="#446e72" stroke-width="0.8" opacity="0.22"/>
+<path d="M440.0 330.0 A8 8 0 0 1 440.0 346.0 A6.9 8 0 0 0 440.0 330.0 Z" fill="#2c5256" opacity="0.18"/>
+</g>
+<circle cx="440" cy="338" r="8" fill="none" stroke="#5e8588" stroke-width="0.6" opacity="0.75"/>
+</svg>

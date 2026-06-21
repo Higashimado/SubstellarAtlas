@@ -1,0 +1,3009 @@
+/* style.css — main application stylesheet. */
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+html, body, #map {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  font-weight: 450;
+  line-height: var(--lh-base);
+  color: var(--fg-primary);
+  font-feature-settings: 'kern' 1, 'liga' 1, 'tnum' 1, 'lnum' 1;
+}
+
+/* ---- Typography utility classes ---- */
+
+/* Numeric / data values: serif (all-serif house style) with tabular lining
+   figures so columns still align — matches the rail and the eclipse list. */
+.data-value,
+.coord, .time-value, .percent,
+.magnitude, .duration, .azimuth, .altitude {
+  font-family: var(--font-serif);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: 0;
+}
+
+/* Astronomical / scientific terms: small caps for English, normal for Chinese */
+.astro-term {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  font-style: normal;
+}
+.astro-term:lang(zh) {
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+/* Site title classes (used in topbar) */
+.site-title-cn {
+  font-family: var(--font-serif);
+  letter-spacing: 0.15em;
+}
+.site-title-en {
+  font-family: var(--font-serif);
+  font-variant: small-caps;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+}
+
+/* ---- Multiply overlay — suppress baked-in basemap labels ---- */
+.map-multiply {
+  position: absolute;
+  inset: 0;
+  background: #2a3340;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 9999;  /* highest within shadowPane so it sits above label tiles */
+}
+.map-multiply-tile {
+  position: absolute;
+  background: #808080;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 201;  /* above tiles (200) but below overlayPane (400) */
+}
+
+/* ---- Cold overlay mask (Uranometria spec §2: lightened for figure-ground) ---- */
+.map-mask {
+  position: absolute;
+  inset: 0;
+  /* JS sets background-color dynamically based on zoom */
+  background: rgba(6,9,18,0.22);
+  pointer-events: none;
+  z-index: 405;
+}
+/* Polished sheen — cold highlight band atop the stone canvas */
+.map-sheen {
+  position: absolute;
+  inset: 0;
+  background: var(--map-sheen, rgba(207, 224, 245, 0.022));
+  pointer-events: none;
+  z-index: 406;
+}
+
+/* ---- Map attribution — bottom-right, above the rail ---- */
+/* Wrapper holds GitHub icon + attribution box as a flex row, fixed to the corner. */
+.attr-row {
+  position: fixed;
+  right: 0;
+  bottom: var(--rail-h, 83px); /* tracks live rail height via --rail-h */
+  z-index: 2900;
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  pointer-events: none;       /* only children are interactive */
+}
+.map-attribution {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--fg-disabled);
+  background: rgba(22, 24, 28, 0.5);
+  padding: 2px 6px 2px 6px;
+  border-radius: 0 0 0 3px;   /* left-bottom rounded; right side abuts the GitHub icon */
+  pointer-events: auto;
+}
+.map-attribution a {
+  color: var(--fg-disabled);
+  text-decoration: underline;
+}
+.map-attribution a:hover { color: var(--brass); }
+/* GitHub icon — sits right of the attribution box, flush to screen edge. */
+.attr-github {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px 2px;         /* bottom pad shifts icon up ~2px to align with text centre */
+  color: var(--fg-disabled);
+  text-decoration: none;
+  pointer-events: auto;
+}
+.attr-github svg { display: block; }
+.attr-github:hover { color: var(--brass); }
+.attr-github { border-bottom: none !important; cursor: pointer !important; }
+.map-attribution-sep {
+  opacity: 0.5;
+  margin: 0 1px;
+}
+
+
+/* ---- Satellite markers ----
+   State colour rides on `color` (SVG stroke + label both use currentColor):
+   default verdigris teal, .sat-lit gold (reflection window), .sat-locked grey.
+   Hover (.sat-hover) brightens + enlarges; emphasis is added by JS setStyle on
+   the track/footprint too. */
+.sat-marker {
+  display: flex; align-items: center; gap: 3px;
+  pointer-events: auto; cursor: pointer;
+  color: #5BAA9E;
+}
+.sat-marker.sat-lit    { color: #FFD700; }
+.sat-marker.sat-locked { color: #888; }
+.sat-ico {
+  display: inline-flex; line-height: 0;
+  filter: drop-shadow(0 0 2px #000);
+  transition: transform 0.1s ease;
+}
+.sat-ico svg { display: block; }
+.sat-label {
+  font-size: 12px; color: currentColor; white-space: nowrap; pointer-events: none;
+  text-shadow: 0 0 3px #000, 0 0 6px #000;
+}
+.sat-marker.sat-locked .sat-label { font-weight: normal; }
+/* Hover emphasis on the marker (track/footprint handled in JS). The glyph
+   switches from stroke to solid fill, mirroring the meteor-shower peak form. */
+.sat-marker.sat-hover { filter: brightness(1.35); }
+.sat-marker.sat-hover .sat-ico { transform: scale(1.25); }
+.sat-marker.sat-hover .sat-ico svg { fill: currentColor; stroke: none; }
+.sat-marker.sat-hover .sat-label { font-weight: bold; }
+
+/* ---- Satellite passes list (right sidebar) ---- */
+.sat-pass-table {
+  width: 100%; border-collapse: collapse; table-layout: fixed;
+  font-family: var(--font-serif); font-size: var(--fs-body);
+}
+.sat-pass-table thead th {
+  font-size: var(--fs-body); font-weight: var(--fw-regular);
+  color: var(--fg-muted); text-align: right; white-space: nowrap;
+  padding: 0 6px 4px; border-bottom: 1px solid var(--border-soft);
+}
+.sat-pass-table thead th:first-child { text-align: left; width: 48px; }
+.sat-pass-table thead th:nth-child(2) { text-align: center; width: 108px; padding-left: 24px; }
+.sat-pass-table thead th:nth-child(3) { text-align: center; width: 108px; padding-left: 24px; }
+.sat-pass-table thead th:nth-child(4) { width: 64px; }
+.sat-pass-table td { padding: 3px 6px; color: var(--fg-muted); white-space: nowrap; }
+.sat-pass-table .sp-name { text-align: left; font-weight: 600; }
+.sat-pass-table .sp-time,
+.sat-pass-table .sp-vis,
+.sat-pass-table .sp-el {
+  text-align: right;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+/* 可见行仅 Visible 列高亮金色 */
+.sat-pass-table tr.sat-pass-visible .sp-vis { color: var(--accent); }
+.sat-no-passes { font-size: 13px; color: var(--fg-muted, #889); margin: 2px 0 6px; }
+
+/* ---- Moon/planets almanac table (right sidebar) ---- */
+.body-almanac-table {
+  width: 100%; border-collapse: collapse; table-layout: fixed;
+  font-family: var(--font-serif); font-size: var(--fs-body);
+}
+.body-almanac-table thead th {
+  font-size: var(--fs-body); font-weight: var(--fw-regular);
+  color: var(--fg-muted); text-align: right; white-space: nowrap;
+  padding: 0 6px 4px; border-bottom: 1px solid var(--border-soft);
+}
+.body-almanac-table thead th:first-child { text-align: left; width: 100px; }            /* body name (fits es "Mercurio") */
+.body-almanac-table thead th:nth-child(2) { width: 100px; text-align: center; }        /* observe window — header sits on the "–" */
+.body-almanac-table thead th:nth-child(3) { width: 64px; }                             /* visual magnitude */
+.body-almanac-table thead th:last-child   { width: 64px; }                             /* peak altitude (right edge aligns with twilight table) */
+.body-almanac-table td { padding: 3px 6px; color: var(--fg-muted); white-space: nowrap; }
+.body-almanac-table .ba-name { text-align: left; overflow: hidden; text-overflow: ellipsis; }
+/* Numeric columns default to muted: a row is dimmed in full unless it is well placed.
+   Window is centred so the fixed-width HH:MM–HH:MM range puts its "–" at the column
+   centre, directly under the centred header (no padding hack; cf. satellite passes). */
+.body-almanac-table .ba-win,
+.body-almanac-table .ba-mag,
+.body-almanac-table .ba-alt {
+  text-align: right;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.body-almanac-table .ba-win { text-align: center; }
+/* Well-placed rows highlight gold across the WHOLE row (name + window + mag + alt);
+   poorly-placed rows stay uniformly muted (cf. satellite passes). */
+.body-almanac-table tr.body-observable .ba-name { color: var(--accent-gold); font-weight: 600; }
+.body-almanac-table tr.body-observable .ba-win,
+.body-almanac-table tr.body-observable .ba-mag,
+.body-almanac-table tr.body-observable .ba-alt { color: var(--accent-gold); }
+
+/* Clickable name cells (almanac body name + satellite-pass name): pointer cursor
+   + gold-underline hover hint signalling "jump to this object". */
+.body-almanac-table .ba-name.ba-jump,
+.sat-pass-table .sp-name.sp-jump { cursor: pointer; }
+.body-almanac-table .ba-name.ba-jump:hover,
+.sat-pass-table .sp-name.sp-jump:hover { color: var(--accent-gold); text-decoration: underline; }
+
+/* ---- DSO markers ---- */
+.dso-marker { pointer-events: auto; cursor: pointer; }
+.dso-sym { display: block; }
+.dso-label { font-size: 12px; color: #aab; white-space: nowrap; text-shadow: 0 0 3px #000, 0 0 6px #000; }
+
+/* ---- Comet markers ---- */
+.comet-marker { pointer-events: auto; cursor: pointer; }
+.comet-sym { display: block; }
+.comet-label { font-size: 12px; color: #ccd; white-space: nowrap; text-shadow: 0 0 3px #000, 0 0 6px #000; }
+
+/* ---- Meteor markers ---- */
+.meteor-marker { pointer-events: auto; cursor: pointer; }
+.meteor-sym { display: block; }
+.meteor-label { font-size: 12px; color: #e2d3cf; white-space: nowrap; text-shadow: 0 0 3px #000, 0 0 6px #000; }
+.meteor-peak.meteor-label { font-weight: bold; }
+
+/* ---- Transport Rail ---- */
+.rail {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 3000;
+  background: var(--bg-rail, #242628);
+  border-top: .5px solid var(--hairline-strong, rgba(210,215,222,.26));
+  box-shadow: inset 0 1px 0 var(--bevel-light, rgba(255,255,255,.06));
+  font-family: var(--font-serif);
+  color: var(--text-high, #e7e3da);
+  user-select: none;
+  /* Scroll container: when the inner bar exceeds the viewport width
+     (below its min-width), expose a horizontal scrollbar instead of
+     squeezing the fixed-width readout/controls into overlap. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  height: 78px;
+}
+/* Inner bar carries the actual flex layout + the min usable width. */
+.rail-inner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 16px 5px;
+  min-width: 720px;
+}
+
+/* --- Left column: readout --- */
+.rail-read { flex: none; width: auto; min-width: 196px; white-space: nowrap; user-select: text; }
+.rail-time {
+  font-size: var(--fs-sub);
+  color: var(--text-high, #e7e3da);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* --- Segmented date/time fields with hover steppers --- */
+.tc-field { position: relative; display: inline-block; }
+.tc-sep { color: var(--text-high, #e7e3da); padding: 0 0px; }
+.tc-sep.tc-time-col { color: var(--brass, #b39468); }
+.tc-gap { display: inline-block; width: 12px; }
+.tc-in {
+  font: inherit;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  width: 2ch;
+  cursor: text;
+  border-radius: 2px;
+  -moz-appearance: textfield;
+}
+.tc-in.tc-in-y { width: 4ch; }
+.tc-time-col .tc-in { color: var(--brass, #b39468); }
+.tc-in:focus {
+  outline: 1px solid var(--brass, #b39468);
+  background: rgba(179, 148, 104, 0.12);
+}
+.tc-in::-webkit-outer-spin-button,
+.tc-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Invisible hover zones directly above/below each field — primary trigger areas.
+   DOM order: zone-up, zone-down, button.up, input, button.down
+   so the ~ sibling selector can reach both buttons from either zone. */
+.tc-zone-up, .tc-zone-down {
+  position: absolute;
+  left: -3px; right: -3px;
+  height: 12px;
+  pointer-events: auto;
+}
+.tc-zone-up   { top: -12px; }
+.tc-zone-down { bottom: -12px; }
+
+/* Triangle steppers — button has real size for pointer events;
+   triangle rendered via ::before so the button border stays clean. */
+.tc-step {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  pointer-events: auto;
+}
+.tc-step::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+.tc-step.up   { top: -9px; }
+.tc-step.down { bottom: -9px; }
+.tc-step.up::before   { bottom: 1px; border-bottom: 5px solid var(--text-mid, #9aa0aa); }
+.tc-step.down::before { top: 1px;    border-top:    5px solid var(--text-mid, #9aa0aa); }
+
+/* Each zone shows only its own direction's arrow.
+   Button self-hover keeps it visible while moving mouse to click. */
+.tc-zone-up:hover   ~ .tc-step.up,
+.tc-step.up:hover   { opacity: 1; }
+.tc-zone-down:hover ~ .tc-step.down,
+.tc-step.down:hover { opacity: 1; }
+
+.tc-field:hover { z-index: 5; }
+
+.tc-step.up:hover::before   { border-bottom-color: var(--brass, #b39468); }
+.tc-step.down:hover::before { border-top-color:    var(--brass, #b39468); }
+.rail-tz {
+  position: relative;
+  display: inline-block;
+  color: var(--text-mid, #9aa0aa);
+  margin-left: 12px;
+  cursor: pointer;
+}
+.rail-tz:hover .rail-tz-label,
+.rail-tz:focus-visible .rail-tz-label { color: var(--brass, #b39468); }
+.rail-tz-label { pointer-events: none; }
+
+/* Dark custom dropdown shared by the timezone and language rail selectors,
+   replacing the white native <select> popup. Rendered in <body> as a fixed-
+   position layer (the rail clips overflow) and positioned by JS to open upward
+   above the trigger. Reuses the dark-menu tokens. */
+.rail-dropdown {
+  position: fixed;
+  margin: 0;
+  padding: 2px;
+  z-index: 10005;   /* above the glossary card (10001) and context menu (10000) */
+  list-style: none;
+  background: var(--bg-shell, rgba(32, 34, 38, 0.92));
+  border: 0.5px solid var(--border-hairline, rgba(210, 215, 222, 0.16));
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+  font-family: var(--font-serif, serif);
+  font-size: var(--fs-caption, 13px);
+  line-height: var(--lh-tight, 1.25);
+  max-height: 260px;
+  overflow-y: auto;
+  white-space: nowrap;
+}
+.rail-dropdown-item {
+  padding: 3px 10px;
+  color: var(--fg-muted, #9aa0aa);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color 120ms, background 120ms;
+}
+.rail-dropdown-item:hover,
+.rail-dropdown-item.is-active {
+  background: color-mix(in srgb, var(--brass, #b39468) 14%, transparent);
+  color: var(--fg-primary, #e7e3da);
+}
+.rail-dropdown-item.is-selected { color: var(--brass, #b39468); }
+.rail-moon {
+  font-family: var(--font-cjk, var(--font-serif));
+  color: var(--text-mid, #9aa0aa);
+  font-size: var(--fs-caption);
+  letter-spacing: .06em;
+  margin-top: 6px;
+}
+.rail-dot {
+  margin: 0 4px;
+  color: var(--text-low, #8b909a);
+}
+
+/* --- Center column: engraved scale --- */
+.scale {
+  flex: 1;
+  position: relative;
+  height: 30px;
+  min-width: 120px;
+  cursor: pointer;
+}
+.scale-wash {
+  position: absolute;
+  inset: 5px 0 12px;
+  pointer-events: none;
+}
+.scale-daylight {
+  position: absolute;
+  inset: 5px 0 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.scale-sun-curve {
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
+  width: 100%; height: 18px;
+  pointer-events: none;
+  overflow: hidden;
+}
+.scale-sun-curve path {
+  fill: none;
+  stroke: rgba(185,134,86,.25);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 300ms ease;
+}
+.scale:hover .scale-sun-curve path {
+  stroke: rgba(185,134,86,.55);
+}
+.scale-ticks {
+  position: absolute;
+  left: 0; right: 0;
+  top: 11px; height: 7px;
+  pointer-events: none;
+}
+.scale-ticks i {
+  position: absolute;
+  top: 0;
+  width: .5px;
+  height: 100%;
+  background: rgba(210,215,222,.22);
+}
+.scale-base {
+  position: absolute;
+  left: 0; right: 0;
+  top: 18px;
+  border-top: .5px solid var(--hairline-strong, rgba(210,215,222,.26));
+  pointer-events: none;
+}
+.scale-labels {
+  position: absolute;
+  left: 0; right: 0;
+  top: 19px;
+  color: var(--text-low, #8b909a);
+  font-size: var(--fs-caption);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  pointer-events: none;
+}
+.scale-labels span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.scale-labels span:first-child { transform: translateX(0); }
+.scale-labels span:last-child  { transform: translateX(-100%); }
+/* Brass needle + top dot — single SVG so line and dot share the exact same x */
+.scale-needle {
+  position: absolute;
+  left: 0; top: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Drawer handle (narrow screens only) — hidden by default; shown + positioned
+   in the ≤768px media query, where it toggles `.rail-expanded` on #time-bar. */
+.rail-handle { display: none; }
+.rail-break { display: none; }
+.rail-break-row1 { display: none; }
+
+/* --- Right column: controls --- */
+/* margin-left adds 18px beyond the 18px flex gap so the timeline↔-1y gap is 36px,
+   roughly balancing the timeline↔readout gap on the left. Ignored on narrow where
+   .rail-ctrl is display:contents. */
+.rail-ctrl { flex: none; width: 312px; margin-left: 18px; display: flex; flex-direction: column; align-items: stretch; gap: 4px; }
+
+.rail-row1 {
+  display: flex;
+  align-items: center;
+  height: 22px;
+}
+
+.rail-zone-play {
+  flex: 0 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-right: 12px;
+}
+.rail-zone-rates {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rail-zone-lang {
+  flex: 0 0 63px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 12px;
+}
+.rail-play {
+  background: transparent;
+  border: none;
+  color: var(--text-mid, #9aa0aa);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  transition: color 120ms;
+}
+.rail-play:hover { color: var(--text-high, #e7e3da); }
+.rail-play-main { color: var(--text-high, #e7e3da); }
+.rail-play-main[aria-pressed="true"] { color: var(--brass, #b39468); }
+.rail-play-icon { fill: currentColor; vertical-align: middle; }
+
+.rail-rate-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--hairline, rgba(210,215,222,.16));
+  margin: 0 4px;
+}
+
+/* Language switcher (custom dark dropdown, shares .rail-dropdown with timezone) */
+.rail-lang {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+.rail-lang:focus-visible .rail-lang-label { color: var(--brass, #b39468); }
+.rail-lang-label {
+  color: var(--text-mid, #9aa0aa);
+  font-family: var(--font-serif);
+  font-size: var(--fs-caption);
+  pointer-events: none;
+  display: block;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+html[lang="zh"] .rail-lang-label,
+html[lang="ja"] .rail-lang-label { font-size: 12px; }
+
+.rail-rates {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 172px;
+}
+.rail-rate {
+  background: transparent;
+  border: none;
+  color: var(--text-mid, #9aa0aa);
+  font-family: var(--font-serif);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--fs-caption);
+  padding: 1px 5px 1px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 120ms;
+}
+.rail-rate:hover { color: var(--text-high, #e7e3da); }
+.rail-rate.active {
+  color: var(--text-high, #e7e3da);
+  border-bottom-color: var(--brass, #b39468);
+}
+
+.rail-row2 {
+  display: flex;
+  justify-content: space-between;
+  height: 22px;
+}
+.rail-jump {
+  flex: none;
+  background: transparent;
+  border: none;
+  color: var(--text-mid, #9aa0aa);
+  font-family: var(--font-serif);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--fs-caption);
+  padding: 1px 0 1px;
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 120ms;
+}
+.rail-jump:hover { color: var(--text-high, #e7e3da); }
+.rail-jump-now {
+  color: var(--text-high, #e7e3da);
+  border-bottom-color: var(--brass, #b39468);
+}
+
+/* ---- Sidebar ---- */
+/* ---- Dual sidebars (left = browse, right = inspect) ----
+   Vertical bracket: 8px gap above & below.
+   top 65px = layer-toggle.bottom (12+45=57) + 8px gap.
+   bottom = rail height (measured via JS into --rail-h) + same 8px gap;
+   fallback 71px covers the static estimate (9px pad + ~52px content + 10px pad). */
+.sidebar {
+  position: fixed;
+  /* Equal gap above (below the 57px layer-toggle group) and below (above the
+     rail), driven by one knob so they stay symmetric. */
+  --sidebar-gap: 24px;
+  top: calc(var(--toggle-bottom, 57px) + var(--sidebar-gap));
+  bottom: calc(var(--rail-h, 71px) + var(--sidebar-gap));
+  width: 360px;
+  z-index: 2000;
+  background: var(--bg-overlay);
+  display: flex;
+  flex-direction: column;
+  transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar--left  { left: 0;  box-shadow:  4px 0 16px rgba(0,0,0,0.4); border-radius: 0 8px 8px 0; }
+.sidebar--right { right: 0; box-shadow: -4px 0 16px rgba(0,0,0,0.4); border-radius: 8px 0 0 8px; }
+
+.sidebar[data-state="closed"].sidebar--left  { transform: translateX(-100%); box-shadow: none; }
+.sidebar[data-state="closed"].sidebar--right { transform: translateX( 100%); }
+
+/* Aurora data-source / last-update line inside the aurora panel.
+   Dedicated footnote treatment: a dimmer cool-grey than --fg-muted so the
+   attribution recedes and never reads as a data value. */
+.aurora-credits {
+  margin-top: 8px;
+  text-align: left;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: #7d818b;
+}
+
+/* Data-source attribution pinned at the bottom of a celestial info card,
+   below the scrollable body. Hairline divider keeps it distinct from data. */
+.card-credits {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-hairline);
+  font-family: var(--font-serif);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--fg-disabled);
+  user-select: text;
+}
+
+.aurora-credits a,
+.card-credits a {
+  color: inherit;
+  text-decoration: underline;
+}
+.aurora-credits a:hover,
+.card-credits a:hover { color: var(--brass); }
+
+.sidebar-content {
+  padding: 12px 16px 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Right sidebar content — single scrollable column with inner padding so the
+   panels never touch the panel edge. Left sidebar manages its own scroll
+   below (list + detail are stacked, each scrolls independently). */
+#sidebar-right-content {
+  flex: 1 1 0;
+  min-height: 0;
+  /* Flex column: the coords header stays fixed, .sidebar-scroll takes the rest
+     and scrolls on its own. Horizontal + bottom inset moved into the children
+     so the scroll body's scrollbar sits at the sidebar's outer right edge. */
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0 0;
+}
+#sidebar-right-content > .coords-section {
+  flex: 0 0 auto; /* fixed header: never scrolls, never shrinks */
+  /* margin (not padding) keeps the border-bottom divider inset 16px exactly
+     where it was; margin-bottom:16px still comes from .sidebar-section. */
+  margin-left: 16px;
+  margin-right: 16px;
+  display: flex;            /* place name/coords on the left, locate button on the right */
+  align-items: center;      /* vertically centre the locate arrow on the two text lines */
+  gap: 8px;
+}
+#sidebar-right-content > .sidebar-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  /* Same 16px side inset + ~8px bottom gap as the old single scroll, so the
+     scrollbar lands at the sidebar's outer right edge with text held off it. */
+  padding: 0 16px 10px;
+}
+
+/* Left sidebar: chronological eclipse event list with inline expandable
+   detail per card. */
+#sidebar-left-content {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+#sidebar-left-list {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 10px 0 4px;
+}
+#sidebar-left-list h3 {
+  margin: 0;
+  /* Panel title — explicit so it no longer falls through to the UA default
+     <h3> (17.55px/700); matches the right sidebar's .place-name. */
+  font-size: var(--fs-title);
+  font-weight: var(--fw-medium);
+  color: var(--fg-primary);
+}
+.eclipse-list-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 16px 8px;
+}
+.eclipse-filter {
+  display: flex;
+  gap: 4px;
+}
+.eclipse-filter-btn {
+  background: transparent;
+  border: 0.5px solid var(--border-hairline);
+  color: var(--fg-muted);
+  font-family: var(--font-serif);
+  font-size: var(--fs-caption);
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms;
+}
+.eclipse-filter-btn:hover {
+  color: var(--fg-primary);
+}
+.eclipse-filter-btn[aria-pressed="true"] {
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
+}
+#sidebar-left-list .eclipse-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 0 12px 4px;
+}
+
+/* Load-more buttons (load earlier above, load later below the list) */
+.eclipse-load-more {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 0.5px solid var(--bg-line);
+  color: var(--fg-muted);
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  padding: 6px;
+  margin: 4px 12px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 100ms, color 100ms;
+}
+.eclipse-load-more:hover {
+  background: var(--bg-mid);
+  color: var(--fg-primary);
+}
+.eclipse-load-more:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.eclipse-load-more.eclipse-load-flash {
+  background: rgba(179, 148, 104, 0.18);
+  color: var(--accent-gold);
+  transition: background 80ms ease-out, color 80ms ease-out;
+}
+.eclipse-card.ec-new {
+  animation: ec-fade-in 250ms ease-out;
+}
+@keyframes ec-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eclipse-card.ec-new { animation: none; }
+  .eclipse-load-more.eclipse-load-flash { transition: none; }
+}
+
+/* Toggle handle: 22×60 chevron tab on the inner edge */
+.sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 60px;
+  background: var(--bg-rail, #242628);
+  border: .5px solid var(--hairline, rgba(210,215,222,.16));
+  cursor: pointer;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-mid, #9aa0aa);
+  padding: 0;
+  z-index: 1;
+}
+.sidebar-toggle:hover { color: var(--brass, #b39468); }
+.sidebar--left  .sidebar-toggle { right: -22px; border-left: none;  border-radius: 0 6px 6px 0; }
+.sidebar--right .sidebar-toggle { left:  -22px; border-right: none; border-radius: 6px 0 0 6px; }
+
+.sidebar-toggle .sidebar-chevron {
+  display: block;
+  transition: transform .2s ease;
+}
+.sidebar[data-state="closed"] .sidebar-toggle .sidebar-chevron {
+  transform: rotate(180deg);
+}
+
+/* Hide the chevron handle until the sidebar has been populated at least once
+   (e.g. right side stays handle-less until the user pins a location;
+   left side stays handle-less until the user opens the eclipse layer). */
+.sidebar:not([data-has-content="true"]) .sidebar-toggle {
+  display: none;
+}
+
+/* Sidebar sections */
+.sidebar-section {
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 14px;
+}
+
+.sidebar-section:last-child {
+  border-bottom: none;
+}
+
+.sidebar-section h3 {
+  margin: 0;
+  font-size: var(--fs-sub);
+  font-weight: var(--fw-medium);
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  color: var(--fg-primary);   /* white emphasis — header reads above brass values */
+}
+
+/* ---- Collapsible panel chrome ----
+   `.panel-toggle` replaces the bare <h3>: clicking flips a `panel-collapsed`
+   class on the parent `.panel`, which hides `.panel-body`. The chevron
+   rotates via CSS. State persists per panel in sessionStorage. */
+.panel-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.panel-toggle h2,
+.panel-toggle h3 { margin: 0; }
+.panel-chevron {
+  display: inline-block;
+  width: 14px;
+  font-size: var(--fs-caption);
+  color: var(--text-dim);
+  transition: transform 0.15s ease;
+}
+.panel-collapsed .panel-chevron { transform: rotate(-90deg); }
+.panel-collapsed .panel-body { display: none; }
+.panel-collapsed .panel-toggle { margin-bottom: 0; }
+
+/* Galactic-core transit info block above the chart */
+.galactic-meta {
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border-soft);
+}
+
+/* A meta block that sits BELOW its table (Sun panel golden/blue hour): the
+   dashed divider moves to the top so it separates from the table above, with
+   symmetric 8px gaps on either side of the rule. No bottom rule — the section's
+   own solid border closes it. */
+.galactic-meta--below {
+  margin: 8px 0 0;
+  padding: 8px 0 0;
+  border-top: 1px dashed var(--border-soft);
+  border-bottom: none;
+}
+
+/* ---- Eclipses section (right info sidebar) ---- */
+.ecl-badge {
+  font-size: var(--fs-caption, 11px);
+  font-variant: normal;
+  letter-spacing: 0.04em;
+  color: var(--ecl-bloodmoon, #a8472e);
+  border: 1px solid var(--ecl-bloodmoon, #a8472e);
+  border-radius: 3px;
+  padding: 0 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.ecl-meta-line {
+  font-size: var(--fs-body);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 8px;
+}
+.ecl-note {
+  font-size: var(--fs-body);
+  color: var(--text-dim);
+  padding: 4px 0;
+}
+.ecl-diagram {
+  position: relative;
+  margin: 4px 0 10px;
+  display: flex;
+  justify-content: center;
+}
+.ecl-schematic { max-width: 100%; height: auto; }
+/* Solar sky-path schematic (alt-az diagram). Below-horizon contacts are omitted
+   from the diagram entirely (they still appear, dimmed, in the contact table), so
+   no dimmed-glyph class is needed here. */
+.ecl-skypath { display: block; }
+/* Solar variant: the stat readout (Par./Tot./Mag.) is a top bar above the plot
+   rather than an overlay, so it never covers the SVG left altitude-axis labels. */
+.ecl-diagram--solar { flex-direction: column; align-items: center; }
+.ecl-diagram--solar .ecl-schem-stats {
+  position: static;
+  inset: auto;
+  align-self: stretch;
+  margin-bottom: 2px;
+}
+/* Lunar: the opaque Moon discs travel diagonally, so two opposite corners are
+   always clear. Each stat column is anchored to a corner; a JS pass
+   (_placeLunarSchemStats in js/sidebar.js) drops it from the top corner to the
+   bottom corner on the same side when a disc overlaps it. The readout stays above
+   the SVG (its hover keeps working); it just sidesteps the discs instead of being
+   layered under them (which made the root <svg> swallow the columns' hover). Solar
+   stacks its stats statically and is excluded. */
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats { inset: 0; }
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tl,
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tr { position: absolute; top: 2px; }
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tl { left: 2px; }
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tr { right: 2px; }
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tl.ss--bottom,
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tr.ss--bottom { top: auto; bottom: 2px; }
+/* Sky-path disc hover: a reference crosshair (dropped to the azimuth/x and
+   altitude/y axes) plus a highlighted altitude read-out, revealed on hover of the
+   per-contact group. CSS fill/opacity here overrides the elements' inline
+   presentation attributes, so the always-on azimuth tick and P-label highlight too. */
+.ecl-skp-cross {
+  stroke: var(--accent);
+  stroke-width: 0.8;
+  stroke-opacity: 0.55;
+  stroke-dasharray: 3 3;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+.ecl-skp-hialt {
+  fill: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+.ecl-skp-hit { fill: transparent; pointer-events: all; }
+.ecl-skp-pt:hover .ecl-skp-cross,
+.ecl-skp-pt:hover .ecl-skp-hialt { opacity: 1; }
+.ecl-skp-pt:hover .ecl-skp-az { opacity: 1; fill: var(--accent); }
+.ecl-skp-pt:hover .ecl-skp-label { fill: var(--accent); }
+/* EclipseWise-style corner readout overlaid on the lunar schematic. The wrapper
+   ignores pointer events so it never blocks the SVG; only the stat items take
+   hover (for their gloss tip). Text stays selectable/copyable. */
+.ecl-schem-stats {
+  position: absolute;
+  inset: 2px 2px auto 2px;
+  display: flex;
+  justify-content: space-between;
+  /* Top-align the two columns so the shorter right column (U.Mag/P.Mag) is not
+     stretched to the left column's height and pushed out of row alignment —
+     keeps Tot.|U.Mag. and Par.|P.Mag. on the same line. */
+  align-items: flex-start;
+  pointer-events: none;
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+}
+.ecl-schem-stats .ss-tl { text-align: left; }
+.ecl-schem-stats .ss-tr { text-align: left; }
+/* Lunar only: the U.Mag/P.Mag pair shares a 2-column subgrid so the labels
+   left-align in column 1 and the values left-align in column 2 (em-based
+   min-width can't, since "U.Mag." renders wider than "P.Mag."). Solar's single
+   "Mag." has nothing to align and keeps the plain inline space. */
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tr {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 0.25em;
+  justify-content: start;
+}
+.ecl-diagram:not(.ecl-diagram--solar) .ecl-schem-stats .ss-tr .ss-item {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+.ecl-schem-stats .ss-item {
+  display: block;
+  color: var(--text-dim);
+  pointer-events: auto;
+  line-height: 1.45;
+}
+.ecl-schem-stats .ss-k { color: var(--text-secondary); }
+/* Active-eclipse contacts: label | az·el | time, all on one row, time far right. */
+.ecl-contacts {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-body);
+}
+.ecl-contacts td {
+  padding: 2px 0;
+  vertical-align: baseline;
+}
+.ecl-contacts .ecl-ct-label { color: var(--text-dim); white-space: nowrap; }
+.ecl-contacts .ecl-ct-az,
+.ecl-contacts .ecl-ct-dir,
+.ecl-contacts .ecl-ct-alt {
+  font-size: var(--fs-caption);
+  color: var(--text-dim);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Column order: label | alt° | az° | dir | time (altitude first, matching the
+   sky-path diagram's left-altitude / bottom-azimuth axes). */
+.ecl-contacts .ecl-ct-alt { padding-left: 10px; }
+.ecl-contacts .ecl-ct-az  { padding-left: 10px; }
+.ecl-contacts .ecl-ct-dir { padding-left: 3px; text-align: left; }
+.ecl-contacts .ecl-ct-time {
+  text-align: right;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+}
+/* Below-horizon contact: not observable here → dim, no accent, no jump hint. */
+.ecl-contacts .ecl-ct-time.ecl-ct-below { color: var(--text-dim); cursor: default; }
+#sidebar-right-content .ecl-contacts .ecl-ct-below:hover {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+/* Forecast "open the panel" rows read as clickable like the time-jumps. */
+#sidebar-right-content .ecl-open { cursor: pointer; }
+#sidebar-right-content .ecl-open:hover {
+  color: var(--accent-gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Hover tooltip for celestial body sub-point markers. */
+.celestial-tooltip.leaflet-tooltip {
+  background: rgba(20, 22, 32, 0.92);
+  color: var(--text-primary, #d4cfb8);
+  border: 1px solid var(--border-soft, #2a3a5c);
+  font-family: var(--font-serif, serif);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 3px 7px;
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.celestial-tooltip.leaflet-tooltip::before { display: none; }
+
+/* Right-click context menu pinned next to the location marker. */
+.map-context-menu {
+  position: absolute;
+  z-index: 10000;
+  background: var(--bg-shell, rgba(32, 34, 38, 0.92));
+  border: 0.5px solid var(--border-hairline, rgba(210, 215, 222, 0.16));
+  border-radius: 3px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.55);
+  padding: 2px;
+  min-width: 92px;
+  font-family: var(--font-serif, serif);
+  font-size: var(--fs-caption, 13px);
+  line-height: var(--lh-tight, 1.25);
+}
+.map-context-item {
+  display: block;
+  width: 100%;
+  padding: 3px 8px;
+  background: transparent;
+  border: none;
+  color: var(--fg-muted, #9aa0aa);
+  text-align: left;
+  cursor: pointer;
+  border-radius: 2px;
+  font: inherit;
+  transition: color 120ms, background 120ms;
+}
+.map-context-item:hover {
+  background: color-mix(in srgb, var(--brass, #b39468) 14%, transparent);
+  color: var(--fg-primary, #e7e3da);
+}
+
+/* Transient measurement readout */
+.map-toast {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: rgba(20,22,32,0.92);
+  color: var(--accent-gold, #f59e0b);
+  border: 1px solid var(--border-soft, #2a3a5c);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-family: var(--font-serif, serif);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  animation: mapToastFade 3.5s ease-in-out forwards;
+}
+@keyframes mapToastFade {
+  0% { opacity: 0; transform: translate(-50%, -8px); }
+  10%, 80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -4px); }
+}
+
+.sidebar-section h2 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--fs-body);
+  padding: 3px 0;
+  color: var(--text-secondary);
+}
+
+.info-row .label {
+  color: var(--text-dim);
+}
+
+.info-row .value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: var(--accent-gold);
+}
+
+/* Light pollution zone badge */
+/* Eclipse permanent labels on map (umbra center, lunar visibility center) */
+.eclipse-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 0 4px rgba(0,0,0,0.95),
+    0 0 8px rgba(0,0,0,0.85),
+    1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.eclipse-label::before { display: none !important; }
+.eclipse-label-total   { color: #fbbf24; }   /* gold */
+.eclipse-label-annular { color: #38bdf8; }   /* sky-blue */
+
+/* Toast for off-map peak notifications */
+#eclipse-toast {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  z-index: 1500;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-gold);
+  color: var(--text-primary);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 15px;
+  max-width: 320px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+#eclipse-toast.visible { opacity: 1; transform: translateY(0); }
+
+/* Toast for time-range limit / invalid-input feedback (above the time rail) */
+#time-toast {
+  position: fixed;
+  bottom: 96px;
+  left: 50%;
+  transform: translate(-50%, 8px);
+  z-index: 10000;
+  background: var(--bg-overlay, rgba(20,22,32,0.92));
+  border: 1px solid var(--border-gold, #b08d3a);
+  color: var(--text-primary, #f4f4f5);
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-family: var(--font-serif, serif);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  max-width: min(86vw, 420px);
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+#time-toast.visible { opacity: 1; transform: translate(-50%, 0); }
+
+/* Eclipse list ("quest log" sidebar) — fills available height in the left
+   sidebar's flex column so "加载更晚" sticks to the bottom on tall screens
+   rather than leaving whitespace below. The parent chain must propagate
+   `min-height: 0` for the inner scroller to actually scroll. */
+.eclipse-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+#sidebar-left-content,
+#sidebar-left-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 0;
+}
+/* Solar/lunar filter — toggled via data-filter on the list so switching never
+   rebuilds the cards (see js/sidebar.js renderCards). */
+.eclipse-list[data-filter="solar"] .eclipse-card[data-kind="lunar"],
+.eclipse-list[data-filter="lunar"] .eclipse-card[data-kind="solar"] {
+  display: none;
+}
+.eclipse-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 62px;
+  flex-shrink: 0;
+  position: relative;
+  isolation: isolate;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--border-soft);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 0 var(--bevel-light, rgba(255,255,255,.06)),
+              inset 0 -1px 0 var(--bevel-groove, rgba(0,0,0,.38));
+  cursor: pointer;
+  transition: background 0.15s, border-left-color 0.15s;
+}
+.eclipse-card .ec-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 13px;
+  padding: 8px 10px;
+}
+.eclipse-card:hover {
+  background: rgba(245,158,11,0.08);
+  border-left-color: var(--accent-gold);
+}
+.eclipse-card.is-current {
+  background: rgba(245,158,11,0.18);
+  border-left-color: var(--accent-gold);
+}
+/* Glyph carries identity on the left; text reflows into three rows. */
+.eclipse-card .ec-glyph {
+  flex-shrink: 0;
+  width: 42px; height: 42px;
+  line-height: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.eclipse-card .ec-body { flex: 1; min-width: 0; }
+.eclipse-card .ec-row1 {
+  display: flex; align-items: baseline;
+  justify-content: space-between; gap: 8px;
+}
+.eclipse-card .ec-date {
+  font-size: var(--fs-body); font-weight: var(--fw-medium);
+  color: var(--fg-primary);
+  font-family: var(--font-serif);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: .01em; line-height: 1.3;
+}
+.eclipse-card .ec-dt {
+  font-size: var(--fs-sub); color: var(--text-dim);
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.eclipse-card .ec-row2 {
+  font-size: var(--fs-caption); color: var(--text-secondary);
+  margin-top: 3px; line-height: 1.3;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.eclipse-card .ec-row3 {
+  font-size: var(--fs-caption); color: var(--text-dim);
+  margin-top: 2px; line-height: 1.3;
+}
+.eclipse-card .ec-row3 .ec-kind { color: var(--text-secondary); }
+/* ---- Eclipse-type badges (semantic palette per spec 5) ---- */
+.eclipse-card .kind-badge,
+.badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* Solar eclipses */
+.kind-badge.total,           .badge-total-solar     { background: #3a2a4d; color: #e8e4d8; }
+.kind-badge.annular,         .badge-annular-solar   { background: #a8632b; color: #f4e4d0; }
+.kind-badge.hybrid                                   { background: #5a3d6a; color: #e8d8f0; }
+.kind-badge.partial,         .badge-partial-solar   { background: #5d4f33; color: #e8d8a0; }
+
+/* Lunar eclipses (spec semantics: lunar uses rust-red for total etc.) */
+.kind-badge.lunar                                    { background: #7a2e2e; color: #e8d8c8; }
+.badge-total-lunar                                   { background: #7a2e2e; color: #e8d8c8; }
+.badge-partial-lunar                                 { background: #4a4a55; color: #d4cfb8; }
+.kind-badge.penumbral,       .badge-penumbral-lunar { background: #36363f; color: #a8a39c; }
+
+/* Selected eclipse event in the list */
+.eclipse-card[data-active="true"] {
+  background: rgba(212, 160, 78, 0.08);
+  border-left: 2px solid var(--accent);
+  border-radius: 0;
+}
+.eclipse-card[data-active="true"] .ec-header {
+  padding-left: 10px;
+}
+/* Inline detail expansion inside the card */
+.ec-detail { padding: 0 10px 8px 10px; font-size: var(--fs-caption); }
+.ec-detail[hidden] { display: none; }
+.ec-meta-line {
+  color: var(--text-secondary);
+  margin: 6px 0 4px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+.ec-dur-line {
+  color: var(--text-secondary);
+  margin: 3px 0 0;
+  line-height: 1.4;
+}
+.ec-detail-times {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-caption);
+}
+.ec-detail-times td { padding: 2px 4px; vertical-align: top; }
+.ec-detail-times .et-key  { width: 24px; padding-left: 0; color: var(--text-secondary); white-space: nowrap; }
+.ec-detail-times .et-desc { width: 100px; color: var(--text-secondary); }
+.ec-detail-times .et-val  { color: var(--text-primary); font-variant-numeric: tabular-nums; word-break: break-all; }
+.ec-detail-times .et-clickable { cursor: pointer; }
+.ec-detail-times .et-clickable:hover .et-val { color: var(--accent-gold); }
+
+/* ---- Contact-curve overlay markers (greatest-eclipse star + lunar contact
+   labels) — drawn by Eclipse.drawContactCurves() when an event is selected. */
+.eclipse-greatest-marker {
+  background: transparent !important;
+  border: none !important;
+  text-align: center;
+  font-size: 19px;
+  line-height: 16px;
+  color: var(--eclipse-greatest, #22c55e);
+  text-shadow: 0 0 4px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.9);
+  pointer-events: none;
+}
+/* Rotate the glyph (not the marker root — Leaflet owns that element's inline
+   translate3d transform, which would override any rotate here). ✴ U+2734 rests
+   with its points on the diagonals; 22.5° brings one point to true north. */
+.eclipse-greatest-marker span {
+  display: inline-block;
+  transform: rotate(22.5deg);
+}
+
+/* Leaflet eclipse tooltip */
+.eclipse-tooltip {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-gold);
+  color: var(--text-primary);
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.eclipse-tooltip::before { display: none; }
+
+/* Light pollution tiles use screen blend so city lights add additively over
+   the dark basemap (matching Lorenz's own black-bg site). */
+.lp-blend-screen img.leaflet-tile {
+  mix-blend-mode: screen;
+}
+
+/* ---- Eclipse umbra + edge label + iso-magnitude rings ---- */
+.eclipse-umbra {
+  filter: drop-shadow(0 0 2px rgba(212, 160, 78, 0.4));
+}
+
+.eclipse-edge-label {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--accent);
+  text-shadow: 0 0 3px rgba(14, 27, 58, 0.9);
+  white-space: nowrap;
+  pointer-events: none;
+  text-align: center;
+}
+
+.iso-mag-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-shadow: 0 0 3px rgba(14, 27, 58, 0.9);
+  pointer-events: none;
+  text-align: center;
+}
+
+/* Iso-mag curve labels (magnitude value placed at each branch's arc midpoint and
+   rotated parallel to the contour's on-screen tangent — both done in js/eclipse.js
+   placeContourLabel). Color is set inline from CURVE_STYLE.magContour; this is the
+   matching static fallback. */
+.iso-mag-curve-label {
+  background: transparent !important;
+  border: none !important;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: #027585;
+  text-shadow: 0 0 4px rgba(14, 27, 58, 0.95), 0 0 2px rgba(14, 27, 58, 0.8);
+  pointer-events: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Eclipse curve hover — compact name-label chip, matching the data-tip chip
+   (.glossary-tip.is-label) used for body/layer names: deep solid background,
+   no border, serif, single line. Name only (no encyclopedic blurb). */
+.eclipse-curve-tooltip {
+  background: var(--bg-deep, #242628) !important;
+  color: var(--fg-primary, #e7e3da) !important;
+  border: none !important;
+  font-family: var(--font-serif, serif);
+  font-size: var(--fs-caption, 13px);
+  padding: 4px 9px !important;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+/* Caret tinted to the chip background for every Leaflet tooltip direction, so
+   no white default caret leaks through (no-white-board tooltip rule). */
+.eclipse-curve-tooltip.leaflet-tooltip-top::before    { border-top-color:    var(--bg-deep, #242628) !important; }
+.eclipse-curve-tooltip.leaflet-tooltip-bottom::before { border-bottom-color: var(--bg-deep, #242628) !important; }
+.eclipse-curve-tooltip.leaflet-tooltip-left::before   { border-left-color:   var(--bg-deep, #242628) !important; }
+.eclipse-curve-tooltip.leaflet-tooltip-right::before  { border-right-color:  var(--bg-deep, #242628) !important; }
+
+/* ---- Observer compass SVG overlay ---- */
+.rays-overlay-svg { pointer-events: none; }
+/* The compass spans four sibling panes (base/planet/moon/sun); the attribute
+   selector covers all of leaflet-observer-compass{,-planet,-moon,-sun}-pane. */
+.leaflet-zoom-anim [class*="leaflet-observer-compass"] { visibility: hidden; }
+.observer-pin-icon { background: none !important; border: none !important; }
+
+/* Dark halo on observer-compass SVG text — keeps cardinals (N/S/E/W), rim
+   labels (Sunrise/Sunset/Moonrise/Moonset + times), and planet symbols (☿ etc.)
+   readable over both the warm daylight veil (#f5f2ee) and the dark night
+   background. Same paint-order:stroke trick used by ecliptic / lunar-path /
+   equator HTML labels (HALO=#181d23). Subtle width + opacity so small text
+   doesn't blob out. */
+[class*="leaflet-observer-compass"] text {
+  paint-order: stroke fill;
+  stroke: #181d23;
+  stroke-width: 3px;
+  stroke-opacity: 0.55;
+  stroke-linejoin: round;
+}
+.planet-symbols .planet-icon { pointer-events: all; cursor: pointer; }
+/* Body hit-targets on the top compass fx pane (sun/moon/planets): re-enable
+   pointer events (the pane and .rays-overlay-svg are pass-through) so hover
+   emphasis and click-to-lock fire. */
+.compass-hit { pointer-events: all; cursor: pointer; }
+
+/* day-brighten pane (z=80): soft-light blend lifts Carto Dark Matter tiles toward
+   warm sunlit tone within the daylight veil's coverage. Tied to the Sun layer
+   (twilightGroup) but NOT to the twilight_mask checkbox, so the white veil can be
+   hidden independently while basemap brightening remains active.
+
+   soft-light is a backdrop-reading blend → it cannot be GPU-composited and must
+   be re-rasterized against the (scaling) tile backdrop every animated-zoom frame;
+   at high zoom in daylight that's the whole viewport, which makes zooming janky.
+   The pane is always visible at rest (all zoom levels). During an animated zoom
+   at z >= DAY_BRIGHTEN_ANIM_ZOOM (js/map.js), the pane is temporarily hidden via
+   visibility:hidden (zoomanim event) and restored on zoomend — eliminating the
+   per-frame re-raster during high-zoom gestures without affecting the static view. */
+.leaflet-day-brighten-pane {
+  mix-blend-mode: soft-light;
+}
+
+.moon-phase-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #fef9c3;
+  color: #854d0e;
+  font-size: var(--fs-sub);
+  font-weight: var(--fw-medium);
+}
+
+/* Tooltip explanation box */
+.tip-box {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--accent-blue);
+  background: rgba(56,189,248,0.1);
+  border-left: 3px solid var(--accent-blue);
+  padding: 5px 8px;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 6px;
+}
+
+[data-tip] {
+  cursor: help;
+  border-bottom: 1px dashed var(--text-dim);
+}
+
+/* Chart no-window explanation note */
+.chart-note {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--fg-muted);                            /* neutral note, not a warning */
+  background: rgba(154, 160, 170, 0.06);             /* --fg-muted tint */
+  border-left: 3px solid rgba(154, 160, 170, 0.3);   /* same slate hue */
+  padding: 4px 8px;
+  border-radius: 0 4px 4px 0;
+  line-height: 1.4;
+}
+
+/* ---- Twilight table (Sun panel) ---- */
+.twilight-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;  /* lock time-column widths; label column takes remainder */
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+}
+.twilight-table thead th {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  color: var(--fg-muted);
+  text-align: right;
+  padding: 0 6px 4px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.twilight-table thead th:first-child { text-align: left; }
+/* Fix each time column; label column fills the rest (~141px at sidebar width) */
+.twilight-table thead th:not(:first-child) { width: 86px; }
+.twilight-table td {
+  padding: 3px 6px;
+  color: var(--fg-muted);
+}
+.twilight-table tbody tr:first-child td { padding-top: 5px; }
+.twilight-table tbody tr:last-child  td { padding-bottom: 5px; }
+.twilight-table .tt-label {
+  color: var(--fg-muted);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.twilight-table .tt-time {
+  text-align: right;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  white-space: nowrap;
+}
+/* Separator line after sunrise/sunset row */
+.twilight-table .tt-civil td { border-top: 1px solid var(--border-soft); }
+
+/* Click-to-jump times in the right sidebar (twilight cells, moon/galactic rows,
+   best-window endpoints). Base/unclicked appearance is unchanged — only a
+   pointer cursor + a subtle hover hint are added. Text stays selectable. */
+#sidebar-right-content [data-time] { cursor: pointer; }
+#sidebar-right-content [data-time]:hover {
+  color: var(--accent-gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* SVG chart */
+#galactic-chart {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+/* Phase planet markers (divIcon with inline SVG) */
+.phase-planet-icon {
+  background: none !important;
+  border: none !important;
+}
+
+/* Terminator contour labels */
+.terminator-label {
+  background: none !important;
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.terminator-label span {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e2e8f0;
+  text-shadow: 0 0 3px rgba(0,0,0,0.6), 0 0 6px rgba(0,0,0,0.4);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.contour-label {
+  background: none !important;
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.contour-label span {
+  display: inline-block;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.ecliptic-label {
+  background: none !important;
+  border: none !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ecliptic-label > span {
+  display: inline-block;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Tick labels are anchored exactly at the tick crossing (latlng); the inner
+ * span uses CSS-px translateX to offset along the tangent — keeping the
+ * label-to-tick distance constant across zoom levels. */
+.ecliptic-tick-label {
+  background: none !important;
+  border: none !important;
+  pointer-events: none;
+  overflow: visible;
+}
+.ecliptic-tick-label > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-block;
+  line-height: 1;
+  margin-top: -0.5em;
+  transform-origin: 0 50%;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.equator-label {
+  background: none !important;
+  border: none !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.equator-label > span {
+  display: inline-block;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.equator-tick-label {
+  background: none !important;
+  border: none !important;
+  pointer-events: none;
+  overflow: visible;
+}
+.equator-tick-label > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-block;
+  line-height: 1;
+  margin-top: -0.5em;
+  transform-origin: 0 50%;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.lunar-path-label {
+  background: none !important;
+  border: none !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lunar-path-label > span {
+  display: inline-block;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.galactic-equator-label {
+  background: none !important;
+  border: none !important;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.galactic-equator-label > span {
+  display: inline-block;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Right-click context menu for Sun/Moon/Planet markers now reuses the
+   shared .map-context-menu styling (see further up) — no separate
+   .body-context-menu / .body-menu CSS needed. */
+
+
+/* Leaflet control overrides — dark shell styling, no white backgrounds */
+.leaflet-control-zoom {
+  border: 0.5px solid var(--border-hairline) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: none !important;
+  width: 22.5px !important;
+  /* Fixed 45px total (border-box) so the +/- control aligns top/bottom with the
+     other 45px toolbar controls (was auto-height = 2×22.5 + border ≈ 47px). */
+  height: 45px !important;
+}
+.leaflet-control-zoom a {
+  background: var(--bg-shell) !important;
+  color: var(--fg-muted) !important;
+  border-bottom: 1px solid var(--border-hairline) !important;
+  border-right: none !important;
+  width: 22.5px !important;
+  height: 50% !important;     /* two buttons split the 45px rail evenly */
+  line-height: 22px !important;
+  font-size: 13px !important;
+  transform: translateX(-1px) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: rgba(179, 148, 104, 0.12) !important;
+  color: var(--brass) !important;
+}
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+.leaflet-control-layers {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: var(--fg-primary) !important;
+  box-shadow: none !important;
+  position: relative !important;
+  width: 45px !important;
+  height: 45px !important;
+  overflow: visible !important;
+}
+.leaflet-control-layers-expanded {
+  padding: 0 !important;
+}
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+  display: block !important;
+}
+.leaflet-control-layers-toggle {
+  background-color: var(--bg-shell) !important;
+  background-image: none !important;
+  width: 45px !important;
+  height: 45px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  filter: none !important;
+  position: relative;
+}
+.leaflet-control-layers-toggle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: no-repeat center / 20px 20px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa0aa' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2 2 7l10 5 10-5-10-5z'/%3E%3Cpath d='M2 17l10 5 10-5'/%3E%3Cpath d='M2 12l10 5 10-5'/%3E%3C/svg%3E");
+}
+.leaflet-control-layers-toggle:hover::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b39468' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2 2 7l10 5 10-5-10-5z'/%3E%3Cpath d='M2 17l10 5 10-5'/%3E%3Cpath d='M2 12l10 5 10-5'/%3E%3C/svg%3E");
+}
+/* Invisible hover guard around the list — keeps mouseleave from firing
+   when the cursor overshoots or moves through the margin gap */
+.leaflet-control-layers-list::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -16px;
+  right: -16px;
+  bottom: -16px;
+  width: auto;
+  height: auto;
+}
+/* Expanded layers panel: drops below the toggle button */
+.leaflet-control-layers-list {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  margin-top: 4px;
+  background: var(--bg-shell);
+  border: 0.5px solid var(--border-hairline);
+  border-radius: 8px;
+  padding: 8px 12px;
+  white-space: nowrap;
+  width: auto !important;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 2100;
+}
+.leaflet-control-layers label {
+  color: var(--fg-muted) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 13px !important;
+}
+
+/* Section titles inside layer-control dropdown (replicates .info-block-title) */
+.layer-section-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+  font-family: var(--font-serif);
+  color: var(--fg-primary);
+}
+/* Celestial overlay checkboxes inside layer-control dropdown */
+.celestial-overlays {
+  position: relative;
+  z-index: 1;
+}
+.celestial-overlays.overlay-group {
+  border-top: 0.5px solid var(--border-hairline);
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.celestial-overlay-item {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+  padding: 2px 0;
+  color: var(--fg-muted) !important;
+  font-family: var(--font-serif) !important;
+  font-size: 13px !important;
+}
+.celestial-overlay-item input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--brass);
+}
+.overlay-swatch {
+  display: inline-block;
+  width: 16px;
+  height: 0;
+}
+.overlay-label-text {
+  white-space: nowrap;
+}
+
+/* Leaflet top-left: layer toggle row (logo removed — sits in the corner) */
+.leaflet-top.leaflet-left {
+  top: 12px;
+  left: 12px;
+}
+.leaflet-top.leaflet-left .leaflet-control {
+  margin: 0;
+}
+
+/* Root wrapper around the rail + its overflow flyout. The flyout is a sibling
+   of the rail (not a child) so it isn't clipped by the rail's overflow:hidden
+   rounded corners; this root anchors it. */
+.layer-toggle-root { position: relative; }
+
+/* Priority+ overflow: the "more" toggle (Bento 2×3 dot grid), appended at the
+   rail's right end. Hidden by default — _syncLayerOverflow() reveals it only
+   when icons overflow. A slim cell with no divider so the dot grid visually
+   hugs the icon to its left. */
+.layer-btn.layer-more-btn {
+  width: 26px;
+  border-left: 0;
+}
+.layer-more-btn .layer-icon svg {
+  width: 11px;
+  height: 16px;
+}
+
+/* Overflow flyout — reuses the layers-dropdown look (.leaflet-control-layers-list). */
+.layer-overflow-panel {
+  position: absolute;
+  /* content-box: declared width is purely the icon columns (N × 45px); the 0.5px
+     border sits OUTSIDE it. Under the global border-box the border would steal ~2px
+     from the content box and wrap the last icon to a new row. */
+  box-sizing: content-box;
+  top: 100%;
+  /* Anchor to the rail's left edge (the rail is left-anchored near the screen
+     edge), so the flyout always extends rightward into the viewport. Anchoring
+     right would push it off the left edge when the rail shrinks. */
+  left: 0;
+  margin-top: 4px;
+  display: none;
+  flex-wrap: wrap;
+  width: 180px; /* 4 × 45px columns; wraps to more rows as needed */
+  background: var(--bg-shell);
+  border: 0.5px solid var(--border-hairline);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 2100;
+}
+.layer-overflow-panel.open { display: flex; }
+
+/* ---- Custom layer-toggle control — horizontal top rail (lapidary v4) ---- */
+.layer-toggle-control {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  border: none;
+  background: var(--bg-shell);
+  border: 0.5px solid var(--border-hairline);
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 0;
+  overflow: hidden;
+  /* Fixed height so the 0.5px border is absorbed (border-box) and the rail
+     totals 45px — matching the logo / search / layers controls. Without a
+     fixed height the rail's height is auto = button(45) + border, making it
+     2px taller and breaking top/bottom alignment. */
+  height: 45px;
+}
+/* Rail buttons fill the rail's content height (≈44px after the border) instead
+   of their own fixed 45px, so the active brass underline isn't clipped by the
+   rail's overflow:hidden. Flyout-panel buttons keep the fixed 45px (below). */
+.layer-toggle-control .layer-btn {
+  height: 100%;
+}
+
+.layer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 45px;
+  height: 45px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--fg-muted);
+  font-size: 17px;
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms;
+  box-shadow: none;
+}
+
+.layer-btn:hover {
+  color: var(--fg-primary);
+}
+
+.layer-btn[aria-pressed="true"] {
+  border-bottom-color: var(--brass);
+  color: var(--fg-primary);
+  box-shadow: none;
+}
+
+.layer-icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 19px;
+  line-height: 1;
+}
+
+/* Lapidary v5 SVG icons — match planet-symbol size (22px) so SVG and Unicode layers visually align */
+.layer-icon svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  overflow: visible;
+}
+
+.planet-symbol {
+  font-family: var(--font-symbol);
+  font-size: 23px;
+  line-height: 1;
+}
+
+/* Leaflet top-right: zoom + layers toggle */
+.leaflet-top.leaflet-right {
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 4px;
+}
+.leaflet-top.leaflet-right .leaflet-control {
+  float: none;
+  margin: 0;
+}
+.leaflet-control-attribution { display: none; }
+
+/* ── Places search box — top-right, left of zoom/layers ── */
+.places-search {
+  order: -1;
+  position: relative;
+}
+.places-search::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b909a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='10.5' cy='10.5' r='7'/%3E%3Cline x1='15.5' y1='15.5' x2='21' y2='21'/%3E%3C/svg%3E") no-repeat center / contain;
+  pointer-events: none;
+  z-index: 1;
+}
+.places-search input {
+  width: var(--search-rest, 360px);
+  height: 45px;
+  box-sizing: border-box;
+  padding: 4px 8px 4px 32px;
+  background-color: var(--bg-panel);
+  background-image: var(--engrave-hatch-baked); /* lapidary hatch (input can't host ::before) */
+  border: 1px solid var(--border-soft);
+  color: var(--fg-primary);
+  font-family: var(--font-serif);
+  font-size: var(--text-sm);
+  outline: none;
+  border-radius: 8px;
+  transition: width 0.2s ease;
+}
+.places-search input:focus {
+  border-color: var(--brass);
+  /* Width stays at the resting value (capped at MAX_W=420 in app.js) so focus
+     never expands past the rail. Compact mode overrides below with a leftward
+     map overlay (room exists there because rail icons have dropped). */
+}
+/* Squeezed search — when the top toolbar narrows, _syncToolbarCompact() in
+   js/app.js sets --search-rest to a continuously-shrinking width (down to a
+   still-usable ~120px floor) so the gap to the layer rail stays constant instead
+   of snapping. `.toolbar-compact` is added once the resting width drops below
+   full (360px); its only job is to switch focus-expansion to a leftward overlay
+   over the map. The right group is right-anchored, so growing leftward never
+   pushes the zoom/layers controls off-screen. The resting input stays fully
+   legible and editable at every width — no transparent / icon-only degradation. */
+.toolbar-compact .places-search input:focus {
+  /* Expand leftward until the left edge nears the sky-layer icon (~66px from left).
+     search-right ≈ W − 88, so width = W − 88 − 66 = W − 154. */
+  width: calc(100vw - 154px);
+}
+
+.places-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-top: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  z-index: 2100;
+  border-radius: 0 0 2px 2px;
+  box-sizing: border-box;
+}
+.places-results[hidden] { display: none; }
+.places-results li {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 8px;
+  font-family: var(--font-serif);
+  font-size: var(--text-sm);
+  color: var(--fg-primary);
+  cursor: pointer;
+  line-height: var(--lh-tight);
+}
+.places-results li[aria-selected="true"],
+.places-results li:hover {
+  background: rgba(179, 148, 104, 0.15);
+  color: var(--gilt-bright);
+}
+.places-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.places-results .places-meta {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+}
+.places-coord {
+  flex: 0 0 auto;
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.places-results .places-no-results {
+  color: var(--fg-disabled);
+  font-style: italic;
+  cursor: default;
+}
+
+/* Celestial-object results — prefixed by a category glyph. House style is
+   locked monochrome + one brass accent; categories distinguished by glyph. */
+.places-results .search-badge {
+  flex: 0 0 auto;
+  width: 1.15em;
+  text-align: center;
+  color: var(--brass);
+  opacity: 0.8;
+  font-size: var(--text-sm);
+}
+.places-results li:hover .search-badge,
+.places-results li[aria-selected="true"] .search-badge {
+  opacity: 1;
+  color: var(--gilt-bright);
+}
+
+/* Place name line in right sidebar — panel title, matches left "Eclipse events" */
+.place-name {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-medium);
+  color: var(--fg-primary);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Coordinates — secondary display below place name */
+.coords-dms {
+  font-size: var(--fs-sub);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  /* No bottom margin: .coords-text must be exactly the two text lines so the
+     locate arrow centres precisely; gap to the divider comes from
+     .sidebar-section padding-bottom. */
+}
+
+/* Two-line text block (place name + coords); min-width:0 lets the place name's
+   nowrap+ellipsis truncate inside the flex row. */
+.coords-text { flex: 1 1 auto; min-width: 0; }
+
+/* Place name + coords are independently clickable (fly + open compass).
+   Hover matches the sidebar's other jump-links: accent-gold + underline. */
+.coords-section #place-name-line,
+.coords-section .coords-dms { cursor: pointer; }
+.coords-section #place-name-line:hover .place-name,
+.coords-section .coords-dms:hover {
+  color: var(--accent-gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* "Locate me" button — right of the coords header, vertically centred via the
+   flex row. Transparent, brass on hover (matches .attr-github). */
+.geo-locate-btn {
+  flex: 0 0 auto;
+  padding: 2px;
+  margin-right: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  line-height: 0;
+  transition: color 0.15s;
+}
+.geo-locate-btn:hover { color: var(--brass); }
+.geo-locate-btn svg { display: block; }
+.geo-locate-btn:hover svg polygon,
+.geo-locate-btn.locating svg polygon { fill: currentColor; }
+.geo-locate-btn.locating {
+  pointer-events: none;
+  color: var(--brass);
+  animation: geo-locate-pulse 1s ease-in-out infinite;
+}
+@keyframes geo-locate-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* Toast for geolocation feedback (denied / unavailable / timeout / unsupported).
+   Mirrors #eclipse-toast. */
+#geo-toast {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  z-index: 1500;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-gold);
+  color: var(--text-primary);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 15px;
+  max-width: 320px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+#geo-toast.visible { opacity: 1; transform: translateY(0); }
+
+/* GeoNames attribution — persistent sticky footer in the search results dropdown */
+.places-results li.places-credit,
+.places-results li.places-credit:hover {
+  display: block;
+  position: sticky;
+  bottom: 0;
+  font-family: var(--font-serif);
+  font-size: 11px;
+  color: var(--fg-disabled);
+  padding: 5px 8px 6px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border-hairline);
+  cursor: text;
+  user-select: text;
+}
+.places-results li.places-credit a {
+  color: var(--fg-disabled);
+  text-decoration: underline;
+}
+.places-results li.places-credit a:hover { color: var(--brass); }
+
+@media (prefers-reduced-motion: reduce) {
+  .places-search input { transition: none; }
+}
+
+/* Hide eclipse debug panel */
+#dc-panel { display: none !important; }
+
+/* Bottom rail — two responsive tiers:
+   • ≥769px  : full single row, all jump buttons (incl. ±1y/±1m) stay visible.
+   • ≤768px  : collapsible bottom-drawer (see next block). */
+
+/* ===== Narrow screens (≤768px): the bottom rail becomes a collapsible drawer.
+   Layout (user-defined):
+   • Collapsed (default): row 1 = the 24h timeline (full width); row 2 = Now (left)
+     · date/time readout (centre) · language (right).
+   • Expanded (tap #tc-handle): adds row 3 = -1y -1m -1d -1h [play] +1h +1d +1m +1y.
+   • The speed selector and lunar/phase are never shown on narrow screens.
+   The wide nested control groups are flattened with `display: contents` so every
+   atom (play / Now / language / each jump) becomes a direct flex child of
+   .rail-inner and can be placed by `order` across the original nesting — no DOM
+   restructuring or duplicated buttons. State is persisted (sessionStorage) in
+   js/app.js (_setRailExpanded). The date/time readout stays click-to-edit in both
+   states, so the date is still settable while collapsed. ===== */
+@media (max-width: 768px) {
+  /* overflow-x:clip clips horizontally without creating a block-formatting context,
+     so overflow-y:visible is respected — the handle notch can protrude above. */
+  .rail { overflow-x: clip; overflow-y: visible; height: auto; }
+
+  /* Flatten the wide nesting so each control is an orderable flex child. */
+  .rail-ctrl, .rail-row1, .rail-row2,
+  .rail-zone-play, .rail-zone-rates, .rail-zone-lang { display: contents; }
+
+  /* Narrow: focused search expands further left so its (and the dropdown's) left
+     edge lines up with the left edge of the sky-layer toggle (.layer-toggle-root,
+     left:12px) — width = (100vw − 88, the right-anchored search right edge) − 12. */
+  .toolbar-compact .places-search input:focus { width: calc(100vw - 100px); }
+
+  .rail-inner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    gap: 6px 8px;
+    padding: 8px 12px 6px;         /* handle lives above the rail, not inside */
+  }
+  .rail-read { width: auto; }
+  .rail-moon { display: none; }                  /* drop lunar/phase on narrow */
+  .rail-rates, .rail-rate-sep { display: none; } /* speed never shown on narrow */
+
+  /* Row 1: the 24h timeline, shortened and centred so its ends line up with the
+     Now (left) and language (right) of row 2 below. It can no longer use
+     flex:0 0 100% (that would span full width); a narrower width means the flex
+     line isn't filled, so .rail-break-row1 (full-width, zero-height) follows it
+     to force row 2 onto the next line. */
+  /* Fixed timeline width ≈ 1.5× the row-2 group span (Now-left → English-right),
+     centred so it overflows symmetrically past the group. max-width caps it on
+     phones. translateY drops the whole timeline a few px AND tightens the visual
+     gap to the Now row below (translate doesn't affect layout). */
+  .scale { order: 0; flex: 0 0 auto; width: 411px; max-width: calc(100% - 24px);
+    margin: 0 auto; height: 24px; transform: translateY(-2px); }
+  .rail-break-row1 { display: block; order: 1; flex: 0 0 100%; height: 0; margin: 0; }
+
+  /* Row 2: Now │ date/time │ language as a natural-width group, centred (the
+     date dominates the width, so flex:1 thirds would just shove Now/language to
+     the screen edges — instead we let the trio size to content and centre it,
+     pulled in from both edges). Symmetric horizontal padding on Now and language
+     keeps each roughly equidistant from the group edge and its divider.
+     Dividers via border-left (no extra DOM). */
+  /* Four equal internal gaps (Now→div1, div1→date, tz→div2, div2→lang) all = the
+     8px flex column-gap: with zero horizontal padding each item's box hugs its
+     visible text, so the outer gaps are the column-gap and the inner gaps are the
+     readout/lang padding-left (both 8px). Zeroing #tc-now's h-padding also shrinks
+     its brass border-bottom (the "now" highlight) down to the text width. */
+  /* Four equal gaps: A(Now→div1)=col-gap(8)+nowPadR(4)=12,
+     B(div1→date)=readPadL=12, C(tz→div2)=readPadR(4)+col-gap(8)=12,
+     D(div2→lang)=langPadL=12. */
+  /* margin-right (not padding) keeps brass border-bottom flush with text. */
+  #tc-now    { order: 2; flex: 0 0 auto; padding-left: 0; padding-right: 0; margin-right: 4px; }
+  .rail-read { order: 3; flex: 0 0 auto; text-align: center;
+    border-left: 1px solid var(--hairline-strong, rgba(210,215,222,.26));
+    padding-left: 12px; padding-right: 4px; }
+  /* width:auto undoes the wide rule's width:100%. */
+  .rail-lang { order: 4; flex: 0 0 auto; width: auto; padding-right: 0;
+    border-left: 1px solid var(--hairline-strong, rgba(210,215,222,.26));
+    padding-left: 12px; }
+
+  /* Row 3 (expanded only): -1y -1m -1d -1h [play] +1h +1d +1m +1y, centred.
+     .rail-break is a full-width zero-height flex break that forces this row
+     onto its own line under the readout. */
+  .rail-break { order: 5; flex: 0 0 100%; height: 0; margin: 0; }
+  .rail-jump[data-jump="-1y"] { order: 6; }
+  .rail-jump[data-jump="-1m"] { order: 7; }
+  .rail-jump[data-jump="-1d"] { order: 8; }
+  .rail-jump[data-jump="-1h"] { order: 9; }
+  #tc-play                    { order: 10; }
+  .rail-jump[data-jump="+1h"] { order: 11; }
+  .rail-jump[data-jump="+1d"] { order: 12; }
+  .rail-jump[data-jump="+1m"] { order: 13; }
+  .rail-jump[data-jump="+1y"] { order: 14; }
+  /* Normalise row-3 box heights so play SVG icon and jump text share the same
+     baseline — both become 28px inline-flex cells with centred content. */
+  #tc-play, .rail-jump {
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Collapsed (no .rail-expanded): hide play + non-Now jumps + the row break,
+     leaving just the timeline and the Now / readout / language row. */
+  #time-bar:not(.rail-expanded) #tc-play,
+  #time-bar:not(.rail-expanded) .rail-jump:not(.rail-jump-now),
+  #time-bar:not(.rail-expanded) .rail-break { display: none; }
+  #time-bar.rail-expanded .rail-break { display: block; }
+  /* The zero-height .rail-break forms its own wrap line, so the container's
+     row-gap (6px) is charged twice between row2 and row3 (row2→break→row3) — and
+     in a row-wrap flex that doubled gap can't be undone with a margin on the
+     break. Instead pull the whole row-3 line up with a uniform negative margin on
+     its items (not the Now button, which lives in row2). This also shrinks the
+     flex content height, so the bottom-anchored rail just gets shorter and the
+     row3→bottom-edge gap is preserved. */
+  #time-bar.rail-expanded #tc-play,
+  #time-bar.rail-expanded .rail-jump:not(.rail-jump-now) { margin-top: -6px; }
+
+  /* Handle: external notch tab sitting above the rail's top border.
+     Absolute-positioned with negative top so it protrudes above .rail;
+     overflow-x:clip + overflow-y:visible on .rail allows this. */
+  .rail-handle {
+    display: flex;
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 18px;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-rail, #242628);
+    border: .5px solid var(--hairline, rgba(210,215,222,.16));
+    border-bottom: none;
+    border-radius: 7px 7px 0 0;
+    cursor: pointer;
+    color: var(--text-mid, #9aa0aa);
+    /* Hidden until the rail body is hovered (or the tab focused/expanded), so it
+       doesn't cover the map/attribution. While hidden, pointer-events:none lets
+       clicks fall through to the Leaflet link beneath and stops a hover over the
+       protruding area from triggering .rail:hover (the tab is a .rail descendant,
+       so hovering it would otherwise reveal it on top of the link). */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+  }
+  /* Pure-background apron under the tab: covers the rail's bright top edge
+     (border-top + bevel) for the tab's width, with NO side borders, so there
+     are no vertical "feet" extending into the rail. Belongs to the handle, so it
+     fades with it — when the tab is hidden there's no seam to cover anyway. */
+  .rail-handle::after {
+    content: '';
+    position: absolute;
+    left: -0.5px;
+    right: -0.5px;
+    top: 100%;
+    height: 2px;
+    background: var(--bg-rail, #242628);
+  }
+  .rail:hover .rail-handle,
+  .rail-handle:focus-visible,
+  #time-bar.rail-expanded .rail-handle { opacity: 1; pointer-events: auto; }
+  .rail-handle:hover { color: var(--brass, #b39468); }
+  .rail-handle-icon { width: 15px; height: auto; transition: transform .2s ease; }
+  /* Rotation on inner icon; translateX lives on parent — no interference. */
+  #time-bar.rail-expanded .rail-handle-icon { transform: rotate(180deg); }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    max-width: 360px;
+  }
+  /* Mobile exclusivity is enforced via JS (setSidebar closes the other side
+     when one opens). Visual rules above already animate via transform. */
+}
+
+/* =========================================================================
+   Sky layer (恒星 + IAU 星座 + 中国星官)
+   ========================================================================= */
+
+/* Sky button: a coloured top border distinguishes the current mode. */
+.layer-btn[data-sky-state="stars"] {
+  border-top: 2px solid #e7e3da;
+}
+.layer-btn[data-sky-state="iau"] {
+  border-top: 2px solid #7aa9ff;
+}
+.layer-btn[data-sky-state="cn"] {
+  border-top: 2px solid #ffb18a;
+}
+
+/* Force all-serif on Leaflet container to override its default sans */
+.leaflet-container {
+  font-family: var(--font-serif);
+}
+
+/* Never show the browser's focus outline on clickable map vectors/markers
+   (celestial bodies, eclipse curves, labels, …). The outline traces the
+   element's bounding box, so a clicked disc renders an ugly square. Every
+   interactive Leaflet layer carries .leaflet-interactive — SVG paths AND
+   divIcon markers — so this single rule covers all cases. Real keyboard
+   controls (search input, rail handle) are not .leaflet-interactive and keep
+   their own focus styling. */
+.leaflet-interactive:focus { outline: none; }
+
+/* Constellation/xingguan name labels — divIcon markers, not Leaflet
+   tooltips, so we control positioning fully. Serif text + dark stroke
+   for readability on both dark night sky and light continents. */
+.sky-label {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.1;
+  color: #f5f8ff;
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.85),
+     1px -1px 0 rgba(0,0,0,0.85),
+    -1px  1px 0 rgba(0,0,0,0.85),
+     1px  1px 0 rgba(0,0,0,0.85),
+     0    0   4px rgba(0,0,0,0.7);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  /* Center the label on its anchor — Leaflet places divIcon's top-left at
+     the latlng; we shift back by 50% in both axes. */
+  transform: translate(-50%, -50%);
+  display: inline-block;
+}
+.sky-label-iau { color: #bcc1d4; font-style: italic; font-weight: 500; pointer-events: auto; cursor: pointer; }
+:lang(zh) .sky-label-iau,
+:lang(ja) .sky-label-iau { font-style: normal; }
+.sky-label-cn  { color: #ffe3c9; font-weight: 600; pointer-events: auto; cursor: pointer; }
+.sky-label-iau:hover,
+.sky-label-cn:hover { color: var(--gilt-bright, #d6b884); }
+/* Smaller / dimmer style for IAU rank-3 constellations (Apus, Crux, Vela, …)
+   so the rank-1/2 majors stay visually dominant when both are present. */
+.sky-label-iau-dim { font-size: 15px; opacity: 0.8; font-weight: 400; }
+/* Smaller style for individual xingguan (rank 3: 五车、南船、北斗, …)
+   so mansions (rank 1) and enclosure walls (rank 2) stay dominant. */
+.sky-label-cn-minor { font-size: 13px; opacity: 0.8; font-weight: 400; }
+
+/* Per-star name labels (Sirius / 天狼星, etc). The offset that keeps the text
+   beside the star (clear of its glow) is applied in JS via iconAnchor/margins,
+   sized to the glow's outer radius — see updateStarLabels in js/sky.js. */
+.sky-label-star {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: #ddd9cf;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.85),
+     1px -1px 0 rgba(0,0,0,0.85),
+    -1px  1px 0 rgba(0,0,0,0.85),
+     1px  1px 0 rgba(0,0,0,0.85);
+}
+/* Cross-source label overlap hider — set by js/label-collider.js after a
+   sweep finds the label has lost a collision against a higher-priority one.
+   visibility:hidden keeps the DOM node alive (so Leaflet/sky.js caches stay
+   intact) and stops pointer events; next sweep can revert it. */
+.label-occluded { visibility: hidden; }
+/* Deep-sky label hidden because its screen box touches the daylight veil
+   (sunAlt > 0°). Hides the whole label instead of letting the night-clip
+   path slice it at the terminator. Set/cleared by js/label-collider.js. */
+.label-veil-hidden { visibility: hidden; }
+
+.body-symbol-label {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: #ddd9cf;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.85),
+     1px -1px 0 rgba(0,0,0,0.85),
+    -1px  1px 0 rgba(0,0,0,0.85),
+     1px  1px 0 rgba(0,0,0,0.85);
+}
+.sky-label-star-iau {
+  font-size: 14px;
+  font-style: italic;
+  color: #ddd9cf;
+}
+
+/* Great-circle line far-end straddle label: "To <name>" (inner) + "Az X°"
+   (outer) flanking the line's end point, rotated along the line. The wrapper is
+   a Leaflet divIcon — strip its default white box so only the text shows. */
+.gc-end-label {
+  background: none;
+  border: none;
+  pointer-events: none;
+  overflow: visible;
+}
+.gc-end-inner {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.85),
+     1px -1px 0 rgba(0,0,0,0.85),
+    -1px  1px 0 rgba(0,0,0,0.85),
+     1px  1px 0 rgba(0,0,0,0.85);
+}
+:lang(zh) .sky-label-star-iau,
+:lang(ja) .sky-label-star-iau { font-style: italic; }
+.sky-label-star-iau-dim { font-size: 12px; opacity: 0.8; }
+.sky-label-star-cn { color: #ffe3c9; font-weight: 500; }
+.sky-label-star-cn-dim { font-size: 12px; opacity: 0.8; font-weight: 400; }
+.sky-label-star-stars { color: #ddd9cf; font-weight: 400; }
+
+/* Enlarge the click hit area for sky-star CircleMarkers: every SVG path
+   in the sky-stars pane participates in hit testing even where its stroke
+   is invisible (we set a transparent stroke up to 8 px in buildStars). */
+/* Screen blend gives star dots an additive point-light feel on the dark canvas */
+.leaflet-sky-glow-pane  { mix-blend-mode: screen; }
+.lum-disk-icon { background: none !important; border: none !important; }
+.star-glow, .star-glare { background: none !important; border: none !important; pointer-events: none; }
+.leaflet-sky-stars-pane { mix-blend-mode: screen; }
+.leaflet-sky-stars-pane path { pointer-events: all; cursor: pointer; }
+
+/* When the daylight veil is on the map, body halos and glares (the styled
+   inner divs of .star-glow / .star-glare divIcons) blend into the bright
+   white background via screen() instead of stacking as warm orange blobs.
+   On dark night-side regions, screen(src, ~0) ≈ src, so glows there are
+   unaffected. Toggled by document.body.classList in map.js _setDayMode. */
+body.day-mask-active .star-glow > div,
+body.day-mask-active .star-glare > div {
+  mix-blend-mode: screen;
+}
+
+/* Moonlight mask — frosted-glass effect over the moon-up hemisphere.
+   The polygons inside the pane define the spatial extent; their fill (cool
+   milky #eef2f5 at brightness-modulated alpha) provides the veil color.
+   The pane itself doesn't carry backdrop-filter because mixing CSS clip-path
+   on an SVG renderer pane with the dynamic mapPane transform breaks the
+   coordinate space — the filter would either spill across the whole map
+   or get clipped away entirely. Instead we apply a soft SVG filter to the
+   polygons themselves (feGaussianBlur on their edges) for a frosted feel. */
+.leaflet-moonlight-mask-pane path {
+  filter: url(#moonlight-soften);
+}
+
+/* Star detail popup (replaces the former sidebar-right star panel). */
+.leaflet-popup.sky-star-popup .leaflet-popup-content-wrapper {
+  background: var(--bg-overlay);
+  color: var(--text, #e8eef7);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+}
+.leaflet-popup.sky-star-popup .leaflet-popup-content {
+  margin: 8px 0; /* horizontal inset moved into the children so .star-scroll's
+                    scrollbar can reach the card's outer right edge */
+  min-width: 220px;
+}
+.leaflet-popup.sky-star-popup .leaflet-popup-tip {
+  background: var(--bg-overlay);
+}
+
+/* ======== Asterism layer (hover-reveal celestite overlay) ======== */
+.aster-line {
+  stroke: var(--asterism); stroke-width: 1.5; fill: none;
+  stroke-dasharray: 10 7; stroke-linecap: round; stroke-linejoin: round;
+  opacity: 0; transition: opacity .2s ease;
+}
+.aster-line.reveal { opacity: .9; }
+
+.aster-hit { stroke: transparent; fill: none; }
+
+.aster-vertex {
+  stroke: var(--asterism); fill: none; stroke-width: 1;
+  opacity: 0; transition: opacity .2s ease;
+}
+.aster-vertex.reveal { opacity: .55; }
+
+.aster-label {
+  position: absolute;
+  font-family: var(--font-serif);
+  color: var(--asterism-label); font-size: 17px; font-weight: 500; letter-spacing: .04em;
+  white-space: nowrap; transform: translate(-50%, -50%);
+  text-shadow:
+    -1px -1px 0 rgba(0,0,0,0.85),
+     1px -1px 0 rgba(0,0,0,0.85),
+    -1px  1px 0 rgba(0,0,0,0.85),
+     1px  1px 0 rgba(0,0,0,0.85),
+     0    0   4px rgba(0,0,0,0.7);
+  opacity: 0; transition: opacity .2s ease; pointer-events: none;
+}
+.aster-label.reveal { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .aster-line, .aster-vertex, .aster-label { transition: none; }
+}
+.leaflet-popup.sky-star-popup .leaflet-popup-close-button {
+  color: #cdd6e8; padding: 6px 8px 0 0;
+}
+.leaflet-popup.sky-star-popup .star-panel { padding: 0; }
+/* Split the card into a fixed header (name + identifiers, above the first
+   divider) and an independently scrolling body (.star-scroll, holding the
+   info-blocks). The height cap lives on .star-panel itself — the flex column —
+   so the flex children resolve heights without depending on parent propagation. */
+.leaflet-popup.sky-star-popup .star-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 33vh;
+}
+.leaflet-popup.sky-star-popup .star-panel > .star-name,
+.leaflet-popup.sky-star-popup .star-panel > .star-meaning,
+.leaflet-popup.sky-star-popup .star-panel > .star-ids {
+  flex: 0 0 auto; /* fixed header: never scrolls, never shrinks */
+  padding-left: 12px;
+  padding-right: 12px; /* re-apply the horizontal inset removed from popup-content */
+}
+.leaflet-popup.sky-star-popup .star-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hairline, rgba(255,255,255,.15)) transparent;
+  /* Box reaches the card's inner edges; the scrollbar therefore sits at the
+     card's outer right edge (like the sidebar). padding-right is the visible
+     gap between the text column and the scrollbar. */
+  padding-left: 12px;
+  padding-right: 12px;
+  border-top: 1px solid rgba(255,255,255,0.08); /* the persistent "first divider" at the header/body seam */
+}
+/* The first info-block carries its own border-top; drop it so the seam isn't doubled. */
+.leaflet-popup.sky-star-popup .star-scroll > .info-block:first-child { border-top: none; }
+.leaflet-popup.sky-star-popup .star-panel > .card-credits {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+/* WebKit thin-scrollbar fallback (scrollbar-width unsupported on older WebKit). */
+.leaflet-popup.sky-star-popup .star-scroll::-webkit-scrollbar { width: 6px; }
+.leaflet-popup.sky-star-popup .star-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-hairline, rgba(255,255,255,.15));
+  border-radius: 3px;
+}
+.leaflet-popup.sky-star-popup .star-panel .star-name { font-size: 17px; }
+.leaflet-popup.sky-star-popup .star-panel .info-row { font-size: 12.5px; }
+.leaflet-popup.sky-star-popup .star-panel .sat-info-table td { font-size: 12.5px; }
+
+/* ---- Viewport-aware popup direction (auto-flip) ---- */
+.leaflet-popup.sky-star-popup.popup-dir-bottom { margin-bottom: 0; }
+.leaflet-popup.sky-star-popup.popup-dir-bottom .leaflet-popup-tip-container {
+  top: 0; bottom: auto;
+  margin-top: -20px;
+  transform: rotate(180deg);
+}
+.leaflet-popup.sky-star-popup.popup-dir-right { margin-bottom: 0; }
+.leaflet-popup.sky-star-popup.popup-dir-right .leaflet-popup-tip-container {
+  left: 0; top: 50%; bottom: auto;
+  margin-left: -20px; margin-top: -10px;
+  transform: rotate(90deg);
+}
+.leaflet-popup.sky-star-popup.popup-dir-left { margin-bottom: 0; }
+.leaflet-popup.sky-star-popup.popup-dir-left .leaflet-popup-tip-container {
+  left: auto; right: 0; top: 50%; bottom: auto;
+  margin-right: -20px; margin-top: -10px;
+  transform: rotate(-90deg);
+}
+
+/* Star detail panel in the right sidebar */
+.star-panel {
+  padding: 12px 14px;
+  color: var(--text, #e8eef7);
+}
+.star-panel .star-name {
+  font-size: 21px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.star-panel .star-name .star-bf {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.65;
+}
+.star-panel .star-meaning {
+  font-size: 15px;
+  font-style: italic;
+  opacity: 0.6;
+  margin: -2px 0 4px;
+}
+.star-panel .star-subtitle {
+  font-size: 14px;
+  opacity: 0.75;
+  margin-bottom: 6px;
+}
+.star-panel .star-subtitle span + span { margin-left: 4px; }
+.star-panel .star-ids {
+  font-size: 13px;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+.star-panel .info-block {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 0;
+}
+.star-panel .info-block-title {
+  font-size: 13px;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.star-panel .chart-note {
+  margin: 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.star-panel .info-row {
+  display: grid;
+  grid-template-columns: 6em 1fr;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+/* Keep the label column on one line (en/fr/es terms are long); let the value wrap. */
+.star-panel .info-row .label { color: var(--text-dim); opacity: 1; white-space: nowrap; padding-right: 10px; }
+.star-panel .info-row .value { font-variant-numeric: tabular-nums; color: var(--accent-gold); text-align: right; }
+/* Satellite info card — table layout (replaces flex info-row inside sat popup). */
+.star-panel .sat-info-table { width: 100%; border-collapse: collapse; }
+.star-panel .sat-info-table td { padding: 2px 0; vertical-align: baseline; }
+.star-panel .sat-info-table td.label { color: var(--text-dim); white-space: nowrap; padding-right: 10px; }
+.star-panel .sat-info-table td.value { font-variant-numeric: tabular-nums; color: var(--accent-gold); text-align: right; width: 100%; }
+
+.meteor-peak-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #FFB0C0;
+  background: rgba(255,176,192,0.14);
+  border: 1px solid rgba(255,176,192,0.30);
+  border-radius: 3px;
+  padding: 0 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ---- Constellation boundary styles (§5–6) ---- */
+.lyr-const-bounds {
+  fill: none;
+  stroke: var(--const-bounds, #9aa0b8);
+  stroke-width: 1.3;
+  stroke-dasharray: 1.5 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .92;
+}
+
+/* Highlighted constellation cell (§6: gilt stone grid) */
+.cell-fill   { fill: var(--const-hi-fill); }
+.cell-halo-1 { fill: none; stroke: var(--const-hi-halo, #c9a86a); stroke-width: 4;   opacity: .06; stroke-linejoin: round; }
+.cell-halo-2 { fill: none; stroke: var(--const-hi-halo, #c9a86a); stroke-width: 2.4; opacity: .10; stroke-linejoin: round; }
+.cell-edge   {
+  fill: none;
+  stroke: var(--const-bounds-hi, #cdab6a);
+  stroke-width: 1.4;
+  stroke-dasharray: 1.5 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .92;
+}
+
+.lyr-const-bounds, .cell-fill, .cell-halo-1, .cell-halo-2, .cell-edge {
+  transition: stroke .18s ease, opacity .18s ease, fill .18s ease;
+}
+
+/* Glossary term labels carry a data-gloss definition shown by the custom themed
+   tooltip (js/glossary-tip.js); a help cursor signals that hovering reveals an
+   explanation. data-gloss does not block text selection. */
+[data-gloss] { cursor: help; }
+
+/* Glossary tooltip — a "definition card", deliberately distinct from the flat
+   .map-context-menu: solid deep background, brass left bar + caret, wrapping body
+   text, read-only (pointer-events:none). Positioned via fixed coords from JS. */
+.glossary-tip {
+  position: fixed;
+  z-index: 10001;
+  pointer-events: none;
+  max-width: 260px;
+  white-space: normal;
+  padding: 6px 10px 6px 11px;
+  background: var(--bg-deep, #242628);
+  color: var(--fg-primary, #e7e3da);
+  border-left: 3px solid var(--brass, #b39468);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  font-family: var(--font-serif, serif);
+  font-size: var(--fs-caption, 13px);
+  line-height: 1.45;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+.glossary-tip.is-visible { opacity: 1; }
+/* Compact name-label variant (data-tip): control/layer names — a short dark chip,
+   no brass bar, no wrapping, centred. Distinct from the wrapping definition card. */
+.glossary-tip.is-label {
+  border-left: none;
+  padding: 4px 9px;
+  max-width: none;
+  white-space: nowrap;
+  text-align: center;
+  color: var(--fg-primary, #e7e3da);
+}
+.glossary-tip::after {           /* downward caret — card sits above the term */
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: var(--tip-arrow, 50%);
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--bg-deep, #242628);
+}
+.glossary-tip.is-below::after {  /* flipped caret — card sits below the term */
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: var(--bg-deep, #242628);
+}
+
+/* ---- Lapidary surface — hand-engraved hatch (45° brass lines, sp=4, 3% opacity) ----
+   Applied to .rail / .sidebar / .eclipse-card; also available as .lapidary-surface.
+   rail/sidebar already form stacking contexts (position:fixed + z-index);
+   eclipse-card uses isolation:isolate so z-index:-1 is scoped correctly. */
+.lapidary-surface::before,
+.rail::before,
+.sidebar::before,
+.eclipse-card::before,
+.layer-toggle-control::before,
+.layer-overflow-panel::before,
+.leaflet-control-layers-toggle::before,
+.leaflet-control-zoom a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--engrave-hatch);
+  opacity: var(--engrave-op, .03);
+  pointer-events: none;
+  z-index: -1;
+  border-radius: inherit;
+}
+/* Stacking context for the top-bar shells that don't already establish one, so
+   the z-index:-1 hatch paints over the host's own bg-shell (not behind it) —
+   same trick as .eclipse-card's isolation:isolate. overflow-panel already has a
+   context (absolute + z-index). The hatch sits behind transparent buttons/glyphs. */
+.layer-toggle-control,
+.leaflet-control-layers-toggle,
+.leaflet-control-zoom a { position: relative; isolation: isolate; }

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="114 94 132 132">
+<clipPath id="nl180_160"><circle cx="180" cy="160" r="66"/></clipPath>
+<g clip-path="url(#nl180_160)">
+<rect x="114" y="94" width="132" height="132" fill="#6f8eb2"/>
+<ellipse cx="180.0" cy="123.7" rx="84.2" ry="44.5" fill="#82a1c1" opacity="0.32" transform="rotate(0 180.0 123.7)"/>
+<ellipse cx="180.0" cy="196.3" rx="89.8" ry="42.2" fill="#587897" opacity="0.3" transform="rotate(0 180.0 196.3)"/>
+<ellipse cx="176.7" cy="160.0" rx="87.5" ry="20.2" fill="#86a4c2" opacity="0.22" transform="rotate(0 176.7 160.0)"/>
+<ellipse cx="186.6" cy="150.1" rx="56.4" ry="3.1" fill="#c2d2e0" opacity="0.18" transform="rotate(-4 186.6 150.1)"/><ellipse cx="186.6" cy="150.1" rx="29.7" ry="1.7" fill="#c2d2e0" opacity="0.45" transform="rotate(-4 186.6 150.1)"/>
+<ellipse cx="166.8" cy="164.0" rx="18.0" ry="9.5" fill="#3f5e83" opacity="0.22" transform="rotate(-8 166.8 164.0)"/><ellipse cx="166.8" cy="164.0" rx="10.6" ry="5.6" fill="#3f5e83" opacity="0.4" transform="rotate(-8 166.8 164.0)"/>
+<circle cx="180" cy="160" r="65.0" fill="none" stroke="#2c4566" stroke-width="6.6" opacity="0.22"/>
+<path d="M180.0 94.0 A66 66 0 0 1 180.0 226.0 A56.8 66 0 0 0 180.0 94.0 Z" fill="#1f3050" opacity="0.18"/>
+</g>
+<circle cx="180" cy="160" r="66" fill="none" stroke="#3e587a" stroke-width="0.8" opacity="0.75"/>
+</svg>

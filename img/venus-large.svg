@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="140 110 140 140">
+<clipPath id="vc210180"><circle cx="210" cy="180" r="70"/></clipPath>
+<g clip-path="url(#vc210180)">
+<rect x="140" y="110" width="140" height="140" fill="#d3a356"/>
+<ellipse cx="206.5" cy="153.4" rx="106.4" ry="45.2" fill="#e9c97e" opacity="0.22" transform="rotate(-6 206.5 153.4)"/><ellipse cx="206.5" cy="153.4" rx="56.0" ry="23.8" fill="#e9c97e" opacity="0.42" transform="rotate(-6 206.5 153.4)"/>
+<ellipse cx="208.6" cy="177.2" rx="78.4" ry="23.8" fill="#a87a38" opacity="0.16" transform="rotate(-38 208.6 177.2)"/><ellipse cx="208.6" cy="177.2" rx="39.2" ry="11.9" fill="#a87a38" opacity="0.3" transform="rotate(-38 208.6 177.2)"/>
+<ellipse cx="225.4" cy="178.6" rx="56.0" ry="18.2" fill="#a87a38" opacity="0.14" transform="rotate(-30 225.4 178.6)"/><ellipse cx="225.4" cy="178.6" rx="28.0" ry="9.1" fill="#a87a38" opacity="0.26" transform="rotate(-30 225.4 178.6)"/>
+<ellipse cx="194.6" cy="192.6" rx="58.8" ry="18.2" fill="#9f7235" opacity="0.13" transform="rotate(-42 194.6 192.6)"/><ellipse cx="194.6" cy="192.6" rx="29.4" ry="9.1" fill="#9f7235" opacity="0.24" transform="rotate(-42 194.6 192.6)"/>
+<ellipse cx="224.0" cy="203.8" rx="82.5" ry="26.6" fill="#ecd28a" opacity="0.2" transform="rotate(22 224.0 203.8)"/><ellipse cx="224.0" cy="203.8" rx="43.4" ry="14.0" fill="#ecd28a" opacity="0.36" transform="rotate(22 224.0 203.8)"/>
+<ellipse cx="197.4" cy="211.5" rx="66.5" ry="21.3" fill="#dcb45e" opacity="0.14" transform="rotate(14 197.4 211.5)"/><ellipse cx="197.4" cy="211.5" rx="35.0" ry="11.2" fill="#dcb45e" opacity="0.26" transform="rotate(14 197.4 211.5)"/>
+<ellipse cx="204.4" cy="175.8" rx="57.8" ry="52.5" fill="#e2bb6a" opacity="0.16" transform="rotate(0 204.4 175.8)"/>
+<circle cx="210" cy="180" r="69.0" fill="none" stroke="#6f5226" stroke-width="7.0" opacity="0.20"/>
+<path d="M210.0 110.0 A70 70 0 0 1 210.0 250.0 A60.2 70 0 0 0 210.0 110.0 Z" fill="#5e451f" opacity="0.18"/>
+</g>
+<circle cx="210" cy="180" r="70" fill="none" stroke="#9a7536" stroke-width="0.8" opacity="0.7"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="642 327 16 16">
+<clipPath id="mcl650_335"><circle cx="650" cy="335" r="8"/></clipPath>
+<g clip-path="url(#mcl650_335)">
+<rect x="642" y="327" width="16" height="16" fill="#be6c43"/>
+<ellipse cx="648.8" cy="335.8" rx="11.6" ry="9.5" fill="#c8845a" opacity="0.32"/><ellipse cx="648.8" cy="335.8" rx="6.8" ry="5.6" fill="#c8845a" opacity="0.5"/>
+<ellipse cx="652.0" cy="332.2" rx="6.8" ry="5.4" fill="#d49872" opacity="0.22"/><ellipse cx="652.0" cy="332.2" rx="4.0" ry="3.2" fill="#d49872" opacity="0.4"/>
+<ellipse cx="650.8" cy="335.4" rx="5.7" ry="4.1" fill="#574f48" opacity="0.28" transform="rotate(-25 650.8 335.4)"/><ellipse cx="650.8" cy="335.4" rx="3.4" ry="2.4" fill="#574f48" opacity="0.55" transform="rotate(-25 650.8 335.4)"/>
+<ellipse cx="650.0" cy="328.8" rx="4.4" ry="2.2" fill="#f1f2ee" opacity="0.95"/>
+<ellipse cx="647.6" cy="337.0" rx="1.4" ry="1.1" fill="#f4f2ec" opacity="0.0" transform="rotate(0 647.6 337.0)"/><ellipse cx="647.6" cy="337.0" rx="1.4" ry="1.1" fill="#f4f2ec" opacity="0.7" transform="rotate(0 647.6 337.0)"/>
+<path d="M650.0 327.0 A8 8 0 0 1 650.0 343.0 A7.2 8 0 0 0 650.0 327.0 Z" fill="#1c1714" opacity="0.22"/>
+<path d="M650.0 327.0 A8 8 0 0 0 650.0 343.0 A7.8 8 0 0 1 650.0 327.0 Z" fill="#f0c79a" opacity="0.10"/>
+</g>
+<circle cx="650" cy="335" r="8" fill="none" stroke="#8a4f33" stroke-width="0.6" opacity="0.7"/>
+</svg>

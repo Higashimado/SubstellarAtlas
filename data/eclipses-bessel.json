@@ -1,0 +1,110 @@
+{
+  "_": "Besselian elements for solar eclipses, transcribed from NASA's SEdata pages (public domain, eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=YYYYMMDD). Conventions: t is hours from t0_tdt_hours; mu in degrees; x/y/d in degrees for d, dimensionless for x/y/l1/l2; longitude EAST POSITIVE.",
+  "source": "NASA Eclipse Web Site (public domain)",
+  "eclipses": [
+    {
+      "id": "2017-08-21-TSE",
+      "type": "total",
+      "date_utc": "2017-08-21",
+      "t0_tdt_hours": 18.0,
+      "delta_t_seconds": 70.3,
+      "polynomials": {
+        "x":  [-0.1295710,  0.5406426, -0.0000294, -0.0000081],
+        "y":  [ 0.4854160, -0.1416400, -0.0000905,  0.0000020],
+        "d":  [11.8669596, -0.0136220, -0.0000020,  0.0],
+        "l1": [ 0.5420930,  0.0001241, -0.0000118,  0.0],
+        "l2": [-0.0040250,  0.0001234, -0.0000117,  0.0],
+        "mu": [89.245430,  15.003940,  0.0,         0.0]
+      },
+      "tan_f1": 0.0046222,
+      "tan_f2": 0.0045992,
+      "greatest_eclipse_utc": "2017-08-21T18:25:30Z",
+      "greatest_eclipse_lat": 37.0,
+      "greatest_eclipse_lng": -87.7,
+      "gamma": 0.4367,
+      "magnitude_max": 1.0306,
+      "saros": 145
+    },
+    {
+      "id": "2024-04-08-TSE",
+      "type": "total",
+      "date_utc": "2024-04-08",
+      "t0_tdt_hours": 18.0,
+      "delta_t_seconds": 74.0,
+      "polynomials": {
+        "x":  [-0.3182440,  0.5117116,  0.0000326, -0.0000084],
+        "y":  [ 0.2197640,  0.2709589, -0.0000595, -0.0000047],
+        "d":  [ 7.5862002,  0.0148440, -0.0000020,  0.0],
+        "l1": [ 0.5358140,  0.0000618, -0.0000128,  0.0],
+        "l2": [-0.0102720,  0.0000615, -0.0000127,  0.0],
+        "mu": [89.591217,  15.004080,  0.0,         0.0]
+      },
+      "tan_f1": 0.0046683,
+      "tan_f2": 0.0046450,
+      "greatest_eclipse_utc": "2024-04-08T18:17:15Z",
+      "greatest_eclipse_lat": 25.3,
+      "greatest_eclipse_lng": -104.1,
+      "gamma": 0.3431,
+      "magnitude_max": 1.0566,
+      "saros": 139
+    },
+    {
+      "id": "2026-08-12-TSE",
+      "type": "total",
+      "date_utc": "2026-08-12",
+      "t0_tdt_hours": 18.0,
+      "delta_t_seconds": 75.4,
+      "polynomials": {
+        "x":  [ 0.4755140,  0.5189249, -0.0000773, -0.0000080],
+        "y":  [ 0.7711830, -0.2301680, -0.0001246,  0.0000038],
+        "d":  [14.7966700, -0.0120650, -0.0000030,  0.0],
+        "l1": [ 0.5379550,  0.0000939, -0.0000121,  0.0],
+        "l2": [-0.0081420,  0.0000935, -0.0000121,  0.0],
+        "mu": [88.747787,  15.003090,  0.0,         0.0]
+      },
+      "tan_f1": 0.0046141,
+      "tan_f2": 0.0045911,
+      "greatest_eclipse_utc": "2026-08-12T17:45:51Z",
+      "greatest_eclipse_lat": 65.2,
+      "greatest_eclipse_lng": -25.2,
+      "gamma": 0.8977,
+      "magnitude_max": 1.0386,
+      "saros": 126
+    },
+    {
+      "id": "2027-02-06-ASE",
+      "type": "annular",
+      "date_utc": "2027-02-06",
+      "t0_tdt_hours": 16.0,
+      "delta_t_seconds": 75.7,
+      "polynomials": {
+        "x":  [ 0.1116760,  0.4664952, -0.0000337, -0.0000053],
+        "y":  [-0.2732930,  0.2031856,  0.0001025, -0.0000025],
+        "d":  [-15.5479402, 0.0123830,  0.0000040,  0.0],
+        "l1": [ 0.5719280, -0.0000653, -0.0000101,  0.0],
+        "l2": [ 0.0256620, -0.0000650, -0.0000100,  0.0],
+        "mu": [56.493069,  15.000510,  0.0,         0.0]
+      },
+      "tan_f1": 0.0047426,
+      "tan_f2": 0.0047190,
+      "greatest_eclipse_utc": "2027-02-06T15:59:32Z",
+      "greatest_eclipse_lat": -31.3,
+      "greatest_eclipse_lng": -48.5,
+      "gamma": -0.2952,
+      "magnitude_max": 0.9281,
+      "saros": 131
+    }
+  ],
+  "_validation_note": "Values transcribed from NASA SEpath2001 central-line column for 2017-08-21. Times that the WebFetch returned for non-30-min boundaries turned out to be from the *northern-limit* column (~0.5° lat above central line, matching half the path width); those rows are excluded. The kept rows are spot-verified against NASA's 2-min table.",
+  "validation_path_2017_08_21": [
+    { "utc": "16:50:00", "lat": 41.4867, "lng": -162.85,  "note": "table start" },
+    { "utc": "17:00:00", "lat": 44.4017, "lng": -141.495 },
+    { "utc": "17:15:00", "lat": 44.8783, "lng": -125.541 },
+    { "utc": "17:30:00", "lat": 44.1233, "lng": -114.555 },
+    { "utc": "18:00:00", "lat": 40.8383, "lng": -98.305 },
+    { "utc": "18:30:00", "lat": 36.2117, "lng": -85.972 },
+    { "utc": "19:00:00", "lat": 30.6033, "lng": -74.972 },
+    { "utc": "19:30:00", "lat": 23.8383, "lng": -62.667 },
+    { "utc": "20:00:00", "lat": 13.5767, "lng": -37.658 }
+  ]
+}

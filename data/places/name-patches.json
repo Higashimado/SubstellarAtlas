@@ -1,0 +1,2810 @@
+{
+  "_comment": "Manual CJK name patches. Structure: patches.{CC}.{asciiName} = zh-Hans string or {zh: ..., ja: ...} object. Applied by build-places.mjs.",
+  "patches": {
+    "AD": {
+      "Andorra la Vella": {
+        "zh": "安道尔城",
+        "ja": "アンドラ・ラ・ベリャ"
+      }
+    },
+    "AE": {
+      "Ajman": "阿治曼",
+      "Ras Al Khaimah": "哈伊马角",
+      "Umm Al Quwain City": "乌姆盖万"
+    },
+    "AF": {
+      "Mazar-e Sharif": "马扎里沙里夫",
+      "Jalalabad": "贾拉拉巴德",
+      "Ghazni": "加兹尼",
+      "Gardez": "加德兹",
+      "Khost": "霍斯特",
+      "Bazarak": "巴扎拉克",
+      "Bamyan": "巴米扬",
+      "Pul-e Khumri": "普勒胡姆里",
+      "Shibirghan": "希比尔甘",
+      "Sar-e Pul": "萨尔普勒",
+      "Asadabad": "阿萨达巴德",
+      "Aibak": "艾巴克",
+      "Fayzabad": "法扎巴德",
+      "Lashkar Gah": "拉什卡尔加",
+      "Nili": "尼利",
+      "Mehtar Lam": "梅赫塔尔拉姆"
+    },
+    "AL": {
+      "Elbasan": "爱尔巴桑",
+      "Shkoder": "斯库台",
+      "Kukes": "库克斯"
+    },
+    "AM": {
+      "Yerevan": {
+        "zh": "埃里温",
+        "ja": "エレバン"
+      },
+      "Gavar": {
+        "zh": "加瓦尔",
+        "ja": "ガヴァル"
+      }
+    },
+    "AO": {
+      "Cabinda": "卡宾达",
+      "Malanje": "马兰热",
+      "Saurimo": "绍里木",
+      "Cuito": "奎托",
+      "Uige": "威热",
+      "Dundo": "敦多",
+      "N'dalatando": "恩达拉坦多",
+      "Mbanza Kongo": "姆班扎刚果",
+      "Caxito": "卡希图"
+    },
+    "AR": {
+      "Santa Fe": "圣菲"
+    },
+    "AX": {
+      "Mariehamn": {
+        "zh": "玛丽港",
+        "ja": "マリエハムン"
+      }
+    },
+    "AZ": {
+      "Sumqayit": "苏姆盖特",
+      "Lankaran": "连科兰",
+      "Tovuz": "陶武兹",
+      "Yevlakh": "叶夫拉赫",
+      "Naxcivan": "纳希切万",
+      "Saatli": "萨特雷",
+      "Lerik": "列里克",
+      "Sirvan": "锡尔万",
+      "Sheki": "舍基",
+      "Agdzhabedy": "阿格贾贝迪",
+      "Goeycay": "格伊恰伊",
+      "Khirdalan": "希尔达兰",
+      "Salyan": "萨利扬",
+      "Jalilabad": "贾利拉巴德",
+      "Shamkhor": "沙姆基尔",
+      "Imishli": "伊米什利",
+      "Zaqatala": "扎卡塔拉",
+      "Shamakhi": "沙马基",
+      "Ismayilli": "伊斯马伊尔雷",
+      "Fizuli": "菲祖利",
+      "Divichibazar": "迪维奇巴扎尔",
+      "Haciqabul": "哈吉卡布尔",
+      "Kyurdarmir": "居尔达米尔",
+      "Susa": "苏萨",
+      "Neftcala": "涅夫特恰拉",
+      "Terter": "泰尔泰尔",
+      "Pushkino": "普什基诺",
+      "Goygol": "格伊格尔",
+      "Aghsu": "阿格苏",
+      "Qusar": "库萨雷",
+      "Ujar": "乌贾尔",
+      "Beylagan": "贝拉甘"
+    },
+    "BD": {
+      "Rajshahi": "拉杰沙希",
+      "Mymensingh": "迈门辛",
+      "Barishal": "巴里萨尔"
+    },
+    "BF": {
+      "Fada N'gourma": "法达恩古尔马",
+      "Ziniare": "济尼亚雷",
+      "Manga": "曼加"
+    },
+    "BG": {
+      "Shumen": "舒门",
+      "Yambol": "扬博尔",
+      "Veliko Turnovo": "大特尔诺沃",
+      "Kyustendil": "屈斯滕迪尔",
+      "Smolyan": "斯莫利扬"
+    },
+    "BI": {
+      "Gitega": {
+        "zh": "基特加",
+        "ja": "ギテガ"
+      },
+      "Rumonge": "鲁蒙盖",
+      "Cibitoke": "锡比托凯",
+      "Kayanza": "卡扬扎",
+      "Kirundo": "基伦多"
+    },
+    "BJ": {
+      "Abomey": "阿波美",
+      "Djougou": "朱古",
+      "Natitingou": "纳蒂廷古",
+      "Lokossa": "洛科萨",
+      "Dassa-Zoume": "达萨祖梅",
+      "Aplahoue": "阿普拉韦",
+      "Allada": "阿拉达"
+    },
+    "BN": {
+      "Tutong": "都东"
+    },
+    "BO": {
+      "Santa Cruz de la Sierra": "圣克鲁斯"
+    },
+    "BR": {
+      "Natal": "纳塔尔",
+      "Boa Vista": "博阿维斯塔",
+      "Vitoria": "维多利亚",
+      "Palmas": "帕尔马斯"
+    },
+    "BS": {
+      "Freeport": "自由港"
+    },
+    "BT": {
+      "Tsirang": "茨朗"
+    },
+    "BW": {
+      "Ramotswa": "拉莫茨瓦",
+      "Jwaneng": "茨瓦嫩"
+    },
+    "BY": {
+      "Mahilyow": "莫吉廖夫"
+    },
+    "BZ": {
+      "Orange Walk": "橙步"
+    },
+    "CA": {
+      "Halifax": "哈利法克斯"
+    },
+    "CC": {
+      "West Island": {
+        "zh": "西岛",
+        "ja": "ウェスト島"
+      }
+    },
+    "CD": {
+      "Bukavu": "布卡武",
+      "Isiro": "伊西罗",
+      "Kamina": "卡米纳",
+      "Gemena": "盖梅纳",
+      "Buta": "布塔",
+      "Gbadolite": "巴多利特",
+      "Inongo": "伊农戈",
+      "Boende": "博恩代",
+      "Lusambo": "卢桑博"
+    },
+    "CF": {
+      "Bimbo": "班吉-比姆博",
+      "Carnot": "卡尔诺",
+      "Berberati": "贝尔贝拉蒂",
+      "Bambari": "班巴里",
+      "Bossangoa": "博桑戈阿",
+      "Kaga-Bandoro": "卡加班多罗",
+      "Bangassou": "班加苏",
+      "Paoua": "帕瓦",
+      "Bria": "布里亚",
+      "Sibut": "锡布",
+      "Nola": "诺拉",
+      "Ndele": "恩代莱",
+      "Batangafo": "巴坦加福",
+      "Mbaiki": "姆拜基",
+      "Bozoum": "博祖姆"
+    },
+    "CG": {
+      "Pointe-Noire": "黑角",
+      "Impfondo": "安丰多",
+      "Ouesso": "韦索",
+      "Owando": "奥万多",
+      "Sibiti": "锡比提",
+      "Djambala": "让巴拉"
+    },
+    "CH": {
+      "Sankt Gallen": "圣加仑",
+      "Bellinzona": "贝林佐纳",
+      "Fribourg": "弗里堡",
+      "Zug": "楚格"
+    },
+    "CI": {
+      "Man": "曼",
+      "Seguela": "塞盖拉",
+      "Dimbokro": "丁博克罗"
+    },
+    "CL": {
+      "Chillan": "奇廉",
+      "Coyhaique": "科伊艾克"
+    },
+    "CM": {
+      "Ebolowa": "埃博洛瓦"
+    },
+    "CN": {
+      "Yingshang Chengguanzhen": {
+        "zh": "颍上县",
+        "force": true
+      },
+      "Gangu Chengguanzhen": {
+        "zh": "甘谷县",
+        "force": true
+      },
+      "Bao'an": "宝安",
+      "Minhang": "闵行",
+      "Baoshan": "宝山",
+      "Songjiang": "松江",
+      "Jiading": "嘉定",
+      "Changshu": "常熟",
+      "Cixi": "慈溪",
+      "Qingpu": "青浦",
+      "Putuo": "普陀",
+      "Yangpu": "杨浦",
+      "Luohu District": "罗湖",
+      "Xuhui": "徐汇",
+      "Zhu Cheng City": "诸城",
+      "Jing'an": "静安",
+      "Zhabei": "闸北",
+      "Taicang": "太仓",
+      "Changzhi": "长治",
+      "Changning": "长宁",
+      "Hongkou": "虹口",
+      "Panshan": "盘山",
+      "Jiaozhou": "胶州",
+      "Guli": "古里",
+      "Mianzhu, Deyang, Sichuan": "绵竹",
+      "Chengguan Qu": "城关",
+      "Shouguang": "寿光",
+      "Wafangdian": "瓦房店",
+      "Yongji": "永济",
+      "Basuo": "八所",
+      "Bei'an": "北安",
+      "Guyuan": "固原",
+      "Gaomi": "高密",
+      "Fenghuang": "凤凰",
+      "Anqiu": "安丘",
+      "Nanqiao": "南桥",
+      "Pengze": "彭泽",
+      "Daye": "大冶",
+      "Yunlong": "云龙",
+      "Pizhou": "邳州",
+      "Laixi": "莱西",
+      "Linqu": "临朐",
+      "Qibao": "七宝",
+      "Longling County": "龙陵",
+      "Hulan Ergi": "呼兰",
+      "Dongtai": "东台",
+      "Changle": "昌乐",
+      "Jining": "集宁",
+      "Rugao": "如皋",
+      "Suicheng": "濉城",
+      "Yanzhou": "兖州",
+      "Huayin": "华阴",
+      "Jiyuan": "济源",
+      "Xiantao": "仙桃",
+      "Qingzhou": "青州",
+      "Yuci": "榆次",
+      "Jingling": "京山",
+      "Xintai": "新泰",
+      "Wuxue": "武穴",
+      "Yintai": "银台",
+      "Jinzhou": "金州",
+      "Hangu": "汉沽",
+      "Nyingchi": "林芝",
+      "Beiliu": "北流",
+      "Peicheng": "沛城",
+      "Ezhou": "鄂州",
+      "Haicheng": "海城",
+      "Beipiao": "北票",
+      "Laizhou": "莱州",
+      "Zaoyang": "枣阳",
+      "Zhenping": "镇平",
+      "Pingwu County": "平武",
+      "Xindi": "新堤",
+      "Dongling": "东陵",
+      "Laiyang": "莱阳",
+      "Ulanhot": "乌兰浩特",
+      "Songcheng": "松城",
+      "Fengcheng": "丰城",
+      "Zhicheng": "枝城",
+      "Lianghu": "梁湖",
+      "Guangshui": "广水",
+      "Wujiaqu": "五家渠",
+      "Boshan": "博山",
+      "Pengpu": "彭浦",
+      "Beining": "北宁",
+      "Sujiatun": "苏家屯",
+      "Gongzhuling": "公主岭",
+      "Fuyu": "扶余",
+      "Jiashan": "嘉善",
+      "Jiagedaqi": "加格达奇",
+      "Jiawang": "贾汪",
+      "Puqi": "蒲圻",
+      "Dawukou": "大武口",
+      "Wuda": "乌达",
+      "Shache": "莎车",
+      "Jiangyou": "江油",
+      "Jingzhi": "景芝",
+      "Xiazhen": "夏镇",
+      "Shahecheng": "沙河城",
+      "Jiupu": "九浦",
+      "Huangzhou": "黄州",
+      "Xiulin": "秀林",
+      "Zhoucun": "周村",
+      "Xilin Hot": "锡林浩特",
+      "Lichuan": "利川",
+      "Bao'an Centre": "宝安中心",
+      "Zhujing": "朱泾",
+      "Longjing": "龙井",
+      "Chenggu": "城固",
+      "Yakeshi": "牙克石",
+      "Anliu": "安流",
+      "Mingshui": "明水",
+      "Wayaobu": "瓦窑堡",
+      "Maba": "马坝",
+      "Chengqiao": "城桥",
+      "Kaiyuan": "开原",
+      "Chongfu": "崇福",
+      "Datun": "大屯",
+      "Linshui": "临水",
+      "Jianchang": "建昌",
+      "Zhongxiang": "钟祥",
+      "Jalai Nur": "扎赉诺尔",
+      "Buhe": "埠河",
+      "Xinghua": "兴化",
+      "Yidu": "益都",
+      "Salaqi": "萨拉齐",
+      "Jishu": "吉舒",
+      "Bashan": "巴山",
+      "Hedong": "河东",
+      "Huacheng": "华城",
+      "Xinzhai": "辛寨",
+      "Qincheng": "琴城",
+      "Dongsheng": "东胜",
+      "Linghe": "灵河",
+      "Xingcheng": "兴城",
+      "Yeyuan": "冶源",
+      "Guanhu": "官湖",
+      "Houzhen": "侯镇",
+      "Gongguan": "公馆",
+      "Jinsha": "金沙",
+      "Shenjiamen": "沈家门",
+      "Xiaoshan": "萧山",
+      "Dunhou": "敦厚",
+      "Yishui": "沂水",
+      "Daotian": "道田",
+      "Baijiantan": "白碱滩",
+      "Dalai": "大赉",
+      "Tangwu": "唐吾",
+      "Jiayue": "贾悦",
+      "Yingqiu": "营丘",
+      "Dongcun": "东村",
+      "Danjiangkou": "丹江口",
+      "Huazhou": "化州",
+      "Xingren": "兴仁",
+      "Tanfang": "谭坊",
+      "Lingyuan": "凌源",
+      "Hanting": "寒亭",
+      "Xihe": "西河",
+      "Sishui": "泗水",
+      "Gantang": "甘棠",
+      "Huaidian": "淮店",
+      "Baisha": "白沙",
+      "Xiazhuang": "夏庄",
+      "Dongxing": "东兴",
+      "Linjiacun": "林家村",
+      "Honghe": "红河",
+      "Hanchuan": "汉川",
+      "Tiefu": "铁富",
+      "Xujiang": "旭江",
+      "Mishan": "密山",
+      "Shizilu": "石子路",
+      "Anlong": "安龙",
+      "Helong": "和龙",
+      "Nanding": "南丁",
+      "Laojunmiao": "老君庙",
+      "Dacheng": "大成",
+      "Mianyang": "沔阳",
+      "Dazhong": "大中",
+      "Dongxia": "东夏",
+      "Yinma": "尹马",
+      "Wensu": "温宿",
+      "Hecun": "合村",
+      "Ningyang": "宁阳",
+      "Yuanping": "原平",
+      "Aoxi": "敖溪",
+      "Liping": "黎平",
+      "Changqing": "长清",
+      "Dali Old Town": "大理古城",
+      "Xindian": "辛店",
+      "Yima": "义马",
+      "Qiaoguan": "桥官",
+      "Anguo": "安国",
+      "Yudong": "鱼洞",
+      "Xiugu": "秀谷",
+      "Feicheng": "肥城",
+      "Shanting": "山亭",
+      "Nianzhuang": "碾庄",
+      "Zhuanghe": "庄河",
+      "Baoying": "宝应",
+      "Dashiqiao": "大石桥",
+      "Xichang": "西场",
+      "Huanglou": "黄楼",
+      "Dushan": "独山",
+      "Songlou": "宋楼",
+      "Taishing": "大兴",
+      "Wuyang": "武阳",
+      "Chaigou": "柴沟",
+      "Xinzhou": "新洲",
+      "Shitanjing": "石炭井",
+      "Hengbei": "横北",
+      "Yishan": "仪山",
+      "Pingyi": "平邑",
+      "Linping": "临平",
+      "Huankou": "欢口",
+      "Jishui": "吉水",
+      "Baicheng": "白城",
+      "Damiao": "大庙",
+      "Jiexiu": "介休",
+      "Hunchun": "珲春",
+      "Sandu": "三都",
+      "Zhaodun": "赵墩",
+      "Yaxing": "牙星",
+      "Qiuji": "邱集",
+      "Shouxian": "寿县",
+      "Kanjia": "坎家",
+      "Chaoyang": "朝阳",
+      "Huilong": "汇龙",
+      "Shancheng": "山城",
+      "Zhangzhai": "张寨",
+      "Xinmin": "新民",
+      "Zhangzhuang": "张庄",
+      "Yunyang": "云阳",
+      "Lanxi": "兰溪",
+      "Genhe": "根河",
+      "Heguan": "河官",
+      "Shixing": "始兴",
+      "Dongdu": "东都",
+      "Dongkan": "东坎",
+      "Jiangzhuang": "姜庄",
+      "Xinzhi": "新绛",
+      "Zhoucheng": "周城",
+      "Caidian": "蔡甸",
+      "Xiuyan": "岫岩",
+      "Huashan": "华山",
+      "Anlu": "安陆",
+      "Kuandian": "宽甸",
+      "Shenzhen City Centre": "深圳中心",
+      "Poyang": "鄱阳",
+      "Gongchangling": "弓长岭",
+      "Shiguai": "石拐",
+      "Fuyang": "富阳",
+      "Haining": "海宁",
+      "Shankou": "山口",
+      "Fengping": "丰平",
+      "Chengxian Chengguanzhen": "成县",
+      "Jiehu": "洁湖",
+      "Linjiang": "临江",
+      "Xiaoshi": "小市",
+      "Heishan": "黑山",
+      "Pengcheng": "彭城",
+      "Mingguang": "明光",
+      "Minggang": "明港",
+      "Tangzhai": "唐寨",
+      "Xunyang": "旬阳",
+      "Songjianghe": "松江河",
+      "Luorong": "洛容",
+      "Lueeyang Chengguanzhen": "略阳",
+      "Gaoliu": "高柳",
+      "Pingzhuang": "平庄",
+      "Tianliu": "田柳",
+      "Wanggou": "王沟",
+      "Shajing Town": "沙井",
+      "Shaozhuang": "邵庄",
+      "Chengyang": "城阳",
+      "Sanchazi": "三岔子",
+      "Daxu": "大许",
+      "Huinan": "辉南",
+      "Beimeng": "北孟",
+      "Huanren": "桓仁",
+      "Yaoji": "窑集",
+      "Mengyin": "蒙阴",
+      "Jietou": "街头",
+      "Bayiji": "八义集",
+      "Shangkou": "上口",
+      "Dashitou": "大石头",
+      "Huanghua": "黄华",
+      "Babu": "八步",
+      "Yebaishou": "叶柏寿",
+      "Bianzhuang": "汴庄",
+      "Suyangshan": "宿羊山",
+      "Hepingjie": "和平街",
+      "Liuxin": "柳新",
+      "Caoqiao": "曹桥",
+      "Kunyang": "昆阳",
+      "Shikang": "石康",
+      "Fenggang": "丰岗",
+      "Picheng": "邳城",
+      "Dengbu": "邓埠",
+      "Yangcun": "杨村",
+      "Lulou": "鹿楼",
+      "Changcheng": "昌城",
+      "Liuku": "六库",
+      "Shizhai": "师寨",
+      "Jinggou": "景沟",
+      "Fanlou": "范楼",
+      "Miaojie": "庙街",
+      "Yucheng": "鱼城",
+      "Pingyin": "平阴",
+      "Qingshuping": "青树坪",
+      "Zhangji": "张集",
+      "Fengyi": "凤仪",
+      "Nandu": "南渡",
+      "Taoluo": "桃落",
+      "Xiangzhou": "相州",
+      "Alihe": "阿里河",
+      "Jianguang": "建光",
+      "Dongning": "东宁",
+      "Tianchang": "天长",
+      "Xifeng": "西丰",
+      "Datong": "大通",
+      "Nanhu": "南湖",
+      "Yicheng": "宜城",
+      "Erdaojiang": "二道江",
+      "Xixiang": "西乡",
+      "Yaowan": "窑湾",
+      "Mujiayingzi": "木家营子",
+      "Taitou": "台头",
+      "Wujing": "吴井",
+      "Zhijiang": "枝江",
+      "Gucheng": "古城",
+      "Taozhuang": "陶庄",
+      "Zhujiajiao": "朱家角",
+      "Baimajing": "白马井",
+      "Wenshang": "汶上",
+      "Huiqu": "回曲",
+      "Panlongcheng Jingji Kaifaqu": "盘龙城",
+      "Hongjiang": "洪江",
+      "Tashan": "塔山",
+      "Haizhou": "海州",
+      "Longgu": "龙固",
+      "Yigou": "一沟",
+      "Xiaoweizhai": "小围寨",
+      "Suozhen": "索镇",
+      "Shiqiaozi": "石桥子",
+      "Fenyi": "分宜",
+      "Xinglongshan": "兴隆山",
+      "Shibuzi": "石埠子",
+      "Lixian": "礼县",
+      "Dongxi": "东溪",
+      "Hancheng": "韩城",
+      "Santangpu": "三塘铺",
+      "Maocun": "茅村",
+      "Huangpi": "黄陂",
+      "Yantongshan": "烟筒山",
+      "Guiren": "古邳",
+      "Zhongxing": "中兴",
+      "Yingli": "营里",
+      "Baishishan": "白石山",
+      "Zhuzhai": "朱寨",
+      "Jinji": "金鸡",
+      "Weining": "威宁",
+      "Yashan": "牙山",
+      "Changleng": "昌冷",
+      "Sanchuan": "三川",
+      "Sitou": "寺头",
+      "Gaogou": "高沟",
+      "Linghai": "凌海",
+      "Xuzhuang": "徐庄",
+      "Qinnan": "秦南",
+      "Dalianwan": "大连湾",
+      "Zhuyi": "竹溪",
+      "Lanshan": "兰山",
+      "Anjiang": "安江",
+      "Ahu": "阿湖",
+      "Liguo": "利国",
+      "Huangnihe": "黄泥河",
+      "Liuji": "刘集",
+      "Liangzhai": "梁寨",
+      "Liaozhong": "辽中",
+      "Wangji": "王集",
+      "Fangcun": "房村",
+      "Yongjian": "永建",
+      "Lingcheng": "灵城",
+      "Buzhuang": "卜庄",
+      "Shiquan": "石泉",
+      "Yangtun": "杨屯",
+      "Yousuo": "右所",
+      "Zhaozhuang": "赵庄",
+      "Tangzhang": "唐张",
+      "Lingwu": "灵武",
+      "Taoyuan": "桃园",
+      "Beisu": "北宿",
+      "Malingshan": "马陵山",
+      "Hualong": "华龙",
+      "Puji": "蒲集",
+      "Xingqiao": "星桥",
+      "Dapeng": "大彭",
+      "Sanzhuang": "三庄",
+      "Jitai": "纪台",
+      "Zizhuang": "紫庄",
+      "Liangji": "梁集",
+      "Dashahe": "大沙河",
+      "Weimiao": "魏庙",
+      "Qishan": "栖山",
+      "Zepu": "泽普",
+      "Liuquan": "刘泉",
+      "Zhefang": "遮放",
+      "Gangshang": "港上",
+      "Guanshan": "官山",
+      "Guanzhuang": "管庄",
+      "Shanji": "单集",
+      "Hanyuan": "汉源",
+      "Changdian": "常店",
+      "Xinglou": "兴楼",
+      "Mihe": "弥河",
+      "Dongcheng": "东城",
+      "Jinjiang": "金江",
+      "Jiawang Zhen": "贾汪",
+      "Gupi": "古邳",
+      "Xinhe": "新河",
+      "Ningdong": "宁东",
+      "Liutuan": "柳疃",
+      "Chenlou": "陈楼",
+      "Qing'an": "青安",
+      "Qianliu": "前六",
+      "Weiji": "魏集",
+      "Wangfen": "王坟",
+      "Shunhe": "顺河",
+      "Gongqingcheng": "共青城",
+      "Hekou": "河口",
+      "Hanwang": "汉王",
+      "Sunlou": "孙楼",
+      "Nanpeng": "南彭",
+      "Shaji": "沙集",
+      "Sankeshu": "三棵树",
+      "Biantang": "汴塘",
+      "Chefushan": "车辐山",
+      "Shuanggou": "双沟",
+      "Gudong": "古东",
+      "Pingli": "平利",
+      "Zouzhuang": "邹庄",
+      "Dangjiang": "党江",
+      "Nongzhang": "弄璋",
+      "Yanguan": "盐关",
+      "Shangyun": "上允",
+      "Dahuangshan": "大黄山",
+      "Hegou": "何沟",
+      "Qisha": "七沙",
+      "Jiushan": "九山",
+      "Qingshanquan": "青山泉",
+      "Beiwangli": "北旺里",
+      "Gaozuo": "高作",
+      "Zhigou": "峙沟",
+      "Huangji": "黄集",
+      "Zhengji": "郑集",
+      "Jiangping": "江平",
+      "Baichihe": "百尺河",
+      "Tushan": "土山",
+      "Ergun": "额尔古纳",
+      "Daizhuang": "戴庄",
+      "Qushi": "曲石",
+      "Guangtong": "广通",
+      "Mali": "麻力",
+      "Wangyuan": "望远",
+      "Yinggen": "营根",
+      "Wuduan": "吴端",
+      "Shiji": "石集",
+      "Naliang": "那良",
+      "Chongxing": "崇兴",
+      "Anyuan": "安远",
+      "Sihu": "四湖",
+      "Mutang": "木棠",
+      "Shiwan": "石湾",
+      "Gangtou": "港头",
+      "Chenghai": "城海",
+      "Liji": "李集",
+      "Huixian Chengguanzhen": "徽县",
+      "Xilinji": "西林吉",
+      "Mangbang": "芒棒",
+      "Lequn": "乐群",
+      "Jinzhongzi": "金冢子",
+      "Shili": "十里",
+      "Balu": "八路",
+      "Anxiang": "安香",
+      "Xinxing": "新兴",
+      "Zhancheng": "占城",
+      "Miaozi": "庙子",
+      "Fate": "发特",
+      "Longshan": "龙山",
+      "Jinshan": "金山",
+      "Yingpan": "营盘",
+      "Wayao": "瓦窑",
+      "Tange": "滩歌",
+      "Qina": "期纳",
+      "Zhutang": "竹塘",
+      "Shidui": "石堆",
+      "Mapo": "马坡",
+      "Puqiakeqi": "普恰克其",
+      "Heqiao": "合桥",
+      "Yizhuang": "义庄",
+      "Haitou": "海头",
+      "Wuying": "五营",
+      "Lianhua": "莲花",
+      "Zhelou": "者楼",
+      "Liushan": "柳山",
+      "Wushan": "五山",
+      "Baocheng": "保城",
+      "Shawei": "沙尾",
+      "Wuhe": "勐腊",
+      "Guofu": "郭扶",
+      "Heba": "河坝",
+      "Haojiaqiao": "郝家桥",
+      "Shaodian": "邵店",
+      "Rongjiang": "容江",
+      "Huzhai": "湖寨",
+      "Anfu": "安伏",
+      "Shunzhou": "顺州",
+      "Baliwan": "八里湾",
+      "Dasheng": "大盛",
+      "Taolin": "桃林",
+      "Zhonghe": "中和",
+      "Yengisar": "英吉沙",
+      "Shuangtang": "双塘",
+      "Shagang": "沙岗",
+      "Chahe": "岔河",
+      "Taiping": "太平",
+      "Xihu": "西湖",
+      "Luoyu": "罗玉",
+      "Jingui": "金贵",
+      "Dachang Shandao": "大长山岛",
+      "Nuozhadu": "糯扎渡",
+      "Shiqiao": "石桥",
+      "Tiaoshi": "跳石",
+      "Heshan": "河山",
+      "Ruidian": "瑞滇",
+      "Zheshan": "柘山",
+      "Hadapu Zhen": "哈达铺",
+      "Leifeng": "雷峰",
+      "Yitang": "议堂",
+      "Yinqiao Zhen": "银桥",
+      "Jinqiao": "金桥",
+      "Kuangshi": "矿市",
+      "Guangcun": "光村",
+      "Lijun": "李俊",
+      "Dashi": "大石",
+      "Kuanchuan": "宽川",
+      "Mazhan": "马站",
+      "Jiangxi": "江西",
+      "Puchuan": "蒲川",
+      "Weidian": "渭店",
+      "Shuikou": "水口",
+      "Dafengdong": "大风洞",
+      "Yuanyang": "远阳",
+      "Longchi": "龙池",
+      "Luotang": "略塘",
+      "Yanzibu": "燕子埠",
+      "Xiasi": "下司",
+      "Fuhuan": "福欢",
+      "Changxin": "常信",
+      "Lushan": "炉山",
+      "Longcheng": "陇城",
+      "Bojia": "波家",
+      "Renhe": "仁和",
+      "Hehua": "河花",
+      "Chentuan": "陈疃",
+      "Minning": "闽宁",
+      "Pianjiao": "片角",
+      "Xiyu": "西峪",
+      "Wangwu": "王五",
+      "Shandan": "山丹",
+      "Ligang": "立岗",
+      "Nanling": "南岭",
+      "Xingdaohu": "星岛湖",
+      "Xingfeng": "杏丰",
+      "Luhe": "卤河",
+      "Lanyang": "兰洋",
+      "Jiuhe": "九河",
+      "Nanfeng": "南丰",
+      "Fujia": "符家",
+      "Xinlin": "新林",
+      "Wangpu": "王铺",
+      "Xiaying": "夏营",
+      "Guanlong": "观龙",
+      "Lintan Chengguanzhen": "临潭",
+      "Labuleng": "拉卜楞",
+      "Tongyangdao": "铜阳岛",
+      "Beihai": "北海",
+      "Shibao": "石堡",
+      "Panghai": "旁海",
+      "Wangyin": "王银",
+      "Zhongchao": "中潮",
+      "Chapchal": "察布查尔",
+      "Yongxing": "永兴",
+      "Paosha": "泡沙",
+      "Fubang": "福邦",
+      "Renxian": "任贤",
+      "Shangchong": "上冲",
+      "Liuping": "刘坪",
+      "Judian": "巨甸",
+      "Hongzhou": "洪州",
+      "Haidong Zhen": "海东",
+      "Xinyingpan": "新营盘",
+      "Shigu": "石鼓",
+      "Yongning": "永宁",
+      "Wanqiao Zhen": "湾桥",
+      "Heqing": "合庆",
+      "Wenheng": "文亨",
+      "Xincheng": "新城",
+      "Wutongshu": "梧桐树",
+      "Baijiawan": "白家湾",
+      "Burqin": "布尔津",
+      "Shilongba": "石龙坝",
+      "Hongqiao": "红桥",
+      "Tuqiang": "图强",
+      "Xinglong": "兴隆",
+      "Fuyun": "富蕴",
+      "Lichuan Zhen": "理川",
+      "Waina": "外纳",
+      "Jiangluo": "江洛",
+      "Suhe": "苏合",
+      "Longchang": "龙场",
+      "Nuofu": "糯福",
+      "Wushipai": "五十牌",
+      "Kaitang": "开堂",
+      "Lingquan": "灵泉",
+      "Shaoyu": "邵峪",
+      "Jiuchao": "九潮",
+      "Yongping": "永平",
+      "Gaolou": "高楼",
+      "Bibo": "比波",
+      "Xiaochuan": "小川",
+      "Wangyao": "王窑",
+      "Liulin": "柳林",
+      "Paipu": "排浦",
+      "Eman": "峨蔓",
+      "Huimin": "惠民",
+      "Siwei": "四维",
+      "Wanshui": "万水",
+      "Shajing Residential District": "沙井",
+      "Long'e": "龙额",
+      "Dalain Hob": "达来呼布",
+      "Shenzhenwan": "深圳湾",
+      "Zhouxi": "舟溪",
+      "Zhuzilin": "竹子林",
+      "Ehen Hudag": "额很乌达格",
+      "Shuangjiang": "双江",
+      "Lixin": "立新",
+      "Zhaoxing": "肇兴",
+      "Xigaoshan": "西高山",
+      "Ersheng": "二圣",
+      "Erenhot": "二连浩特",
+      "Xinhua": "新华",
+      "Jifeng": "稽峰",
+      "Bikou": "碧口",
+      "Mujia": "木嘉",
+      "Dazhuang": "大庄",
+      "Dianga": "电尕",
+      "Dashan": "大山",
+      "Yumen": "玉门",
+      "Wujia": "武家",
+      "Fazhanhe": "发展河",
+      "Yulong": "玉龙",
+      "Donghui": "东回",
+      "Taixing": "泰兴",
+      "Beidao": "北道",
+      "Oroqen Zizhiqi": "阿里河",
+      "E'erguna": "额尔古纳",
+      "Zuitai": "嘴台",
+      "Qianhu": "前胡"
+    },
+    "CO": {
+      "Santa Marta": "圣玛尔塔",
+      "Monteria": "蒙特里亚",
+      "Pereira": "佩雷拉",
+      "Pasto": "帕斯托",
+      "Neiva": "内瓦",
+      "Armenia": "亚美尼亚城",
+      "Riohacha": "里奥阿查",
+      "Florencia": "弗洛伦西亚",
+      "San Andres": "圣安德烈斯",
+      "San Jose del Guaviare": "圣何塞-德尔瓜维亚雷",
+      "Mitu": "米图",
+      "Puerto Carreno": "卡雷尼奥港"
+    },
+    "CU": {
+      "Camagueey": "卡马圭",
+      "Guantanamo": "关塔那摩",
+      "Bayamo": "巴亚莫",
+      "Pinar del Rio": "比那尔德里奥",
+      "Ciego de Avila": "谢戈德阿维拉",
+      "Sancti Spiritus": "圣斯皮里图斯",
+      "Artemisa": "阿尔特米萨",
+      "San Jose de las Lajas": "圣何塞-德拉斯拉哈斯"
+    },
+    "CV": {
+      "Espargos": "埃斯帕尔戈斯",
+      "Assomada": "阿索马达"
+    },
+    "CY": {
+      "Paphos": "帕福斯"
+    },
+    "CZ": {
+      "Ceske Budejovice": "捷克布杰约维采",
+      "Usti nad Labem": "拉贝河畔乌斯季",
+      "Zlin": "兹林",
+      "Jihlava": "伊赫拉瓦"
+    },
+    "DJ": {
+      "Ali Sabih": "阿里萨比赫",
+      "Arta": "阿尔塔"
+    },
+    "DK": {
+      "Hillerod": "希勒罗兹"
+    },
+    "DO": {
+      "Santo Domingo Este": "东圣多明各",
+      "San Pedro de Macoris": "圣佩德罗-德马科里斯",
+      "San Cristobal": "圣克里斯托瓦尔",
+      "San Francisco de Macoris": "圣弗朗西斯科-德马科里斯",
+      "Salvaleon de Higueey": "萨尔瓦莱昂-德伊圭",
+      "Santa Cruz de Barahona": "巴拉奥纳",
+      "Bonao": "博瑙",
+      "San Juan de la Maguana": "圣胡安-德拉马格瓦纳",
+      "Bani": "巴尼",
+      "Moca": "莫卡",
+      "Azua": "阿苏阿",
+      "Mao": "马奥",
+      "Salcedo": "萨尔塞多",
+      "Cotui": "科图伊",
+      "Hato Mayor del Rey": "阿托马约尔-德尔雷伊",
+      "Nagua": "纳瓜",
+      "Santa Cruz de El Seibo": "圣克鲁斯-德尔塞伊沃",
+      "San Jose de Ocoa": "圣何塞-德奥科阿",
+      "Neiba": "内巴",
+      "San Fernando de Monte Cristi": "蒙特克里斯蒂",
+      "Dajabon": "达哈翁",
+      "San Ignacio de Sabaneta": "萨巴内塔",
+      "Monte Plata": "蒙特普拉塔"
+    },
+    "DZ": {
+      "Djelfa": "杰勒法",
+      "Bejaia": "贝贾亚",
+      "Bordj Bou Arreridj": "波尔吉布阿雷里吉",
+      "M'Sila": "姆西拉",
+      "Relizane": "雷利赞",
+      "Khenchela": "汉舍莱",
+      "El Bayadh": "巴亚德",
+      "Ain Temouchent": "艾因特穆尚特",
+      "Bouira": "布依拉",
+      "Oum el Bouaghi": "乌姆布阿基",
+      "Tissemsilt": "蒂斯姆西尔特",
+      "Mila": "米拉",
+      "Ouled Djellal": "乌莱德杰拉勒",
+      "Ain Defla": "艾因迪夫拉",
+      "El Meghaier": "梅盖尔",
+      "Boumerdas": "布迈尔代斯",
+      "Timimoun": "蒂米蒙"
+    },
+    "EC": {
+      "Santo Domingo de los Colorados": "圣多明各-德洛斯科洛拉多斯",
+      "Ibarra": "伊瓦拉",
+      "Esmeraldas": {
+        "zh": "埃斯梅拉达斯",
+        "ja": "エスメラルダス"
+      },
+      "Puerto Francisco de Orellana": "奥雷利亚纳港",
+      "Macas": "马卡斯",
+      "Zamora": "萨莫拉"
+    },
+    "EE": {
+      "Tartu": "塔尔图",
+      "Paernu": {
+        "zh": "派尔努",
+        "ja": "パルヌ"
+      }
+    },
+    "EG": {
+      "Giza": "吉萨",
+      "Al Mansurah": {
+        "zh": "曼苏拉",
+        "ja": "マンスーラ"
+      },
+      "Tanta": {
+        "zh": "坦塔",
+        "ja": "タンタ"
+      },
+      "Assiut": {
+        "zh": "艾斯尤特",
+        "ja": "アスユート"
+      },
+      "Al Fayyum": {
+        "zh": "法尤姆",
+        "ja": "ファイユーム"
+      },
+      "Damanhur": {
+        "zh": "达曼胡尔",
+        "ja": "ダマンフール"
+      },
+      "Minya": {
+        "zh": "明亚",
+        "ja": "ミニヤ"
+      },
+      "Bani Suwayf": {
+        "zh": "贝尼苏韦夫",
+        "ja": "バニースウェイフ"
+      },
+      "Shibin al Kawm": {
+        "zh": "希宾库姆",
+        "ja": "シビンエルコム"
+      },
+      "Qina": {
+        "zh": "基纳",
+        "ja": "ケナ"
+      },
+      "Kafr ash Shaykh": {
+        "zh": "谢赫村",
+        "ja": "カフル・アッシャイフ"
+      },
+      "Banha": {
+        "zh": "本哈",
+        "ja": "ベンハ"
+      },
+      "Marsa Matruh": {
+        "zh": "马特鲁港",
+        "ja": "マルサ・マトルーフ"
+      },
+      "Al Kharjah": {
+        "zh": "哈里杰",
+        "ja": "アルハーリジャ"
+      },
+      "El-Tor": {
+        "zh": "图尔",
+        "ja": "エルトゥール"
+      }
+    },
+    "EH": {
+      "Dakhla": {
+        "zh": "达赫拉",
+        "ja": "ダフラ"
+      }
+    },
+    "ER": {
+      "Mendefera": {
+        "zh": "门德费拉",
+        "ja": "メンデフェラ"
+      },
+      "Barentu": {
+        "zh": "巴伦图",
+        "ja": "バレントゥ"
+      }
+    },
+    "ES": {
+      "Palma": "帕尔马",
+      "Gasteiz / Vitoria": "维多利亚",
+      "Ceuta": {
+        "zh": "休达",
+        "ja": "セウタ"
+      },
+      "Merida": "梅里达"
+    },
+    "ET": {
+      "Addis Ababa": {
+        "zh": "亚的斯亚贝巴",
+        "ja": "アディスアベバ"
+      },
+      "Awasa": {
+        "zh": "阿瓦萨",
+        "ja": "アワサ"
+      },
+      "Dire Dawa": {
+        "zh": "德雷达瓦",
+        "ja": "ディレダワ"
+      },
+      "Sodo": {
+        "zh": "索多",
+        "ja": "ソド"
+      },
+      "Hosa'ina": {
+        "zh": "霍萨伊纳",
+        "ja": "ホサイナ"
+      },
+      "Gambela": {
+        "zh": "甘贝拉",
+        "ja": "ガンベラ"
+      },
+      "Asosa": {
+        "zh": "阿索萨",
+        "ja": "アソサ"
+      },
+      "Bonga": {
+        "zh": "邦加",
+        "ja": "ボンガ"
+      },
+      "Samara": {
+        "zh": "塞梅拉",
+        "ja": "サマラ"
+      }
+    },
+    "FI": {
+      "Mikkeli": "米凯利"
+    },
+    "FJ": {
+      "Labasa": {
+        "zh": "兰巴萨",
+        "ja": "ランバサ"
+      }
+    },
+    "GA": {
+      "Oyem": "奥耶姆",
+      "Mouila": {
+        "zh": "穆伊拉",
+        "ja": "ムイラ"
+      },
+      "Tchibanga": {
+        "zh": "奇班加",
+        "ja": "チバンガ"
+      },
+      "Koulamoutou": {
+        "zh": "库拉穆图",
+        "ja": "クラムトゥ"
+      },
+      "Makokou": {
+        "zh": "马科库",
+        "ja": "マコク"
+      }
+    },
+    "GD": {
+      "Saint George's": {
+        "zh": "圣乔治",
+        "ja": "セントジョージズ"
+      }
+    },
+    "GE": {
+      "Kutaisi": "库塔伊西",
+      "Rustavi": {
+        "zh": "鲁斯塔维",
+        "ja": "ルスタヴィ"
+      },
+      "Zugdidi": {
+        "zh": "祖格迪迪",
+        "ja": "ズグディディ"
+      },
+      "Telavi": {
+        "zh": "泰拉维",
+        "ja": "テラヴィ"
+      }
+    },
+    "GH": {
+      "Tamale": {
+        "zh": "塔马利",
+        "ja": "タマレ"
+      },
+      "Ho": "霍",
+      "Techiman": {
+        "zh": "特希曼",
+        "ja": "テチマン"
+      },
+      "Wa": {
+        "zh": "瓦",
+        "ja": "ワ"
+      },
+      "Damongo": {
+        "zh": "达蒙戈",
+        "ja": "ダモンゴ"
+      },
+      "Dambai": {
+        "zh": "丹拜",
+        "ja": "ダンバイ"
+      },
+      "Goaso": {
+        "zh": "戈阿索",
+        "ja": "ゴアソ"
+      },
+      "Nalerigu": {
+        "zh": "纳莱里古",
+        "ja": "ナレリグ"
+      }
+    },
+    "GN": {
+      "Nzerekore": "恩泽雷科雷",
+      "Kankan": "康康",
+      "Kindia": {
+        "zh": "金迪亚",
+        "ja": "キンディア"
+      },
+      "Mamou": {
+        "zh": "马穆",
+        "ja": "マム"
+      },
+      "Faranah": {
+        "zh": "法拉纳",
+        "ja": "ファラナ"
+      },
+      "Boke": {
+        "zh": "博凯",
+        "ja": "ボケ"
+      }
+    },
+    "GR": {
+      "Larisa": {
+        "zh": "拉里萨",
+        "ja": "ラリサ"
+      },
+      "Lamia": {
+        "zh": "拉米亚",
+        "ja": "ラミア"
+      },
+      "Kozani": {
+        "zh": "科扎尼",
+        "ja": "コザニ"
+      },
+      "Tripoli": {
+        "zh": "特里波利",
+        "ja": "トリポリ"
+      }
+    },
+    "GT": {
+      "Guatemala City": {
+        "zh": "危地马拉城",
+        "ja": "グアテマラシティ"
+      },
+      "Jalapa": {
+        "zh": "哈拉帕",
+        "ja": "ハラパ"
+      },
+      "Escuintla": "埃斯昆特拉",
+      "Jutiapa": {
+        "zh": "胡蒂亚帕",
+        "ja": "フティアパ"
+      },
+      "Chiquimula": {
+        "zh": "奇基穆拉",
+        "ja": "チキムラ"
+      },
+      "Totonicapan": {
+        "zh": "托托尼卡潘",
+        "ja": "トトニカパン"
+      },
+      "Chimaltenango": {
+        "zh": "奇马尔特南戈",
+        "ja": "チマルテナンゴ"
+      },
+      "Retalhuleu": {
+        "zh": "雷塔卢莱乌",
+        "ja": "レタルレウ"
+      },
+      "Santa Cruz del Quiche": {
+        "zh": "圣克鲁斯-德尔基切",
+        "ja": "サンタクルスデルキチェ"
+      },
+      "Mazatenango": {
+        "zh": "马萨特南戈",
+        "ja": "マサテナンゴ"
+      },
+      "Salama": {
+        "zh": "萨拉马",
+        "ja": "サラマ"
+      },
+      "Zacapa": {
+        "zh": "萨卡帕",
+        "ja": "サカパ"
+      },
+      "Solola": {
+        "zh": "索洛拉",
+        "ja": "ソロラ"
+      },
+      "Cuilapa": {
+        "zh": "奎拉帕",
+        "ja": "クイラパ"
+      },
+      "Guastatoya": {
+        "zh": "瓜斯塔托亚",
+        "ja": "グアスタトヤ"
+      }
+    },
+    "GW": {
+      "Gabu": {
+        "zh": "加布",
+        "ja": "ガブ"
+      },
+      "Bafata": {
+        "zh": "巴法塔",
+        "ja": "バファタ"
+      }
+    },
+    "GY": {
+      "Linden": {
+        "zh": "林登",
+        "ja": "リンデン"
+      }
+    },
+    "HK": {
+      "Victoria": "维多利亚城",
+      "Tseung Kwan O": "将军澳",
+      "Fanling": "粉岭",
+      "Kowloon City Centre": "九龙城",
+      "Tung Chung": "东涌",
+      "Shap Pat Heung": "十八乡",
+      "Pok Fu Lam": "薄扶林",
+      "Nam Cheong": "南昌",
+      "Kowloon West End": "西九龙",
+      "LOHAS Park": "日出康城",
+      "Pat Heung": "八乡",
+      "Whampoa": "黄埔",
+      "Choi Wan": "彩云",
+      "Mei Foo Sun Chuen": "美孚新邨",
+      "Tai Koo": "太古",
+      "Taikoo Shing": "太古城",
+      "Whampoa Garden": "黄埔花园",
+      "Lower Wong Tai Sin Estate (I & II)": "下黄大仙",
+      "South Horizons": "海怡半岛",
+      "South Horizons (Estate)": "海怡半岛",
+      "Shek Kip Mei Estate": "石硖尾",
+      "Choi Wan Estate (I & II)": "彩云",
+      "Wu Kai Sha": "乌溪沙",
+      "Laguna City": "丽港城",
+      "Tsz Ching Estate": "慈正",
+      "Fairview Park": "锦绣花园",
+      "Cheung Chau": "长洲",
+      "Shui Chuen O": "水泉澳",
+      "Olympic": "奥运",
+      "Siu Sai Wan Estate": "小西湾",
+      "So Uk Estate": "苏屋",
+      "Tak Long Estate": "德朗",
+      "Keng Hau": "坑口",
+      "Un Chau Estate": "元州",
+      "Lei Tung Estate": "利东",
+      "Hok Yuen": "鹤园",
+      "Laguna Verde": "海逸豪园",
+      "Heng Fa Chuen": "杏花邨",
+      "Aldrich Bay": "爱秩序湾",
+      "Choi Hung Estate": "彩虹",
+      "Oi Man Estate": "爱民",
+      "Discovery Park": "愉景新城",
+      "Chuk Yuen North Estate": "竹园北",
+      "Wang Tau Hom": "横头磡",
+      "Pak Tin Estate": "白田",
+      "Wang Tau Hom Estate": "横头磡",
+      "Kam Ying": "锦英",
+      "Sun Tin Wai": "新田围",
+      "Sam Shing": "三圣",
+      "Wong Chuk Hang": "黄竹坑",
+      "Yeung Uk Tsuen": "杨屋村",
+      "Braemar Hill": "宝马山",
+      "Hoi Lai Estate": "海丽",
+      "Mount Davis": "摩星岭",
+      "Pok Hong": "博康",
+      "Fu Cheong Estate": "富昌",
+      "Lee On": "利安",
+      "Butterfly": "蝴蝶",
+      "Prince Edward": "太子",
+      "Mid Levels": "半山",
+      "Tung Tau Estate": "东头",
+      "City Garden": "城市花园",
+      "Yiu Tung Estate": "耀东",
+      "Mei Foo": "美孚",
+      "Kai Tak": "启德",
+      "Tsing Yi": "青衣"
+    },
+    "HN": {
+      "Ciudad Choluteca": {
+        "zh": "乔卢特卡",
+        "ja": "チョルテカ"
+      },
+      "Comayagua": {
+        "zh": "科马亚瓜",
+        "ja": "コマヤグア"
+      },
+      "Juticalpa": {
+        "zh": "胡蒂卡尔帕",
+        "ja": "フティカルパ"
+      },
+      "La Paz": {
+        "zh": "拉巴斯",
+        "ja": "ラパス"
+      },
+      "Yoro": {
+        "zh": "约罗",
+        "ja": "ヨロ"
+      },
+      "Santa Barbara": {
+        "zh": "圣巴巴拉",
+        "ja": "サンタバルバラ"
+      }
+    },
+    "HR": {
+      "Rijeka": "里耶卡",
+      "Osijek": "奥西耶克"
+    },
+    "HT": {
+      "Miragoane": {
+        "zh": "米拉戈阿讷",
+        "ja": "ミラゴアーヌ"
+      },
+      "Gonaives": {
+        "zh": "戈纳伊夫",
+        "ja": "ゴナイーヴ"
+      }
+    },
+    "HU": {
+      "Szeged": {
+        "zh": "塞格德",
+        "ja": "セゲド"
+      }
+    },
+    "ID": {
+      "Makassar": "望加锡",
+      "Serang": {
+        "zh": "西冷",
+        "ja": "セラン"
+      },
+      "Jambi City": {
+        "zh": "占碑",
+        "ja": "ジャンビ"
+      },
+      "Palu": {
+        "zh": "帕卢",
+        "ja": "パル"
+      },
+      "Sorong": {
+        "zh": "索龙",
+        "ja": "ソロン"
+      },
+      "Pangkalpinang": {
+        "zh": "邦加槟港",
+        "ja": "パンカルピナン"
+      },
+      "Gorontalo": {
+        "zh": "哥伦打洛",
+        "ja": "ゴロンタロ"
+      },
+      "Tanjung Selor": {
+        "zh": "丹戎施洛",
+        "ja": "タンジュンセロル"
+      },
+      "Nabire": {
+        "zh": "纳比雷",
+        "ja": "ナビレ"
+      },
+      "Wamena": {
+        "zh": "瓦梅纳",
+        "ja": "ワメナ"
+      },
+      "Sofifi": {
+        "zh": "索菲菲",
+        "ja": "ソフィフィ"
+      }
+    },
+    "IL": {
+      "Ariel": {
+        "zh": "阿里埃勒",
+        "ja": "アリエル"
+      }
+    },
+    "IN": {
+      "Bhubaneswar": "布巴内什瓦尔",
+      "Gandhinagar": "甘地讷格尔",
+      "Imphal": "因帕尔",
+      "Itanagar": "伊塔纳加尔"
+    },
+    "IQ": {
+      "Erbil": "埃尔比勒",
+      "Sulaymaniyah": {
+        "zh": "苏莱曼尼亚",
+        "ja": "スレイマニヤ"
+      },
+      "Nasiriyah": "纳西里耶",
+      "Al 'Amarah": {
+        "zh": "阿马拉",
+        "ja": "アマラ"
+      },
+      "Al Diwaniyah": {
+        "zh": "迪瓦尼耶",
+        "ja": "ディワニヤ"
+      },
+      "Al-Kut": {
+        "zh": "库特",
+        "ja": "クート"
+      },
+      "As Samawah": {
+        "zh": "萨马沃",
+        "ja": "サマーワ"
+      }
+    },
+    "IR": {
+      "Orumiyeh": {
+        "zh": "乌尔米耶",
+        "ja": "オルーミーイェ"
+      },
+      "Hamadan": {
+        "zh": "哈马丹",
+        "ja": "ハマダーン"
+      },
+      "Arak": {
+        "zh": "阿拉克",
+        "ja": "アラーク"
+      },
+      "Ardabil": {
+        "zh": "阿尔达比勒",
+        "ja": "アルダビール"
+      },
+      "Zanjan": {
+        "zh": "赞詹",
+        "ja": "ザンジャーン"
+      },
+      "Khorramabad": {
+        "zh": "霍拉马巴德",
+        "ja": "ホッラマーバード"
+      },
+      "Gorgan": {
+        "zh": "戈尔甘",
+        "ja": "ゴルガーン"
+      },
+      "Birjand": {
+        "zh": "比尔詹德",
+        "ja": "ビールジャンド"
+      },
+      "Bojnurd": {
+        "zh": "博季努尔德",
+        "ja": "ボジュヌールド"
+      },
+      "Bushehr": {
+        "zh": "布什尔",
+        "ja": "ブーシェフル"
+      },
+      "Ilam": {
+        "zh": "伊拉姆",
+        "ja": "イーラーム"
+      },
+      "Shahr-e Kord": {
+        "zh": "沙赫尔库尔德",
+        "ja": "シャフレコルド"
+      },
+      "Semnan": {
+        "zh": "塞姆南",
+        "ja": "セムナーン"
+      }
+    },
+    "IT": {
+      "Milan": "米兰",
+      "Catanzaro": "卡坦扎罗",
+      "Potenza": "波坦察",
+      "Campobasso": "坎波巴索",
+      "Aosta": "奥斯塔",
+      "L'Aquila": "拉奎拉"
+    },
+    "JE": {
+      "Saint Helier": {
+        "zh": "圣赫利尔",
+        "ja": "セント・ヘリア"
+      }
+    },
+    "JM": {
+      "Mandeville": {
+        "zh": "曼德维尔",
+        "ja": "マンデビル"
+      },
+      "May Pen": {
+        "zh": "梅彭",
+        "ja": "メイペン"
+      },
+      "Half Way Tree": {
+        "zh": "哈夫韦特里",
+        "ja": "ハーフウェイツリー"
+      },
+      "Savanna-la-Mar": {
+        "zh": "萨瓦纳拉马尔",
+        "ja": "サバンナラマール"
+      }
+    },
+    "JO": {
+      "'Ajlun": {
+        "zh": "阿杰隆",
+        "ja": "アジュルン"
+      },
+      "As Salt": {
+        "zh": "萨尔特",
+        "ja": "アッサルト"
+      },
+      "Madaba": {
+        "zh": "马德巴",
+        "ja": "マダバ"
+      },
+      "Ma'an": {
+        "zh": "马安",
+        "ja": "マアーン"
+      },
+      "Jarash": {
+        "zh": "杰拉什",
+        "ja": "ジェラシュ"
+      },
+      "At Tafilah": {
+        "zh": "塔菲拉",
+        "ja": "タフィーラ"
+      },
+      "Karak City": {
+        "zh": "卡拉克",
+        "ja": "カラク"
+      }
+    },
+    "JP": {
+      "Katsuta": "勝田",
+      "Kashiwara": "柏原",
+      "Matsuto": "松任",
+      "Tokuyama": "徳山",
+      "Izumisano": "泉佐野",
+      "Kamigyo-ku": "上京",
+      "Inada": "稲田",
+      "Oami": "大網",
+      "Fuchu": "府中",
+      "Ryogoku": "両国",
+      "Nihammatsu": "二本松",
+      "Umeki": "梅木",
+      "Obita": "大日",
+      "Onoda": "小野田",
+      "Iwai": "岩井",
+      "Kota": "幸田",
+      "Mitsukaido": "水海道",
+      "Minawa": "三縄",
+      "Morohongo": "諸本郷",
+      "Hamanoichi": "浜之市",
+      "Hasaki": "波崎",
+      "Tomobe": "友部",
+      "Uwa": "宇和",
+      "Tsuma": "妻",
+      "Fuso": "扶桑",
+      "Mie": "三重",
+      "Watari": "亘理",
+      "Hotaka": "穂高",
+      "Shimoda": "下田",
+      "Kuroda": "黒田",
+      "Oharu": "大治",
+      "Tawaramoto": "田原本",
+      "Ujiie": "氏家",
+      "Ishigami": "石神",
+      "Kaitaichi": "海田市",
+      "Hoshakuji": "宝積寺",
+      "Wadayama": "和田山",
+      "Toyoshina": "豊科",
+      "Omiya": "大宮",
+      "Ginan": "岐南",
+      "Shimo-furano": "下富良野",
+      "Yoshii": "吉井",
+      "Ijuin": "伊集院",
+      "Kinoshita": "木下",
+      "Oguchi": "大口",
+      "Ishiki": "一色",
+      "Nasu": "那須",
+      "Kitahama": "北浜",
+      "Okawara": "大河原",
+      "Mikuni": "三国",
+      "Sobue": "祖父江",
+      "Kumano": "熊野",
+      "Naka-niida": "中新田",
+      "Namie": "浪江",
+      "Yashiro": "社",
+      "Takedamachi": "竹田",
+      "Shimosuwa": "下諏訪",
+      "Hirokawa": "広川",
+      "Mishohirajo": "御所浦",
+      "Ibi": "揖斐",
+      "Kajiya": "鍛冶屋",
+      "Miyako": "都",
+      "Karasuyama": "烏山",
+      "Honjo": "本庄",
+      "Kawage": "河芸",
+      "Yae": "八重",
+      "Kamigoto": "上五島",
+      "Miharu": "三春",
+      "Kasumi": "香住",
+      "Kutchan": "倶知安",
+      "Toyoyama": "豊山",
+      "Kozan": "高山"
+    },
+    "KE": {
+      "Kiambu": {
+        "zh": "基安布",
+        "ja": "キアンブ"
+      },
+      "Mandera": {
+        "zh": "曼德拉",
+        "ja": "マンデラ"
+      },
+      "Meru": {
+        "zh": "梅鲁",
+        "ja": "メル"
+      },
+      "Isiolo": {
+        "zh": "伊西奥洛",
+        "ja": "イシオロ"
+      },
+      "Busia": {
+        "zh": "布西亚",
+        "ja": "ブシア"
+      },
+      "Migori": {
+        "zh": "米戈里",
+        "ja": "ミゴリ"
+      },
+      "Bungoma": {
+        "zh": "邦戈马",
+        "ja": "ブンゴマ"
+      },
+      "Narok": {
+        "zh": "纳罗克",
+        "ja": "ナロク"
+      },
+      "Mbale": {
+        "zh": "姆巴莱",
+        "ja": "ムバレ"
+      },
+      "Kapenguria": {
+        "zh": "卡彭古里亚",
+        "ja": "カペングリア"
+      },
+      "Kericho": {
+        "zh": "凯里乔",
+        "ja": "ケリチョ"
+      },
+      "Ol Kalou": "奥尔卡卢",
+      "Homa Bay": {
+        "zh": "霍马湾",
+        "ja": "ホマベイ"
+      },
+      "Murang'a": {
+        "zh": "穆兰加",
+        "ja": "ムランガ"
+      },
+      "Iten": {
+        "zh": "伊滕",
+        "ja": "イテン"
+      },
+      "Kapsabet": {
+        "zh": "卡普萨贝特",
+        "ja": "カプサベット"
+      },
+      "Marsabit": {
+        "zh": "马萨比特",
+        "ja": "マルサビット"
+      },
+      "Siaya": "锡亚亚",
+      "Maralal": {
+        "zh": "马拉拉尔",
+        "ja": "マララル"
+      },
+      "Kerugoya": {
+        "zh": "凯鲁戈亚",
+        "ja": "ケルゴヤ"
+      },
+      "Kitui": {
+        "zh": "基图伊",
+        "ja": "キトゥイ"
+      },
+      "Kajiado": {
+        "zh": "卡贾多",
+        "ja": "カジアド"
+      },
+      "Kabarnet": {
+        "zh": "卡巴尔内特",
+        "ja": "カバルネット"
+      },
+      "Nyamira": {
+        "zh": "尼亚米拉",
+        "ja": "ニャミラ"
+      },
+      "Hola": {
+        "zh": "霍拉",
+        "ja": "ホラ"
+      },
+      "Wote": {
+        "zh": "沃特",
+        "ja": "ウォテ"
+      }
+    },
+    "KG": {
+      "Naryn": "纳伦",
+      "Talas": "塔拉斯"
+    },
+    "KH": {
+      "Takeo": "茶胶",
+      "Kampong Chhnang": "磅清扬",
+      "Kampong Cham": "磅湛",
+      "Pursat": "菩萨",
+      "Ta Khmau": "达克茂",
+      "Kep": "白马",
+      "Kampong Speu": "磅士卑",
+      "Koh Kong": "戈公",
+      "Prey Veng": "波罗勉",
+      "Suong": "松",
+      "Stung Treng": "上丁",
+      "Tbeng Meanchey": "特本克蒙",
+      "Svay Rieng": "柴桢",
+      "Sisophon": "诗梳风",
+      "Kratie": "桔井",
+      "Kampong Thom": "磅通",
+      "Samraong": "三隆",
+      "Pailin": "拜林",
+      "Banlung": "班龙"
+    },
+    "KI": {
+      "Tarawa": {
+        "zh": "塔拉瓦",
+        "ja": "タラワ"
+      }
+    },
+    "KM": {
+      "Moutsamoudou": "穆察穆杜",
+      "Fomboni": "丰博尼"
+    },
+    "KP": {
+      "Namp'o": "南浦",
+      "Sunch'on": "顺川",
+      "Hungnam": "兴南",
+      "Man'gyongdae-ri": "万景台",
+      "Kaech'on": "价川",
+      "Sariwon-si": {
+        "zh": "沙里院",
+        "ja": "沙里院",
+        "force": true
+      },
+      "Tokch'on": "德川",
+      "Haeju": "海州",
+      "Changam-ch'on": "长岩",
+      "Paech'on-up": "白川",
+      "Sinp'o": "新浦",
+      "Songnim-ni": "松林",
+      "Ch'ongdan-up": "青丹",
+      "Sinch'on-up": "信川",
+      "Paek'ak": "白岳",
+      "Chaeryong-ni": "载宁",
+      "Manp'o": "满浦",
+      "Ullyul": "殷栗",
+      "Kangnyong": "康翎",
+      "Kangson": "降仙",
+      "P'yongsong": {
+        "zh": "平城",
+        "ja": "平城",
+        "force": true
+      },
+      "Hwasong": "花城",
+      "Myonggan-dong": "明间",
+      "Hyesan-dong": "惠山",
+      "Unch'on-up": "殷川",
+      "Kwail-up": "过日",
+      "Undok": "恩德",
+      "Orang": "渔郎",
+      "Samch'on": "三泉",
+      "Sinwon-up": "新院",
+      "Pongch'on-up": "丰川",
+      "Yuktae-dong": "六大",
+      "Hongwon": "洪原",
+      "Hwadae": "花台",
+      "Namyang-nodongjagu": "南阳",
+      "Myongch'on": "明川",
+      "T'aet'an-up": "大坦",
+      "Ongjin": "瓮津",
+      "Kilju": "吉州",
+      "Chaeryong-up": "载宁",
+      "Anju": "安州",
+      "Uiju": "义州",
+      "Puryong-up": {
+        "zh": "富宁",
+        "force": true
+      },
+      "Songhwa": "松禾",
+      "Hoeryong": "会宁",
+      "Ch'osal-li": "处山",
+      "Sijung": "时中",
+      "Chunggang": "中江",
+      "Sungho 1-tong": "胜湖",
+      "Changyon": "长渊",
+      "Songwon-up": "松院",
+      "Yonsa-up": "延社",
+      "Sunan": "顺安",
+      "Hwangju-up": "黄州",
+      "Kyongsong": "镜城",
+      "Aoji-ri": "阿吾地",
+      "Ranam": "罗南",
+      "Anbyon-up": "安边",
+      "Kop'ung": "高丰",
+      "Samjiyon-up": "三池渊",
+      "Kusong-si": {
+        "zh": "龟城",
+        "force": true
+      },
+      "Chongju": "定州",
+      "Kangdong-up": "江东",
+      "Sonbong": "先锋",
+      "Unggi": "雄基",
+      "Iwon-up": "利原",
+      "Hukkyo-ri": "黑桥",
+      "Kosan": "高山",
+      "Yonan-up": "延安",
+      "Namyang": "南阳",
+      "Yonggwang-up": "永光",
+      "Musan-up": "茂山",
+      "Kowon-up": "高原",
+      "Hoeyang": "淮阳",
+      "T'ongch'on-up": "通川",
+      "Kapsan-up": "甲山",
+      "Anak": "安岳",
+      "Onsong": "稳城",
+      "Kujang-up": "球场",
+      "Chunghwa": "中和",
+      "Samho-rodongjagu": "三湖",
+      "Sinmak": "新幕",
+      "Sakchu-up": "朔州",
+      "Ayang-ni": "阿阳",
+      "Sinanju": "新安州"
+    },
+    "KR": {
+      "Goyang-si": "高阳",
+      "Seongnam-si": "城南",
+      "Bucheon-si": "富川",
+      "Anyang-si": "安养",
+      "Kimhae": "金海",
+      "Pohang": "浦项",
+      "Uijeongbu-si": "议政府",
+      "Masan": "马山",
+      "Pyeongtaek": "平泽",
+      "Gunpo": "军浦",
+      "Suncheon": "顺天",
+      "Mokpo": "木浦",
+      "Gyeongsan-si": "庆山",
+      "Hanam": "河南",
+      "Geoje": "巨济",
+      "Gimpo-si": "金浦",
+      "Icheon-si": "利川",
+      "Guri-si": "九里",
+      "Seogwipo": "西归浦",
+      "Gijang": "机张",
+      "Gwangyang": "光阳",
+      "Jeongeup": "井邑",
+      "Siheungdong": "始兴洞",
+      "Yeoju": "骊州",
+      "Hwado": "花道",
+      "Sangju": "尚州",
+      "Donghae City": "东海",
+      "Wabu": "瓦阜",
+      "Kwangyang": "光阳",
+      "Yeongju": "荣州",
+      "Wanju": "完州",
+      "Yangp'yong": "杨平",
+      "Ungsang": "熊上",
+      "Sinhyeon": "新贤",
+      "Nangen": "南原",
+      "Sokcho": "束草",
+      "Naeso": "内所",
+      "Hongch'on": "洪川",
+      "Changnyeong": "昌宁",
+      "Koch'ang": "高敞",
+      "Kyosai": "居昌",
+      "Tongyeong": "统营",
+      "Hwawon": "花园",
+      "Uiwang": "义王",
+      "Pubal": "驿三",
+      "Kosong": "固城",
+      "Chinch'on": "镇川",
+      "Hwasun": "和顺",
+      "Buyeo": "扶余",
+      "Okcheon": "沃川",
+      "Eisen": "义城",
+      "Tallang-dong": "达浪洞",
+      "Yecheon": "醴泉",
+      "Sinan": "新安",
+      "Yeonggwang": "灵光",
+      "Yeongam": "灵岩",
+      "T'aebaek": "太白",
+      "Ido-dong": "二道洞",
+      "Kimje": "金堤",
+      "Damyang": "潭阳",
+      "Koesan": "槐山",
+      "Yeongdong": "永同",
+      "Munsan": "汶山",
+      "Seodong": "西洞",
+      "Santyoku": "三陟",
+      "Jangseong": "长城",
+      "Hadong": "河东",
+      "Cheorwon": "铁原",
+      "Ara-dong": "涯月洞",
+      "Yesan": "礼山",
+      "Jungpyong": "曾坪",
+      "Boseong": "宝城",
+      "Heunghae": "兴海",
+      "Yeonil": "延日",
+      "Jangheung": "长兴",
+      "Kunwi": "军威",
+      "Tangjin": "唐津",
+      "Cheongsong gun": "青松",
+      "Jinan-gun": "镇安",
+      "Kurye": "求礼",
+      "Waegwan": "倭馆",
+      "Seonghwan": "成欢",
+      "Hayang": "河阳",
+      "Goseong": "高城",
+      "Changsu": "长水",
+      "Imsil": "任实",
+      "Ganghwa-gun": "江华",
+      "Neietsu": "宁越",
+      "Kinzan": "金山",
+      "Yonmu": "论山",
+      "Yanggu": "杨口",
+      "Haenam": "海南",
+      "Gaigeturi": "涯月",
+      "Namsa": "南沙",
+      "Taesal-li": "大薮里",
+      "Hwacheon": "华川",
+      "Puan": "扶安",
+      "Jenzan": "善山",
+      "Jumunjin": "注文津",
+      "Beolgyo": "筏桥",
+      "Ora-dong": "吾罗洞"
+    },
+    "KW": {
+      "Al Ahmadi": "艾哈迈迪",
+      "Hawalli": "哈瓦利",
+      "Al Farwaniyah": "法尔瓦尼耶",
+      "Al Jahra'": "贾赫拉"
+    },
+    "KY": {
+      "West Bay": "西湾"
+    },
+    "KZ": {
+      "Astana": {
+        "zh": "阿斯塔纳",
+        "ja": "アスタナ"
+      },
+      "Karagandy": "卡拉干达",
+      "Ust-Kamenogorsk": "厄斯克门",
+      "Turkestan": "突厥斯坦",
+      "Zhezqazghan": "杰兹卡兹甘",
+      "Konayev": "科纳耶夫"
+    },
+    "LA": {
+      "Savannakhet": "沙湾拿吉",
+      "Thakhek": "他曲",
+      "Xam Nua": "桑怒",
+      "Muang Phonsavan": "丰沙湾",
+      "Muang Xay": "芒赛",
+      "Pakxan": "巴色",
+      "Sekong": "塞公"
+    },
+    "LB": {
+      "Nabatiye et Tahta": "纳巴蒂耶"
+    },
+    "LC": {
+      "Gros Islet": "格罗斯伊斯莱特"
+    },
+    "LK": {
+      "Kurunegala": "库鲁内格勒"
+    },
+    "LR": {
+      "Gbarnga": "邦加",
+      "Kakata": "卡卡塔",
+      "Zwedru": "兹韦德鲁",
+      "Harper": "哈珀",
+      "Voinjama": "沃因贾马",
+      "Tubmanburg": "塔布曼堡",
+      "Greenville": "格林维尔",
+      "Sanniquellie": "萨尼克利"
+    },
+    "LS": {
+      "Mohale's Hoek": "莫哈莱斯胡克",
+      "Mafeteng": "马费滕",
+      "Hlotse": "赫洛策",
+      "Butha-Buthe": "布塔布泰",
+      "Quthing": "古廷",
+      "Teyateyaneng": "特亚特亚嫩",
+      "Thaba-Tseka": "塔巴采卡"
+    },
+    "LV": {
+      "Jelgava": "叶尔加瓦",
+      "Jurmala": "尤尔马拉",
+      "Ventspils": "文茨皮尔斯",
+      "Ogre": "奥格雷",
+      "Marupe": "马鲁佩"
+    },
+    "LY": {
+      "Misratah": "米苏拉塔",
+      "Az Zawiyah": "扎维耶",
+      "Al Bayda'": "贝达",
+      "Darnah": "德尔纳",
+      "Al Marj": "迈尔季",
+      "Al 'Aziziyah": "阿齐济耶",
+      "Gharyan": "加里扬",
+      "Ubari": "乌巴里",
+      "Murzuk": "穆尔祖克",
+      "Nalut": "纳卢特",
+      "Hun": "洪"
+    },
+    "MA": {
+      "Fes": "非斯",
+      "Tangier": "丹吉尔"
+    },
+    "MC": {
+      "Monaco": {
+        "zh": "摩纳哥",
+        "ja": "モナコ"
+      }
+    },
+    "MD": {
+      "Balti": "伯尔兹",
+      "Soroca": "索罗卡",
+      "Edinet": "叶迪涅茨",
+      "Straseni": "斯特拉塞尼",
+      "Hincesti": "亨切什蒂",
+      "Floresti": "弗洛雷什蒂",
+      "Drochia": "德罗基亚"
+    },
+    "ME": {
+      "Herceg Novi": {
+        "zh": "新海尔采格",
+        "ja": "ヘルツェグ・ノヴィ"
+      },
+      "Bijelo Polje": "比耶洛波列"
+    },
+    "MG": {
+      "Antsiranana": "安齐拉纳纳",
+      "Tolanaro": "图莱亚尔",
+      "Ambovombe": "安布翁贝",
+      "Tsiroanomandidy": "齐鲁阿努曼迪迪",
+      "Fenoarivo Atsinanana": "费努阿里武阿齐纳纳纳",
+      "Ambositra": "昂布西特拉",
+      "Ihosy": "伊胡西",
+      "Antsohihy": "安楚希希",
+      "Farafangana": "法拉凡加纳",
+      "Maevatanana": "马伊瓦塔纳纳",
+      "Maintirano": "迈恩蒂拉诺"
+    },
+    "MH": {
+      "Majuro": {
+        "zh": "马朱罗",
+        "ja": "マジュロ"
+      }
+    },
+    "MK": {
+      "Prilep": "普里莱普",
+      "Shtip": "什蒂普",
+      "Centar Zupa": "琼塔尔朱帕",
+      "Kochani": "科查尼",
+      "Strumica": "斯特鲁米察",
+      "Lipkovo": "利普科沃",
+      "Zelino": "泽利诺",
+      "Radovis": "拉多维什",
+      "Tearce": "泰阿尔采",
+      "Kriva Palanka": "克里瓦帕兰卡",
+      "Studenicani": "斯图德尼查尼",
+      "Vinica": "维尼察",
+      "Delcevo": "德尔切沃",
+      "Resen": "雷森",
+      "Ilinden": "伊林登",
+      "Brvenica": "布尔韦尼察",
+      "Bogovinje": "博戈维涅"
+    },
+    "ML": {
+      "Bamako": {
+        "zh": "巴马科",
+        "ja": "バマコ"
+      }
+    },
+    "MM": {
+      "Nay Pyi Taw": {
+        "zh": "内比都",
+        "ja": "ネーピードー"
+      },
+      "Magway": "马圭",
+      "Hpa-An": "帕安",
+      "Hakha": "哈卡",
+      "Loikaw": "垒固"
+    },
+    "MN": {
+      "Choibalsan": "乔巴山",
+      "Moeroen": "木伦",
+      "Bayanhongor": "巴彦洪戈尔",
+      "Ulaangom": "乌兰固木",
+      "Khovd": "科布多",
+      "Arvayheer": "阿尔拜赫雷",
+      "OElgii": "乌列盖",
+      "Dalandzadgad": "达兰扎德嘎德",
+      "Suehbaatar": "苏赫巴托尔",
+      "Undurkhaan": "温都尔汗",
+      "Saynshand": "赛音山达",
+      "Altai": "阿尔泰",
+      "Dzuunmod": "宗莫德"
+    },
+    "MP": {
+      "Saipan": {
+        "zh": "塞班",
+        "ja": "サイパン"
+      }
+    },
+    "MR": {
+      "Nouadhibou": "努瓦迪布",
+      "Dar Naim": "达尔奈姆",
+      "Nema": "内马",
+      "Zouerat": "祖埃拉特",
+      "Tevragh Zeina": "特夫拉格宰纳",
+      "Selibaby": "塞利巴比",
+      "Ayoun El Atrous": "阿尤恩阿特鲁斯",
+      "Aleg": "阿莱格",
+      "Akjoujt": "阿克茹特"
+    },
+    "MT": {
+      "San Pawl il-Bahar": "圣保罗湾",
+      "Birkirkara": "比尔基卡拉",
+      "Mosta": "莫斯塔"
+    },
+    "MU": {
+      "Beau Bassin-Rose Hill": "博巴森-罗斯希尔",
+      "Centre de Flacq": "弗拉克中心"
+    },
+    "MX": {
+      "Xalapa de Enriquez": "哈拉帕",
+      "Campeche": "坎佩切",
+      "La Paz": "拉巴斯",
+      "Chilpancingo": "奇尔潘辛戈",
+      "Colima": "科利马",
+      "Tlaxcala": "特拉斯卡拉"
+    },
+    "MY": {
+      "Kota Kinabalu": "哥打基纳巴卢"
+    },
+    "MZ": {
+      "Matola": "马托拉"
+    },
+    "NE": {
+      "Maradi": "马拉迪",
+      "Dosso": "多索",
+      "Diffa": "迪法"
+    },
+    "NG": {
+      "Osogbo": "奥绍博",
+      "Gombe": "贡贝",
+      "Ikeja": "伊凯贾",
+      "Yenagoa": "耶纳戈阿",
+      "Uyo": "乌约",
+      "Ado-Ekiti": "阿多-埃基蒂",
+      "Gusau": "古绍",
+      "Lafia": "拉菲亚",
+      "Jalingo": "贾林戈",
+      "Birnin Kebbi": "比尔宁凯比",
+      "Asaba": "阿萨巴",
+      "Lokoja": "洛科贾",
+      "Damaturu": "达马图鲁",
+      "Dutse": "杜策"
+    },
+    "NI": {
+      "Chinandega": "奇南德加",
+      "Matagalpa": "马塔加尔帕",
+      "Jinotega": "希诺特加",
+      "Juigalpa": "胡伊加尔帕",
+      "Ocotal": "奥科塔尔",
+      "Puerto Cabezas": "卡贝萨斯港",
+      "Rivas": "里瓦斯",
+      "Jinotepe": "希诺特佩",
+      "Boaco": "博阿科"
+    },
+    "NL": {
+      "'s-Hertogenbosch": "斯海尔托亨博斯"
+    },
+    "NO": {
+      "Stavanger": "斯塔万格"
+    },
+    "NP": {
+      "Butwal": "布特瓦尔",
+      "Dipayal": "迪帕亚尔",
+      "Dhankuta": "丹库塔"
+    },
+    "NZ": {
+      "Richmond": "里士满"
+    },
+    "OM": {
+      "Salalah": "萨拉拉",
+      "Al Buraymi": "布赖米",
+      "Nizwa": "尼兹瓦",
+      "Ibra'": "伊卜拉",
+      "Khasab": "哈萨布"
+    },
+    "PA": {
+      "Panama City": {
+        "zh": "巴拿马城",
+        "ja": "パナマシティ"
+      },
+      "La Chorrera": "拉乔雷拉",
+      "Penonome": "佩诺诺梅"
+    },
+    "PG": {
+      "Mount Hagen": "芒特哈根",
+      "Popondetta": "波蓬德塔",
+      "Madang": "马当",
+      "Kokopo": "科科波",
+      "Mendi": "门迪",
+      "Goroka": "戈罗卡"
+    },
+    "PH": {
+      "Cebu City": "宿务",
+      "Cotabato": "哥打巴托",
+      "Pagadian": "帕加迪安",
+      "Tuguegarao": "土格加劳"
+    },
+    "PK": {
+      "Muzaffarabad": "穆扎法拉巴德"
+    },
+    "PL": {
+      "Olsztyn": "奥尔什丁"
+    },
+    "PM": {
+      "Saint-Pierre": {
+        "zh": "圣皮埃尔",
+        "ja": "サン・ピエール"
+      }
+    },
+    "PR": {
+      "Carolina": "卡罗利纳",
+      "Arecibo": "阿雷西博",
+      "Guaynabo": "瓜伊纳沃",
+      "Catano": "卡塔尼奥",
+      "Barceloneta": "巴塞洛内塔",
+      "Cayey": "卡耶伊",
+      "Manati": "马纳蒂"
+    },
+    "PT": {
+      "Porto": "波尔图",
+      "Braga": "布拉加",
+      "Leiria": "莱里亚",
+      "Viseu": "维塞乌",
+      "Aveiro": "阿威罗",
+      "Faro": "法鲁",
+      "Evora": "埃武拉",
+      "Guarda": "瓜达",
+      "Viana do Castelo": "维亚纳堡",
+      "Braganca": "布拉干萨",
+      "Beja": "贝雅",
+      "Castelo Branco": "卡斯特洛布朗库",
+      "Santarem": "圣塔伦",
+      "Portalegre": "波塔莱格雷"
+    },
+    "PW": {
+      "Ngerulmud": {
+        "zh": "恩吉鲁穆德",
+        "ja": "マルキョク"
+      }
+    },
+    "PY": {
+      "Villa Hayes": "比亚阿耶斯",
+      "Concepcion": "康塞普西翁",
+      "Filadelfia": "菲拉德尔菲亚",
+      "San Juan Bautista": "圣胡安包蒂斯塔"
+    },
+    "QA": {
+      "Ar Rayyan": "赖扬",
+      "Az Za'ayin": "扎因",
+      "Al Wakrah": "沃克拉",
+      "Al Khawr": "豪尔"
+    },
+    "RE": {
+      "Saint-Denis": {
+        "zh": "圣但尼",
+        "ja": "サン＝ドゥニ"
+      }
+    },
+    "RO": {
+      "Brasov": "布拉索夫",
+      "Timisoara": "蒂米什瓦拉",
+      "Targu Mures": "特尔古穆列什",
+      "Ploiesti": "普洛耶什蒂",
+      "Arad": {
+        "zh": "阿拉德",
+        "ja": "アラド"
+      },
+      "Braila": "布勒伊拉",
+      "Pitesti": "皮特什蒂",
+      "Bacau": {
+        "zh": "巴克乌",
+        "ja": "バカウ"
+      },
+      "Baia Mare": {
+        "zh": "巴亚马雷",
+        "ja": "バイア・マーレ"
+      },
+      "Piatra Neamt": "皮亚特拉尼亚姆茨",
+      "Botosani": "博托沙尼",
+      "Resita": "雷希察",
+      "Bistrita": "比斯特里察",
+      "Targoviste": "特尔戈维什泰",
+      "Focsani": "福克沙尼",
+      "Giurgiu": "朱尔朱",
+      "Sfantu Gheorghe": "斯芬图格奥尔盖",
+      "Slobozia": {
+        "zh": "斯洛博齐亚",
+        "ja": "スロボジア"
+      },
+      "Miercurea-Ciuc": "米耶尔库雷亚丘克"
+    },
+    "RU": {
+      "Yekaterinburg": "叶卡捷琳堡",
+      "Nizhniy Novgorod": "下诺夫哥罗德",
+      "Krasnoyarsk": "克拉斯诺亚尔斯克",
+      "Voronezh": "沃罗涅日",
+      "Makhachkala": "马哈奇卡拉",
+      "Stavropol": "斯塔夫罗波尔",
+      "Bryansk": "布良斯克",
+      "Arkhangel'sk": "阿尔汉格尔斯克",
+      "Orel": "奥廖尔",
+      "Grozny": "格罗兹尼",
+      "Yoshkar-Ola": "约什卡尔奥拉",
+      "Nalchik": "纳尔奇克",
+      "Yakutsk": "雅库茨克",
+      "Maykop": "迈科普",
+      "Cherkessk": "切尔克斯克",
+      "Gorno-Altaysk": "戈尔诺-阿尔泰斯克",
+      "Nar'yan-Mar": "纳里扬马尔"
+    },
+    "RW": {
+      "Kibuye": "基布耶",
+      "Byumba": "比温巴",
+      "Nyanza": "尼安扎"
+    },
+    "SA": {
+      "Makkah": "麦加",
+      "Buraydah": "布赖代",
+      "Ha'il": "哈伊勒",
+      "Najran": "纳季兰",
+      "Arar": "阿尔阿尔",
+      "Jizan": "吉赞"
+    },
+    "SD": {
+      "El Obeid": "欧拜伊德",
+      "Wad Medani": "瓦德迈达尼",
+      "El Daein": "达因",
+      "El Fasher": "法希尔",
+      "Singa": "辛加",
+      "Ad-Damazin": "达马津",
+      "Al-Junaynah": "朱奈纳",
+      "Rabak": "拉巴克",
+      "Ad-Damir": "达默尔",
+      "Kadugli": "卡杜格利",
+      "Zalinjay": "扎林盖"
+    },
+    "SI": {
+      "Kranj": "克拉尼",
+      "Koper": "科佩尔",
+      "Velenje": "韦莱涅",
+      "Ptuj": "普图伊",
+      "Trbovlje": "特尔博夫列"
+    },
+    "SK": {
+      "Presov": "普雷绍夫",
+      "Trencin": "特伦钦"
+    },
+    "SL": {
+      "Port Loko": "洛科港"
+    },
+    "SN": {
+      "Kaolack": "考拉克",
+      "Louga": "卢加",
+      "Kolda": "科尔达",
+      "Kaffrine": "卡弗林",
+      "Fatick": "法蒂克",
+      "Sedhiou": "塞久",
+      "Kedougou": "凯杜古",
+      "Matam": "马塔姆"
+    },
+    "SO": {
+      "Hargeysa": "哈尔格萨",
+      "Kismayo": "基斯马尤",
+      "Marka": "马尔卡",
+      "Laascaanood": "拉斯阿诺德",
+      "Jawhar": "乔哈尔",
+      "Ceerigaabo": "塞里加博"
+    },
+    "SR": {
+      "Lelydorp": "莱利多普"
+    },
+    "SS": {
+      "Juba": {
+        "zh": "朱巴",
+        "ja": "ジュバ"
+      },
+      "Kuacjok": "夸乔克",
+      "Yambio": "扬比奥",
+      "Aweil": "阿韦尔"
+    },
+    "SV": {
+      "San Miguel": "圣米格尔",
+      "Cojutepeque": "科胡特佩克",
+      "San Vicente": "圣比森特",
+      "Zacatecoluca": "萨卡特科卢卡",
+      "Ahuachapan": "阿瓦查潘",
+      "La Union": "拉乌尼翁",
+      "Sensuntepeque": "森松特佩克",
+      "San Francisco": "圣弗朗西斯科"
+    },
+    "SY": {
+      "Ar Raqqah": "拉卡",
+      "Hamah": "哈马",
+      "Tartus": "塔尔图斯",
+      "Al Hasakah": "哈塞克",
+      "Dar'a": "德拉",
+      "Al Qunaytirah": "库奈特拉"
+    },
+    "TD": {
+      "N'Djamena": {
+        "zh": "恩贾梅纳",
+        "ja": "ンジャメナ"
+      },
+      "Sarh": "萨尔",
+      "Am Timan": "安提曼",
+      "Doba": "多巴",
+      "Pala": "帕拉",
+      "Bongor": "邦戈尔",
+      "Goz Beida": "戈兹贝达",
+      "Koumra": "库姆拉",
+      "Mongo": "蒙戈",
+      "Bol": "博尔",
+      "Mao": "马奥",
+      "Massakory": "马萨科里",
+      "Moussoro": "穆索罗",
+      "Biltine": "比尔廷",
+      "Ati": "阿提",
+      "Amdjarass": "阿姆贾拉斯",
+      "Lai": "拉伊",
+      "Fada": "法达"
+    },
+    "TG": {
+      "Kara": "卡拉"
+    },
+    "TH": {
+      "Mueang Nonthaburi": "暖武里",
+      "Chon Buri": "春武里",
+      "Lampang": "南邦",
+      "Yala": "也拉",
+      "Ratchaburi": "叻丕",
+      "Sakon Nakhon": "色军",
+      "Trang": "董里",
+      "Kanchanaburi": "北碧",
+      "Nong Khai": "廊开",
+      "Samut Sakhon": "龙仔厝",
+      "Kamphaeng Phet": "甘烹碧",
+      "Chaiyaphum": "猜也奔",
+      "Lop Buri": "华富里",
+      "Chumphon": "春蓬",
+      "Kalasin": "加拉信",
+      "Suphan Buri": "素攀武里",
+      "Maha Sarakham": "玛哈沙拉堪",
+      "Phra Nakhon Si Ayutthaya": "大城",
+      "Phetchabun": "碧差汶",
+      "Narathiwat": "那拉提瓦",
+      "Surin": "素辇",
+      "Phetchaburi": "碧武里",
+      "Si Sa Ket": "四色菊",
+      "Pattani": "北大年",
+      "Phatthalung": "博达伦",
+      "Lamphun": "南奔",
+      "Mukdahan": "莫拉限",
+      "Roi Et": "黎逸",
+      "Phrae": "帕",
+      "Sukhothai": "素可泰",
+      "Phichit": "披集",
+      "Loei": "黎府",
+      "Samut Songkhram": "夜功",
+      "Amnat Charoen": "安纳乍能",
+      "Nakhon Phanom": "那空拍侬",
+      "Satun": "沙敦",
+      "Nong Bua Lamphu": "廊磨喃蒲",
+      "Prachuap Khiri Khan": "巴蜀",
+      "Prachin Buri": "巴真",
+      "Sa Kaeo": "沙缴",
+      "Buri Ram": "武里南",
+      "Nan": "难",
+      "Ranong": "拉廊",
+      "Pathum Thani": "巴吞他尼",
+      "Tak": "来兴",
+      "Uthai Thani": "乌泰他尼",
+      "Yasothon": "益梭通",
+      "Trat": "桐艾",
+      "Nakhon Nayok": "那空那育",
+      "Phayao": "帕尧",
+      "Sing Buri": "信武里",
+      "Chai Nat": "猜纳",
+      "Saraburi": "北标"
+    },
+    "TJ": {
+      "Bokhtar": "博赫塔尔",
+      "Khorugh": "霍罗格"
+    },
+    "TL": {
+      "Likisa": "利基萨"
+    },
+    "TM": {
+      "AEnew": "阿纽"
+    },
+    "TN": {
+      "Nabeul": "纳布勒",
+      "El Kef": "凯夫",
+      "Jendouba": "坚杜拜",
+      "Siliana": "锡勒亚奈",
+      "Kebili": "凯比利"
+    },
+    "TR": {
+      "Mersin": {
+        "zh": "梅尔辛",
+        "ja": "メルスィン"
+      },
+      "Sanliurfa": "尚勒乌尔法",
+      "Ordu": "奥尔杜",
+      "Manisa": {
+        "zh": "马尼萨",
+        "ja": "マニサ"
+      },
+      "Duezce": "迪兹杰",
+      "Bingoel": "宾格尔",
+      "Cankiri": "昌克勒",
+      "Hakkari": "哈卡里",
+      "Sirnak": {
+        "zh": "希尔纳克",
+        "ja": "シュルナク"
+      },
+      "Guemueshane": "居米什哈内"
+    },
+    "TT": {
+      "Chaguanas": "查瓜纳斯",
+      "San Fernando": "圣费尔南多",
+      "Rio Claro": "里奥克拉罗",
+      "Arima": "阿里马",
+      "Diego Martin": "迪戈马丁",
+      "Laventille": "拉文蒂尔",
+      "Point Fortin": "波因特福廷",
+      "Tunapuna": "图纳普纳",
+      "Scarborough": "斯卡伯勒",
+      "Sangre Grande": "桑格雷格兰德"
+    },
+    "TV": {
+      "Funafuti": {
+        "zh": "富纳富提",
+        "ja": "フナフティ"
+      }
+    },
+    "TW": {
+      "Jinhu": "金湖"
+    },
+    "TZ": {
+      "Geita": "盖塔",
+      "Kibaha": "基巴哈",
+      "Singida": "辛吉达",
+      "Mpanda": "姆潘达",
+      "Mtwara": "姆特瓦拉",
+      "Njombe": "恩琼贝",
+      "Vwawa": "瓦瓦",
+      "Chake Chake": "查克查克",
+      "Wete": "韦特"
+    },
+    "UA": {
+      "Kyiv": {
+        "zh": "基辅",
+        "ja": "キーウ"
+      },
+      "Kharkiv": "哈尔科夫",
+      "Mykolayiv": {
+        "zh": "尼古拉耶夫",
+        "ja": "ムィコライウ"
+      },
+      "Khmelnytskyi": "赫梅利尼茨基",
+      "Ivano-Frankivsk": "伊万诺-弗兰科夫斯克"
+    },
+    "UG": {
+      "Mbarara": "姆巴拉拉"
+    },
+    "UY": {
+      "Florida": "佛罗里达",
+      "Canelones": "卡内洛内斯"
+    },
+    "UZ": {
+      "Urganch": "乌尔根奇"
+    },
+    "VA": {
+      "Vatican City": {
+        "zh": "梵蒂冈",
+        "ja": "バチカン"
+      }
+    },
+    "VE": {
+      "San Fernando de Apure": "圣费尔南多-德阿普雷",
+      "San Juan de los Morros": "圣胡安-德洛斯莫罗斯",
+      "Tucupita": "图库皮塔",
+      "La Asuncion": "拉亚松森"
+    },
+    "VI": {
+      "Saint Croix": "圣克罗伊"
+    },
+    "VN": {
+      "Bien Hoa": "边和",
+      "Buon Ma Thuot": "邦美蜀",
+      "Nam GJinh": "南定",
+      "Thai Nguyen": "太原",
+      "Viet Tri": "越池",
+      "Thanh Pho Ba Ria": "巴地",
+      "Ca Mau": "金瓯",
+      "Soc Trang": "朔庄",
+      "Long Xuyen": "龙川",
+      "Bac Ninh": "北宁",
+      "Da Lat": "大叻",
+      "My Tho": "美萩",
+      "Tan An": "新安",
+      "Cao Lanh": "高岭",
+      "Phan Rang-Thap Cham": "潘朗-塔占",
+      "Lang Son": "谅山",
+      "GJong Xoai": "同帅",
+      "Tam Ky": "三歧",
+      "Dong Ha": "东河",
+      "Tra Vinh": "茶荣",
+      "Vinh Long": "永隆",
+      "Phu Ly": "富里",
+      "Ben Tre": "槟知",
+      "Hung Yen": "兴安",
+      "Tuyen Quang": "宣光",
+      "Gia Nghia": "嘉义",
+      "Cao Bang": "高平",
+      "Nga Nam": "雅南",
+      "Lai Chau": "莱州",
+      "Ninh Binh": "宁平",
+      "Vi Thanh": "渭清"
+    },
+    "VU": {
+      "Port-Vila": {
+        "zh": "维拉港",
+        "ja": "ポートビラ"
+      }
+    },
+    "XK": {
+      "Mitrovice": "米特罗维察",
+      "Gjakove": "贾科维察",
+      "Ferizaj": "费里扎伊",
+      "Gjilan": "吉兰",
+      "Peje": "佩奇"
+    },
+    "YE": {
+      "Taiz": "塔伊兹",
+      "Al Hudaydah": "荷台达",
+      "Mukalla": "穆卡拉",
+      "Dhamar": "达马尔",
+      "'Amran": "阿姆兰",
+      "Sa'dah": "萨达",
+      "Hajjah": "哈杰",
+      "Al Bayda": "贝达",
+      "Ataq": "阿塔克",
+      "Lahij": "拉赫季",
+      "Zinjibar": "津吉巴尔",
+      "Al Hazm": "哈兹姆",
+      "Ma'rib": "马里卜"
+    },
+    "YT": {
+      "Mamoudzou": {
+        "zh": "马穆楚",
+        "ja": "マムズ"
+      },
+      "Koungou": "孔古",
+      "Dzaoudzi": "扎乌济"
+    },
+    "ZA": {
+      "Mafikeng": "马菲肯"
+    },
+    "ZM": {
+      "Mongu": "蒙古",
+      "Choma": "乔马",
+      "Chinsali": "钦萨利"
+    },
+    "ZW": {
+      "Gweru": "圭鲁",
+      "Masvingo": "马斯温戈",
+      "Marondera": "马龙德拉",
+      "Bindura": "宾杜拉"
+    }
+  }
+}
