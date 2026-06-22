@@ -48,7 +48,7 @@ const I18n = (() => {
   }
 
   async function _loadDict(locale) {
-    const url = 'data/i18n/' + locale + '/ui.json?v=1';
+    const url = 'data/i18n/' + locale + '/ui.json?v=2';
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('i18n load failed: ' + url);
     return resp.json();

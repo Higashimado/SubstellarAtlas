@@ -31,7 +31,14 @@ const AppState = (() => {
 
     if (typeof TimeState !== 'undefined') {
       if (!TimeState.isPlaying()) {
-        p.set('t', String(Math.round(TimeState.current.getTime() / 1000)));
+        // Keep sub-second precision: jump-to-instant permalinks (sunrise,
+        // eclipse contacts) land on a fractional second, and the day-veil
+        // terminator moves ~0.0032°/s near the horizon — integer truncation
+        // here dropped up to ~0.5s, i.e. ~150m / dozens of px of terminator
+        // offset at high zoom. parseFloat(toFixed(3)) quantises to ms and
+        // strips trailing zeros (whole second → "…672", sunrise → "…672.33").
+        const tSec = TimeState.current.getTime() / 1000;
+        p.set('t', String(parseFloat(tSec.toFixed(3))));
       }
       if (TimeState.timezone) p.set('tz', TimeState.timezone);
     }
@@ -80,9 +87,9 @@ const AppState = (() => {
       map.setView([lat, lng], isNaN(z) ? map.getZoom() : z);
     }
 
-    const t = parseInt(p.get('t'), 10);
+    const t = parseFloat(p.get('t')); // parseFloat reads both legacy integer and sub-second decimal forms
     if (!isNaN(t) && typeof TimeState !== 'undefined') {
-      TimeState.setTime(new Date(t * 1000));
+      TimeState.setTime(new Date(Math.round(t * 1000))); // Math.round guards float-mult drift (…329.99 → …330)
     }
 
     const tz = p.get('tz');

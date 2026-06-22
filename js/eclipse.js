@@ -423,6 +423,16 @@ const Eclipse = (() => {
       c2 = edge(-1);
       c3 = edge(1);
     }
+    // A real exterior contact is external tangency (magnitude ≈ 0). When instead the
+    // Sun crosses the horizon mid-eclipse, eclPred flips on zeta (below_horizon) while
+    // the discs still overlap, so the clamped c1/c4 carries a sizeable magnitude. Flag
+    // those: c1 truncated → the Sun rose already eclipsed; c4 truncated → it set still
+    // eclipsed (true fourth contact happens below the horizon, unseen here). Lets the
+    // UI relabel "P1/P4" as sunrise/sunset instead of implying the Moon has cleared.
+    const TRUNC_EPS = 0.01;
+    const c1Sunrise = !!(c1 && _lcSolar(event, lat, lng, c1.getTime()).magnitude > TRUNC_EPS);
+    const c4Sunset = !!(c4 && _lcSolar(event, lat, lng, c4.getTime()).magnitude > TRUNC_EPS);
+
     return {
       visible: true,
       maxPhase: base.maxPhase,
@@ -432,6 +442,8 @@ const Eclipse = (() => {
       c2,
       c3,
       c4,
+      c1Sunrise,
+      c4Sunset,
     };
   }
 
@@ -1842,32 +1854,24 @@ const Eclipse = (() => {
       }
 
       if (isSolar) {
-        const peakLat = e.peak.lat,
-          peakLng = e.peak.lng;
-        const bounds = map.getBounds();
-        const inBounds = bounds.contains([peakLat, peakLng]);
-        if (inBounds) {
+        // Selecting an eclipse means "take me there" — always fly to the peak,
+        // except when the user is watching an in-progress event in place
+        // (resetTime:false). peak.lng is canonical [-180,180] but getBounds/
+        // getCenter live in the projected -200°..+520° wrap span, so normalize
+        // the peak to the world-copy nearest the current view — otherwise the
+        // pan can sweep a needless full 360° across copies (see world-wrap).
+        if (doResetTime) {
+          const peakLat = e.peak.lat;
+          let peakLng = e.peak.lng;
+          const centerLng = map.getCenter().lng;
+          while (peakLng - centerLng > 180) peakLng -= 360;
+          while (peakLng - centerLng < -180) peakLng += 360;
           map.flyTo([peakLat, peakLng], Math.max(map.getZoom(), 4));
-        } else {
-          showToast(`Eclipse peak at ${peakLat.toFixed(1)}°, ${peakLng.toFixed(1)}° is off-map; only time-jumped.`);
         }
         Sidebar.showEclipse(e, clearSelection);
       } else {
         Sidebar.showLunarEclipse(e, clearSelection);
       }
-    }
-
-    function showToast(msg) {
-      let toast = document.getElementById('eclipse-toast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'eclipse-toast';
-        document.body.appendChild(toast);
-      }
-      toast.textContent = msg;
-      toast.classList.add('visible');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(() => toast.classList.remove('visible'), 3500);
     }
 
     TimeState.subscribe((date) => {

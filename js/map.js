@@ -260,7 +260,7 @@ function _solarPosition(date) {
 // Returns [[lat, lng], …] for L.polygon. When the cap encloses a pole, the
 // raw θ-sweep emits a ~360° lng jump at the antimeridian; we splice in
 // pole-walk vertices so the polygon traces around the pole correctly.
-function _computeAltitudeContourAround(centerLat, centerLng, altThresholdDeg, samples) {
+function _computeAltitudeContourAround(centerLat, centerLng, altThresholdDeg, samples, thetas) {
   const dDeg = 90 - altThresholdDeg;
   if (dDeg < 0.001 || dDeg > 180 - 0.001) return [];
 
@@ -272,19 +272,25 @@ function _computeAltitudeContourAround(centerLat, centerLng, altThresholdDeg, sa
   const cosLat0 = Math.cos(lat0);
   const sinLat0 = Math.sin(lat0);
 
-  const N = samples || 720;
-  const raw = [];
-  for (let i = 0; i <= N; i++) {
-    const theta = (i / N) * 2 * Math.PI;
+  // θ→[lat,lng] on the small circle. A caller-supplied `thetas` (ascending 0..2π,
+  // viewport-densified by _densifyCapThetas) overrides the uniform sweep so high
+  // zoom can refine only the arc crossing the viewport; the antimeridian-split /
+  // pole-walk below is agnostic to spacing — it only inspects consecutive points.
+  function _capPoint(theta) {
     const cosT = Math.cos(theta);
     const sinT = Math.sin(theta);
     const sinLat = sinLat0 * cosD + cosLat0 * sinD * cosT;
     const lat = Math.asin(Math.max(-1, Math.min(1, sinLat)));
-    const y = sinT * sinD * cosLat0;
-    const x = cosD - sinLat0 * sinLat;
-    const dlng = Math.atan2(y, x);
-    const lng = lng0 + _deg(dlng);
-    raw.push([_deg(lat), lng]);
+    const dlng = Math.atan2(sinT * sinD * cosLat0, cosD - sinLat0 * sinLat);
+    return [_deg(lat), lng0 + _deg(dlng)];
+  }
+
+  const raw = [];
+  if (thetas) {
+    for (let i = 0; i < thetas.length; i++) raw.push(_capPoint(thetas[i]));
+  } else {
+    const N = samples || 720;
+    for (let i = 0; i <= N; i++) raw.push(_capPoint((i / N) * 2 * Math.PI));
   }
 
   const enclosesPole = dDeg > 90 - Math.abs(centerLat);
@@ -351,7 +357,7 @@ function _computeAltitudeContourAround(centerLat, centerLng, altThresholdDeg, sa
  * for `L.polygon` fills (which need bridge segments to close the ring around
  * the enclosed pole).
  */
-function _computeAltitudeContourArcs(centerLat, centerLng, altThresholdDeg, samples) {
+function _computeAltitudeContourArcs(centerLat, centerLng, altThresholdDeg, samples, thetas) {
   const dDeg = 90 - altThresholdDeg;
   if (dDeg < 0.001 || dDeg > 180 - 0.001) return [];
 
@@ -363,19 +369,25 @@ function _computeAltitudeContourArcs(centerLat, centerLng, altThresholdDeg, samp
   const cosLat0 = Math.cos(lat0);
   const sinLat0 = Math.sin(lat0);
 
-  const N = samples || 720;
-  const raw = [];
-  for (let i = 0; i <= N; i++) {
-    const theta = (i / N) * 2 * Math.PI;
+  // θ→[lat,lng] on the small circle. A caller-supplied `thetas` (ascending 0..2π,
+  // viewport-densified) overrides the uniform sweep so high zoom can refine only
+  // the arc crossing the viewport; the antimeridian split below is agnostic to
+  // spacing — it only inspects consecutive points.
+  function _capPoint(theta) {
     const cosT = Math.cos(theta);
     const sinT = Math.sin(theta);
     const sinLat = sinLat0 * cosD + cosLat0 * sinD * cosT;
     const lat = Math.asin(Math.max(-1, Math.min(1, sinLat)));
-    const y = sinT * sinD * cosLat0;
-    const x = cosD - sinLat0 * sinLat;
-    const dlng = Math.atan2(y, x);
-    const lng = lng0 + _deg(dlng);
-    raw.push([_deg(lat), lng]);
+    const dlng = Math.atan2(sinT * sinD * cosLat0, cosD - sinLat0 * sinLat);
+    return [_deg(lat), lng0 + _deg(dlng)];
+  }
+
+  const raw = [];
+  if (thetas) {
+    for (let i = 0; i < thetas.length; i++) raw.push(_capPoint(thetas[i]));
+  } else {
+    const N = samples || 720;
+    for (let i = 0; i <= N; i++) raw.push(_capPoint((i / N) * 2 * Math.PI));
   }
 
   // Split at each antimeridian crossing (|Δlng| > 180°), interpolating the
@@ -428,6 +440,122 @@ function _computeAltitudeContourArcs(centerLat, centerLng, altThresholdDeg, samp
   // samples sit AT the antimeridian (±tiny floating-point offsets).
   if (current.length >= 2) arcs.push(current);
   return arcs;
+}
+
+// ---- Viewport-Local Cap Densification ----
+// At high zoom one VEIL_CAP_SAMPLES step of the ~90° night-cap circle spans
+// ~111 km, so its straight screen chord bows hundreds of px off the true curve
+// where it crosses the viewport — the day/night terminator visibly misses a
+// compass centered on the sub-point at the rise/set instant. Refine ONLY the
+// θ-range whose chord intersects the padded viewport, down to a few screen px
+// (the rest of the ring stays coarse), so the rendered edge tracks the small
+// circle to sub-px without inflating the global vertex count. The metric is
+// Mercator screen px, not ground km — the map is Web Mercator, so the screen
+// chord is what bows visibly.
+const VEIL_DENSIFY_ZOOM = 13;
+const VEIL_DENSIFY_MAX_CHORD_PX = 96;
+const VEIL_DENSIFY_MAX_DEPTH = 24;
+
+// Liang–Barsky segment∩AABB test — true when any part of a→b lies inside r.
+function _segIntersectsRect(ax, ay, bx, by, r) {
+  let t0 = 0,
+    t1 = 1;
+  const dx = bx - ax,
+    dy = by - ay;
+  const p = [-dx, dx, -dy, dy];
+  const q = [ax - r.minX, r.maxX - ax, ay - r.minY, r.maxY - ay];
+  for (let k = 0; k < 4; k++) {
+    if (p[k] === 0) {
+      if (q[k] < 0) return false;
+    } else {
+      const t = q[k] / p[k];
+      if (p[k] < 0) {
+        if (t > t1) return false;
+        if (t > t0) t0 = t;
+      } else {
+        if (t < t0) return false;
+        if (t < t1) t1 = t;
+      }
+    }
+  }
+  return true;
+}
+
+function _greatCircleDeg(lat1, lng1, lat2, lng2) {
+  const a = _rad(lat1),
+    b = _rad(lat2);
+  const cosC = Math.sin(a) * Math.sin(b) + Math.cos(a) * Math.cos(b) * Math.cos(_rad(lng1 - lng2));
+  return _deg(Math.acos(Math.max(-1, Math.min(1, cosC))));
+}
+
+// Ascending θ∈[0,2π] for a cap that is dense only where it crosses the padded
+// viewport; null when densification is not warranted (low zoom, time playback,
+// or the ring nowhere near the viewport), so callers fall back to the uniform
+// sweep. Pairs with _computeAltitudeContourAround/Arcs via their `thetas` arg.
+function _densifyCapThetas(centerLat, centerLng, altThresholdDeg) {
+  const map = window.appMap || window.__map;
+  if (!map || map.getZoom() < VEIL_DENSIFY_ZOOM) return null;
+  // Playback rebuilds the veil every frame; skip the per-point reprojection then
+  // (a sweeping terminator hides the coarse chord anyway) and let the next static
+  // refresh re-densify.
+  if (typeof TimeState !== 'undefined' && TimeState.isPlaying && TimeState.isPlaying()) return null;
+  const dDeg = 90 - altThresholdDeg;
+  if (dDeg < 0.001 || dDeg > 180 - 0.001) return null;
+
+  // O(1) reject: skip bands whose ring (great-circle radius dDeg from the
+  // sub-point) cannot reach the viewport. Wrap copies share the sphere point so
+  // this gates per band; off-screen wrap copies are pruned by the segment∩rect
+  // test below. center↔corner is the viewport's angular radius.
+  const ctr = map.getCenter();
+  const bnd = map.getBounds();
+  const vpRadiusDeg = _greatCircleDeg(ctr.lat, ctr.lng, bnd.getNorth(), bnd.getEast()) + 0.1;
+  if (Math.abs(_greatCircleDeg(ctr.lat, ctr.lng, centerLat, centerLng) - dDeg) > vpRadiusDeg) return null;
+
+  const d = _rad(dDeg),
+    lat0 = _rad(centerLat);
+  const cosD = Math.cos(d),
+    sinD = Math.sin(d),
+    cosLat0 = Math.cos(lat0),
+    sinLat0 = Math.sin(lat0);
+  function project(theta) {
+    const cosT = Math.cos(theta),
+      sinT = Math.sin(theta);
+    const sinLat = sinLat0 * cosD + cosLat0 * sinD * cosT;
+    const lat = Math.asin(Math.max(-1, Math.min(1, sinLat)));
+    const dlng = Math.atan2(sinT * sinD * cosLat0, cosD - sinLat0 * sinLat);
+    return map.latLngToContainerPoint([_deg(lat), centerLng + _deg(dlng)]);
+  }
+
+  // Pad the viewport by one full screen each side so a coarse pan bucket (the
+  // refreshTimeMasks rebuild granularity) never outruns the densified band.
+  const size = map.getSize();
+  const rect = { minX: -size.x, minY: -size.y, maxX: 2 * size.x, maxY: 2 * size.y };
+  const out = [0];
+  function refine(ta, pa, tb, pb, depth) {
+    if (
+      depth < VEIL_DENSIFY_MAX_DEPTH &&
+      Math.hypot(pa.x - pb.x, pa.y - pb.y) > VEIL_DENSIFY_MAX_CHORD_PX &&
+      _segIntersectsRect(pa.x, pa.y, pb.x, pb.y, rect)
+    ) {
+      const tm = (ta + tb) / 2,
+        pm = project(tm);
+      refine(ta, pa, tm, pm, depth + 1);
+      refine(tm, pm, tb, pb, depth + 1);
+    } else {
+      out.push(tb);
+    }
+  }
+
+  let prevT = 0,
+    prevP = project(0);
+  for (let i = 1; i <= VEIL_CAP_SAMPLES; i++) {
+    const tb = (i / VEIL_CAP_SAMPLES) * 2 * Math.PI,
+      pb = project(tb);
+    refine(prevT, prevP, tb, pb, 0);
+    prevT = tb;
+    prevP = pb;
+  }
+  return out;
 }
 
 function computeTerminator(date, altDeg) {
@@ -1171,9 +1299,11 @@ function drawVisibilityRange(antiPoint, cfg, mag, lineGroup, fillGroup, opts) {
   const holes = [];
   const arcs = [];
   for (let w = -VEIL_WRAP_RANGE; w <= VEIL_WRAP_RANGE; w++) {
-    const hole = _computeAltitudeContourAround(antiPoint.lat, antiPoint.lng + w * 360, alt);
+    const cLng = antiPoint.lng + w * 360;
+    const thetas = _densifyCapThetas(antiPoint.lat, cLng, alt);
+    const hole = _computeAltitudeContourAround(antiPoint.lat, cLng, alt, undefined, thetas);
     if (hole.length >= 3) holes.push(hole);
-    const arcSet = _computeAltitudeContourArcs(antiPoint.lat, antiPoint.lng + w * 360, alt);
+    const arcSet = _computeAltitudeContourArcs(antiPoint.lat, cLng, alt, undefined, thetas);
     for (const a of arcSet) if (a.length >= 2) arcs.push(a);
   }
   if (!holes.length) return;
@@ -1654,9 +1784,18 @@ function initMap() {
     _refreshDimPlanetClips();
   }
 
-  /** Enable or disable LP + body label night-clips based on twilight state. */
+  /**
+   * Enable or disable LP + body-label night-clips based on whether the daylight
+   * veil is actually rendered — NOT merely whether the Sun layer is on. The clip
+   * exists to confine deep-sky lines/labels/LP to the night side because the day
+   * veil washes them out; if the user unchecks the Daylight/Moonlight glow
+   * (dayMaskGroup absent) nothing is washing them out, so they must stay whole.
+   * Keying off twilightGroup (Sun on/off) instead truncates constellation lines
+   * at the day terminator even with no veil drawn. dayMaskGroup._map is the same
+   * rendered-state truth used for window._dayMaskVisible below.
+   */
   function syncLpClip() {
-    _twilightActive = map.hasLayer(twilightGroup);
+    _twilightActive = !!dayMaskGroup._map;
     window._twilightActive = _twilightActive;
     if (_twilightActive) {
       rebuildNightClipPaths();
@@ -1973,7 +2112,9 @@ function initMap() {
       if (90 + T <= 0.001) continue;
       const holes = [];
       for (let w = -VEIL_WRAP_RANGE; w <= VEIL_WRAP_RANGE; w++) {
-        const hole = _computeAltitudeContourAround(anti.lat, anti.lng + w * 360, -T, VEIL_CAP_SAMPLES);
+        const cLng = anti.lng + w * 360;
+        const thetas = _densifyCapThetas(anti.lat, cLng, -T);
+        const hole = _computeAltitudeContourAround(anti.lat, cLng, -T, VEIL_CAP_SAMPLES, thetas);
         if (hole.length >= 3) holes.push(hole);
       }
       if (!holes.length) continue;
@@ -2105,7 +2246,15 @@ function initMap() {
   // is unchanged; this only suppresses the redundant zoomend/moveend rebuilds.
   let _lastMaskKey = '';
   function refreshTimeMasks(date) {
-    const key = (date || now).getTime() + '|' + (dayMaskGroup._map ? 1 : 0) + (moonMaskGroup._map ? 1 : 0);
+    let key = (date || now).getTime() + '|' + (dayMaskGroup._map ? 1 : 0) + (moonMaskGroup._map ? 1 : 0);
+    // The veil cap is viewport-densified at high zoom (_densifyCapThetas), so the
+    // dense arc must re-center on pan/zoom — fold a coarse viewport bucket (~one
+    // tile) into the key so an intra-wrap pan rebuilds. Low zoom stays
+    // viewport-agnostic (uniform sampling), so its pans still short-circuit.
+    if (map.getZoom() >= VEIL_DENSIFY_ZOOM) {
+      const ctr = map.project(map.getCenter());
+      key += '|' + map.getZoom() + ':' + Math.round(ctr.x / 256) + ':' + Math.round(ctr.y / 256);
+    }
     if (key === _lastMaskKey) return;
     _lastMaskKey = key;
     if (dayMaskGroup._map) rebuildDayMask(date);
@@ -2760,7 +2909,10 @@ function initMap() {
     var _eqz = map.getZoom();
     var _eqTier = _eqz <= 3 ? 0 : _eqz <= 4 ? 1 : 2;
     var _eqWrapsKey = visibleWrapsFromBounds(map).join(',');
-    var _eqKey = _eqTier + '|' + _eqWrapsKey + '|' + (date || now).getTime();
+    // Day-veil visibility gates rail/tick/label casing (via _eqSS below), so it
+    // is a render input and must be in the memo key — else toggling the veil
+    // with zoom/wraps/time unchanged early-returns and strands the old casing.
+    var _eqKey = _eqTier + '|' + _eqWrapsKey + '|' + (date || now).getTime() + '|' + (window._dayMaskVisible ? 1 : 0);
     if (_eqKey === _lastEquatorKey) return;
     _lastEquatorKey = _eqKey;
 
@@ -3130,6 +3282,15 @@ function initMap() {
       null
     );
     refreshTimeMasks(d);
+  });
+
+  // High-zoom only: the veil cap is densified to the viewport, so an intra-wrap
+  // pan — which the wrap-keyed handler above skips — must still rebuild to
+  // recenter the dense arc. refreshTimeMasks' viewport bucket caps this at one
+  // rebuild per ~tile of pan; below VEIL_DENSIFY_ZOOM there is nothing to recenter.
+  map.on('moveend', function () {
+    if (map.getZoom() < VEIL_DENSIFY_ZOOM) return;
+    refreshTimeMasks(typeof TimeState !== 'undefined' && TimeState.current ? TimeState.current : new Date());
   });
 
   // Arm LP night-side clipping (twilight is on by default).

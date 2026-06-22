@@ -114,7 +114,12 @@ function createGreatCircleLayer(cfg) {
 
   function _rebuild(date) {
     const wrapsKey = GeoUtils.visibleWrapsFromBounds(_map).join(',');
-    const key = wrapsKey + '|' + date.getTime();
+    // Label casing is day-adaptive only while the day veil is actually drawn
+    // (_adaptAt reads window._dayMaskVisible). That flag is a third input to the
+    // render, so it must be in the memo key — otherwise toggling the veil off
+    // with time/pan unchanged hits the early-return and leaves labels stuck in
+    // their bright daylight casing against the now-dark map.
+    const key = wrapsKey + '|' + date.getTime() + '|' + (window._dayMaskVisible ? 1 : 0);
     if (key === _lastKey) return;
     _lastKey = key;
 

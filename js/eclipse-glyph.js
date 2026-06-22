@@ -520,6 +520,9 @@ window.EclipseGlyph = (function () {
     const obs = opts.observer,
       c = opts.contacts || {};
     const cg = opts.gloss || {}; // per-contact hover definitions, keyed P1/G/P4
+    // Optional per-key display-text overrides (e.g. a horizon-truncated P4 shown as
+    // a localized "Sunset"). Falls back to the bare P1/G/P4 code when unset.
+    const labels = opts.labels || {};
     if (!obs) return '';
     const lat = obs.lat,
       lng = obs.lng;
@@ -756,7 +759,7 @@ window.EclipseGlyph = (function () {
     // below, so box = [ly − FS, ly + 3] (≈ the actual rendered glyph height of ~FS·1.2).
     const boxAt = (ly, x0, x1) => ({ x0, x1, y0: ly - FS, y1: ly + 3 });
     for (const g of geo) {
-      const w = Math.max(FS, esc(g.p.key).length * FS * 0.66) + 4; // +4: keep a horizontal gap
+      const w = Math.max(FS, esc(labels[g.p.key] || g.p.key).length * FS * 0.66) + 4; // +4: keep a horizontal gap
       const x0 = g.gx - w / 2,
         x1 = g.gx + w / 2;
       const cand = [];
@@ -805,7 +808,7 @@ window.EclipseGlyph = (function () {
 
       // P-label (drawn before the glyph so the disc occludes it on any overlap).
       // Carries a hover definition (opts.gloss).
-      s += `<text class="ecl-skp-label" x="${f(gx)}" y="${f(g.ly)}" text-anchor="middle" font-size="${FS}" fill="var(--ecl-schem-label,#9aa4b2)"${glossAttr(cg[p.key])}>${esc(p.key)}</text>`;
+      s += `<text class="ecl-skp-label" x="${f(gx)}" y="${f(g.ly)}" text-anchor="middle" font-size="${FS}" fill="var(--ecl-schem-label,#9aa4b2)"${glossAttr(cg[p.key])}>${esc(labels[p.key] || p.key)}</text>`;
 
       // Azimuth x-axis tick beneath the horizon (always on; no gloss).
       const azDeg = Math.round(((p.sunAz % 360) + 360) % 360);

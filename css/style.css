@@ -572,7 +572,7 @@ body {
   transition: color 120ms;
 }
 .rail-play:hover { color: var(--text-high, #e7e3da); }
-.rail-play-main { color: var(--text-high, #e7e3da); }
+.rail-play-main { color: var(--text-high, #e7e3da); transform: translateY(-2px); }
 .rail-play-main[aria-pressed="true"] { color: var(--brass, #b39468); }
 .rail-play-icon { fill: currentColor; vertical-align: middle; }
 
@@ -1244,27 +1244,6 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
 .eclipse-label::before { display: none !important; }
 .eclipse-label-total   { color: #fbbf24; }   /* gold */
 .eclipse-label-annular { color: #38bdf8; }   /* sky-blue */
-
-/* Toast for off-map peak notifications */
-#eclipse-toast {
-  position: absolute;
-  top: 80px;
-  right: 20px;
-  z-index: 1500;
-  background: var(--bg-overlay);
-  border: 1px solid var(--border-gold);
-  color: var(--text-primary);
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 15px;
-  max-width: 320px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-  opacity: 0;
-  transform: translateY(-8px);
-  transition: opacity 0.25s, transform 0.25s;
-  pointer-events: none;
-}
-#eclipse-toast.visible { opacity: 1; transform: translateY(0); }
 
 /* Toast for time-range limit / invalid-input feedback (above the time rail) */
 #time-toast {
@@ -2297,7 +2276,7 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
 }
 
 /* Toast for geolocation feedback (denied / unavailable / timeout / unsupported).
-   Mirrors #eclipse-toast. */
+   Mirrors #time-toast. */
 #geo-toast {
   position: absolute;
   top: 80px;

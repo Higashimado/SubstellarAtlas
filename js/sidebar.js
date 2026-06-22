@@ -634,8 +634,8 @@ const Sidebar = (() => {
   }
 
   // ---- Geolocation ("Locate Me") ----
-  // Lightweight toast (own element + CSS, mirrors #eclipse-toast / #time-toast —
-  // the project keeps a small per-feature toast rather than one shared widget).
+  // Lightweight toast (own element + CSS, mirrors #time-toast — the project
+  // keeps a small per-feature toast rather than one shared widget).
   function showGeoToast(msg) {
     let toast = document.getElementById('geo-toast');
     if (!toast) {
@@ -910,25 +910,36 @@ const Sidebar = (() => {
       html += `<div class="ecl-note">${_t('panel.eclipse.not_visible_here')}</div>`;
       return html + _eclForecastBelow(lat, lng, ev);
     }
+    // Sun set/rose mid-eclipse → the clamped C1/C4 isn't a true exterior contact but
+    // the horizon cutting the eclipse off, so label it sunrise/sunset (and gloss to
+    // match) instead of "P1/P4", which would wrongly imply the Moon has cleared.
     const sgloss = {
-      P1: _gloss('ecl_c_p1_solar'),
+      P1: _gloss(lc.c1Sunrise ? 'ecl_c_sunrise' : 'ecl_c_p1_solar'),
       G: _gloss('ecl_c_greatest'),
-      P4: _gloss('ecl_c_p4_solar'),
+      P4: _gloss(lc.c4Sunset ? 'ecl_c_sunset' : 'ecl_c_p4_solar'),
       sunpath: _gloss('ecl_sunpath'),
+    };
+    const slabels = {
+      P1: lc.c1Sunrise ? _t('eclipse.contact.sunrise') : undefined,
+      P4: lc.c4Sunset ? _t('eclipse.contact.sunset') : undefined,
     };
     const diagram =
       typeof EclipseGlyph !== 'undefined'
-        ? EclipseGlyph.renderSchematic(ev, { observer: { lat, lng }, contacts: lc, gloss: sgloss })
+        ? EclipseGlyph.renderSchematic(ev, { observer: { lat, lng }, contacts: lc, gloss: sgloss, labels: slabels })
         : '';
     // Solar variant stacks the stat readout as a top bar above the plot (not an
     // overlay) so it never covers the SVG's left altitude-axis labels.
     if (diagram) html += `<div class="ecl-diagram ecl-diagram--solar">${_eclSolarSchemStats(lc)}${diagram}</div>`;
     const defs = [
-      ['eclipse.contact.p1', lc.c1, 'ecl_c_p1_solar'],
+      lc.c1Sunrise
+        ? ['eclipse.contact.sunrise', lc.c1, 'ecl_c_sunrise']
+        : ['eclipse.contact.p1', lc.c1, 'ecl_c_p1_solar'],
       ['eclipse.contact.p2', lc.c2, 'ecl_c_p2_solar'],
       ['eclipse.contact.greatest', lc.maxTime, 'ecl_c_greatest'],
       ['eclipse.contact.p3', lc.c3, 'ecl_c_p3_solar'],
-      ['eclipse.contact.p4', lc.c4, 'ecl_c_p4_solar'],
+      lc.c4Sunset
+        ? ['eclipse.contact.sunset', lc.c4, 'ecl_c_sunset']
+        : ['eclipse.contact.p4', lc.c4, 'ecl_c_p4_solar'],
     ];
     html += _eclContactTable(defs, Sun, lat, lng);
     return html + _eclForecastBelow(lat, lng, ev);
