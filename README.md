@@ -28,7 +28,7 @@ The Substellar Atlas takes the *substellar point* as its guiding idea: it projec
 
 ### 图层说明
 
-地图图层采用暗色主题，默认 CARTO Dark Matter，可切换 Stadia Alidade Smooth Dark。网站开发/集成的数据图层则有：
+地图图层采用暗色主题，默认 CARTO Dark Matter，可切换 Stadia Alidade Smooth Dark．网站开发/集成的数据图层则有：
 
 | 类别 | 功能 |
 |---|---|
@@ -76,9 +76,9 @@ The Substellar Atlas takes the *substellar point* as its guiding idea: it projec
 
 ### 日月食（2000–2049 年）
 
-本项目提供的日食数据集含用于计算日食事件接触时刻、位置的贝塞尔元素，以及表征整起事件食况范围的地面包络曲线（本影中心线、本影南北限、等食分线、半影南北线、日出/日落极大食线、日出日落圈等），月食数据集则仅含索引。现收录 2000–2049 年间的 112 次日食和 114 次月食。计算中使用到的太阳、月球位置矢量来自 [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19。
+本项目提供的日食数据集含用于计算日食事件接触时刻、位置的贝塞尔元素，以及表征整起事件食况范围的地面包络曲线（本影中心线、本影南北限、等食分线、半影南北线、日出/日落极大食线、日出日落圈等），月食数据集则仅含索引。现收录 2000–2049 年间的 112 次日食和 114 次月食。计算中使用到的太阳、月球位置矢量来自 [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19．
 
-**注：**日食的实时阴影和食况范围，以及月食的食况范围在运行时计算
+**注**：日食的实时阴影和食况范围，以及月食的食况范围在运行时计算
 
 **目录结构**
 
@@ -115,7 +115,7 @@ The Substellar Atlas takes the *substellar point* as its guiding idea: it projec
 
 ## 致谢和许可
 
-本项目自有代码以 **GNU General Public License v3.0** 发布，详情参见 [LICENSE](LICENSE)。 第三方代码、数据、字体依其许可。
+本项目自有代码以 **GNU General Public License v3.0** 发布，详情参见 [LICENSE](LICENSE)． 第三方代码、数据、字体依其许可。
 
 | 用途 | 组件 (版本) | 作者 / 来源 | 许可 |
 |---|---|---|---|
