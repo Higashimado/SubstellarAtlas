@@ -302,6 +302,30 @@ const Eclipse = (() => {
     return BesselRT.localCircumstances(lat, lng, _besselAt(event, new Date(ms)));
   }
 
+  // Apparent solar altitude (deg) through the SAME refraction-corrected engine the
+  // sidebar read-outs, compass and sky-path use. The eclipse horizon gate runs on
+  // this instead of the Besselian geometric zeta so a contact clamped at the horizon
+  // agrees with the altitude printed beside it: a Sun-set-mid-eclipse contact lands at
+  // apparent 0°, not the ~0.5° refraction lift that geometric zeta=0 leaves behind
+  // (which rounded the "Sunset" altitude up to a misleading +1°).
+  function _sunAppAlt(lat, lng, ms) {
+    const h = bodyHorizontal(Astronomy.Body.Sun, new Date(ms), lat, lng);
+    return h && isFinite(h.alt) ? h.alt : -90;
+  }
+
+  // Disc-overlap tests read straight from the Besselian magnitude geometry, horizon
+  // aside. localCircumstances only labels phase (partial/total/annular) when the Sun is
+  // geometrically up (zeta>=0); inside the ~0.5° band where the Sun is apparently up but
+  // zeta<0 it returns 'below_horizon' and no class, so the gate must read these raw
+  // quantities rather than lc.phase.
+  function _inPartial(lc) {
+    return lc.magnitude > 0;
+  }
+
+  function _inCentral(lc) {
+    return lc.m < Math.abs(lc.L2p);
+  }
+
   // Coarse magnitude sweep across [P1,P4]; tracks the sun-up maximum.
   function _scanSolar(event, lat, lng, N) {
     const p1 = event._p1Ms,
@@ -312,8 +336,9 @@ const Eclipse = (() => {
     for (let i = 0; i <= N; i++) {
       const ms = p1 + ((p4 - p1) * i) / N;
       const lc = _lcSolar(event, lat, lng, ms);
-      if (lc.zeta >= 0) anyUp = true;
-      const eff = lc.zeta >= 0 && lc.magnitude > 0 ? lc.magnitude : -1;
+      const up = _sunAppAlt(lat, lng, ms) >= 0;
+      if (up) anyUp = true;
+      const eff = up && lc.magnitude > 0 ? lc.magnitude : -1;
       if (eff > maxEff) {
         maxEff = eff;
         peakMs = ms;
@@ -331,8 +356,8 @@ const Eclipse = (() => {
         b = hi - (hi - lo) / 3;
       const la = _lcSolar(event, lat, lng, a),
         lb = _lcSolar(event, lat, lng, b);
-      const va = la.zeta >= 0 ? la.magnitude : -1;
-      const vb = lb.zeta >= 0 ? lb.magnitude : -1;
+      const va = _sunAppAlt(lat, lng, a) >= 0 ? la.magnitude : -1;
+      const vb = _sunAppAlt(lat, lng, b) >= 0 ? lb.magnitude : -1;
       if (va < vb) lo = a;
       else hi = b;
     }
@@ -355,67 +380,89 @@ const Eclipse = (() => {
     if (coarse.maxEff <= 0.8)
       return { visible: true, maxPhase: 'partial', maxMag: coarse.maxEff, peakMs: coarse.peakMs };
     const r = _refineSolarPeak(event, lat, lng, coarse.peakMs, (event._p4Ms - event._p1Ms) / N);
-    const maxPhase = r.lc.phase === 'total' || r.lc.phase === 'annular' ? r.lc.phase : 'partial';
+    // Classify from the raw geometry, not r.lc.phase: a peak sitting in the refraction
+    // band (apparently up, zeta<0) would otherwise be mislabeled 'partial'.
+    const maxPhase = _inCentral(r.lc) ? (r.lc.L2p < 0 ? 'total' : 'annular') : 'partial';
     return { visible: true, maxPhase, maxMag: r.lc.magnitude, peakMs: r.ms };
   }
 
   // Full local contact times for an in-progress solar eclipse at the observer:
-  // C1/C4 (partial limits), C2/C3 (total/annular limits, null if not central),
-  // and the local maximum. Times are Dates; null when a contact does not occur.
+  // C1/C4 (partial limits), C2/C3 (total/annular limits, null if not central), and the
+  // local maximum — all GEOMETRIC disc-tangency instants. Tangency is unaffected by
+  // refraction, so these are the canonical contacts and stay defined below the horizon
+  // (the contact table dims the unobservable ones, matching the lunar table). The Sun
+  // crossing the horizon mid-eclipse is reported separately as sunrise/sunset markers at
+  // apparent altitude 0, so a "Sunset" row reads +0° while the true below-horizon fourth
+  // contact still appears. classifySolar still gates overall visibility (apparent), so a
+  // wholly-below-horizon eclipse shows "not visible here". Times are Dates; null absent.
   function solarLocalContacts(event, lat, lng) {
     const base = classifySolar(event, lat, lng);
     if (!base.visible) return { visible: false, maxPhase: 'none' };
     const p1 = event._p1Ms,
       p4 = event._p4Ms,
       N = 48;
-    const eclPred = (lc) => lc.zeta >= 0 && (lc.phase === 'partial' || lc.phase === 'total' || lc.phase === 'annular');
-    const cenPred = (lc) => lc.zeta >= 0 && (lc.phase === 'total' || lc.phase === 'annular');
-    const samples = [];
-    for (let i = 0; i <= N; i++) {
-      const ms = p1 + ((p4 - p1) * i) / N;
-      const lc = _lcSolar(event, lat, lng, ms);
-      samples.push({ ms, ecl: eclPred(lc) });
-    }
-    const bis = (msF, msT, pred) => {
+    // Geometric disc overlap, no horizon gate: a contact is a true tangency of the
+    // discs, which refraction never moves. Predicates take a time so they sample the
+    // disc geometry at a specific instant.
+    const inPartial = (ms) => _inPartial(_lcSolar(event, lat, lng, ms));
+    const inCentral = (ms) => _inCentral(_lcSolar(event, lat, lng, ms));
+    const bis = (msF, msT, predAt) => {
       let a = msF,
         b = msT;
       for (let k = 0; k < 32; k++) {
         const m = (a + b) / 2;
-        if (pred(_lcSolar(event, lat, lng, m))) b = m;
+        if (predAt(m)) b = m;
         else a = m;
       }
       return new Date((a + b) / 2);
     };
+    const samples = [];
+    for (let i = 0; i <= N; i++) {
+      const ms = p1 + ((p4 - p1) * i) / N;
+      samples.push({ ms, ecl: inPartial(ms) });
+    }
     let c1 = null,
       c4 = null,
       c2 = null,
       c3 = null;
     for (let i = 1; i <= N; i++)
       if (samples[i].ecl && !samples[i - 1].ecl) {
-        c1 = bis(samples[i - 1].ms, samples[i].ms, eclPred);
+        c1 = bis(samples[i - 1].ms, samples[i].ms, inPartial);
         break;
       }
     for (let i = N; i >= 1; i--)
       if (samples[i - 1].ecl && !samples[i].ecl) {
-        c4 = bis(samples[i].ms, samples[i - 1].ms, eclPred);
+        c4 = bis(samples[i].ms, samples[i - 1].ms, inPartial);
         break;
       }
-    // Sun rose / set mid-eclipse: clamp the open limit to the window boundary.
+    // Local partial phase already underway at a window edge (grazing): clamp to it.
     if (!c1 && samples[0].ecl) c1 = new Date(samples[0].ms);
     if (!c4 && samples[N].ecl) c4 = new Date(samples[N].ms);
-    const pk = _refineSolarPeak(event, lat, lng, base.peakMs, (p4 - p1) / N);
-    // Totality/annularity limits: walk outward from the refined maximum in fine
-    // steps until central phase ends, then bisect. The coarse grid above can step
-    // clean over a sub-minute totality at the edge of the path, so anchor on the
-    // max (known central) instead. Only meaningful when the max is itself central.
-    if ((base.maxPhase === 'total' || base.maxPhase === 'annular') && cenPred(pk.lc)) {
+    if (!c1 || !c4) return { visible: false, maxPhase: 'none' };
+    const c1ms = c1.getTime(),
+      c4ms = c4.getTime();
+    // Geometric maximum: magnitude is unimodal across [c1,c4] (one closest approach to
+    // the shadow axis), so ternary-search it. Anchoring c2/c3 on this known maximum
+    // catches a sub-minute totality the coarse grid could step clean over.
+    let lo = c1ms,
+      hi = c4ms;
+    for (let k = 0; k < 40; k++) {
+      const a = lo + (hi - lo) / 3,
+        b = hi - (hi - lo) / 3;
+      if (_lcSolar(event, lat, lng, a).magnitude < _lcSolar(event, lat, lng, b).magnitude) lo = a;
+      else hi = b;
+    }
+    const peakMs = (lo + hi) / 2;
+    const peakLc = _lcSolar(event, lat, lng, peakMs);
+    const maxPhase = _inCentral(peakLc) ? (peakLc.L2p < 0 ? 'total' : 'annular') : 'partial';
+    if ((maxPhase === 'total' || maxPhase === 'annular') && inCentral(peakMs)) {
       const step = (p4 - p1) / (N * 4); // ~45 s for a typical window
       const edge = (dir) => {
-        let last = pk.ms;
+        let last = peakMs;
         for (let i = 1; i <= 96; i++) {
-          const t = pk.ms + dir * step * i;
-          if (t <= p1 || t >= p4) return new Date(Math.max(p1, Math.min(p4, t)));
-          if (!cenPred(_lcSolar(event, lat, lng, t))) return bis(t, last, cenPred);
+          const t = peakMs + dir * step * i;
+          if (t <= c1ms || t >= c4ms) return new Date(Math.max(c1ms, Math.min(c4ms, t)));
+          if (!inCentral(t)) return bis(t, last, inCentral);
           last = t;
         }
         return new Date(last);
@@ -423,27 +470,42 @@ const Eclipse = (() => {
       c2 = edge(-1);
       c3 = edge(1);
     }
-    // A real exterior contact is external tangency (magnitude ≈ 0). When instead the
-    // Sun crosses the horizon mid-eclipse, eclPred flips on zeta (below_horizon) while
-    // the discs still overlap, so the clamped c1/c4 carries a sizeable magnitude. Flag
-    // those: c1 truncated → the Sun rose already eclipsed; c4 truncated → it set still
-    // eclipsed (true fourth contact happens below the horizon, unseen here). Lets the
-    // UI relabel "P1/P4" as sunrise/sunset instead of implying the Moon has cleared.
-    const TRUNC_EPS = 0.01;
-    const c1Sunrise = !!(c1 && _lcSolar(event, lat, lng, c1.getTime()).magnitude > TRUNC_EPS);
-    const c4Sunset = !!(c4 && _lcSolar(event, lat, lng, c4.getTime()).magnitude > TRUNC_EPS);
+    // Horizon crossings (apparent altitude 0) inside [c1,c4]: the Sun rising or setting
+    // mid-eclipse. Reported as markers, not contacts — the table shows them as a gold
+    // "Sunrise/Sunset" row (the first/last observable instant, +0°) beside the true,
+    // below-horizon P1/P4. Apparent altitude keeps the read-out at exactly 0°. Rising
+    // edge → sunrise, falling edge → sunset (same bisection order as C1/C4).
+    const upAt = (ms) => _sunAppAlt(lat, lng, ms) >= 0;
+    const M = 48;
+    const up = [];
+    for (let i = 0; i <= M; i++) {
+      const ms = c1ms + ((c4ms - c1ms) * i) / M;
+      up.push({ ms, on: upAt(ms) });
+    }
+    let sunrise = null,
+      sunset = null;
+    for (let i = 1; i <= M; i++)
+      if (up[i].on && !up[i - 1].on) {
+        sunrise = bis(up[i - 1].ms, up[i].ms, upAt);
+        break;
+      }
+    for (let i = M; i >= 1; i--)
+      if (up[i - 1].on && !up[i].on) {
+        sunset = bis(up[i].ms, up[i - 1].ms, upAt);
+        break;
+      }
 
     return {
       visible: true,
-      maxPhase: base.maxPhase,
-      maxMag: pk.lc.magnitude,
-      maxTime: new Date(pk.ms),
+      maxPhase,
+      maxMag: peakLc.magnitude,
+      maxTime: new Date(peakMs),
       c1,
       c2,
       c3,
       c4,
-      c1Sunrise,
-      c4Sunset,
+      sunrise,
+      sunset,
     };
   }
 
@@ -700,11 +762,10 @@ const Eclipse = (() => {
     const umbraNAz = Math.max(256, Math.min(1024, Math.round(64 * Math.pow(2, z / 2))));
     // Web-Mercator chord threshold derived from pixels at the current zoom: at
     // zoom z, 1° of Mercator-equivalent ≈ 256·2^z/360 px, so TARGET_PX of 4 gives
-    // a sub-pixel-visible bound. The umbra seed sweep is uniform in basic-plane
-    // azimuth, but sec φ stretches polar arcs by ~3× @70° / ~6× @80° on map, so
-    // even the seed sweep facets at high latitude — densifyRingMercator walks
-    // adjacent seeds and re-solves midpoints (via projectAzimuth) until every
-    // segment's on-map chord ≤ maxMercDeg. Equatorial side won't trigger.
+    // a sub-pixel-visible bound. Every contour densifier below (umbraLensGeo, the
+    // iso-mag densifyContour, terminatorArcs) bisects and re-projects until each
+    // on-map segment chord ≤ maxMercDeg — needed because sec φ stretches polar arcs
+    // by ~3× @70° / ~6× @80° so a uniform parameter sweep facets at high latitude.
     // Mirrors the cached densifyRiseSet pattern (build-bessel-curves.mjs:2117).
     //   maxMercDeg shrinks as 1/2^z, so the adaptive bisection depth (and the
     // vertex count it emits) grows exponentially with zoom — at z≈12 it dominates
@@ -726,18 +787,6 @@ const Eclipse = (() => {
     // Z_CAP is module-scoped (shared with redrawShadow's zoom-reuse gate).
     const zEff = Math.min(z, Z_CAP);
     const maxMercDeg = (4 * 360) / (256 * Math.pow(2, zEff));
-    function ringFor(insideTest, nAz) {
-      const seed = BesselRT.projectRing(b, insideTest, nAz);
-      // depthMax=10 (= ÷1024) covers even the penumbra outer's worst initial
-      // 85°-chord case at z=5 (85/1024 ≈ 0.08° ≪ threshold 0.18°). Each level
-      // only fires on segments still above threshold, so well-behaved arcs cost
-      // nothing extra. minMercDeg cusp guard still stops polar singularities.
-      return BesselRT.densifyRingMercator(b, insideTest, seed.thetas, seed.pts, {
-        maxMercDeg,
-        minMercDeg: 0.003,
-        depthMax: 10,
-      });
-    }
 
     // Partial-visibility contours — penumbra (mag=0) edge + iso-magnitude levels.
     // Each level is the boundary of {mag ≥ k} ∩ {sunlit disc}, drawn as TWO pieces
@@ -885,12 +934,15 @@ const Eclipse = (() => {
     }
     if (typeof window !== 'undefined') window.__eclipseShadowQC = qc;
 
-    // Umbra (total) / antumbra (annular) — thin gold stroke + faint navy fill.
-    // Skip when axis is off Earth (partial eclipse or partial phase of
-    // total/annular): the umbra cone never reaches the surface, so
-    // projectRing would return all-null.
-    if (s.sub) {
-      const umbra = ringFor(BesselRT.insideUmbra, umbraNAz);
+    // Umbra (total) / antumbra (annular) — thin gold stroke + faint navy fill. The shadow
+    // boundary is the m=|L2'| circle in the fundamental plane; umbraLensGeo parametrises it
+    // by angle (defined for every azimuth) and closes any grazing day-side lens along the
+    // terminator, so it stays smooth both when the axis is on the disc (a closed ellipse)
+    // and at a sunset-terminus eclipse where the axis grazes just off-disc — the regime
+    // where the old radial boundary search shredded into a sawtooth. Returns null only when
+    // the shadow misses Earth entirely (partial phase / no landfall).
+    const umbra = BesselRT.umbraLensGeo(b, umbraNAz, maxMercDeg);
+    if (umbra) {
       drawFilledRing(
         umbra,
         {

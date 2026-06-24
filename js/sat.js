@@ -381,7 +381,7 @@ const Sat = (() => {
     const nv = !anyLocked;
     if (nv !== _valid) {
       _valid = nv;
-      if (typeof Sidebar !== 'undefined' && Sidebar.refresh) Sidebar.refresh();
+      _refreshSidebar();
     }
   }
 
@@ -686,6 +686,10 @@ const Sat = (() => {
     _layer = L.layerGroup([], { pane: 'sat' });
   }
 
+  function _refreshSidebar() {
+    if (typeof Sidebar !== 'undefined' && Sidebar.refresh) Sidebar.refresh();
+  }
+
   async function addTo(map) {
     if (!_layer) init(map);
     _layer.addTo(map);
@@ -704,10 +708,16 @@ const Sat = (() => {
         });
       }
     }
+    // Layer just turned on (or reopened): surface its sidebar section now,
+    // rather than waiting for the next time tick to re-render.
+    _refreshSidebar();
   }
 
   function removeFrom(map) {
     if (_layer && map.hasLayer(_layer)) map.removeLayer(_layer);
+    // Layer off: drop its sidebar section immediately (satSection() gates on
+    // isOn()), instead of lingering until the next tick.
+    _refreshSidebar();
   }
 
   function isOn() {

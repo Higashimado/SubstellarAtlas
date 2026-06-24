@@ -735,10 +735,13 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
   min-height: 0;
   /* Flex column: the coords header stays fixed, .sidebar-scroll takes the rest
      and scrolls on its own. Horizontal + bottom inset moved into the children
-     so the scroll body's scrollbar sits at the sidebar's outer right edge. */
+     so the scroll body's scrollbar sits at the sidebar's outer right edge.
+     padding-bottom: 16px matches the coords-section margin-bottom (16px) so the
+     visible scroll area sits symmetrically off both the top divider and the
+     panel's bottom border — preventing text from being clipped by the bottom edge. */
   display: flex;
   flex-direction: column;
-  padding: 12px 0 0;
+  padding: 12px 0 16px;
 }
 #sidebar-right-content > .coords-section {
   flex: 0 0 auto; /* fixed header: never scrolls, never shrinks */
@@ -754,9 +757,7 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  /* Same 16px side inset + ~8px bottom gap as the old single scroll, so the
-     scrollbar lands at the sidebar's outer right edge with text held off it. */
-  padding: 0 16px 10px;
+  padding: 0 16px;
 }
 
 /* Left sidebar: chronological eclipse event list with inline expandable
@@ -898,8 +899,16 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
   padding-bottom: 14px;
 }
 
-.sidebar-section:last-child {
+/* Last direct .sidebar-section in the scroll area (followed only by non-section
+   containers like #eclipse-section) gets no bottom border, padding, or margin —
+   the structural 16px gap lives on #sidebar-right-content padding-bottom.
+   :has() (not :last-child) is required because layer-gated sections (lp, aurora,
+   satellite) drop in/out, so the visual last section varies; matching the last
+   one with no .sidebar-section sibling after it tracks that correctly. */
+.sidebar-scroll > .sidebar-section:not(:has(~ .sidebar-section)) {
   border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 .sidebar-section h3 {
@@ -1082,7 +1091,7 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
   line-height: 1.45;
 }
 .ecl-schem-stats .ss-k { color: var(--text-secondary); }
-/* Active-eclipse contacts: label | az·el | time, all on one row, time far right. */
+/* Active-eclipse contacts: key | desc | az·el | time, all on one row, time far right. */
 .ecl-contacts {
   width: 100%;
   border-collapse: collapse;
@@ -1092,7 +1101,13 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
   padding: 2px 0;
   vertical-align: baseline;
 }
-.ecl-contacts .ecl-ct-label { color: var(--text-dim); white-space: nowrap; }
+.ecl-contacts .ecl-ct-key {
+  color: var(--text-secondary);
+  white-space: nowrap;
+  min-width: 24px;
+  font-variant-numeric: tabular-nums;
+}
+.ecl-contacts .ecl-ct-desc { color: var(--text-dim); white-space: nowrap; padding-right: 4px; }
 .ecl-contacts .ecl-ct-az,
 .ecl-contacts .ecl-ct-dir,
 .ecl-contacts .ecl-ct-alt {
@@ -1150,7 +1165,6 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
   border-radius: 3px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.55);
   padding: 2px;
-  min-width: 92px;
   font-family: var(--font-serif, serif);
   font-size: var(--fs-caption, 13px);
   line-height: var(--lh-tight, 1.25);
@@ -1166,6 +1180,7 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
   cursor: pointer;
   border-radius: 2px;
   font: inherit;
+  white-space: nowrap;
   transition: color 120ms, background 120ms;
 }
 .map-context-item:hover {
@@ -2278,10 +2293,10 @@ html[lang="ja"] .rail-lang-label { font-size: 12px; }
 /* Toast for geolocation feedback (denied / unavailable / timeout / unsupported).
    Mirrors #time-toast. */
 #geo-toast {
-  position: absolute;
+  position: fixed;
   top: 80px;
   right: 20px;
-  z-index: 1500;
+  z-index: 2500;  /* above sidebar (2000) and layer controls (2100) */
   background: var(--bg-overlay);
   border: 1px solid var(--border-gold);
   color: var(--text-primary);

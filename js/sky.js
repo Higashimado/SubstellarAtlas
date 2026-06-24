@@ -1386,6 +1386,12 @@ const Sky = (() => {
         scale: _starScale,
         clickMagCutoff: _lastClickCutoff,
       }),
+      onBeforeRedraw: (zoom) => {
+        // Lock sprite scale to the zoom the canvas is about to paint at,
+        // including fractional mid-flyTo zooms (zoomend hasn't fired yet). Plain
+        // assignment — the layer is already mid-redraw, so don't kick another pass.
+        _starScale = Lum.zoomScale(zoom);
+      },
       onClick: (entry, ev) => {
         // Click-merge: prefer brighter co-located tier-0 star.
         let best = entry.star;
@@ -3352,6 +3358,7 @@ const Sky = (() => {
     const credits = GeoUtils.cardCredits([
       { name: 'HYG Database', url: 'https://github.com/astronexus/HYG-Database' },
       typeof I18n !== 'undefined' && I18n.isZh() ? { name: 'Stellarium', url: 'https://stellarium.org/' } : null,
+      typeof I18n !== 'undefined' && I18n.isZh() ? { name: 'Guanjin0562', url: 'https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement' } : null,
     ]);
 
     return `

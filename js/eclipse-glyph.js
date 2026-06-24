@@ -536,10 +536,13 @@ window.EclipseGlyph = (function () {
     // too crowded; the totality/annularity interval is conveyed by the corner
     // Tot./Ann. readout instead. Partial events already have null c2/c3, so every
     // eclipse type reduces to the same three glyphs.
+    // The P1/P4 slots may carry a horizon-crossing marker (sunrise/sunset) instead of
+    // the true exterior contact — c.c1AtHorizon / c.c4AtHorizon flag those so the Sun is
+    // drawn on the horizon line (its apparent altitude is 0) rather than filtered out.
     const order = [
-      ['P1', c.c1],
-      ['G', c.maxTime],
-      ['P4', c.c4],
+      ['P1', c.c1, !!c.c1AtHorizon],
+      ['G', c.maxTime, false],
+      ['P4', c.c4, !!c.c4AtHorizon],
     ].filter((o) => o[1] instanceof Date && !isNaN(o[1]));
     if (!order.length) return '';
 
@@ -556,10 +559,15 @@ window.EclipseGlyph = (function () {
     }
 
     const contacts = [];
-    for (const [key, date] of order) {
+    for (const [key, date, atHorizon] of order) {
       try {
         const g = contactGeom(date);
-        if (g && isFinite(g.sunAlt) && isFinite(g.sunAz)) contacts.push({ key, date, ...g });
+        if (g && isFinite(g.sunAlt) && isFinite(g.sunAz)) {
+          // A marker sits at apparent altitude 0 (the bisection leaves a sub-arcminute
+          // residue); clamp it onto the horizon so it isn't dropped by the sunAlt≥0 gate.
+          if (atHorizon) g.sunAlt = Math.max(0, g.sunAlt);
+          contacts.push({ key, date, ...g });
+        }
       } catch (_) {
         /* skip */
       }

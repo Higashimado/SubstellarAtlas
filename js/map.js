@@ -4452,6 +4452,10 @@ function initMap() {
       _lpLayerActive = map.hasLayer(lpLayer);
       enforceConflicts('lp', _lpLayerActive);
       updateMaskOpacity();
+      // Mirror the layer into the right-sidebar lp section (show when on / hide
+      // when off). Unlike aurora/sat (which own their sections), the lp layer
+      // lives here, so the section's gate is driven from this handler.
+      if (typeof Sidebar !== 'undefined' && Sidebar.setLpLayerActive) Sidebar.setLpLayerActive(_lpLayerActive);
     }
   });
 

@@ -54,6 +54,8 @@ const SkyCanvasLayer =
           this._padX = 0;
           this._padY = 0;
           this._dpr = 1;
+          this._drawZoom = null; // map zoom at last full redraw (transform base for flyTo tracking)
+          this._drawTLLatLng = null; // latlng under the canvas top-left when last drawn
           // Hover state
           this._hoverEntry = null;
           this._hoverRaf = null;
@@ -140,9 +142,29 @@ const SkyCanvasLayer =
         },
 
         _onZoom: function () {
-          // Hide briefly during a zoom that doesn't have a zoomanim handler so
-          // we don't draw stale content (Leaflet still fires `zoom` events
-          // during arrows-like discrete zooms).
+          // flyTo (the place-name jump) drives its arc by firing `zoom` every
+          // frame while it mutates the fractional zoom — it never fires
+          // `zoomanim`, so _animateZoom stays dormant. Without tracking here the
+          // canvas freezes mid-flight while tiles/grids/labels fly, then snaps at
+          // moveend. Re-apply the same translate+scale _animateZoom uses, but
+          // anchored to the view we last drew at (stored in _reset) since the map
+          // state is already committed by the time this `zoom` event fires.
+          const m = this._map;
+          if (!m || !this._canvas || this._drawTLLatLng == null) return;
+          const z = m.getZoom();
+          // CSS-scaling the frozen bitmap by 2^Δz is right for positions but
+          // wrong for the gently zoom-scaled star sprites (1.15^Δz) — past ~half
+          // a zoom level the dots balloon into blurry blobs. So when the flight
+          // has drifted ≥0.5 level from the raster we drew, re-rasterize at the
+          // live zoom (re-project + re-size crisp, like a tile pyramid switching
+          // levels); within a level the transform stays imperceptible.
+          if (Math.abs(z - this._drawZoom) >= 0.5) {
+            this._reset();
+            return;
+          }
+          const scale = m.getZoomScale(z, this._drawZoom);
+          const offset = m._latLngToNewLayerPoint(this._drawTLLatLng, z, m.getCenter());
+          L.DomUtil.setTransform(this._canvas, offset, scale);
         },
 
         _onZoomEnd: function () {
@@ -186,7 +208,25 @@ const SkyCanvasLayer =
           this._padY = padY;
           this._dpr = dpr;
           this._ctx = this._canvas.getContext('2d');
-          this.redraw();
+          // Anchor for _onZoom's flyTo tracking: the zoom and the latlng under the
+          // canvas top-left (container [-padX,-padY]) as of THIS draw. _onZoom later
+          // scales/translates relative to these to keep the canvas glued to the basemap.
+          this._drawZoom = this._map.getZoom();
+          this._drawTLLatLng = this._map.containerPointToLatLng([-padX, -padY]);
+          // Let the owner sync zoom-dependent draw context (sprite scale) to the
+          // zoom we're about to paint at — needed for mid-flyTo re-rasterizations,
+          // where zoomend (which normally refreshes the scale) hasn't fired yet.
+          if (this.options.onBeforeRedraw) this.options.onBeforeRedraw(this._drawZoom);
+          // _reset is the discrete view-settle path (moveend/zoomend/viewreset/resize).
+          // setPosition above moved the canvas element THIS frame; repaint synchronously
+          // so the relocated element and its fresh pixels composite together. Deferring
+          // to rAF (redraw()) leaves one frame showing the moved canvas with stale,
+          // pre-pan star pixels — an intermittent flash on mouse release.
+          if (this._rafHandle != null) {
+            cancelAnimationFrame(this._rafHandle);
+            this._rafHandle = null;
+          }
+          this._doRedraw();
         },
 
         /**

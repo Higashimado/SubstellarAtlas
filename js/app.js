@@ -310,8 +310,14 @@ function bootTimeControl() {
         const month = cnMonths[lunar.getMonth() - 1] || lunar.getMonthInChinese() + '月';
         const day = lunar.getDayInChinese();
         const md = `${stem}年${month}${day}`;
-        const phase = getLunarPhaseLabel_zh(lunar.getDay());
-        return { md, phase };
+        const lunarDay = lunar.getDay();
+        const phase = getLunarPhaseLabel_zh(lunarDay);
+        const anchorKey = { 1: 'new', 8: 'first_quarter', 15: 'full', 23: 'last_quarter' };
+        const phaseKey = anchorKey[lunarDay] ||
+          (window.SunCalc && typeof moonPhaseKey === 'function'
+            ? moonPhaseKey(SunCalc.getMoonIllumination(date).phase)
+            : null);
+        return { md, phase, phaseKey };
       } catch (e) {
         return { md: '—', phase: '—' };
       }
@@ -544,18 +550,17 @@ function bootTimeControl() {
     } else {
       lunarEl.removeAttribute('data-gloss');
     }
-    // Hover glossary on the phase label: the visible text stays plain
-    // (textContent), the description rides on data-gloss (themed definition card,
-    // js/glossary-tip.js). Use the real astronomical phase fraction so the tooltip
-    // matches the sky, not the calendar.
-    if (
-      lab.phase &&
-      typeof SunCalc !== 'undefined' &&
-      SunCalc.getMoonIllumination &&
-      typeof moonPhaseKey === 'function' &&
-      typeof I18n !== 'undefined'
-    ) {
-      phaseEl.dataset.gloss = I18n.gloss('moonphase.' + moonPhaseKey(SunCalc.getMoonIllumination(d).phase));
+    // Hover glossary on the phase label. For zh/ja, the display follows the
+    // lunar-calendar anchor system (day 8 = 上弦 etc.), so the glossary key
+    // must come from the same map (via lab.phaseKey) rather than being
+    // re-derived from the SunCalc fraction, which diverges from the calendar
+    // anchor on boundary days and would produce a name/definition mismatch.
+    const _glossPhaseKey = lab.phaseKey ||
+      (typeof SunCalc !== 'undefined' && SunCalc.getMoonIllumination && typeof moonPhaseKey === 'function'
+        ? moonPhaseKey(SunCalc.getMoonIllumination(d).phase)
+        : null);
+    if (lab.phase && _glossPhaseKey && typeof I18n !== 'undefined') {
+      phaseEl.dataset.gloss = I18n.gloss('moonphase.' + _glossPhaseKey);
     } else {
       phaseEl.removeAttribute('data-gloss');
     }

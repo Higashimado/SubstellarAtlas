@@ -193,7 +193,8 @@ const Observer = (() => {
         '</g>' +
         '</svg>',
       iconSize: [24, 36],
-      iconAnchor: [12, 11],
+      // Anchor at the pin tip (SVG y=14 → pixel (14+7)/24×36 = 31.5px from top).
+      iconAnchor: [12, 32],
     });
   }
 

@@ -39,6 +39,14 @@ const Sidebar = (() => {
   let _weatherData = null; // last fetched weather payload (for highlight updates)
   let _weatherInitDate = null;
 
+  // Light-pollution section state. The section mirrors the lp tile layer: it is
+  // emitted by render() only while the layer is on AND we hold fetched data, so
+  // toggling the layer shows/hides it. Caching the data (rather than filling a
+  // placeholder post-render) also keeps the section alive across time ticks —
+  // render() runs every tick and would otherwise wipe a placeholder to empty.
+  let _lpData = null; // last LightPollution.fetch result (outOfBounds / error / normal)
+  let _lpLayerOn = false; // lp tile layer on? pushed from map.js via setLpLayerActive
+
   // ---- Dual-Sidebar State Machine ----
   // left  = browse/select (eclipse list, future search/index)
   // right = inspect/detail (clicked location, eclipse detail)
@@ -751,9 +759,12 @@ const Sidebar = (() => {
   }
 
   // "+34°" altitude cell (plain read-out, no tip). Negative uses − per convention.
-  function _altCell(h) {
+  // A horizon marker (sunrise/sunset/moonrise/moonset) sits at apparent altitude 0 by
+  // construction; forceVisible clamps the tiny bisection residue so it reads +0°.
+  function _altCell(h, forceVisible) {
     if (!h || isNaN(h.alt)) return `<td class="ecl-ct-alt"></td>`;
-    const a = Math.round(h.alt);
+    const alt = forceVisible && Math.abs(h.alt) < 0.5 ? 0 : h.alt;
+    const a = Math.round(alt);
     const altStr = (a < 0 ? '−' : '+') + Math.abs(a) + '°';
     return `<td class="ecl-ct-alt">${altStr}</td>`;
   }
@@ -763,27 +774,36 @@ const Sidebar = (() => {
   // separate columns, and a click-to-jump time on the far right. defs is
   // [labelKey, Date|null]; absent contacts (e.g. solar C2/C3 of a partial) are
   // skipped, so callers can list every possible contact unconditionally.
-  // defs entries are [labelKey, Date|null, glossSlug?]; the optional slug puts a
+  // defs entries are [labelKey, Date|null, glossSlug?, opts?]; the optional slug puts a
   // hover definition on the contact-name label (the coordinate cells stay tip-free).
+  // opts.forceVisible marks a horizon-crossing marker (sunrise/sunset/moonrise/moonset)
+  // as observable even though its apparent altitude is ~0 — it stays a gold click-to-jump
+  // row instead of being dimmed as below-horizon.
   function _eclContactTable(defs, body, lat, lng) {
     const haveAzEl = typeof Astronomy !== 'undefined' && typeof bodyHorizontal === 'function';
     const rows = defs
-      .map(([labelKey, date, glossSlug]) => {
+      .map(([labelKey, date, glossSlug, opts]) => {
         if (!date || isNaN(date.getTime())) return '';
+        const force = !!(opts && opts.forceVisible);
         const h = haveAzEl ? bodyHorizontal(body, date, lat, lng) : null;
         // Below the horizon → the contact isn't observable here, so the time is
         // shown dim and plain (no accent, no hover, no click-to-jump). Text stays
         // selectable. Otherwise it's an accented click-to-jump target.
-        const below = h && isFinite(h.alt) && h.alt < 0;
+        const below = !force && h && isFinite(h.alt) && h.alt < 0;
         const timeCell = below
           ? `<td class="ecl-ct-time ecl-ct-below">${fmtTime(date)}</td>`
           : `<td class="ecl-ct-time time-jump"${timeAttr(date)}>${fmtTime(date)}</td>`;
         // Altitude before azimuth, matching the sky-path diagram (altitude on the
         // left/y axis, azimuth on the bottom/x axis).
+        const label = _t(labelKey);
+        const lm = label.match(/^([A-Z]\d*)\s+(.+)$/);
+        const cKey = lm ? lm[1] : '';
+        const cDesc = lm ? lm[2] : label;
         return (
           `<tr>` +
-          `<td class="ecl-ct-label"${glossSlug ? _glossAttr(glossSlug) : ''}>${_t(labelKey)}</td>` +
-          _altCell(h) +
+          `<td class="ecl-ct-key">${cKey}</td>` +
+          `<td class="ecl-ct-desc"${glossSlug ? _glossAttr(glossSlug) : ''}>${cDesc}</td>` +
+          _altCell(h, force) +
           _azCells(h) +
           timeCell +
           `</tr>`
@@ -891,56 +911,61 @@ const Sidebar = (() => {
   function eclipseSolarActive(ev, lat, lng) {
     const lc = Eclipse.solarLocalContacts ? Eclipse.solarLocalContacts(ev, lat, lng) : null;
     let html = _eclTypeMeta(ev);
-    // Outside the penumbra → not visible.
-    // Inside the penumbra but Sun below horizon at every contact → also not visible
-    // (Besselian geometry doesn't account for the observer's horizon).
-    const haveAzEl = typeof Astronomy !== 'undefined' && typeof bodyHorizontal === 'function';
     const Sun = Astronomy.Body.Sun;
-    const sunContactDates = lc
-      ? [lc.c1, lc.c2, lc.c3, lc.c4, lc.maxTime].filter((d) => d instanceof Date && !isNaN(d))
-      : [];
-    const sunVisible =
-      !haveAzEl ||
-      !sunContactDates.length ||
-      sunContactDates.some((d) => {
-        const h = bodyHorizontal(Sun, d, lat, lng);
-        return h && isFinite(h.alt) && h.alt >= 0;
-      });
-    if (!lc || !lc.visible || !sunVisible) {
+    // classifySolar already gates on apparent visibility (Sun above the horizon during
+    // the eclipse), so lc.visible is the authoritative "observable here" test.
+    if (!lc || !lc.visible) {
       html += `<div class="ecl-note">${_t('panel.eclipse.not_visible_here')}</div>`;
       return html + _eclForecastBelow(lat, lng, ev);
     }
-    // Sun set/rose mid-eclipse → the clamped C1/C4 isn't a true exterior contact but
-    // the horizon cutting the eclipse off, so label it sunrise/sunset (and gloss to
-    // match) instead of "P1/P4", which would wrongly imply the Moon has cleared.
+    // Sun rose/set mid-eclipse → a sunrise/sunset marker exists; the diagram draws the Sun
+    // on the horizon at that instant (the true P1/P4 are below it) and labels it
+    // accordingly instead of implying the Moon had cleared.
     const sgloss = {
-      P1: _gloss(lc.c1Sunrise ? 'ecl_c_sunrise' : 'ecl_c_p1_solar'),
+      P1: _gloss(lc.sunrise ? 'ecl_c_sunrise' : 'ecl_c_p1_solar'),
       G: _gloss('ecl_c_greatest'),
-      P4: _gloss(lc.c4Sunset ? 'ecl_c_sunset' : 'ecl_c_p4_solar'),
+      P4: _gloss(lc.sunset ? 'ecl_c_sunset' : 'ecl_c_p4_solar'),
       sunpath: _gloss('ecl_sunpath'),
     };
     const slabels = {
-      P1: lc.c1Sunrise ? _t('eclipse.contact.sunrise') : undefined,
-      P4: lc.c4Sunset ? _t('eclipse.contact.sunset') : undefined,
+      P1: lc.sunrise ? _t('eclipse.contact.sunrise') : undefined,
+      P4: lc.sunset ? _t('eclipse.contact.sunset') : undefined,
+    };
+    // Diagram contacts: swap the below-horizon exterior contact for its horizon marker so
+    // the sky path keeps a visible endpoint (the geometric P1/P4 stay in the table only).
+    const diagContacts = {
+      maxPhase: lc.maxPhase,
+      maxTime: lc.maxTime,
+      c1: lc.sunrise || lc.c1,
+      c4: lc.sunset || lc.c4,
+      c1AtHorizon: !!lc.sunrise,
+      c4AtHorizon: !!lc.sunset,
     };
     const diagram =
       typeof EclipseGlyph !== 'undefined'
-        ? EclipseGlyph.renderSchematic(ev, { observer: { lat, lng }, contacts: lc, gloss: sgloss, labels: slabels })
+        ? EclipseGlyph.renderSchematic(ev, {
+            observer: { lat, lng },
+            contacts: diagContacts,
+            gloss: sgloss,
+            labels: slabels,
+          })
         : '';
     // Solar variant stacks the stat readout as a top bar above the plot (not an
     // overlay) so it never covers the SVG's left altitude-axis labels.
     if (diagram) html += `<div class="ecl-diagram ecl-diagram--solar">${_eclSolarSchemStats(lc)}${diagram}</div>`;
+    // Table: all five geometric contacts (dimmed when below the horizon, as the lunar
+    // table does) plus a gold sunrise/sunset marker row when the Sun crossed the horizon
+    // mid-eclipse. Sorted by time so markers land among the contacts they fall between.
     const defs = [
-      lc.c1Sunrise
-        ? ['eclipse.contact.sunrise', lc.c1, 'ecl_c_sunrise']
-        : ['eclipse.contact.p1', lc.c1, 'ecl_c_p1_solar'],
+      ['eclipse.contact.p1', lc.c1, 'ecl_c_p1_solar'],
       ['eclipse.contact.p2', lc.c2, 'ecl_c_p2_solar'],
       ['eclipse.contact.greatest', lc.maxTime, 'ecl_c_greatest'],
       ['eclipse.contact.p3', lc.c3, 'ecl_c_p3_solar'],
-      lc.c4Sunset
-        ? ['eclipse.contact.sunset', lc.c4, 'ecl_c_sunset']
-        : ['eclipse.contact.p4', lc.c4, 'ecl_c_p4_solar'],
+      ['eclipse.contact.p4', lc.c4, 'ecl_c_p4_solar'],
     ];
+    if (lc.sunrise) defs.push(['eclipse.contact.sunrise', lc.sunrise, 'ecl_c_sunrise', { forceVisible: true }]);
+    if (lc.sunset) defs.push(['eclipse.contact.sunset', lc.sunset, 'ecl_c_sunset', { forceVisible: true }]);
+    defs.sort((a, b) => (a[1] ? a[1].getTime() : Infinity) - (b[1] ? b[1].getTime() : Infinity));
     html += _eclContactTable(defs, Sun, lat, lng);
     return html + _eclForecastBelow(lat, lng, ev);
   }
@@ -992,8 +1017,68 @@ const Sidebar = (() => {
       ['eclipse.lunar.contact.u4', t.u4, 'ecl_c_u4'],
       ['eclipse.lunar.contact.p4', t.p4, 'ecl_c_p4_lunar'],
     ].map(([k, iso, slug]) => [k, iso ? new Date(iso) : null, slug]);
+    // Reciprocal of the solar markers: the Moon rising/setting mid-eclipse (within
+    // P1..P4) becomes a gold moonrise/moonset row at apparent altitude 0. The lunar
+    // diagram is a shadow-cone schematic with no horizon axis, so markers are table-only.
+    for (const m of _lunarHorizonMarkers(t.p1, t.p4, lat, lng)) defs.push(m);
+    defs.sort((a, b) => (a[1] ? a[1].getTime() : Infinity) - (b[1] ? b[1].getTime() : Infinity));
     html += _eclContactTable(defs, Moon, lat, lng);
     return html + _eclForecastBelow(lat, lng, ev);
+  }
+
+  // Moonrise/moonset instants (apparent altitude 0) that fall within an in-progress
+  // lunar eclipse's [p1Iso, p4Iso] window, as forceVisible marker defs for the contact
+  // table. Mirrors the solar sunrise/sunset scan: a coarse sign sweep on the Moon's
+  // apparent altitude, then bisection of each rising (moonrise) / falling (moonset) edge.
+  function _lunarHorizonMarkers(p1Iso, p4Iso, lat, lng) {
+    const out = [];
+    const haveAzEl = typeof Astronomy !== 'undefined' && typeof bodyHorizontal === 'function';
+    const p1ms = Date.parse(p1Iso),
+      p4ms = Date.parse(p4Iso);
+    if (!haveAzEl || !isFinite(p1ms) || !isFinite(p4ms) || p4ms <= p1ms) return out;
+    const Moon = Astronomy.Body.Moon;
+    const upAt = (ms) => {
+      const h = bodyHorizontal(Moon, new Date(ms), lat, lng);
+      return !!(h && isFinite(h.alt) && h.alt >= 0);
+    };
+
+    const bis = (msF, msT) => {
+      let a = msF,
+        b = msT;
+      for (let k = 0; k < 32; k++) {
+        const m = (a + b) / 2;
+        if (upAt(m)) b = m;
+        else a = m;
+      }
+      return new Date((a + b) / 2);
+    };
+    const M = 48;
+    const up = [];
+    for (let i = 0; i <= M; i++) {
+      const ms = p1ms + ((p4ms - p1ms) * i) / M;
+      up.push({ ms, on: upAt(ms) });
+    }
+    for (let i = 1; i <= M; i++)
+      if (up[i].on && !up[i - 1].on) {
+        out.push([
+          'eclipse.lunar.contact.moonrise',
+          bis(up[i - 1].ms, up[i].ms),
+          'ecl_c_moonrise',
+          { forceVisible: true },
+        ]);
+        break;
+      }
+    for (let i = M; i >= 1; i--)
+      if (up[i - 1].on && !up[i].on) {
+        out.push([
+          'eclipse.lunar.contact.moonset',
+          bis(up[i].ms, up[i - 1].ms),
+          'ecl_c_moonset',
+          { forceVisible: true },
+        ]);
+        break;
+      }
+    return out;
   }
 
   function fmtFcDate(slot) {
@@ -1206,7 +1291,7 @@ const Sidebar = (() => {
         (galacticMeta ? '<div class="galactic-meta">' + galacticMeta + '</div>' : '') + buildChart(curvePts)
       ) +
       // '<div id="weather-section"></div>' +  // WEATHER panel hidden; re-enable to restore
-      '<div id="lp-section"></div>' +
+      lpSection() +
       auroraSection() +
       satSection() +
       '<div id="eclipse-section"></div>' +
@@ -1474,29 +1559,33 @@ const Sidebar = (() => {
     wirePanelToggles(container);
   }
 
-  // ---- Light Pollution Section ----
+  // ---- Light Pollution Section (Only When the lp Layer Is On) ----
+  // Cache the freshly-fetched data and re-render; lpSection() below decides
+  // whether to emit it based on the layer state. Panel toggles are wired by
+  // render()'s single wirePanelToggles(contentRight()) pass, not here.
   function showLightPollution(data) {
-    const container = document.getElementById('lp-section');
-    if (!container) return;
+    _lpData = data;
+    refreshRight();
+  }
+
+  function lpSection() {
+    if (!_lpLayerOn || !_lpData) return '';
+    const data = _lpData;
 
     if (data.outOfBounds) {
-      container.innerHTML = section(
+      return section(
         'lp',
         `<h3>${_t('panel.lp.title')}</h3>`,
         '<p class="chart-note">⚠ ' + _t('panel.lp.error.out_of_bounds') + '</p>'
       );
-      wirePanelToggles(container);
-      return;
     }
 
     if (data.error) {
-      container.innerHTML = section(
+      return section(
         'lp',
         `<h3>${_t('panel.lp.title')}</h3>`,
         `<p class="chart-note">⚠ ${_t('panel.lp.error.fetch_failed')}：${data.error}</p>`
       );
-      wirePanelToggles(container);
-      return;
     }
 
     const mpsas = data.mpsas.toFixed(2);
@@ -1507,7 +1596,7 @@ const Sidebar = (() => {
     const lvl = parseInt(data.zone, 10) || 0;
     const zoneVal = `<span${_glossTip(_t('panel.lp.zone.' + lvl))}>${data.zone}</span>`;
 
-    container.innerHTML = section(
+    return section(
       'lp',
       `<h3>${_t('panel.lp.title')}</h3>`,
       row(
@@ -1518,7 +1607,26 @@ const Sidebar = (() => {
         row(_t('panel.lp.unit_brightness'), mpsas + ' mag/arcsec²', _t('panel.lp.unit_brightness.tooltip')) +
         `<div class="aurora-credits">© <a href="https://djlorenz.github.io/astronomy/lp/" target="_blank" rel="noopener">D.J. Lorenz</a> · <a href="https://eogdata.mines.edu/products/vnl/" target="_blank" rel="noopener">VIIRS</a> ${data.year}</div>`
     );
-    wirePanelToggles(container);
+  }
+
+  // Layer state pushed from map.js's lp layeradd/layerremove handler. Re-renders
+  // so the lp section appears/disappears in lockstep with the tile layer.
+  function setLpLayerActive(isOn) {
+    _lpLayerOn = isOn;
+    refreshRight();
+  }
+
+  // Right-sidebar re-render entry, preserving the scroll position across the
+  // full innerHTML rebuild (same save/restore as the I18n.subscribe path). Used
+  // by every "async data / layer state changed" caller so a refresh never yanks
+  // the reader back to the top. No-op if no location / panel closed.
+  function refreshRight() {
+    if (_lat === null || !sidebarState.right.open) return;
+    const prev = contentRight().querySelector('.sidebar-scroll');
+    const top = prev ? prev.scrollTop : 0;
+    render(_lat, _lng, TimeState.current);
+    const next = contentRight().querySelector('.sidebar-scroll');
+    if (next && top > 0) next.scrollTop = top;
   }
 
   let _expandedCard = null;
@@ -2069,9 +2177,15 @@ const Sidebar = (() => {
 
   if (typeof I18n !== 'undefined') {
     I18n.subscribe(function () {
-      // Re-render right sidebar if open
+      // Re-render right sidebar if open, preserving scroll position. The full
+      // innerHTML rebuild destroys and recreates .sidebar-scroll, so we save
+      // scrollTop before and restore it to the new element after.
       if (_lat !== null && sidebarState.right.open) {
+        var prevScroll = contentRight().querySelector('.sidebar-scroll');
+        var savedScrollTop = prevScroll ? prevScroll.scrollTop : 0;
         render(_lat, _lng, TimeState.current);
+        var newScroll = contentRight().querySelector('.sidebar-scroll');
+        if (newScroll && savedScrollTop > 0) newScroll.scrollTop = savedScrollTop;
       }
       // Re-render left sidebar eclipse list if present
       if (_eclipseListCtrl && sidebarState.left.open) {
@@ -2097,10 +2211,8 @@ const Sidebar = (() => {
     },
 
     // Re-render the current location's panels in place (e.g. after a layer's
-    // async data arrives). No-op if no location is selected / right panel closed.
-    refresh() {
-      if (_lat !== null && sidebarState.right.open) render(_lat, _lng, TimeState.current);
-    },
+    // async data arrives). Preserves scroll; no-op if no location / panel closed.
+    refresh: refreshRight,
 
     // Update the panel's observer location and re-render times in place. Called
     // by EVERY observer move (Observer.place → onPlace), including marker
@@ -2114,6 +2226,7 @@ const Sidebar = (() => {
     },
 
     showLightPollution,
+    setLpLayerActive,
     showWeather,
     showEclipse,
     showLunarEclipse,
