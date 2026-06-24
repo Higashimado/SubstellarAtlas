@@ -1,4 +1,4 @@
-# <img src="../img/mark.svg" alt="" width="39" style="vertical-align: text-bottom"> Substellar Atlas
+# <img src="../img/mark.svg" alt="" width="39"> Substellar Atlas
 
 [简体中文](../zh-Hans/README.md) · [繁體中文](../zh-Hant/README.md) · **English** · [Français](../fr/README.md) · [Español](../es/README.md) · [Italiano](../it/README.md) · [日本語](../ja/README.md)
 
@@ -6,42 +6,50 @@
   <img src="../docs/demo/world_map.png" width="100%">
 </p>
 
-The Substellar Atlas takes the *substellar point* as its guiding idea: it projects the celestial sphere onto the Earth's surface and lays the two together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe — day and night, the planets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
+The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
 
 ## Concept
 
 > 仲春春分，夕出郊奎、娄、胃东五舍，为齐；仲夏夏至，夕出郊东井、舆鬼、柳东七舍，为楚；仲秋秋分，夕出郊角、亢、氐、房东四舍，为汉；仲冬冬至，晨出郊东方，与尾、箕、斗、牵牛俱西，为中国。—— 《史记·天官书》
 >
-> *— Sima Qian, Records of the Grand Historian, "Treatise on the Celestial Offices" (1st c. BCE): as Mercury appears among different lunar mansions at the equinoxes and solstices, each region of the realm — Qi, Chu, Han, the Central States — is allotted its own quarter of the sky. An early articulation of fēnyě.*
+> *— Sima Qian, Records of the Grand Historian, "Treatise on the Celestial Offices" (1st c. BCE): as Mercury appears among different lunar mansions at the equinoxes and solstices, each region of the realm (Qi, Chu, Han, the Central States) is allotted its own quarter of the sky. An early articulation of fēnyě.*
 
 <p align="center">
   <img src="../docs/demo/xingguan_wuzhuhou.png" width="100%">
 </p>
 
-The heavens have their constellations; the Earth has its regions. Linking phenomena in the sky to areas on the ground is an idea as old as astronomy and astrology themselves: ancient China mapped the twenty-eight lunar mansions onto the Nine Provinces and the feudal states through **分野** (*fēnyě*, "field-allocation"), while in the Greco-Roman world Ptolemy proposed correspondences between the twelve zodiacal signs and nations. Modern geodesy gives this linkage a rigorous form: project a body straight down onto the Earth, and the surface point it meets is its unique, exactly computable substellar point. Compared with a static world map, the projected star map has these characteristics:
+The heavens have their constellations; the Earth has its regions. Linking phenomena in the sky to areas on the ground is an idea as old as astronomy and astrology themselves: ancient China mapped the twenty-eight lunar mansions onto the Nine Provinces and the feudal states through **分野** (*fēnyě*, "field-allocation"), while in the Greco-Roman world Ptolemy proposed correspondences between the twelve signs of the zodiac and nations. Some dismissed the scheme as far-fetched, yet it revealed a symmetry and an isomorphism between sky and Earth, a correspondence that has fed the imagination and inquiry of every age since.
 
-* **Westward rotation** — In the frame of the celestial sphere the Earth turns from east to west over one sidereal day, but from the Earth's own point of view the apparent direction is exactly reversed.
-* **East–west mirrored** — You look down on the star map from outside, the opposite of gazing up at the night sky from within, so east and west are flipped relative to ordinary observation.
-* **Nearer looms larger** — Bodies are drawn at their apparent, not physical, size: the Moon, being close to the Earth, takes up far more area than the planets or deep-sky objects.
+Modern geodesy gives this linkage a rigorous form: ```lat = Dec, lon = RA − GMST```. Concretely, a body projected straight down onto the Earth meets the surface at its unique, exactly computable substellar point. Compared with a static world map, the projected star map has these characteristics:
+
+* **Westward rotation**: the star map turns with the celestial sphere over one sidereal day, exactly opposite to the Earth's own rotation, so the stars drift slowly westward across the fixed ground beneath them.
+* **East–west mirrored**: the observer looks down on the star map from outside, the opposite of gazing up at the night sky from within, so east and west are flipped relative to ordinary observation.
+* **Nearer looms larger**: bodies are drawn at their apparent, not physical, size. The Moon, being close to the Earth, takes up far more area than the planets or deep-sky objects.
 
 ## Features
 
 ### Layers
 
-The base map uses a dark theme — CARTO Dark Matter by default, with Stadia Alidade Smooth Dark as an alternative. The data layers built or integrated by the site are:
+The base map uses a dark theme: [CARTO Dark Matter](https://github.com/cartodb/basemap-styles) by default, switchable to [Stadia Alidade Smooth Dark](https://docs.stadiamaps.com/map-styles/alidade-smooth-dark/) from the layer control at the top right. The layer control at the top left toggles the data layers built and integrated by the site:
 
 | Category | Layers |
 |---|---|
-| Stars / constellations / xingguan | Stars, deep-sky objects, meteor showers, constellations / star officials (xingguan) / asterisms, multilingual labels, coordinate grids |
-| Sun / Moon / planets | Disc rendering, phase rendering, sunlight / moonlight veils |
-| Eclipses | Event list, visibility range, magnitude diagrams |
-| Light pollution | Tile rendering (D. J. Lorenz) |
-| Auroral oval | Visibility range (NOAA SWPC OVATION) |
-| Satellites | Visibility range (CelesTrak) |
+| Stars / Constellations / Xingguan | Stars, deep-sky objects, meteor showers, constellations / star officials (xingguan) / asterisms, multilingual labels, coordinate reference lines |
+| Sun / Moon / Planets | Disc rendering, phase rendering, sunlight / moonlight veils |
+| Eclipses | Event list, visibility range, local circumstances and diagrams |
+| Light pollution | Data rendering (D. J. Lorenz) |
+| Auroral oval | Data rendering (NOAA SWPC OVATION) |
+| Satellites | Data rendering (CelesTrak) |
 
 ### Observer's Compass
 
-Double-click anywhere on the map to raise and lock the **observer's compass**, which shows the directions of sunrise, sunset, moonrise and moonset along with the current positions of the Sun and Moon. The yellow and blue curves are the day's solar and lunar paths. While the compass is locked, clicking a body's icon or label extends its **bearing ray**, and clicking a body's substellar point draws the great-circle line from your location to that point. The info panel on the right gives detailed information about the location and the day's observing data; click a time in the data panel to jump to that instant.
+The **observer's compass** is a tool for reading the bearings of celestial bodies from a particular place. Double-click anywhere on the map to raise and lock it. With the relevant layers turned on, a locked compass can show:
+- the sunrise and sunset directions, the Sun's current bearing and its path for the day;
+- the moonrise and moonset directions, the Moon's current bearing and its path for the day;
+- the full-year envelope of the Sun's daily paths;
+- the current bearings of the planets visible in the sky.
+
+Click an icon or label on the compass to extend its **bearing ray**. While the compass is up, clicking a body's substellar point draws the great-circle line from the observer's location to that point. The info panel on the right gives detailed information about the place along with the day's observing data for the Sun, Moon and planets; click a time in the data panel to jump to that instant.
 
 <p align="center">
   <img src="../docs/demo/compass_sunrise.png" width="100%">
@@ -49,13 +57,13 @@ Double-click anywhere on the map to raise and lock the **observer's compass**, w
 
 ### Eclipse Interaction
 
-Turning on the eclipse layer opens the eclipse list on the left. Jump from the list to an event's moment and you will see the colored envelope curves that mark the whole event's visibility range, together with the gray envelope ring that marks the real-time visibility range. Press the play button at the bottom right to watch a solar eclipse's visibility range travel over time.
+When an eclipse is under way, the map shows the pre-loaded envelope curves for its visibility range together with the real-time envelope ring for the instantaneous visibility range. Open the panel on the left for the 2000–2049 list of eclipses; open the panel on the right for the next eclipse visible from the selected location, along with the local circumstances of any eclipse currently in progress.
 
 <p align="center">
   <img src="../docs/demo/total_solar_eclipse_envelope.png" width="100%">
 </p>
 
-The eclipse section of the right-hand info panel provides the **local circumstances** at the selected location. The lunar-eclipse diagram draws the Moon's passage through the Earth's shadow; the solar-eclipse diagram traces the Sun's track across the sky from first to last contact.
+The lunar-eclipse diagram is set against a **shadow map** of the Earth's penumbra and umbra, showing the Moon's passage through them. The solar-eclipse diagram is a **sky-track** of the Sun over the course of the event. Below each diagram are the altitude and azimuth of the Moon or Sun at greatest eclipse and at each contact.
 
 <p align="center">
   <img src="../docs/demo/lunar_eclipse_diagram.png" width="36%">
@@ -64,9 +72,30 @@ The eclipse section of the right-hand info panel provides the **local circumstan
   <br>
 </p>
 
-### Layered Overlays
+### Celestial Engravings
 
-The project supports overlaying data layers from multiple sources at once — light pollution, the auroral oval and satellites, for example — with a layer-conflict mechanism (the constellation and light-pollution layers, say, cannot be open together) that keeps the information from clashing. The satellite layer draws ground tracks in green, marks in gold the stretches where a satellite may flare over the ground twilight zone, and uses a great circle centered on the satellite icon to show its visibility range. The aurora, light-pollution and satellite sections of the right-hand info panel provide detailed observing information.
+The Sun, the Moon and the planets (bodies that show a visible disc) appear on the map as engraving-style icons, drawn in the manner of the engraved plates the British optical-instrument maker and mapmaker [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) published in the *Monthly Notices of the Royal Astronomical Society* in 1870. Each disc subtends exactly its apparent diameter on the map and so changes with the body's distance from the Earth; the shadow across the disc is rendered from its phase angle. For Solar System bodies, the rendered size corresponds to apparent diameter as follows:
+
+- the Sun and Moon span at most about 0.53°, roughly 60 km projected onto the Earth's surface, about the size of a giant city;
+- Jupiter spans at most about 50″, roughly 1 km on the surface, about the size of a large neighbourhood;
+- Uranus spans at most about 4″, roughly 80 m on the surface, about the size of a regulation soccer pitch.
+
+
+<p align="center">
+  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
+</p>
+
+### Sunlight & Moonlight Veils
+
+Turning on the Sun or Moon layer also brings up its light veil. The sunlight veil is built from four bands of constant brightness, one each for daylight and the civil, nautical and astronomical twilight zones. The moonlight veil instead varies in brightness with the Moon's illumination (brightest at full Moon, all but invisible near the new), and during a lunar eclipse it takes on a rust-red cast that deepens with the umbral magnitude. The layer control at the top right toggles the light veils on and off.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
+### Data Overlays
+
+Alongside the astronomical layers, the project integrates light-pollution, auroral-oval and satellite data, all of which can be overlaid at once. To keep the information from clashing, a layer-conflict mechanism closes incompatible layers automatically. The constellation and light-pollution layers, for instance, cannot be open together. The light-pollution and auroral-oval layers follow the colour conventions of their source sites. The satellite layer draws ground tracks in bronze-green, with the gold stretches marking where a satellite's flare may be seen from the ground. The light-pollution, aurora and satellite sections of the right-hand info panel give detailed observing information. Note that the auroral-oval and satellite data are near-real-time forecasts: once the data are out of date, the layer is locked and greyed out.
 
 <p align="center">
   <img src="../docs/demo/multi_layers.png" width="100%">
@@ -76,9 +105,9 @@ The project supports overlaying data layers from multiple sources at once — li
 
 ### Eclipses (2000–2049)
 
-The solar-eclipse dataset contains the Besselian elements used to compute contact times and positions, along with the ground-envelope curves that describe each event's coverage (umbral central line, northern/southern umbral limits, iso-magnitude lines, northern/southern penumbral limits, sunrise/sunset maximum-eclipse lines, sunrise/sunset curves and so on); the lunar-eclipse dataset holds only an index. It currently covers 112 solar and 114 lunar eclipses between 2000 and 2049. The solar and lunar position vectors used in the computation come from [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19.
+The project uses the solar and lunar position vectors from [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 to compute the 112 solar and 114 lunar eclipses between 2000 and 2049. The dataset holds the Besselian elements used to compute each solar eclipse's contact times and positions, along with the ground-envelope curves that describe its coverage (umbral central line, northern and southern umbral limits, iso-magnitude lines, northern and southern penumbral limits, sunrise/sunset maximum-eclipse lines, sunrise/sunset curves and so on); the lunar-eclipse dataset holds only an index.
 
-**Note:** a solar eclipse's real-time shadow and coverage range, and a lunar eclipse's coverage range, are computed at run time.
+**Note:** a solar eclipse's real-time shadow and coverage, and a lunar eclipse's coverage, fall outside the dataset: they are rendered in real time by the same algorithms.
 
 **Directory structure**
 
@@ -92,7 +121,7 @@ The solar-eclipse dataset contains the Besselian elements used to compute contac
 
 ### Traditional Chinese Star Names
 
-The project provides a multilingual dataset of traditional Chinese star names indexed by HIP, currently holding 3,035 traditional star names and 312 star-official (xingguan) entries. The entries are based primarily on the traditional Chinese star-name catalog from the [Stellarium](https://stellarium.org/) community, with supplementary entries drawn from [Yu Zhaohuan's personal site](https://yzhxxzxy.github.io/cn/index.html), [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), Wikipedia and other crowd-sourced material. The Chinese star-official lines are taken from d3-celestial's sky data. The multilingual translations (English, French, Spanish, Italian) offer both transliterated and meaning-based renderings.
+The project provides a multilingual dataset of traditional Chinese star names indexed by HIP, currently holding 3,035 star names and 312 star-official (xingguan) entries. The entries are based primarily on the traditional Chinese star-name catalogue from the [Stellarium](https://stellarium.org/) community, with supplementary entries drawn from [Yu Zhaohuan's personal site](https://yzhxxzxy.github.io/cn/index.html), [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), Wikipedia and other crowd-sourced material. The Chinese star-official lines are taken from d3-celestial's sky data. The multilingual translations (English, French, Spanish, Italian) offer both transliterated and meaning-based renderings.
 
 **Directory structure**
 
@@ -106,7 +135,7 @@ The project provides a multilingual dataset of traditional Chinese star names in
 
 ### Place Names in Mainland China
 
-The project relies mainly on the cities15000 database from [GeoNames](https://www.geonames.org/) for forward and reverse lookup, but its city coordinates and multilingual names are often incomplete. For mainland China, the project takes the 2023 list of towns and townships from [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage) as a base, converts it to JSON and merges it into the GeoNames city database. It also fills in Chinese translations for some GeoNames place names, ensuring Chinese/Japanese bilingual coverage across East Asia.
+The project relies mainly on the cities15000 database from [GeoNames](https://www.geonames.org/) for forward and reverse lookup, but its city coordinates and multilingual names are often incomplete. For mainland China, the project takes the 2023 list of township-level towns from [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage), converts it to JSON and merges it into the GeoNames city database. It also fills in Chinese translations for some GeoNames place names, ensuring Chinese/Japanese bilingual coverage across East Asia.
 
 | File | Contents |
 |---|---|
@@ -115,7 +144,7 @@ The project relies mainly on the cities15000 database from [GeoNames](https://ww
 
 ## Credits & License
 
-The project's own code is released under the **GNU General Public License v3.0**; see [LICENSE](../LICENSE) for details. Third-party code, data and fonts remain under their respective licenses.
+The project's own code is released under the [**GNU General Public License v3.0**](../LICENSE); third-party code, data and fonts remain under their respective licences.
 
 | Purpose | Component (version) | Author / Source | License |
 |---|---|---|---|
@@ -129,7 +158,7 @@ The project's own code is released under the **GNU General Public License v3.0**
 | Star data | [HYG database](https://www.astronexus.com/projects/hyg) | David Nash | CC BY-SA 4.0 |
 | Traditional Chinese star names | [Stellarium](https://stellarium.org/) | Stellarium community | CC BY-SA |
 | Traditional Chinese star names | [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement) | Guanjin0562 | GPL-2.0 |
-| Comets / asteroids | [JPL](https://ssd.jpl.nasa.gov/) · [MPC](https://www.minorplanetcenter.net/) | JPL · MPC | Public Domain |
+| Comets / Asteroids | [JPL](https://ssd.jpl.nasa.gov/) · [MPC](https://www.minorplanetcenter.net/) | JPL · MPC | Public Domain |
 | Deep-sky objects | [OpenNGC](https://github.com/mattiaverga/OpenNGC) | Mattia Verga | CC BY-SA 4.0 |
 | Eclipses | [EclipseWise](https://www.eclipsewise.com/) | Fred Espenak | © Espenak |
 | Light pollution | [Light-pollution atlas](https://djlorenz.github.io/astronomy/lp/) | David J. Lorenz | © Lorenz |

@@ -1,4 +1,4 @@
-# <img src="../img/mark.svg" alt="" width="39" style="vertical-align: text-bottom"> Substellar Atlas
+# <img src="../img/mark.svg" alt="" width="39"> Substellar Atlas
 
 [简体中文](../zh-Hans/README.md) · [繁體中文](../zh-Hant/README.md) · [English](../en/README.md) · **Français** · [Español](../es/README.md) · [Italiano](../it/README.md) · [日本語](../ja/README.md)
 
@@ -6,42 +6,50 @@
   <img src="../docs/demo/world_map.png" width="100%">
 </p>
 
-Le Substellar Atlas part d'une idée directrice, le *point substellaire* : il projette la sphère céleste sur la surface de la Terre et superpose les deux. Sur cette carte, chaque corps céleste se place à la position géographique de son point substellaire, dérivant avec la Terre et tournant lentement avec une période de 23 h 56 min. Le jeu entre le ciel et la Terre révèle naturellement où chaque type d'événement astronomique est visible à la surface du globe — jour et nuit, planètes, objets du ciel profond, éclipses, aurore, satellites artificiels, et bien plus.
+Substellar Atlas est une visualisation construite sur le concept du *point substellaire*. La sphère céleste est projetée sur la surface de la Terre, et les deux sont superposées. Sur cette carte, chaque corps céleste se trouve à l'emplacement géographique de son point substellaire, dérivant avec la Terre et tournant lentement avec une période de 23 h 56 min. L'interaction du ciel et de la Terre révèle naturellement où chaque type d'événement astronomique est visible à travers le globe : jour et nuit, planètes, objets du ciel profond, éclipses, aurores, satellites artificiels, et plus encore.
 
 ## Concept
 
 > 仲春春分，夕出郊奎、娄、胃东五舍，为齐；仲夏夏至，夕出郊东井、舆鬼、柳东七舍，为楚；仲秋秋分，夕出郊角、亢、氐、房东四舍，为汉；仲冬冬至，晨出郊东方，与尾、箕、斗、牵牛俱西，为中国。—— 《史记·天官书》
 >
-> *— Sima Qian, Mémoires historiques, « Traité des charges célestes » (Ier s. av. J.-C.) : selon les loges lunaires près desquelles Mercure apparaît aux équinoxes et aux solstices, chaque région du royaume — Qi, Chu, Han, les États centraux — se voit attribuer sa propre portion du ciel. Une formulation ancienne du fēnyě.*
+> *— Sima Qian, Mémoires historiques, « Traité des offices célestes » (Ier s. av. J.-C.) : selon la loge lunaire près de laquelle Mercure apparaît aux équinoxes et aux solstices, chaque région du royaume (Qi, Chu, Han, les États du Centre) se voit attribuer son propre quartier du ciel. Une première formulation du fēnyě.*
 
 <p align="center">
   <img src="../docs/demo/xingguan_wuzhuhou.png" width="100%">
 </p>
 
-Le ciel a ses constellations ; la Terre a ses régions. Relier les phénomènes du ciel aux territoires du sol est une idée aussi ancienne que l'astronomie et l'astrologie elles-mêmes : la Chine antique associait les vingt-huit loges lunaires aux Neuf Provinces et aux États féodaux par le **分野** (*fēnyě*, « attribution des champs »), tandis que dans le monde gréco-romain Ptolémée proposait des correspondances entre les douze signes du zodiaque et les nations. La géodésie moderne donne à ce lien une forme rigoureuse : projetez un corps verticalement sur la Terre, et le point de surface qu'il rencontre est son point substellaire, unique et calculable avec exactitude. Comparée à une carte du monde figée, la carte stellaire projetée présente les caractéristiques suivantes :
+Le ciel a ses constellations ; la Terre a ses régions. Relier les phénomènes du ciel aux régions du sol est une idée aussi ancienne que l'astronomie et l'astrologie elles-mêmes : la Chine ancienne associait les vingt-huit loges lunaires aux Neuf Provinces et aux États féodaux à travers le **分野** (*fēnyě*, « allocation de champs »), tandis que dans le monde gréco-romain, Ptolémée proposait des correspondances entre les douze signes du zodiaque et les nations. Certains ont jugé ce schéma tiré par les cheveux, mais il révélait une symétrie et un isomorphisme entre le ciel et la Terre, une correspondance qui a nourri l'imagination et la réflexion de toutes les époques depuis.
 
-* **Rotation vers l'ouest** — Dans le référentiel de la sphère céleste, la Terre tourne d'est en ouest en un jour sidéral, mais vue depuis la Terre elle-même, la direction apparente est exactement inversée.
-* **Est–ouest en miroir** — On regarde la carte stellaire d'au-dessus et de l'extérieur, à l'inverse du regard porté vers le ciel nocturne depuis l'intérieur ; est et ouest s'en trouvent inversés par rapport à l'observation ordinaire.
-* **Le proche paraît plus grand** — Les corps sont dessinés à leur taille apparente, non réelle : la Lune, proche de la Terre, occupe une bien plus grande surface que les planètes ou les objets du ciel profond.
+La géodésie moderne donne à ce lien une forme rigoureuse : ```lat = Dec, lon = RA − GMST```. Concrètement, un corps projeté verticalement sur la Terre rencontre la surface en son point substellaire, unique et calculable avec exactitude. Comparée à une carte du monde statique, la carte stellaire projetée présente les caractéristiques suivantes :
+
+* **Rotation vers l'ouest** : la carte stellaire tourne avec la sphère céleste sur un jour sidéral, exactement à l'inverse de la rotation propre de la Terre, de sorte que les étoiles dérivent lentement vers l'ouest au-dessus du sol fixe.
+* **Est-ouest inversé** : l'observateur regarde la carte stellaire depuis l'extérieur, à l'opposé du regard porté vers le ciel nocturne depuis l'intérieur, de sorte que l'est et l'ouest sont inversés par rapport à l'observation ordinaire.
+* **Le plus proche paraît plus grand** : les corps sont dessinés à leur taille apparente, non physique. La Lune, proche de la Terre, occupe une surface bien plus grande que les planètes ou les objets du ciel profond.
 
 ## Fonctionnalités
 
 ### Couches
 
-Le fond de carte adopte un thème sombre — CARTO Dark Matter par défaut, avec Stadia Alidade Smooth Dark en alternative. Les couches de données développées ou intégrées par le site sont :
+La carte de fond utilise un thème sombre : [CARTO Dark Matter](https://github.com/cartodb/basemap-styles) par défaut, avec la possibilité de passer à [Stadia Alidade Smooth Dark](https://docs.stadiamaps.com/map-styles/alidade-smooth-dark/) depuis le sélecteur de couches en haut à droite. Le sélecteur de couches en haut à gauche active les couches de données développées et intégrées par le site :
 
 | Catégorie | Couches |
 |---|---|
-| Étoiles / constellations / xingguan | Étoiles, objets du ciel profond, pluies de météores, constellations / charges stellaires (xingguan) / astérismes, étiquettes multilingues, grilles de coordonnées |
-| Soleil / Lune / planètes | Rendu du disque, rendu des phases, voiles de lumière solaire / lunaire |
-| Éclipses | Liste d'événements, zone de visibilité, diagrammes de magnitude |
-| Pollution lumineuse | Rendu en tuiles (D. J. Lorenz) |
-| Ovale auroral | Zone de visibilité (NOAA SWPC OVATION) |
-| Satellites | Zone de visibilité (CelesTrak) |
+| Étoiles / Constellations / Xingguan | Étoiles, objets du ciel profond, pluies de météores, constellations / xingguan / astérismes, étiquettes multilingues, lignes de référence des coordonnées |
+| Soleil / Lune / Planètes | Rendu des disques, rendu des phases, voiles de lumière solaire / lunaire |
+| Éclipses | Liste des événements, zone de visibilité, circonstances locales et diagrammes |
+| Pollution lumineuse | Rendu des données (D. J. Lorenz) |
+| Ovale auroral | Rendu des données (NOAA SWPC OVATION) |
+| Satellites | Rendu des données (CelesTrak) |
 
 ### Boussole de l'observateur
 
-Double-cliquez n'importe où sur la carte pour faire apparaître et verrouiller la **boussole de l'observateur**, qui indique les directions du lever et du coucher du Soleil et de la Lune, ainsi que la position actuelle du Soleil et de la Lune. Les courbes jaune et bleue sont les trajectoires solaire et lunaire du jour. Lorsque la boussole est verrouillée, cliquer sur l'icône ou l'étiquette d'un corps prolonge son **rayon de relèvement**, et cliquer sur son point substellaire trace la ligne de grand cercle reliant votre position à ce point. Le panneau d'information de droite fournit les détails du lieu et les données d'observation du jour ; cliquez sur une heure dans le panneau de données pour vous y rendre.
+La **boussole de l'observateur** est un outil pour lire les azimuts des corps célestes depuis un lieu donné. Un double-clic n'importe où sur la carte la fait apparaître et la verrouille. Lorsque les couches concernées sont activées, une boussole verrouillée peut afficher :
+- les directions du lever et du coucher du Soleil, l'azimut actuel du Soleil et sa trajectoire du jour ;
+- les directions du lever et du coucher de la Lune, l'azimut actuel de la Lune et sa trajectoire du jour ;
+- l'enveloppe annuelle des trajectoires quotidiennes du Soleil ;
+- les azimuts actuels des planètes visibles dans le ciel.
+
+Un clic sur une icône ou une étiquette de la boussole étend son **rayon d'azimut**. Lorsque la boussole est affichée, un clic sur le point substellaire d'un corps trace le grand cercle reliant le lieu de l'observateur à ce point. Le panneau d'information à droite donne des renseignements détaillés sur le lieu ainsi que les données d'observation du jour pour le Soleil, la Lune et les planètes ; un clic sur une heure dans le panneau de données mène à cet instant.
 
 <p align="center">
   <img src="../docs/demo/compass_sunrise.png" width="100%">
@@ -49,13 +57,13 @@ Double-cliquez n'importe où sur la carte pour faire apparaître et verrouiller 
 
 ### Interaction avec les éclipses
 
-Activer la couche des éclipses ouvre la liste des éclipses à gauche. En sautant depuis la liste vers l'instant d'un événement, vous voyez les courbes-enveloppes colorées qui délimitent la zone de visibilité de tout l'événement, ainsi que l'anneau-enveloppe gris qui marque la zone de visibilité en temps réel. Appuyez sur le bouton de lecture en bas à droite pour voir la zone de visibilité d'une éclipse solaire se déplacer dans le temps.
+Pendant une éclipse, la carte affiche les courbes enveloppes préchargées de sa zone de visibilité ainsi que l'anneau enveloppe calculé en temps réel pour la zone de visibilité instantanée. Le panneau de gauche présente la liste des éclipses de 2000 à 2049 ; le panneau de droite présente la prochaine éclipse visible depuis le lieu sélectionné, ainsi que les circonstances locales de toute éclipse en cours.
 
 <p align="center">
   <img src="../docs/demo/total_solar_eclipse_envelope.png" width="100%">
 </p>
 
-La section éclipses du panneau d'information de droite fournit les **circonstances locales** au lieu sélectionné. Le diagramme d'éclipse lunaire dessine le passage de la Lune dans l'ombre de la Terre ; le diagramme d'éclipse solaire trace la course du Soleil dans le ciel, du premier au dernier contact.
+Le diagramme d'éclipse de Lune se présente sur un fond de **carte de l'ombre** de la pénombre et de l'ombre de la Terre, montrant le passage de la Lune à travers elles. Le diagramme d'éclipse de Soleil est un **tracé céleste** du Soleil au cours de l'événement. Sous chaque diagramme figurent la hauteur et l'azimut de la Lune ou du Soleil au maximum de l'éclipse et à chaque contact.
 
 <p align="center">
   <img src="../docs/demo/lunar_eclipse_diagram.png" width="36%">
@@ -64,9 +72,30 @@ La section éclipses du panneau d'information de droite fournit les **circonstan
   <br>
 </p>
 
-### Superposition de couches
+### Gravures célestes
 
-Le projet permet de superposer simultanément des couches de données de sources multiples — pollution lumineuse, ovale auroral et satellites, par exemple — avec un mécanisme de conflit de couches (les couches constellations et pollution lumineuse, par exemple, ne peuvent être ouvertes ensemble) qui évite que les informations se brouillent. La couche satellites dessine les traces au sol en vert, signale en or les portions où un satellite peut produire un éclat au-dessus de la zone crépusculaire au sol, et utilise un grand cercle centré sur l'icône du satellite pour indiquer sa zone de visibilité. Les sections aurore, pollution lumineuse et satellites du panneau d'information de droite fournissent des informations d'observation détaillées.
+Le Soleil, la Lune et les planètes (les corps qui présentent un disque visible) apparaissent sur la carte sous forme d'icônes façon gravure, dans le style des planches gravées que le fabricant d'instruments d'optique et cartographe britannique [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) a publiées dans les *Monthly Notices of the Royal Astronomical Society* en 1870. Chaque disque sous-tend exactement son diamètre apparent sur la carte et varie donc avec la distance du corps à la Terre ; l'ombre portée sur le disque est rendue à partir de son angle de phase. Pour les corps du Système solaire, la taille de rendu sur la carte correspond au diamètre apparent comme suit :
+
+- le Soleil et la Lune s'étendent au plus sur environ 0,53°, soit environ 60 km projetés sur la surface de la Terre, la taille d'une ville géante ;
+- Jupiter s'étend au plus sur environ 50″, soit environ 1 km à la surface, la taille d'un grand quartier ;
+- Uranus s'étend au plus sur environ 4″, soit environ 80 m à la surface, la taille d'un terrain de football réglementaire.
+
+
+<p align="center">
+  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
+</p>
+
+### Voiles de lumière solaire et lunaire
+
+L'activation de la couche du Soleil ou de la Lune fait également apparaître son voile de lumière. Le voile solaire est constitué de quatre bandes de luminosité constante, correspondant respectivement au plein jour et aux crépuscules civil, nautique et astronomique. Le voile lunaire varie en luminosité selon l'éclat de la Lune : le plus brillant à la pleine Lune, presque invisible près de la nouvelle Lune. Pendant une éclipse de Lune, il prend une teinte rouge rouille qui s'accentue avec la magnitude de l'ombre. Le sélecteur de couches en haut à droite active ou désactive les voiles de lumière.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
+### Superposition des données
+
+Outre les couches astronomiques, le projet intègre les données de pollution lumineuse, d'ovale auroral et de satellites, qui peuvent toutes être superposées à la fois. Pour éviter que les informations ne se brouillent, un mécanisme de conflit de couches ferme automatiquement les couches incompatibles. Les couches de constellations et de pollution lumineuse, par exemple, ne peuvent pas être ouvertes ensemble. Les couches de pollution lumineuse et d'ovale auroral suivent les conventions de couleur de leurs sites sources. La couche de satellites dessine les traces au sol en vert bronze, les segments dorés marquant les endroits où l'éclat d'un satellite peut être observé depuis le sol. Les sections pollution lumineuse, aurore et satellites du panneau d'information à droite fournissent des renseignements d'observation détaillés. À noter que les données d'ovale auroral et de satellites sont des prévisions en quasi-temps réel : une fois les données périmées, la couche est verrouillée et grisée.
 
 <p align="center">
   <img src="../docs/demo/multi_layers.png" width="100%">
@@ -76,68 +105,68 @@ Le projet permet de superposer simultanément des couches de données de sources
 
 ### Éclipses (2000–2049)
 
-Le jeu de données des éclipses solaires contient les éléments de Bessel servant à calculer les instants et les positions des contacts, ainsi que les courbes-enveloppes au sol qui décrivent la couverture de chaque événement (ligne centrale de l'ombre, limites nord/sud de l'ombre, lignes d'iso-magnitude, limites nord/sud de la pénombre, lignes de magnitude maximale au lever/coucher du Soleil, courbes de lever/coucher, etc.) ; le jeu de données des éclipses lunaires ne contient qu'un index. Il couvre actuellement 112 éclipses solaires et 114 éclipses lunaires entre 2000 et 2049. Les vecteurs de position du Soleil et de la Lune utilisés dans les calculs proviennent d'[Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19.
+Le projet utilise les vecteurs de position du Soleil et de la Lune fournis par [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 pour calculer les 112 éclipses de Soleil et 114 éclipses de Lune entre 2000 et 2049. Le jeu de données contient les éléments de Bessel servant à déterminer les heures et les positions des contacts de chaque éclipse de Soleil, ainsi que les courbes enveloppes au sol qui décrivent sa zone de visibilité (ligne centrale de l'ombre, limites nord et sud de l'ombre, lignes d'iso-magnitude, limites nord et sud de la pénombre, lignes de maximum au lever et au coucher du Soleil, courbes de lever et de coucher, etc.) ; le jeu de données des éclipses de Lune ne contient qu'un index.
 
-**Note :** l'ombre en temps réel et la zone de couverture d'une éclipse solaire, ainsi que la zone de couverture d'une éclipse lunaire, sont calculées à l'exécution.
+**Note :** l'ombre en temps réel et la zone de visibilité d'une éclipse de Soleil, ainsi que la zone de visibilité d'une éclipse de Lune, ne font pas partie du jeu de données : elles sont calculées en temps réel par les mêmes algorithmes.
 
-**Structure des dossiers**
+**Structure des répertoires**
 
 | Fichier | Contenu |
 |---|---|
-| [`data/eclipses/solar.json`](../data/eclipses/solar.json) | Index des éclipses solaires |
-| [`data/eclipses/lunar.json`](../data/eclipses/lunar.json) | Index des éclipses lunaires |
-| [`data/eclipses/events/`](../data/eclipses/events/) `<date>.json` | Zone de visibilité d'une éclipse solaire |
+| [`data/eclipses/solar.json`](../data/eclipses/solar.json) | Index des éclipses de Soleil |
+| [`data/eclipses/lunar.json`](../data/eclipses/lunar.json) | Index des éclipses de Lune |
+| [`data/eclipses/events/`](../data/eclipses/events/) `<date>.json` | Zone de visibilité des éclipses de Soleil |
 | [`data/eclipses/README.md`](../data/eclipses/README.md) | Notes sur le format |
 
 
 ### Noms d'étoiles traditionnels chinois
 
-Le projet fournit un jeu de données multilingue de noms d'étoiles traditionnels chinois indexés par HIP, comptant actuellement 3 035 noms d'étoiles traditionnels et 312 entrées de charges stellaires (xingguan). Les entrées reposent principalement sur le catalogue de noms d'étoiles traditionnels chinois fourni par la communauté [Stellarium](https://stellarium.org/), avec des entrées complémentaires tirées du [site personnel de Yu Zhaohuan](https://yzhxxzxy.github.io/cn/index.html), de [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), de Wikipédia et d'autres sources participatives. Les lignes des charges stellaires chinoises proviennent des données célestes de d3-celestial. Les traductions multilingues (anglais, français, espagnol, italien) proposent à la fois une translittération et une traduction par le sens.
+Le projet fournit un jeu de données multilingue de noms d'étoiles traditionnels chinois indexés par HIP, comptant actuellement 3 035 noms d'étoiles et 312 entrées de xingguan (offices stellaires). Les entrées s'appuient principalement sur le catalogue de noms d'étoiles traditionnels chinois de la communauté [Stellarium](https://stellarium.org/), avec des entrées complémentaires tirées du [site personnel de Yu Zhaohuan](https://yzhxxzxy.github.io/cn/index.html), de [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), de Wikipédia et d'autres ressources collaboratives. Les lignes des xingguan chinois proviennent des données célestes de d3-celestial. Les traductions multilingues (anglais, français, espagnol, italien) proposent à la fois une transcription phonétique et une traduction sémantique.
 
-**Structure des dossiers**
+**Structure des répertoires**
 
 | Fichier | Contenu |
 |---|---|
-| [`data/sky/names.cn.json`](../data/sky/names.cn.json) | Informations sur les charges stellaires |
-| [`data/sky/lines.cn.geojson`](../data/sky/lines.cn.geojson) | Lignes des charges stellaires |
+| [`data/sky/names.cn.json`](../data/sky/names.cn.json) | Informations sur les xingguan |
+| [`data/sky/lines.cn.geojson`](../data/sky/lines.cn.geojson) | Lignes des xingguan |
 | [`data/sky/i18n/`](../data/sky/i18n/) `<locale>/stars.json` | Noms d'étoiles traditionnels et traductions |
-| [`data/sky/i18n/`](../data/sky/i18n/) `<locale>/constellations.cn.json` | Noms des charges stellaires et traductions |
+| [`data/sky/i18n/`](../data/sky/i18n/) `<locale>/constellations.cn.json` | Noms des xingguan et traductions |
 
 
-### Toponymes de Chine continentale
+### Noms de lieux en Chine continentale
 
-Le projet s'appuie principalement sur la base cities15000 de [GeoNames](https://www.geonames.org/) pour la recherche directe et inverse, mais ses coordonnées de villes et ses noms multilingues sont souvent incomplets. Pour la Chine continentale, le projet prend pour base la liste 2023 des bourgs et cantons fournie par [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage), la convertit au format JSON et la fusionne dans la base de villes GeoNames. Il complète aussi les traductions chinoises de certains toponymes de GeoNames, garantissant une couverture bilingue chinois/japonais en Asie de l'Est.
+Le projet s'appuie principalement sur la base cities15000 de [GeoNames](https://www.geonames.org/) pour la recherche directe et inverse, mais ses coordonnées de villes et ses noms multilingues sont souvent incomplets. Pour la Chine continentale, le projet reprend la liste 2023 des localités de niveau cantonal de [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage), la convertit en JSON et la fusionne dans la base de données des villes de GeoNames. Il complète aussi les traductions chinoises de certains noms de lieux de GeoNames, assurant une couverture bilingue chinois/japonais en Asie de l'Est.
 
 | Fichier | Contenu |
 |---|---|
-| [`data/places/cities.json.gz`](../data/places/cities.json.gz) | Base de toponymes enrichie |
+| [`data/places/cities.json.gz`](../data/places/cities.json.gz) | Base de noms de lieux enrichie |
 | [`data/places/name-patches.json`](../data/places/name-patches.json) | Compléments de noms chinois/japonais |
 
-## Crédits & licence
+## Crédits et licence
 
-Le code propre au projet est publié sous **GNU General Public License v3.0** ; voir [LICENSE](../LICENSE) pour les détails. Le code, les données et les polices tiers restent sous leurs licences respectives.
+Le code propre au projet est publié sous [**GNU General Public License v3.0**](../LICENSE) ; le code, les données et les polices tiers restent sous leurs licences respectives.
 
 | Usage | Composant (version) | Auteur / Source | Licence |
 |---|---|---|---|
 | Moteur cartographique | [Leaflet](https://leafletjs.com/) 1.9.4 | Volodymyr Agafonkin | BSD-2-Clause |
-| Tuiles cartographiques | [OpenStreetMap](https://www.openstreetmap.org/copyright) | Communauté OpenStreetMap | ODbL |
+| Tuiles cartographiques | [OpenStreetMap](https://www.openstreetmap.org/copyright) | communauté OpenStreetMap | ODbL |
 | Terminateur jour/nuit | [Leaflet.Terminator](https://github.com/joergdietrich/Leaflet.Terminator) 1.1.0 | Jörg Dietrich | MIT |
-| Calculs astronomiques | [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 | Don Cross | MIT |
+| Astronomie | [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 | Don Cross | MIT |
 | Position du Soleil | [SunCalc](https://github.com/mourner/suncalc) 1.9.0 | Volodymyr Agafonkin | BSD-2-Clause |
 | Calendrier lunaire | [lunar-javascript](https://github.com/6tail/lunar-javascript) 1.7.7 | 6tail | MIT |
 | Lignes de constellations | [d3-celestial](https://github.com/ofrohn/d3-celestial) | Olaf Frohn | BSD |
-| Données stellaires | [Catalogue HYG](https://www.astronexus.com/projects/hyg) | David Nash | CC BY-SA 4.0 |
-| Noms d'étoiles traditionnels chinois | [Stellarium](https://stellarium.org/) | Communauté Stellarium | CC BY-SA |
+| Données stellaires | [HYG database](https://www.astronexus.com/projects/hyg) | David Nash | CC BY-SA 4.0 |
+| Noms d'étoiles traditionnels chinois | [Stellarium](https://stellarium.org/) | communauté Stellarium | CC BY-SA |
 | Noms d'étoiles traditionnels chinois | [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement) | Guanjin0562 | GPL-2.0 |
-| Comètes / astéroïdes | [JPL](https://ssd.jpl.nasa.gov/) · [MPC](https://www.minorplanetcenter.net/) | JPL · MPC | Domaine public |
+| Comètes / Astéroïdes | [JPL](https://ssd.jpl.nasa.gov/) · [MPC](https://www.minorplanetcenter.net/) | JPL · MPC | Domaine public |
 | Objets du ciel profond | [OpenNGC](https://github.com/mattiaverga/OpenNGC) | Mattia Verga | CC BY-SA 4.0 |
 | Éclipses | [EclipseWise](https://www.eclipsewise.com/) | Fred Espenak | © Espenak |
 | Pollution lumineuse | [Atlas de pollution lumineuse](https://djlorenz.github.io/astronomy/lp/) | David J. Lorenz | © Lorenz |
-| Prévision des aurores | [NOAA SWPC](https://www.swpc.noaa.gov/) | NOAA | Domaine public |
-| Propagation des satellites | [satellite.js](https://github.com/shashwatak/satellite-js) 5.0.0 | Shashwat Kandadai | MIT |
-| Éléments orbitaux (TLE) | [CelesTrak](https://celestrak.org/) | T. S. Kelso | Domaine public |
-| Recherche de toponymes | [GeoNames](https://www.geonames.org/) | GeoNames | CC BY 4.0 |
-| Toponymes de Chine continentale | [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage) | OSMChina | GPL-3.0 |
+| Prévision d'aurores | [NOAA SWPC](https://www.swpc.noaa.gov/) | NOAA | Domaine public |
+| Propagation de satellites | [satellite.js](https://github.com/shashwatak/satellite-js) 5.0.0 | Shashwat Kandadai | MIT |
+| Éléments orbitaux de satellites (TLE) | [CelesTrak](https://celestrak.org/) | T. S. Kelso | Domaine public |
+| Recherche de noms de lieux | [GeoNames](https://www.geonames.org/) | GeoNames | CC BY 4.0 |
+| Lieux de Chine continentale | [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage) | OSMChina | GPL-3.0 |
 | Polices latines | [Source Serif](https://github.com/adobe-fonts/source-serif) | Adobe | OFL |
-| Polices CJK | [Source Han Serif](https://github.com/adobe-fonts/source-han-serif) | Adobe | OFL |
+| Polices CJC | [Source Han Serif](https://github.com/adobe-fonts/source-han-serif) | Adobe | OFL |
 | Décompression | [Pako](https://github.com/nodeca/pako) 2.1.0 | Nodeca | MIT |
