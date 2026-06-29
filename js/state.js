@@ -1,6 +1,7 @@
 /** state.js — AppState: URL permalink serialization & layer registry. */
 const AppState = (() => {
   const _layers = {};
+  const _params = {};
   let _debounceTimer = null;
   let _watching = false;
 
@@ -20,15 +21,29 @@ const AppState = (() => {
     return !!(h && h.isOn && h.isOn());
   }
 
+  // Register a stateful URL parameter. handlers.get() returns the string value
+  // to encode (null/undefined = omit from URL). handlers.set(v) restores state.
+  function registerParam(key, handlers) {
+    _params[key] = handlers;
+  }
+
+  function _emitParam(p, key) {
+    const h = _params[key];
+    if (!h || !h.get) return;
+    const v = h.get();
+    if (v != null && v !== '') p.set(key, v);
+  }
+
   function serialize() {
     const map = window.appMap || window.__map;
     if (!map) return new URLSearchParams();
     const c = map.getCenter();
     const p = new URLSearchParams();
-    p.set('lat', c.lat.toFixed(4));
-    p.set('lng', c.lng.toFixed(4));
-    p.set('z', String(map.getZoom()));
 
+    // ---- View ----
+    p.set('v', c.lat.toFixed(4) + ',' + c.lng.toFixed(4) + ',' + map.getZoom());
+
+    // ---- Time ----
     if (typeof TimeState !== 'undefined') {
       if (!TimeState.isPlaying()) {
         // Keep sub-second precision: jump-to-instant permalinks (sunrise,
@@ -43,18 +58,26 @@ const AppState = (() => {
       if (TimeState.timezone) p.set('tz', TimeState.timezone);
     }
 
-    const on = Object.keys(_layers).filter((k) => _layers[k].isOn());
-    if (on.length) p.set('layers', on.join(','));
+    // ---- Appearance ----
+    _emitParam(p, 'base');
 
     if (typeof Sky !== 'undefined') {
       const m = Sky.getMode();
       if (m !== 'off') p.set('stars', m);
     }
 
+    const on = Object.keys(_layers).filter((k) => _layers[k].isOn());
+    if (on.length) p.set('layers', on.join(','));
+
+    // ---- Interaction ----
+    _emitParam(p, 'c');
+
     if (window.currentObserverLatLng) {
       const o = window.currentObserverLatLng;
       p.set('obs', o.lat.toFixed(4) + ',' + o.lng.toFixed(4));
     }
+
+    _emitParam(p, 'panel');
 
     return p;
   }
@@ -80,14 +103,20 @@ const AppState = (() => {
 
     const map = window.appMap || window.__map;
 
-    const lat = parseFloat(p.get('lat'));
-    const lng = parseFloat(p.get('lng'));
-    const z = parseInt(p.get('z'), 10);
-    if (map && !isNaN(lat) && !isNaN(lng)) {
-      map.setView([lat, lng], isNaN(z) ? map.getZoom() : z);
+    // ---- View ----
+    const v = p.get('v');
+    if (v && map) {
+      const parts = v.split(',').map(Number);
+      const lat = parts[0];
+      const lng = parts[1];
+      const z = parts[2];
+      if (!isNaN(lat) && !isNaN(lng)) {
+        map.setView([lat, lng], isNaN(z) ? map.getZoom() : z);
+      }
     }
 
-    const t = parseFloat(p.get('t')); // parseFloat reads both legacy integer and sub-second decimal forms
+    // ---- Time ----
+    const t = parseFloat(p.get('t')); // parseFloat reads both integer and sub-second decimal forms
     if (!isNaN(t) && typeof TimeState !== 'undefined') {
       TimeState.setTime(new Date(Math.round(t * 1000))); // Math.round guards float-mult drift (…329.99 → …330)
     }
@@ -96,6 +125,10 @@ const AppState = (() => {
     if (tz && typeof TimeState !== 'undefined' && TimeState.setTimezone) {
       TimeState.setTimezone(tz);
     }
+
+    // ---- Appearance ----
+    const base = p.get('base');
+    if (_params['base'] && _params['base'].set) _params['base'].set(base || 'carto');
 
     const layerStr = p.get('layers');
     if (layerStr) {
@@ -115,6 +148,9 @@ const AppState = (() => {
       }
     }
 
+    // ---- Interaction ----
+    // obs must be applied before c (compass attaches to the observer marker)
+    // and before panel (right sidebar renders observer-dependent content).
     const obs = p.get('obs');
     if (obs) {
       const [oLat, oLng] = obs.split(',').map(Number);
@@ -122,6 +158,11 @@ const AppState = (() => {
         window.enterLocationMode(oLat, oLng);
       }
     }
+
+    if (p.get('c') === '1' && _params['c'] && _params['c'].set) _params['c'].set('1');
+
+    const panel = p.get('panel');
+    if (panel && _params['panel'] && _params['panel'].set) _params['panel'].set(panel);
   }
 
   function _basePath() {
@@ -145,8 +186,18 @@ const AppState = (() => {
   }
 
   function _scheduleWrite() {
-    if (_debounceTimer) clearTimeout(_debounceTimer);
-    _debounceTimer = setTimeout(_writeURL, 500);
+    // Leading throttle, not a reset-on-every-call debounce. _writeURL → serialize()
+    // reads live map state when the timer fires, so there's no need to clear+rearm to
+    // capture "the last" event. That churn mattered: a single zoom fires thousands of
+    // layeradd/layerremove (Leaflet re-fires every sublayer add on the map) and time
+    // playback fires every frame, so the old clearTimeout+setTimeout pair was one of
+    // the trace's top self-time costs. One pending timer per burst; the next event
+    // after it fires rearms it — a throttle that still converges on the final state.
+    if (_debounceTimer) return;
+    _debounceTimer = setTimeout(() => {
+      _debounceTimer = null;
+      _writeURL();
+    }, 500);
   }
 
   function startWatching() {
@@ -170,5 +221,14 @@ const AppState = (() => {
     if (h && h.setOn) h.setOn(on);
   }
 
-  return { registerLayer, isLayerOn, setLayerOn, serialize, applyFromURL, startWatching };
+  return {
+    registerLayer,
+    isLayerOn,
+    setLayerOn,
+    registerParam,
+    serialize,
+    applyFromURL,
+    startWatching,
+    touch: _scheduleWrite,
+  };
 })();

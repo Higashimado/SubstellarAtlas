@@ -393,6 +393,21 @@ const GeoUtils = (() => {
     return out.length ? out : [0];
   }
 
+  // A moveend-rebuild key for viewport-culled overlays. visibleWrapsFromBounds alone is
+  // too coarse: it only changes when a pan crosses a 360° world-copy boundary, so an
+  // intra-wrap pan that reveals new sky was silently skipped. Longitude culling only
+  // engages below a full-globe span (see sky.js viewportRaDecBox), so fold a coarse
+  // viewport bucket into the key exactly when culling is live; low zoom stays
+  // viewport-agnostic and negligible pans still short-circuit.
+  function viewportRebuildKey(m) {
+    const wraps = visibleWrapsFromBounds(m).join(',');
+    if (!m || typeof m.getBounds !== 'function') return wraps;
+    const b = m.getBounds();
+    if (b.getEast() - b.getWest() >= 360) return wraps;
+    const ctr = m.project(m.getCenter());
+    return wraps + '|' + m.getZoom() + ':' + Math.round(ctr.x / 256) + ':' + Math.round(ctr.y / 256);
+  }
+
   // ---- Great-Circle Overlay Helpers ----
   // These three were byte-identical clones inside great-circle-layer.js and
   // ecliptic.js; consolidated here so the single curve-rendering recipe has one home.
@@ -473,6 +488,7 @@ const GeoUtils = (() => {
     dayStrengthRuns,
     dayStrengthAtMid,
     visibleWrapsFromBounds,
+    viewportRebuildKey,
     projectSubStellarTable,
     unwrapLngContinuity,
     visibleWrapOffsets,

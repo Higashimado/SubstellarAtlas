@@ -266,10 +266,48 @@ const Sat = (() => {
     layer.on('mouseout', () => _emphasize(noradId, false));
   }
 
+  // Clip a shifted polyline segment to the visible longitude window, returning
+  // contiguous in-span sub-polylines (each carrying one extra point past the
+  // boundary so the stroke reaches the viewport edge). Mirrors great-circle-layer.js.
+  function _clipSegToSpan(seg, spanW, spanE) {
+    const out = [];
+    let cur = null;
+    for (let i = 0; i < seg.length; i++) {
+      const lng = seg[i][1];
+      if (lng >= spanW && lng <= spanE) {
+        if (!cur) {
+          cur = [];
+          if (i > 0) cur.push(seg[i - 1]);
+        }
+        cur.push(seg[i]);
+      } else if (cur) {
+        cur.push(seg[i]);
+        out.push(cur);
+        cur = null;
+      }
+    }
+    if (cur) out.push(cur);
+    return out;
+  }
+
   function _render(date) {
     if (!_layer || !_map) return;
     _layer.clearLayers();
     _satGroups = {};
+
+    // Viewport longitude cull: at high zoom (viewport < 90°), clip track segments
+    // to the visible window ± one viewport width before adding polylines. Reduces
+    // rendered vertices from ~360 per orbit to a handful, cutting per-frame Leaflet
+    // projection work during playback. Mirrors the pattern in great-circle-layer.js.
+    const _b = _map.getBounds();
+    const _vw = _b.getEast() - _b.getWest();
+    const _cull = _vw < 90;
+    let _spanW = -Infinity,
+      _spanE = Infinity;
+    if (_cull) {
+      _spanW = Math.floor(_b.getWest() - _vw);
+      _spanE = Math.ceil(_b.getEast() + _vw);
+    }
 
     const ss = typeof window.getSubsolarLatLng === 'function' ? window.getSubsolarLatLng(date) : null;
     let anyLocked = false;
@@ -311,29 +349,33 @@ const Sat = (() => {
         if (!isFinite(lo)) continue;
         for (const off of GeoUtils.wrapOffsets(lo, hi)) {
           const shifted = off ? seg.pts.map((p) => [p[0], p[1] + off]) : seg.pts;
-          // Visible track is non-interactive; a transparent fat casing carries the
-          // hover so the comfortable band (not the ~1.8px stroke) triggers it. The
-          // casing stays out of grp.lines so _emphasize never restyles it. Mirrors
-          // the eclipse-curve hit-casing (HitWidths.MIN, js/hit-widths.js).
-          const line = L.polyline(shifted, {
-            color,
-            weight: BASE_WEIGHT,
-            opacity: lineOpacity,
-            pane: 'sat',
-            interactive: false,
-          });
-          line.addTo(_layer);
-          grp.lines.push(line);
-          const hit = L.polyline(shifted, {
-            color,
-            weight: HitWidths.MIN,
-            opacity: 0,
-            pane: 'sat',
-            lineCap: 'round',
-            lineJoin: 'round',
-          });
-          hit.addTo(_layer);
-          _bindHover(hit, entry.noradId);
+          const subs = _cull ? _clipSegToSpan(shifted, _spanW, _spanE) : [shifted];
+          for (const sub of subs) {
+            if (sub.length < 2) continue;
+            // Visible track is non-interactive; a transparent fat casing carries the
+            // hover so the comfortable band (not the ~1.8px stroke) triggers it. The
+            // casing stays out of grp.lines so _emphasize never restyles it. Mirrors
+            // the eclipse-curve hit-casing (HitWidths.MIN, js/hit-widths.js).
+            const line = L.polyline(sub, {
+              color,
+              weight: BASE_WEIGHT,
+              opacity: lineOpacity,
+              pane: 'sat',
+              interactive: false,
+            });
+            line.addTo(_layer);
+            grp.lines.push(line);
+            const hit = L.polyline(sub, {
+              color,
+              weight: HitWidths.MIN,
+              opacity: 0,
+              pane: 'sat',
+              lineCap: 'round',
+              lineJoin: 'round',
+            });
+            hit.addTo(_layer);
+            _bindHover(hit, entry.noradId);
+          }
         }
       }
 

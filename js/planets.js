@@ -31,7 +31,7 @@ const Planets = (() => {
     const t = Astronomy.MakeTime(date);
     const v = Astronomy.GeoVector(body, t, true);
     const d = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-    return { alpha: Math.atan2(v.y, v.x), delta: Math.asin(v.z / d) };
+    return { alpha: Math.atan2(v.y, v.x), delta: Math.asin(v.z / d), dist: d };
   }
 
   // ---- Sun Altitude at a Body's Sub-Point ----
@@ -59,11 +59,14 @@ const Planets = (() => {
   function bodySubPoint(date, body) {
     const j = jd(date);
     const g = gmst(j);
-    const { alpha, delta } = bodyPosition(date, body);
+    const { alpha, delta, dist } = bodyPosition(date, body);
     const raw = deg(alpha) - g;
     return {
       lat: deg(delta),
       lng: ((raw % 360) + 360) % 360,
+      // Geocentric distance (AU) — the body canvas paints far→near by this so
+      // the nearer body occludes (the Moon, nearest, always lands on top).
+      distAU: dist,
     };
   }
 
@@ -106,6 +109,34 @@ const Planets = (() => {
       small: { src: 'img/neptune-small.svg', w: 16, h: 16 },
       large: { src: 'img/neptune-large.svg', w: 132, h: 132 },
     },
+    io: {
+      small: { src: 'img/io-small.svg', w: 16, h: 16 },
+      large: { src: 'img/io-large.svg', w: 124, h: 124 },
+    },
+    europa: {
+      small: { src: 'img/europa-small.svg', w: 16, h: 16 },
+      large: { src: 'img/europa-large.svg', w: 124, h: 124 },
+    },
+    ganymede: {
+      small: { src: 'img/ganymede-small.svg', w: 16, h: 16 },
+      large: { src: 'img/ganymede-large.svg', w: 124, h: 124 },
+    },
+    callisto: {
+      small: { src: 'img/callisto-small.svg', w: 16, h: 16 },
+      large: { src: 'img/callisto-large.svg', w: 124, h: 124 },
+    },
+    titan: {
+      small: { src: 'img/titan-small.svg', w: 16, h: 16 },
+      large: { src: 'img/titan-large.svg', w: 124, h: 124 },
+    },
+    rhea: {
+      small: { src: 'img/rhea-small.svg', w: 16, h: 16 },
+      large: { src: 'img/rhea-large.svg', w: 124, h: 124 },
+    },
+    iapetus: {
+      small: { src: 'img/iapetus-small.svg', w: 16, h: 16 },
+      large: { src: 'img/iapetus-large.svg', w: 124, h: 124 },
+    },
   };
 
   // Planet equatorial diameters (km).  Saturn uses ring-inclusive extent.
@@ -120,16 +151,73 @@ const Planets = (() => {
     moon: 3474,
   };
 
+  // Major-moon diameters (km), used to size engraving disks by real angular
+  // extent through the same footprint chain as the planets — so a moon disk is
+  // always proportional to, and smaller than, its parent planet's.
+  const MOON_DIAM_KM = {
+    io: 3643,
+    europa: 3122,
+    ganymede: 5268,
+    callisto: 4821,
+    titan: 5150,
+    rhea: 1527,
+    iapetus: 1469,
+  };
+
   const EARTH_R_KM = 6371.0;
   const AU_KM = 149597870.7;
+
+  function footprintKmFromDist(diamKm, distAU) {
+    const angDiam = diamKm / (distAU * AU_KM);
+    return EARTH_R_KM * angDiam;
+  }
 
   function bodyFootprintKm(body, bodyId, date) {
     const t = Astronomy.MakeTime(date);
     const v = Astronomy.GeoVector(body, t, true);
     const distAU = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-    const physDiam = BODY_DIAM_KM[bodyId] || 1;
-    const angDiam = physDiam / (distAU * AU_KM);
-    return EARTH_R_KM * angDiam;
+    return footprintKmFromDist(BODY_DIAM_KM[bodyId] || 1, distAU);
+  }
+
+  // ---- Disk Rasterization Cap ----
+  //
+  // An SVG <image> (or <img src="….svg">) is rasterized by the browser at its
+  // DISPLAY size, so a disk drawn at fpPx px paints an fpPx² bitmap. At high zoom
+  // a body footprint reaches many hundreds of px — moon-xlarge.svg (1169 paths)
+  // at 1000px is a ~4 MB GPU texture, multiplied by every body and every wrapped
+  // world copy. That resident texture set overruns the GPU's VRAM budget and
+  // thrashes (evict + re-upload) on each recomposite, which is the documented
+  // high-zoom stall. Cap the rasterization at CAP px and CSS-transform:scale()
+  // the disk up to its true visual size: above the cap the element size is
+  // constant, so the browser rasterizes once and only the compositor transform
+  // changes on zoom. The texture stays CAP²; the upscale is a cheap GPU blit.
+  // Slight softening past the cap is acceptable for a stylized engraving and
+  // reads like telescopic blur. Capping the render radius also collapses the
+  // _phaseCache key space above the cap, so the SVG string is reused too.
+  const DISK_RASTER_CAP_PX = 512;
+
+  function diskRenderSize(fpPx) {
+    return Math.min(fpPx, DISK_RASTER_CAP_PX);
+  }
+
+  // Wrap disk content (built at renderW×renderH) so it visually fills
+  // visualW×visualH while its backing raster stays the render size. The uniform
+  // scale preserves aspect; transform-origin 0 0 keeps the scaled box anchored at
+  // the divIcon's top-left, so the visual center still lands on iconAnchor.
+  function scaleDiskWrap(innerHtml, renderW, renderH, visualW, visualH) {
+    if (visualW <= renderW + 0.5 && visualH <= renderH + 0.5) return innerHtml;
+    const k = visualW / renderW;
+    return (
+      '<div style="width:' +
+      renderW +
+      'px;height:' +
+      renderH +
+      'px;transform:scale(' +
+      k.toFixed(4) +
+      ');transform-origin:0 0">' +
+      innerHtml +
+      '</div>'
+    );
   }
 
   // Build engraving SVG icon(s) with LOD crossfade between small and large.
@@ -138,55 +226,52 @@ const Planets = (() => {
     const e = ENGRAVING[planetId];
     const lodMix = Lum.smoothstep(14, 22, fpPx); // 0 = small only, 1 = large only
 
+    // Container sized to the dominant variant (large when lodMix>0.5, else small)
+    const dom = lodMix > 0.5 ? e.large : e.small;
+    const domAspect = dom.w / dom.h;
+    const visualW = Math.max(6, Math.round(domAspect >= 1 ? fpPx : fpPx * domAspect));
+    const visualH = Math.max(6, Math.round(domAspect >= 1 ? fpPx / domAspect : fpPx));
+    // Cap rasterization: render at a scaled-down size whose larger edge ≤ CAP,
+    // then transform:scale() back up (uniform scale preserves the ring aspect).
+    const k = Math.max(visualW, visualH) > DISK_RASTER_CAP_PX ? Math.max(visualW, visualH) / DISK_RASTER_CAP_PX : 1;
+    const renderW = Math.max(6, Math.round(visualW / k));
+    const renderH = Math.max(6, Math.round(visualH / k));
+
     function makeImg(variant, opacity) {
       const aspect = variant.w / variant.h;
       let w, h;
       if (aspect >= 1) {
-        w = Math.max(6, Math.round(fpPx));
-        h = Math.max(6, Math.round(fpPx / aspect));
+        w = renderW;
+        h = Math.max(6, Math.round(renderW / aspect));
       } else {
-        h = Math.max(6, Math.round(fpPx));
-        w = Math.max(6, Math.round(fpPx * aspect));
+        h = renderH;
+        w = Math.max(6, Math.round(renderH * aspect));
       }
-      return {
-        w,
-        h,
-        html:
-          '<img src="' +
-          variant.src +
-          '" width="' +
-          w +
-          '" height="' +
-          h +
-          '" style="display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:' +
-          opacity.toFixed(3) +
-          '">',
-      };
+      return (
+        '<img src="' +
+        variant.src +
+        '" width="' +
+        w +
+        '" height="' +
+        h +
+        '" style="display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:' +
+        opacity.toFixed(3) +
+        '">'
+      );
     }
 
-    // Container sized to the dominant variant (large when lodMix>0.5, else small)
-    const dom = lodMix > 0.5 ? e.large : e.small;
-    const domAspect = dom.w / dom.h;
-    const cW = Math.max(6, Math.round(domAspect >= 1 ? fpPx : fpPx * domAspect));
-    const cH = Math.max(6, Math.round(domAspect >= 1 ? fpPx / domAspect : fpPx));
-
     let parts = [];
-    parts.push('<div style="position:relative;width:' + cW + 'px;height:' + cH + 'px">');
+    parts.push('<div style="position:relative;width:' + renderW + 'px;height:' + renderH + 'px">');
 
     // Snap the disc opacity ramp (6,40)→(6,20) so once the body is "visible" the
     // LOD layers are fully opaque and grid lines behind no longer bleed through.
     const dAEff = Math.min(1, diskAlpha * 2);
-    if (lodMix < 0.99) {
-      const s = makeImg(e.small, dAEff * (1 - lodMix));
-      parts.push(s.html);
-    }
-    if (lodMix > 0.01) {
-      const l = makeImg(e.large, dAEff * lodMix);
-      parts.push(l.html);
-    }
+    if (lodMix < 0.99) parts.push(makeImg(e.small, dAEff * (1 - lodMix)));
+    if (lodMix > 0.01) parts.push(makeImg(e.large, dAEff * lodMix));
 
     parts.push('</div>');
-    return { html: parts.join(''), width: cW, height: cH };
+    const html = scaleDiskWrap(parts.join(''), renderW, renderH, visualW, visualH);
+    return { html: html, width: visualW, height: visualH };
   }
 
   // ---- Phased Engraving Icon (LOD Crossfade + Elliptical Terminator) ----
@@ -198,8 +283,9 @@ const Planets = (() => {
     const e = ENGRAVING[planetId];
     const lodMix = Lum.smoothstep(14, 22, fpPx);
 
-    const sz = Math.max(6, Math.round(fpPx));
-    const R = sz / 2;
+    const visualSz = Math.max(6, Math.round(fpPx));
+    const renderSz = Math.max(6, Math.round(diskRenderSize(fpPx)));
+    const R = renderSz / 2;
 
     function makeSvg(variant, opacity) {
       const svg = buildPhasedDiskSVG(R, i, chi, {
@@ -208,9 +294,9 @@ const Planets = (() => {
       });
       return (
         '<div style="position:absolute;left:50%;top:50%;width:' +
-        sz +
+        renderSz +
         'px;height:' +
-        sz +
+        renderSz +
         'px;transform:translate(-50%,-50%);opacity:' +
         opacity.toFixed(3) +
         '">' +
@@ -220,13 +306,14 @@ const Planets = (() => {
     }
 
     const parts = [];
-    parts.push('<div style="position:relative;width:' + sz + 'px;height:' + sz + 'px">');
+    parts.push('<div style="position:relative;width:' + renderSz + 'px;height:' + renderSz + 'px">');
     // Same opacity ramp snap as buildEngravingIconLOD — see comment there.
     const dAEff = Math.min(1, diskAlpha * 2);
     if (lodMix < 0.99) parts.push(makeSvg(e.small, dAEff * (1 - lodMix)));
     if (lodMix > 0.01) parts.push(makeSvg(e.large, dAEff * lodMix));
     parts.push('</div>');
-    return { html: parts.join(''), width: sz, height: sz };
+    const html = scaleDiskWrap(parts.join(''), renderSz, renderSz, visualSz, visualSz);
+    return { html: html, width: visualSz, height: visualSz };
   }
 
   // ---- Body Configs ----
@@ -562,8 +649,9 @@ const Planets = (() => {
 
   // ---- Build Phase-Aware SVG Icon String for Moon (High-Zoom Footprint Disk) ----
   function buildMoonDiskHtml(illum, paDeg, fpPx, diskAlpha, northPADeg, shadow) {
-    const sz = Math.max(4, Math.round(fpPx));
-    const R = sz / 2;
+    const visualSz = Math.max(4, Math.round(fpPx));
+    const renderSz = Math.max(4, Math.round(diskRenderSize(fpPx)));
+    const R = renderSz / 2;
     const i = rad(illum.phase_angle);
     const chi = rad(paDeg);
 
@@ -580,17 +668,18 @@ const Planets = (() => {
     // through. Tighten the visible-disc ramp to (6, 20): once fpPxEff is
     // halfway across the original range, the disc is fully opaque.
     const wrapperOpacity = Math.min(1, diskAlpha * 2);
-    const html =
+    const clipped =
       '<div style="width:' +
-      sz +
+      renderSz +
       'px;height:' +
-      sz +
+      renderSz +
       'px;border-radius:50%;overflow:hidden;opacity:' +
       wrapperOpacity.toFixed(3) +
       '">' +
       svg +
       '</div>';
-    return { html: html, size: sz };
+    const html = scaleDiskWrap(clipped, renderSz, renderSz, visualSz, visualSz);
+    return { html: html, size: visualSz };
   }
 
   // ---- Build Luminosity-Model Markers for Any Body ----
@@ -804,14 +893,19 @@ const Planets = (() => {
         cfg.name,
         onClick,
         onContextMenu,
-        bodyLabel
+        bodyLabel,
+        cfg.id,
+        sp.distAU
       );
     } else if (ENGRAVING[cfg.id]) {
-      const dA = Lum.smoothstep(6, 40, fpPx);
-      const glowRetire = (1 - dA) * dayFade;
-
       const scale = Lum.zoomScale(zoom);
       const sr = Lum.spriteRadii(mag, scale);
+      // Reveal the disk by its size relative to the glow bloom, not absolute px:
+      // a disk much smaller than the glow stays hidden so the glow's bright
+      // center reads as a dense point, and only takes over as it grows to the
+      // glow's scale. The glow and core dot retire by the same ramp.
+      const reveal = Lum.diskGlowReveal(fpPx, sr.glow);
+      const glowRetire = (1 - reveal) * dayFade;
 
       const bodyName = cfg.id.charAt(0).toUpperCase() + cfg.id.slice(1);
       // Pass real-time apparent magnitude. Engraving SVG disk
@@ -837,18 +931,18 @@ const Planets = (() => {
         pane: bodyPane,
         radius: sr.core,
         fillColor: colors.core,
-        fillOpacity: Lum.coreOpacity(sr.lnB) * (1 - dA) * dayFade,
+        fillOpacity: Lum.coreOpacity(sr.lnB) * (1 - reveal) * dayFade,
         stroke: false,
         interactive: true,
       };
 
       let diskHtml = null;
       if (fpPx >= 3) {
-        // Engraving SVG disk opacity already comes from dA inside the
-        // helpers. Apply dayFade by scaling the dA passed in: the helpers
-        // multiply their output opacity by dA internally, so passing
-        // dA*dayFade gives the correct fade chain.
-        const dAEff = dA * dayFade;
+        // Engraving SVG disk opacity comes from the reveal ramp inside the
+        // helpers. Apply dayFade by scaling the value passed in: the helpers
+        // multiply their output opacity by it internally, so passing
+        // reveal*dayFade gives the correct fade chain.
+        const dAEff = reveal * dayFade;
         if (cfg.id === 'saturn') {
           // Saturn: rings + non-square asset → keep flat engraving. Phase
           // angle stays < 6°, terminator invisible at typical zoom.
@@ -871,7 +965,9 @@ const Planets = (() => {
         cfg.name,
         onClick,
         onContextMenu,
-        bodyLabel
+        bodyLabel,
+        cfg.id,
+        sp.distAU
       );
     } else {
       // No engraving SVG asset (e.g. Uranus / Neptune until their texture
@@ -907,7 +1003,455 @@ const Planets = (() => {
         interactive: true,
       };
 
-      placeWrappedLumBody(sp.lat, sp.lng, coreOpts, glowSpec, null, group, cfg.name, onClick, onContextMenu, bodyLabel);
+      placeWrappedLumBody(
+        sp.lat,
+        sp.lng,
+        coreOpts,
+        glowSpec,
+        null,
+        group,
+        cfg.name,
+        onClick,
+        onContextMenu,
+        bodyLabel,
+        cfg.id,
+        sp.distAU
+      );
+    }
+  }
+
+  // ---- Jupiter's Galilean Moons (Companion Dots at High Zoom) ----
+  // astronomy-engine returns each moon's jovicentric vector in the EQJ frame;
+  // adding Jupiter's geocentric EQJ vector yields the moon's geocentric vector,
+  // which feeds the same RA/Dec→sub-point math as the planets. Because both
+  // vectors share the EQJ frame, the moon-relative-to-Jupiter offset stays
+  // correct even though sub-points pair EQJ right ascension with of-date GMST —
+  // that absolute-frame quirk cancels out of the offset. Magnitudes follow
+  // Stellarium's absolute_magnitude path, mag = V(1,0) + 5·log10(r·Δ); the phase
+  // term is dropped because the Galilean phase angle seen from Earth stays below
+  // 12°, contributing under 0.1 mag.
+  const JUPITER_MOONS = [
+    {
+      id: 'io',
+      key: 'io',
+      get name() {
+        return _t('planet.io');
+      },
+      v10: -1.68,
+    },
+    {
+      id: 'europa',
+      key: 'europa',
+      get name() {
+        return _t('planet.europa');
+      },
+      v10: -1.41,
+    },
+    {
+      id: 'ganymede',
+      key: 'ganymede',
+      get name() {
+        return _t('planet.ganymede');
+      },
+      v10: -2.09,
+    },
+    {
+      id: 'callisto',
+      key: 'callisto',
+      get name() {
+        return _t('planet.callisto');
+      },
+      v10: -1.05,
+    },
+  ];
+
+  const _JMOON_BY_ID = Object.fromEntries(JUPITER_MOONS.map((m) => [m.id, m]));
+
+  // Below this zoom the four sub-points collapse onto Jupiter's disk (their
+  // ~0.1° spread is sub-pixel), so the dots stay hidden and then fade in over
+  // the next two levels rather than popping into existence.
+  const Z_JMOON_ON = 9;
+
+  let _jmoonParent = null;
+  let _jmoonGroups = null;
+
+  // Saturn's six moons bright enough to show (mag < 12). astronomy-engine has no
+  // Saturn analog of JupiterMoons(), so positions come from js/saturn-moons.js
+  // (TASS 1.7). v10 are Stellarium ssystem_major.ini absolute magnitudes — the same
+  // source as the Galilean v10 above.
+  const SATURN_MOONS = [
+    {
+      id: 'enceladus',
+      key: 'enceladus',
+      get name() {
+        return _t('planet.enceladus');
+      },
+      v10: 2.1,
+    },
+    {
+      id: 'tethys',
+      key: 'tethys',
+      get name() {
+        return _t('planet.tethys');
+      },
+      v10: 0.6,
+    },
+    {
+      id: 'dione',
+      key: 'dione',
+      get name() {
+        return _t('planet.dione');
+      },
+      v10: 0.8,
+    },
+    {
+      id: 'rhea',
+      key: 'rhea',
+      get name() {
+        return _t('planet.rhea');
+      },
+      v10: 0.1,
+    },
+    {
+      id: 'titan',
+      key: 'titan',
+      get name() {
+        return _t('planet.titan');
+      },
+      v10: -1.28,
+    },
+    {
+      id: 'iapetus',
+      key: 'iapetus',
+      get name() {
+        return _t('planet.iapetus');
+      },
+      v10: 1.5,
+    },
+  ];
+
+  const _SMOON_BY_ID = Object.fromEntries(SATURN_MOONS.map((m) => [m.id, m]));
+
+  // The inner Saturnian moons sit tighter to their planet than the Galileans, but
+  // Titan and Iapetus swing wider; the same fade-in threshold reads well for the set.
+  const Z_SMOON_ON = 9;
+
+  let _smoonParent = null;
+  let _smoonGroups = null;
+
+  // Start loading the TASS 1.7 table immediately; state() stays null until it lands.
+  if (typeof SaturnMoons !== 'undefined') SaturnMoons.init();
+
+  // Geocentric EQJ vector → sub-point, mirroring bodySubPoint (which is locked
+  // to an Astronomy.Body). Returns the geocentric distance (AU) too, so callers
+  // get Δ for the magnitude model without a second pass over the vector.
+  function vecSubPoint(date, vec) {
+    const d = Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+    const alpha = Math.atan2(vec.y, vec.x);
+    const delta = Math.asin(vec.z / d);
+    const raw = deg(alpha) - gmst(jd(date));
+    return { lat: deg(delta), lng: ((raw % 360) + 360) % 360, distAU: d };
+  }
+
+  // One pass over a Galilean moon's geometry, shared by the renderer, the info
+  // card, and the search/great-circle lookups so the EQJ-offset and magnitude
+  // recipe lives in exactly one place. `along` is the moon's signed depth along
+  // the Earth→Jupiter line (positive = farther than Jupiter's centre, i.e. the
+  // far side) and `perp` its perpendicular miss-distance (AU) from that line —
+  // together they decide whether Jupiter's disk hides the moon. `ra`/`sp.lat`
+  // are the geocentric equatorial coordinates; `rHelio·sp.distAU` drives the
+  // V(1,0) magnitude.
+  function jupiterMoonGeo(date, key, ctx) {
+    ctx = ctx || jupiterMoonGeoCtx(date);
+    const jv = ctx.jv;
+    const jm = ctx.jmAll[key];
+    const vec = { x: jv.x + jm.x, y: jv.y + jm.y, z: jv.z + jm.z };
+    const sp = vecSubPoint(date, vec);
+    const ra = ((deg(Math.atan2(vec.y, vec.x)) % 360) + 360) % 360;
+
+    const along = (jm.x * jv.x + jm.y * jv.y + jm.z * jv.z) / ctx.dJup;
+    const perp = Math.hypot(
+      jm.x - (along * jv.x) / ctx.dJup,
+      jm.y - (along * jv.y) / ctx.dJup,
+      jm.z - (along * jv.z) / ctx.dJup
+    );
+    return { vec, sp, ra, rHelio: ctx.rHelio, along, perp };
+  }
+
+  // The per-date, moon-independent half of jupiterMoonGeo: Jupiter's geo/helio
+  // vectors and the full JupiterMoons(t) table (which already returns all four
+  // moons at once). Built once per updateMarkers and shared across the loop so
+  // GeoVector / HelioVector / JupiterMoons aren't re-evaluated per moon — they
+  // were, costing four redundant ephemeris passes on every settle/tick.
+  function jupiterMoonGeoCtx(date) {
+    const t = Astronomy.MakeTime(date);
+    const jv = Astronomy.GeoVector(Astronomy.Body.Jupiter, t, true);
+    const hv = Astronomy.HelioVector(Astronomy.Body.Jupiter, t);
+    return {
+      jv,
+      jmAll: Astronomy.JupiterMoons(t),
+      rHelio: Math.hypot(hv.x, hv.y, hv.z),
+      dJup: Math.hypot(jv.x, jv.y, jv.z),
+    };
+  }
+
+  // Saturn-moon counterpart of jupiterMoonGeo. SaturnMoons.state() returns
+  // Saturncentric ECLIPTIC-J2000 vectors (AU); rotate ECL→EQJ through Astronomy
+  // Engine so the obliquity convention matches GeoVector(Saturn) before summing.
+  // `along`/`perp` are taken from the Saturncentric offset (the moon's own vector
+  // relative to Saturn), exactly as the Jupiter version uses jm. Returns null until
+  // the TASS table has loaded.
+  function saturnMoonGeo(date, key, ctx) {
+    ctx = ctx || saturnMoonGeoCtx(date);
+    const stAll = ctx.stAll;
+    if (!stAll || !stAll[key]) return null;
+    const ecl = stAll[key];
+    const sm = Astronomy.RotateVector(ctx.rotEclEqj, new Astronomy.Vector(ecl.x, ecl.y, ecl.z, ctx.t));
+    const sv = ctx.sv;
+    const vec = { x: sv.x + sm.x, y: sv.y + sm.y, z: sv.z + sm.z };
+    const sp = vecSubPoint(date, vec);
+    const ra = ((deg(Math.atan2(vec.y, vec.x)) % 360) + 360) % 360;
+
+    const along = (sm.x * sv.x + sm.y * sv.y + sm.z * sv.z) / ctx.dSat;
+    const perp = Math.hypot(
+      sm.x - (along * sv.x) / ctx.dSat,
+      sm.y - (along * sv.y) / ctx.dSat,
+      sm.z - (along * sv.z) / ctx.dSat
+    );
+    return { vec, sp, ra, rHelio: ctx.rHelio, along, perp };
+  }
+
+  // Per-date, moon-independent half of saturnMoonGeo: the full TASS state table,
+  // Saturn's geo/helio vectors, and the constant ECL→EQJ rotation. Built once per
+  // updateMarkers so GeoVector / HelioVector / Rotation_ECL_EQJ aren't recomputed
+  // for each of the six moons. SaturnMoons.state() is itself memoized by tt, so
+  // calling it here vs per moon is a wash — the win is the per-moon GeoVector pair.
+  function saturnMoonGeoCtx(date) {
+    const t = Astronomy.MakeTime(date);
+    const stAll = typeof SaturnMoons !== 'undefined' ? SaturnMoons.state(t) : null;
+    const sv = Astronomy.GeoVector(Astronomy.Body.Saturn, t, true);
+    const hv = Astronomy.HelioVector(Astronomy.Body.Saturn, t);
+    return {
+      t,
+      stAll,
+      sv,
+      rotEclEqj: Astronomy.Rotation_ECL_EQJ(),
+      rHelio: Math.hypot(hv.x, hv.y, hv.z),
+      dSat: Math.hypot(sv.x, sv.y, sv.z),
+    };
+  }
+
+  // The Sun's photospheric radius (km) — it never appears in BODY_DIAM_KM, whose
+  function placeJupiterMoons(map, date, zoom, entries) {
+    if (!_jmoonParent) {
+      _jmoonParent = L.layerGroup();
+      _jmoonGroups = {};
+      for (const m of JUPITER_MOONS) {
+        const g = L.layerGroup();
+        _jmoonGroups[m.id] = g;
+        _jmoonParent.addLayer(g);
+      }
+      _jmoonParent.addTo(map);
+    }
+
+    // Companion dots share Jupiter's visibility range: render only when
+    // Jupiter's own marker layer is on and we're zoomed in far enough to
+    // separate the moons from the planet.
+    const jup = entries && entries.find((e) => e.config.id === 'jupiter');
+    const show = zoom >= Z_JMOON_ON && jup && map.hasLayer(jup.markerLayer);
+    if (!show) {
+      for (const m of JUPITER_MOONS) _jmoonGroups[m.id].clearLayers();
+      return;
+    }
+
+    const scale = Lum.zoomScale(zoom);
+    const fade = Lum.smoothstep(Z_JMOON_ON, Z_JMOON_ON + 2, zoom);
+    // Jupiter's equatorial radius as an AU miss-distance threshold: a moon on the
+    // far side whose line-of-sight offset falls inside the disk is hidden by the
+    // planet. Oblateness is ignored — a spherical silhouette is exact enough at
+    // a four-pixel dot.
+    const rJupAU = BODY_DIAM_KM.jupiter / 2 / AU_KM;
+
+    const jctx = jupiterMoonGeoCtx(date);
+    for (const m of JUPITER_MOONS) {
+      const g = jupiterMoonGeo(date, m.key, jctx);
+      const sp = g.sp;
+
+      // Drop the whole moon (core, glow, label) when Jupiter's own disk covers it
+      // (far side, within the silhouette). Near-side transits keep rendering,
+      // drawn above the planet disk as they physically should be. Occlusion by
+      // the Sun and inner planets is handled by z-order: body-jmoons (737) sits
+      // below the Sun/inner-planet dynamic zone (741–749).
+      if (g.along > 0 && g.perp < rJupAU) {
+        _jmoonGroups[m.id].clearLayers();
+        continue;
+      }
+
+      const mag = m.v10 + 5 * Math.log10(g.rHelio * sp.distAU);
+      const sr = Lum.spriteRadii(mag, scale);
+      const bodyName = m.id.charAt(0).toUpperCase() + m.id.slice(1);
+      const colors = _dayTinted(Lum.colorForBody(bodyName, scale, mag));
+      const hasGlow = sr.glow > sr.core;
+
+      // Size the engraving disk by real angular diameter — the same footprint chain
+      // the planets use (bodyFootprintKm → footprintPx) — so each moon stays
+      // proportional to, and smaller than, Jupiter. The reveal then gates the disk
+      // by its size relative to the glow: while the disk is much smaller than the
+      // glow the moon stays a bright glow-point (dark crater texture hidden), and
+      // the texture only emerges as the disk grows to the glow's scale (~z16-17).
+      const fpKm = footprintKmFromDist(MOON_DIAM_KM[m.id], sp.distAU);
+      const fpPx = Lum.footprintPx(zoom, fpKm, sp.lat);
+      const reveal = Lum.diskGlowReveal(fpPx, sr.glow);
+
+      const glowSpec =
+        hasGlow || sr.glare > 0
+          ? {
+              coreR: sr.core,
+              glowR: sr.glow,
+              glareR: sr.glare,
+              coreCol: colors.core,
+              tint: colors.halo,
+              alpha: fade * (1 - reveal),
+            }
+          : null;
+
+      const coreOpts = {
+        pane: 'body-jmoons',
+        radius: sr.core,
+        fillColor: colors.core,
+        fillOpacity: Lum.coreOpacity(sr.lnB) * fade * (1 - reveal),
+        stroke: false,
+        interactive: true,
+      };
+
+      // Click opens the same info card as a planet; the moon id stands in for a
+      // body config (no contour layer of its own, so pass null).
+      const onClick = _onBodyClick ? (ev) => _onBodyClick({ config: { id: m.id }, contourLayer: null }, ev) : null;
+
+      // Hold labels back until the dots are mostly faded in, so four names don't
+      // crowd Jupiter right at the separation threshold.
+      const label = fade > 0.5 ? m.name : null;
+
+      const diskHtml = fpPx >= 3 && reveal > 0.01 ? buildEngravingIconLOD(m.id, fpPx, fade * reveal) : null;
+
+      placeWrappedLumBody(
+        sp.lat,
+        sp.lng,
+        coreOpts,
+        glowSpec,
+        diskHtml,
+        _jmoonGroups[m.id],
+        m.name,
+        onClick,
+        null,
+        label,
+        m.id,
+        sp.distAU
+      );
+    }
+  }
+
+  function placeSaturnMoons(map, date, zoom, entries) {
+    if (!_smoonParent) {
+      _smoonParent = L.layerGroup();
+      _smoonGroups = {};
+      for (const m of SATURN_MOONS) {
+        const g = L.layerGroup();
+        _smoonGroups[m.id] = g;
+        _smoonParent.addLayer(g);
+      }
+      _smoonParent.addTo(map);
+    }
+
+    // Mirror the Galilean gating: only with Saturn's marker layer on and zoomed in
+    // enough to separate the moons from the planet.
+    const sat = entries && entries.find((e) => e.config.id === 'saturn');
+    const show = zoom >= Z_SMOON_ON && sat && map.hasLayer(sat.markerLayer);
+    if (!show) {
+      for (const m of SATURN_MOONS) _smoonGroups[m.id].clearLayers();
+      return;
+    }
+
+    const scale = Lum.zoomScale(zoom);
+    const fade = Lum.smoothstep(Z_SMOON_ON, Z_SMOON_ON + 2, zoom);
+    // Saturn's ring-inclusive radius as the occulter: a far-side moon whose
+    // line-of-sight offset falls inside it is hidden. Reusing the ring extent
+    // (BODY_DIAM_KM.saturn) folds a coarse ring occlusion into the same test.
+    const rSatAU = BODY_DIAM_KM.saturn / 2 / AU_KM;
+
+    const sctx = saturnMoonGeoCtx(date);
+    for (const m of SATURN_MOONS) {
+      const g = saturnMoonGeo(date, m.key, sctx);
+      // Null until the TASS table loads — clear and wait for a later tick.
+      if (!g) {
+        _smoonGroups[m.id].clearLayers();
+        continue;
+      }
+      const sp = g.sp;
+
+      // Same far-side cull as the Galileans: occlusion by the Sun and the nearer
+      // planets is left to z-order (body-smoons 731 sits below the 741–749 zone).
+      if (g.along > 0 && g.perp < rSatAU) {
+        _smoonGroups[m.id].clearLayers();
+        continue;
+      }
+
+      const mag = m.v10 + 5 * Math.log10(g.rHelio * sp.distAU);
+      const sr = Lum.spriteRadii(mag, scale);
+      const bodyName = m.id.charAt(0).toUpperCase() + m.id.slice(1);
+      const colors = _dayTinted(Lum.colorForBody(bodyName, scale, mag));
+      const hasGlow = sr.glow > sr.core;
+
+      // Real-angular-diameter disk sizing, same footprint chain as the planets.
+      // Only Titan, Rhea, and Iapetus have engraving icons — the rest stay dots.
+      // The reveal gates the disk by its size relative to the glow: while small it
+      // stays hidden behind a bright glow-point, emerging only as it grows to the
+      // glow's scale. Icon-less moons get fpPx≈0 → reveal≈0 → glow/core unchanged.
+      const fpKm = footprintKmFromDist(MOON_DIAM_KM[m.id] || 1, sp.distAU);
+      const fpPx = Lum.footprintPx(zoom, fpKm, sp.lat);
+      const reveal = Lum.diskGlowReveal(fpPx, sr.glow);
+
+      const glowSpec =
+        hasGlow || sr.glare > 0
+          ? {
+              coreR: sr.core,
+              glowR: sr.glow,
+              glareR: sr.glare,
+              coreCol: colors.core,
+              tint: colors.halo,
+              alpha: fade * (1 - reveal),
+            }
+          : null;
+
+      const coreOpts = {
+        pane: 'body-smoons',
+        radius: sr.core,
+        fillColor: colors.core,
+        fillOpacity: Lum.coreOpacity(sr.lnB) * fade * (1 - reveal),
+        stroke: false,
+        interactive: true,
+      };
+
+      const onClick = _onBodyClick ? (ev) => _onBodyClick({ config: { id: m.id }, contourLayer: null }, ev) : null;
+      const label = fade > 0.5 ? m.name : null;
+
+      const diskHtml =
+        ENGRAVING[m.id] && fpPx >= 3 && reveal > 0.01 ? buildEngravingIconLOD(m.id, fpPx, fade * reveal) : null;
+
+      placeWrappedLumBody(
+        sp.lat,
+        sp.lng,
+        coreOpts,
+        glowSpec,
+        diskHtml,
+        _smoonGroups[m.id],
+        m.name,
+        onClick,
+        null,
+        label,
+        m.id,
+        sp.distAU
+      );
     }
   }
 
@@ -937,6 +1481,11 @@ const Planets = (() => {
     const sunPos = bodyPosition(date, Astronomy.Body.Sun);
     const zoom = map.getZoom();
 
+    // Drop every canvas body except the Sun before this authoritative refresh;
+    // hidden planets/moons and far-side-culled satellites are simply not re-added
+    // below, so their glow does not linger on the shared body canvas.
+    if (typeof bodyCanvasBeginPass === 'function') bodyCanvasBeginPass();
+
     for (const e of entries) {
       if (!map.hasLayer(e.markerLayer)) continue;
       const sp = bodySubPoint(date, e.config.body);
@@ -944,6 +1493,9 @@ const Planets = (() => {
       const onContextMenu = _onBodyContextMenu ? (ev) => _onBodyContextMenu(e, ev) : null;
       placeBodyMarker(e.config, date, sunPos, sp, zoom, e.markerGroup, onClick, onContextMenu);
     }
+
+    placeJupiterMoons(map, date, zoom, entries);
+    placeSaturnMoons(map, date, zoom, entries);
   }
 
   function updateMarkerSizes(map, entries) {
@@ -978,6 +1530,14 @@ const Planets = (() => {
   };
 
   function getSearchLatLng(id, date) {
+    if (_JMOON_BY_ID[id]) {
+      const sp = jupiterMoonGeo(date, _JMOON_BY_ID[id].key).sp;
+      return { lat: sp.lat, lng: GeoUtils.normLng(sp.lng) };
+    }
+    if (_SMOON_BY_ID[id]) {
+      const g = saturnMoonGeo(date, _SMOON_BY_ID[id].key);
+      return g ? { lat: g.sp.lat, lng: GeoUtils.normLng(g.sp.lng) } : null;
+    }
     const body = _BODY_BY_ID[id];
     if (!body) return null;
     const sp = bodySubPoint(date, body);
@@ -985,8 +1545,16 @@ const Planets = (() => {
   }
 
   // Public: instantaneous geocentric equatorial coordinates (degrees) for
-  // sun/moon/planet `id`.
+  // sun/moon/planet `id`, or a Galilean moon.
   function getBodyRaDec(id, date) {
+    if (_JMOON_BY_ID[id]) {
+      const g = jupiterMoonGeo(date, _JMOON_BY_ID[id].key);
+      return { ra: g.ra, dec: g.sp.lat };
+    }
+    if (_SMOON_BY_ID[id]) {
+      const g = saturnMoonGeo(date, _SMOON_BY_ID[id].key);
+      return g ? { ra: g.ra, dec: g.sp.lat } : null;
+    }
     const body = _BODY_BY_ID[id];
     if (!body) return null;
     try {
@@ -998,11 +1566,162 @@ const Planets = (() => {
     }
   }
 
+  // Single source of truth for which planetary moons exist, so the celestial
+  // search index never hardcodes (and drifts from) the rendered moon roster.
+  function getMoonIds() {
+    return [...JUPITER_MOONS, ...SATURN_MOONS].map((m) => m.id);
+  }
+
   let _searchPopup = null;
   let _searchPopupBuilder = null;
   let _searchPopupId = null;
 
+  // Galilean moons can't go through the planet card: they aren't Astronomy.Body
+  // values, so Illumination/GeoVector(body) would throw. This mirrors the planet
+  // card's layout but sources RA/Dec, Δ, and the V(1,0) magnitude from
+  // jupiterMoonGeo, and adds a parent-body row pointing back to Jupiter.
+  function _buildJupiterMoonInfoHTML(id, date) {
+    const m = _JMOON_BY_ID[id];
+    const g = jupiterMoonGeo(date, m.key);
+    const raDeg = g.ra;
+    const decDeg = g.sp.lat;
+    const mag = m.v10 + 5 * Math.log10(g.rHelio * g.sp.distAU);
+
+    const magRow =
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('magnitude') +
+      '>' +
+      _t('star.magnitude') +
+      '</span><span class="value">' +
+      mag.toFixed(2) +
+      '</span></div>';
+    const distRow =
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('distance') +
+      '>' +
+      _t('star.distance') +
+      '</span><span class="value">' +
+      g.sp.distAU.toFixed(3) +
+      ' AU</span></div>';
+    const parentRow =
+      '<div class="info-row"><span class="label">' +
+      _t('sky.parent_body') +
+      '</span><span class="value">' +
+      _SYM_BY_ID.jupiter +
+      ' ' +
+      _t('planet.jupiter') +
+      '</span></div>';
+
+    const skyInfo = GeoUtils.buildSkyInfoHTML(raDeg, decDeg, date, _t);
+    return (
+      '<div class="star-panel">' +
+      '<h2 class="star-name">' +
+      _t('planet.' + id) +
+      '</h2>' +
+      '<div class="star-scroll">' +
+      '<div class="info-block">' +
+      '<div class="info-block-title">' +
+      _t('sky.object_data') +
+      '</div>' +
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('ra') +
+      '>' +
+      _t('star.ra') +
+      '</span><span class="value">' +
+      GeoUtils.fmtRA(raDeg) +
+      '</span></div>' +
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('dec') +
+      '>' +
+      _t('star.dec') +
+      '</span><span class="value">' +
+      GeoUtils.fmtDec(decDeg) +
+      '</span></div>' +
+      magRow +
+      distRow +
+      parentRow +
+      '</div>' +
+      skyInfo +
+      '</div>' +
+      GeoUtils.cardCredits([{ name: 'Astronomy Engine', url: 'https://github.com/cosinekitty/astronomy' }]) +
+      '</div>'
+    );
+  }
+
+  // Saturn-moon card, parallel to the Galilean one. Positions come from the TASS 1.7
+  // table (js/saturn-moons.js), so the credit points there; the parent row reads ♄.
+  function _buildSaturnMoonInfoHTML(id, date) {
+    const m = _SMOON_BY_ID[id];
+    const g = saturnMoonGeo(date, m.key);
+    if (!g) return '<div class="star-panel"></div>';
+    const raDeg = g.ra;
+    const decDeg = g.sp.lat;
+    const mag = m.v10 + 5 * Math.log10(g.rHelio * g.sp.distAU);
+
+    const magRow =
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('magnitude') +
+      '>' +
+      _t('star.magnitude') +
+      '</span><span class="value">' +
+      mag.toFixed(2) +
+      '</span></div>';
+    const distRow =
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('distance') +
+      '>' +
+      _t('star.distance') +
+      '</span><span class="value">' +
+      g.sp.distAU.toFixed(3) +
+      ' AU</span></div>';
+    const parentRow =
+      '<div class="info-row"><span class="label">' +
+      _t('sky.parent_body') +
+      '</span><span class="value">' +
+      _SYM_BY_ID.saturn +
+      ' ' +
+      _t('planet.saturn') +
+      '</span></div>';
+
+    const skyInfo = GeoUtils.buildSkyInfoHTML(raDeg, decDeg, date, _t);
+    return (
+      '<div class="star-panel">' +
+      '<h2 class="star-name">' +
+      _t('planet.' + id) +
+      '</h2>' +
+      '<div class="star-scroll">' +
+      '<div class="info-block">' +
+      '<div class="info-block-title">' +
+      _t('sky.object_data') +
+      '</div>' +
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('ra') +
+      '>' +
+      _t('star.ra') +
+      '</span><span class="value">' +
+      GeoUtils.fmtRA(raDeg) +
+      '</span></div>' +
+      '<div class="info-row"><span class="label"' +
+      _glossAttr('dec') +
+      '>' +
+      _t('star.dec') +
+      '</span><span class="value">' +
+      GeoUtils.fmtDec(decDeg) +
+      '</span></div>' +
+      magRow +
+      distRow +
+      parentRow +
+      '</div>' +
+      skyInfo +
+      '</div>' +
+      GeoUtils.cardCredits([{ name: 'TASS 1.7 (Vienne & Duriez 1995)', url: 'https://www.imcce.fr/' }]) +
+      '</div>'
+    );
+  }
+
   function _buildSearchPopupHTML(id, date) {
+    if (_JMOON_BY_ID[id]) return _buildJupiterMoonInfoHTML(id, date);
+    if (_SMOON_BY_ID[id]) return _buildSaturnMoonInfoHTML(id, date);
     const body = _BODY_BY_ID[id];
     const bp = bodyPosition(date, body);
     const raDeg = ((deg(bp.alpha) % 360) + 360) % 360;
@@ -1199,7 +1918,9 @@ const Planets = (() => {
   }
 
   function showSearchPopup(id, date, latlng, map) {
-    if (!_BODY_BY_ID[id]) return;
+    // Accept Galilean/Saturn moon ids too — _buildSearchPopupHTML already routes
+    // them to their own info builders, only this guard kept them out.
+    if (!_BODY_BY_ID[id] && !_JMOON_BY_ID[id] && !_SMOON_BY_ID[id]) return;
     const m = map;
     if (!m) return;
     _searchPopupId = id;
@@ -1247,6 +1968,7 @@ const Planets = (() => {
     bodySubPoint,
     getSearchLatLng,
     getBodyRaDec,
+    getMoonIds,
     showSearchPopup,
     setDayMode,
     buildBodyInfoHTML: _buildSearchPopupHTML,

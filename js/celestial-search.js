@@ -39,13 +39,14 @@ const CelestialSearch = (() => {
   // ---- Glyph Badges (One Per Category; Planets Use Body Symbol) ----
   const BADGE = {
     star: '★',
-    constellation: '⬡',
-    xingguan: '✴',
+    constellation: '♈︎',
+    xingguan: '▦',
     dso: '◇',
     comet: '☄',
     meteor: '✦',
     sun: '☉',
     moon: '☽',
+    pmoon: '◦',
     satellite: '🛰',
   };
 
@@ -55,7 +56,7 @@ const CelestialSearch = (() => {
     mars: '♂',
     jupiter: '♃',
     saturn: '♄',
-    uranus: '♅',
+    uranus: '⛢',
     neptune: '♆',
   };
 
@@ -288,6 +289,18 @@ const CelestialSearch = (() => {
       if (sym) add(sym, kind, id, 12);
     }
 
+    // Planetary moons (Galilean + Saturn): per-language names. The roster comes
+    // from Planets so it tracks whatever the map actually renders. No symbol —
+    // there is no single glyph per moon; the '◐' badge marks the category.
+    if (typeof Planets !== 'undefined' && Planets.getMoonIds) {
+      for (const id of Planets.getMoonIds()) {
+        for (const lang of LANGS) {
+          const nm = _ui[lang] && _ui[lang]['planet.' + id];
+          if (nm) add(nm, 'pmoon', id, 12);
+        }
+      }
+    }
+
     // Satellites (curated): label + aliases + NORAD id. Positions are live (SGP4),
     // so nothing is precomputed here; the static catalogue needs no TLE load.
     if (typeof Sat !== 'undefined' && Sat.getCatalog) {
@@ -305,10 +318,10 @@ const CelestialSearch = (() => {
     const set = new Set();
     const skyOn = typeof Sky !== 'undefined' && Sky.getMode && Sky.getMode() !== 'off';
     if (skyOn) ['star', 'constellation', 'xingguan', 'dso', 'comet', 'meteor'].forEach((k) => set.add(k));
-    const on = (k) => typeof AppState !== 'undefined' && AppState.isLayerOn && AppState.isLayerOn(k);
-    if (on('twilight')) set.add('sun');
-    if (on('moon')) set.add('moon');
-    if (on('planets')) set.add('planet');
+    // Solar-system bodies stay searchable regardless of layer state — selecting one
+    // turns its layer on (see select → _ensureLayerOn), so the jump never lands blind.
+    ['sun', 'moon', 'planet', 'pmoon'].forEach((k) => set.add(k));
+    // Artificial satellites keep their gating: only searchable while the Sat layer is on.
     if (typeof Sat !== 'undefined' && Sat.isOn && Sat.isOn()) set.add('satellite');
     return set;
   }
@@ -344,7 +357,8 @@ const CelestialSearch = (() => {
       }
       case 'sun':
       case 'moon':
-      case 'planet': {
+      case 'planet':
+      case 'pmoon': {
         return (_ui[loc] && _ui[loc]['planet.' + refKey]) || refKey;
       }
       case 'satellite':
@@ -452,7 +466,8 @@ const CelestialSearch = (() => {
       }
       case 'sun':
       case 'moon':
-      case 'planet': {
+      case 'planet':
+      case 'pmoon': {
         if (typeof Planets === 'undefined' || !Planets.getBodyRaDec) return null;
         return Planets.getBodyRaDec(refKey, date);
       }
@@ -488,11 +503,39 @@ const CelestialSearch = (() => {
       case 'sun':
       case 'moon':
       case 'planet':
+      case 'pmoon':
         return Planets.getSearchLatLng(refKey, date);
       case 'satellite':
         return typeof Sat !== 'undefined' && Sat.getSearchLatLng ? Sat.getSearchLatLng(refKey, date) : null;
     }
     return null;
+  }
+
+  // Turn on the layer a jumped-to body lives on, so the fly never lands on an
+  // empty map. Centralized here (not in callers) so the search box and the
+  // sidebar share one source of truth. Sky-gated kinds are skipped: they are
+  // only searchable while their layer is already on, so there is nothing to open.
+  function _ensureLayerOn(kind, map) {
+    const setOn = (k) => {
+      if (typeof AppState !== 'undefined' && AppState.setLayerOn && !AppState.isLayerOn(k))
+        AppState.setLayerOn(k, true);
+    };
+    switch (kind) {
+      case 'sun':
+        setOn('twilight');
+        break;
+      case 'moon':
+        setOn('moon');
+        break;
+      case 'planet':
+      case 'pmoon':
+        // Moons render off their parent planet's layer, gated by zoom (see select).
+        setOn('planets');
+        break;
+      case 'satellite':
+        if (typeof Sat !== 'undefined' && Sat.isOn && !Sat.isOn() && Sat.toggle) Sat.toggle(map);
+        break;
+    }
   }
 
   function select(r, map) {
@@ -501,9 +544,13 @@ const CelestialSearch = (() => {
     const pos = _position(r.kind, r.refKey, date);
     if (!pos) return;
 
+    _ensureLayerOn(r.kind, map);
+
     const centerLng = map.getCenter().lng;
     const targetLng = pos.lng + 360 * Math.round((centerLng - pos.lng) / 360);
-    const zoom = Math.max(map.getZoom(), 4);
+    // Galilean/Saturn moons only render at zoom ≥ 9 (their sub-points are sub-pixel
+    // below that), so a moon jump must zoom in far enough to actually reveal them.
+    const zoom = Math.max(map.getZoom(), r.kind === 'pmoon' ? 9 : 4);
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const latlng = [pos.lat, targetLng];
     map.flyTo(latlng, zoom, { animate: !reduced });
@@ -524,6 +571,7 @@ const CelestialSearch = (() => {
       case 'sun':
       case 'moon':
       case 'planet':
+      case 'pmoon':
         Planets.showSearchPopup(r.refKey, date, latlng, map);
         break;
       case 'satellite':

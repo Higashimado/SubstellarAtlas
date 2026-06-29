@@ -558,6 +558,37 @@ function _densifyCapThetas(centerLat, centerLng, altThresholdDeg) {
   return out;
 }
 
+// Classify how a veil band's night-cap relates to the current viewport so the
+// rebuild can skip the 7-wrap densified hole geometry when it is pure waste.
+// The veil fills everywhere except the night caps (holes) around the anti-body
+// point; the cap RING is the day/night (or moonlight) terminator. At high zoom
+// the viewport is a tiny patch that the terminator rarely crosses — it is then
+// uniformly inside the cap (band contributes no veil → 'empty') or outside it
+// (band fills solid → 'solid'), and the cap geometry need not be built at all.
+// Only when the terminator actually crosses the viewport ('crossing') is a hole
+// needed, and then only for the single wrap copy sitting over the viewport
+// (high-zoom viewports never straddle a 360° seam). dist↔cap-radius is a pure
+// great-circle (wrap-independent) test, so it is robust even for caps that
+// enclose a pole. Returns mode:'all' at low zoom / playback so the world view
+// keeps every wrap copy and its uniform sampling.
+function _veilBandCull(antiLat, antiLng, dDeg) {
+  const map = window.appMap || window.__map;
+  if (!map || map.getZoom() < VEIL_DENSIFY_ZOOM) return { mode: 'all' };
+  if (typeof TimeState !== 'undefined' && TimeState.isPlaying && TimeState.isPlaying()) return { mode: 'all' };
+  const ctr = map.getCenter();
+  const bnd = map.getBounds();
+  const vpR = _greatCircleDeg(ctr.lat, ctr.lng, bnd.getNorth(), bnd.getEast());
+  // Build the cap a little before the terminator reaches the viewport edge: a
+  // drag only CSS-translates the pane and re-runs this on moveend, so the early
+  // margin keeps a stale-but-correct cap on screen until the rebuild fires.
+  const reach = vpR * 1.5 + 0.1;
+  const D = _greatCircleDeg(ctr.lat, ctr.lng, antiLat, antiLng);
+  if (D - dDeg > reach) return { mode: 'solid' };
+  if (dDeg - D > reach) return { mode: 'empty' };
+  const w0 = Math.round((ctr.lng - antiLng) / 360);
+  return { mode: 'crossing', wrap: w0 };
+}
+
 function computeTerminator(date, altDeg) {
   const gst = _GAST(date); // apparent ST (pairs with EQD α below)
   const { alpha, delta } = _solarPosition(date); // both radians, of-date (EQD)
@@ -794,13 +825,21 @@ function placeWrappedPhaseIcons(lat, lng, iconHtml, group, tooltipText, onClick,
 }
 
 /**
- * Place a luminosity-model body: core CircleMarker + radial-gradient glow/glare
- * divIcons + optional high-zoom footprint disk.  Wrapped across the date line.
+ * Place a luminosity-model body: glow/glare/core are drawn on the shared body
+ * canvas (_bodyCanvas); the footprint disk and the name label stay DOM markers
+ * (the label so its text stays selectable). Wrapped across the date line.
  *
  * glowSpec: { coreR, glowR, glareR, coreCol, tint, alpha } or null
  * diskHtml: null, or { html, size|width+height }
+ * bodyId:   unique key for the canvas registry (e.g. 'sun', 'moon', 'io')
+ * zKey:     geocentric distance (AU) — the canvas paints far→near so the nearer
+ *           body occludes (replaces the per-pane z-index sort).
  */
 const BODY_RENDERERS = {};
+
+// The shared body canvas, assigned once the map is built (see init). Module-level
+// so this top-level placement function can reach it.
+let _bodyCanvas = null;
 
 function placeWrappedLumBody(
   lat,
@@ -812,15 +851,11 @@ function placeWrappedLumBody(
   tooltipText,
   onClick,
   onContextMenu,
-  labelSymbol
+  labelSymbol,
+  bodyId,
+  zKey
 ) {
   group.clearLayers();
-  // Glow sits one band below its core pane (glow = core − 1). The
-  // legacy 'sky-glow' fallback pane was removed; if a caller omits coreOpts.pane
-  // the core itself falls back to the default overlay pane, so the glow uses
-  // undefined here to land in the same default neighborhood rather than pointing
-  // at a non-existent pane.
-  const glowPane = coreOpts.pane ? coreOpts.pane + '-glow' : undefined;
   // v3.2: callers (Planets.bodySubPoint / computeSubsolarPoint) return lng in
   // [0, 360); normalize to [-180, 180] so the wrap set from
   // visibleWrapsFromBounds (which uses the [off-180, off+180] convention,
@@ -828,84 +863,60 @@ function placeWrappedLumBody(
   // the western hemisphere lose the body because the off=-360 wrap that
   // would have mapped lng=200 down to wLng=-160 is excluded.
   lng = GeoUtils.normLng(lng);
+  const _bodyPane = coreOpts.pane || undefined;
+
+  let _diskR = 0;
+  if (diskHtml) {
+    const dw = diskHtml.width || diskHtml.size;
+    const dh = diskHtml.height || diskHtml.size;
+    _diskR = Math.max(dw || 0, dh || 0) / 2;
+  }
+
+  // Glow/glare/core go on the shared body canvas (one bitmap replaces the
+  // per-body screen-blend glow/glare divs + SVG core circleMarker that were
+  // thrashing the GPU). The canvas projects every world-wrap copy itself, so
+  // register one descriptor at the normalized position. hitR covers the whole
+  // disc so a click anywhere on the body registers, as the old transparent
+  // "hitter" circleMarker did.
+  if (bodyId && _bodyCanvas) {
+    const hasGlow = glowSpec && (glowSpec.glowR > glowSpec.coreR || glowSpec.glareR > 0);
+    _bodyCanvas.setBody(bodyId, {
+      lat,
+      lng,
+      zKey: zKey != null ? zKey : 0,
+      glow: hasGlow
+        ? {
+            glowR: glowSpec.glowR,
+            glareR: glowSpec.glareR,
+            coreR: glowSpec.coreR,
+            coreCol: glowSpec.coreCol,
+            tint: glowSpec.tint,
+            alpha: glowSpec.alpha,
+          }
+        : null,
+      core:
+        coreOpts.radius > 0 && coreOpts.fillOpacity > 0
+          ? { r: coreOpts.radius, color: coreOpts.fillColor, alpha: coreOpts.fillOpacity }
+          : null,
+      hitR: Math.max(coreOpts.radius || 4, _diskR),
+      group,
+      onClick: onClick || null,
+      onContextMenu: onContextMenu || null,
+      tooltipText: tooltipText || null,
+    });
+  }
+
   const wraps = visibleWrapsFromBounds(_mapRef);
   for (const off of wraps) {
     const wLng = lng + off;
     if (wLng < MAP_LNG_WEST || wLng > MAP_LNG_EAST) continue;
 
-    // Glare sprite (bottom layer — very wide, very faint)
-    if (glowSpec && glowSpec.glareR > 0) {
-      const css = Lum.glareGradientCSS(glowSpec.tint, glowSpec.glareR);
-      if (css) {
-        const sz = Math.ceil(glowSpec.glareR * 2);
-        L.marker([lat, wLng], {
-          icon: L.divIcon({
-            className: 'star-glare',
-            html:
-              '<div style="width:' +
-              sz +
-              'px;height:' +
-              sz +
-              'px;border-radius:50%;opacity:' +
-              glowSpec.alpha.toFixed(3) +
-              ';background:' +
-              css +
-              '"></div>',
-            iconSize: [sz, sz],
-            iconAnchor: [sz / 2, sz / 2],
-          }),
-          pane: glowPane,
-          interactive: false,
-          keyboard: false,
-          bubblingMouseEvents: false,
-        }).addTo(group);
-      }
-    }
-
-    // Glow sprite (smooth radial gradient)
-    if (glowSpec && glowSpec.glowR > glowSpec.coreR) {
-      const css = Lum.glowGradientCSS(glowSpec.coreCol, glowSpec.tint, glowSpec.coreR, glowSpec.glowR);
-      const sz = Math.ceil(glowSpec.glowR * 2);
-      L.marker([lat, wLng], {
-        icon: L.divIcon({
-          className: 'star-glow',
-          html:
-            '<div style="width:' +
-            sz +
-            'px;height:' +
-            sz +
-            'px;border-radius:50%;opacity:' +
-            glowSpec.alpha.toFixed(3) +
-            ';background:' +
-            css +
-            '"></div>',
-          iconSize: [sz, sz],
-          iconAnchor: [sz / 2, sz / 2],
-        }),
-        pane: glowPane,
-        interactive: false,
-        keyboard: false,
-        bubblingMouseEvents: false,
-      }).addTo(group);
-    }
-
-    // Core dot (pane from coreOpts.pane, or default overlayPane)
-    const mergedOpts = Object.assign({ bubblingMouseEvents: false }, coreOpts);
-    if (mergedOpts.pane && BODY_RENDERERS[mergedOpts.pane]) {
-      mergedOpts.renderer = BODY_RENDERERS[mergedOpts.pane];
-    }
-    const coreM = L.circleMarker([lat, wLng], mergedOpts).addTo(group);
-    // Disk inherits the same pane as core
-    const _bodyPane = coreOpts.pane || undefined;
-
-    // Footprint disk / engraving icon (high zoom).
-    // Placed BEFORE the hitter so the hitter layer sits on top in z-order
-    // and can reliably intercept pointer events.
-    let _diskR = 0;
+    // Footprint disk / engraving icon (high zoom). Still a non-interactive DOM
+    // divIcon — the canvas owns the click (via hitR above). C2 moves the disk
+    // texture onto the canvas too.
     if (diskHtml) {
       const dw = diskHtml.width || diskHtml.size;
       const dh = diskHtml.height || diskHtml.size;
-      _diskR = Math.max(dw || 0, dh || 0) / 2;
       const diskOpts = {
         icon: L.divIcon({
           className: 'lum-disk-icon',
@@ -921,46 +932,8 @@ function placeWrappedLumBody(
       L.marker([lat, wLng], diskOpts).addTo(group);
     }
 
-    // When a visible disk is present, add a transparent interactive
-    // circleMarker sized to the full disk area as the click target ("hitter").
-    // This makes the entire visible disc respond to clicks, not just the tiny
-    // core dot.  Without a disk the core marker remains the click target.
-    const _hitter = diskHtml
-      ? L.circleMarker([lat, wLng], {
-          pane: _bodyPane,
-          radius: Math.max(coreOpts.radius || 4, _diskR),
-          stroke: false,
-          fill: true,
-          fillOpacity: 0,
-          interactive: true,
-          bubblingMouseEvents: false,
-        }).addTo(group)
-      : null;
-    const _clickTarget = _hitter || coreM;
-
-    if (tooltipText) {
-      _clickTarget.bindTooltip(tooltipText, {
-        direction: 'top',
-        offset: [0, -8],
-        opacity: 0.92,
-        className: 'celestial-tooltip',
-      });
-    }
-    if (onClick) {
-      _clickTarget.on('click', function (ev) {
-        L.DomEvent.stopPropagation(ev);
-        onClick(ev);
-      });
-    }
-    if (onContextMenu) {
-      _clickTarget.on('contextmenu', function (ev) {
-        L.DomEvent.stopPropagation(ev);
-        if (ev.originalEvent) ev.originalEvent.preventDefault();
-        onContextMenu(ev);
-      });
-    }
-
-    // Body name label (sits below glow in label pane)
+    // Body name label (sits below glow in label pane). Stays DOM so its text
+    // remains selectable and the label-collider can measure it.
     if (labelSymbol && _bodyPane) {
       let labelR = coreOpts.radius || 4;
       if (glowSpec) labelR = Math.max(labelR, glowSpec.glowR || 0);
@@ -983,6 +956,17 @@ function placeWrappedLumBody(
       }).addTo(group);
     }
   }
+
+  // Repaint the canvas (rAF-coalesced, so the ~18 placements in one update pass
+  // collapse to a single redraw).
+  if (_bodyCanvas) _bodyCanvas.redraw();
+}
+
+// Sweep the body canvas at the start of a full planet/moon refresh: drop every
+// body except the Sun (which updates on its own path) so a hidden or culled
+// body — one that the refresh simply does not re-add — leaves no stale glow.
+function bodyCanvasBeginPass() {
+  if (_bodyCanvas) _bodyCanvas.removeAllExcept(['sun']);
 }
 
 // Legacy `computeAltitudeContour` was removed; all callers use
@@ -1167,12 +1151,13 @@ function visFillAlpha(mag) {
 }
 
 // Module-level constants for the antisolar/anti-body night-cap-as-hole render.
-// Reused by initMap()'s rebuildVeilGroup AND drawVisibilityRange below. Outer
-// ring is large enough (lat ±90.5, lng −1080..+1440) that hole wrap-copies
-// never spill past it, and pole-walk segments at lat=±90 stay strictly
-// interior — see the long comment in initMap() near VEIL_OUTER_RING for the
-// full rationale. VEIL_WRAP_RANGE=3 means w∈{−3..+3} = 7 copies, enough to
-// tile the outer ring for any anti-body lng.
+// VEIL_OUTER_RING (used by drawVisibilityRange's SVG polygon-with-holes below)
+// is large enough (lat ±90.5, lng −1080..+1440) that hole wrap-copies never
+// spill past it and pole-walk segments at lat=±90 stay strictly interior,
+// avoiding even-odd fill-rule ambiguity at coincident edges. VEIL_WRAP_RANGE=3
+// means w∈{−3..+3} = 7 copies, enough to tile the world for any anti-body lng.
+// (The veil masks themselves are canvas-rendered and need no outer ring — see
+// _computeVeilBands / veil-canvas-layer.js.)
 const VEIL_OUTER_RING = [
   [-90.5, -1080],
   [-90.5, 1440],
@@ -1221,6 +1206,23 @@ function sunHorizonDeg(date) {
   return _horizonDeg(_bodyDistKm(Astronomy.Body.Sun, date), _SUN_R_KM);
 }
 
+// Shared moon geo-vector for one getBands call. moonHorizonDeg and antiMoonPoint
+// both need GeoVector(Moon) + RotateVector(EQJ_EQD); caching by date object
+// identity collapses two ephemeris calls per redraw into one. The cache is a
+// plain object (not a Map) because getBands always passes the same live Date
+// reference within a single synchronous redraw — the identity check is exact.
+let _moonVecCache = null;
+
+function _getMoonVec(date) {
+  if (_moonVecCache && _moonVecCache.date === date) return _moonVecCache;
+  const t = Astronomy.MakeTime(date);
+  let v = Astronomy.GeoVector(Astronomy.Body.Moon, t, true);
+  v = Astronomy.RotateVector(Astronomy.Rotation_EQJ_EQD(t), v);
+  const r = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+  _moonVecCache = { date, v, r };
+  return _moonVecCache;
+}
+
 // Moon threshold: ≈ +0.10° (parallax-dominated). POLE GUARD: clamp T ≤ |dec|−0.05
 // so the anti-moon night-cap (radius 90+T) encloses at most ONE pole (Case B),
 // never both (Case C). Bites only when |moon dec| < ~0.1° (a few ten-minute
@@ -1228,10 +1230,7 @@ function sunHorizonDeg(date) {
 // — imperceptible on the faint milky veil. dec is taken of-date (EQD) to match
 // antiMoonPoint's sub-point.
 function moonHorizonDeg(date) {
-  const t = Astronomy.MakeTime(date);
-  let v = Astronomy.GeoVector(Astronomy.Body.Moon, t, true);
-  v = Astronomy.RotateVector(Astronomy.Rotation_EQJ_EQD(t), v);
-  const r = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+  const { v, r } = _getMoonVec(date);
   const decDeg = (Math.asin(v.z / r) * 180) / Math.PI;
   const T = _horizonDeg(r * 149597870.7, _MOON_R_KM);
   return Math.min(T, Math.abs(decDeg) - 0.05);
@@ -1416,11 +1415,18 @@ function initMap() {
   // ║        ║    eclipse-curves-points(630)  greatest-eclipse ✶   ║
   // ║        ║    [631–699 reserved for eclipse text labels,        ║
   // ║        ║             future comet labels]                     ║
-  // ║720–734 ║  outer planets + Mars, label/glow/core triples       ║
-  // ║        ║    (far→near, 3 z per body)                         ║
-  // ║740–748 ║  Sun/Mercury/Venus dynamic zone: sorted by          ║
+  // ║  719   ║  body-canvas: all bodies' glow + core (one bitmap,   ║
+  // ║        ║    painter's-ordered far→near; disks/labels above)   ║
+  // ║720–728 ║  outer planets (Neptune/Uranus/Saturn), far→near      ║
+  // ║729–731 ║  body-smoons label/glow/core (Saturn moons, TASS1.7,║
+  // ║        ║    just above Saturn; far-side culled geometrically)║
+  // ║732–734 ║  body-jupiter label/glow/core                       ║
+  // ║735–737 ║  body-jmoons label/glow/core (Galilean moons,       ║
+  // ║        ║    just above Jupiter; far-side culled geometrically)║
+  // ║738–740 ║  body-mars label/glow/core                          ║
+  // ║741–749 ║  Sun/Mercury/Venus dynamic zone: sorted by          ║
   // ║        ║    geocentric distance each tick (3 z per body)      ║
-  // ║760–762 ║  body-moon label/glow/core (always closest)         ║
+  // ║750–752 ║  body-moon label/glow/core (always closest)         ║
   // ║800–899 ║  sat(800) satellites                                 ║
   // ║900–999 ║  (reserved)                                         ║
   // ║        ║  observer compass stack (bottom→top):               ║
@@ -1461,10 +1467,17 @@ function initMap() {
 
   // ---- Per-Body Panes with Dedicated SVG Renderers and Glow Panes ----
   // Band 700+: solar-system bodies.
-  // Outer planets + Mars (720–729): static order, far → near.
-  // Sun / Mercury / Venus (740–745): dynamic zone, re-sorted by distance
+  // Each satellite group sits immediately above its parent planet (+3 slots:
+  // label/glow/core), so natural z-order handles occlusion the same way
+  // updateInnerBodyZOrder() handles transit vs. conjunction for inner planets.
+  // Outer planets (720–728): static order, far → near.
+  // Saturn moons (729–731): TASS1.7 companion dots, just above Saturn's disk.
+  // Jupiter (732–734) + Galilean moons (735–737): moons above Jupiter disk;
+  //   far-side moons are culled geometrically; near planets/Sun cover by z-order.
+  // Mars (738–740): static, above Jupiter system.
+  // Sun / Mercury / Venus (741–749): dynamic zone, re-sorted by distance
   //   each tick so transits / superior conjunctions layer correctly.
-  // Moon (760–761): always closest, always on top.
+  // Moon (750–752): always closest, always on top.
   const BODY_PANES = [
     ['body-neptune-label', 720],
     ['body-neptune-glow', 721],
@@ -1475,24 +1488,30 @@ function initMap() {
     ['body-saturn-label', 726],
     ['body-saturn-glow', 727],
     ['body-saturn', 728],
-    ['body-jupiter-label', 729],
-    ['body-jupiter-glow', 730],
-    ['body-jupiter', 731],
-    ['body-mars-label', 732],
-    ['body-mars-glow', 733],
-    ['body-mars', 734],
-    ['body-sun-label', 740],
-    ['body-sun-glow', 741],
-    ['body-sun', 742],
-    ['body-mercury-label', 743],
-    ['body-mercury-glow', 744],
-    ['body-mercury', 745],
-    ['body-venus-label', 746],
-    ['body-venus-glow', 747],
-    ['body-venus', 748],
-    ['body-moon-label', 760],
-    ['body-moon-glow', 761],
-    ['body-moon', 762],
+    ['body-smoons-label', 729],
+    ['body-smoons-glow', 730],
+    ['body-smoons', 731],
+    ['body-jupiter-label', 732],
+    ['body-jupiter-glow', 733],
+    ['body-jupiter', 734],
+    ['body-jmoons-label', 735],
+    ['body-jmoons-glow', 736],
+    ['body-jmoons', 737],
+    ['body-mars-label', 738],
+    ['body-mars-glow', 739],
+    ['body-mars', 740],
+    ['body-sun-label', 741],
+    ['body-sun-glow', 742],
+    ['body-sun', 743],
+    ['body-mercury-label', 744],
+    ['body-mercury-glow', 745],
+    ['body-mercury', 746],
+    ['body-venus-label', 747],
+    ['body-venus-glow', 748],
+    ['body-venus', 749],
+    ['body-moon-label', 750],
+    ['body-moon-glow', 751],
+    ['body-moon', 752],
   ];
   for (const [name, z] of BODY_PANES) {
     if (!map.getPane(name)) {
@@ -1505,6 +1524,18 @@ function initMap() {
       }
     }
   }
+
+  // One canvas under the whole body band (z=719) carries every body's glow +
+  // core, replacing the ~20 mix-blend-mode:screen glow divs + per-body SVG core
+  // markers that were thrashing the GPU at high zoom. The footprint disks and
+  // name labels stay in the per-body panes above (720–752); painter's-algorithm
+  // z-order inside the canvas handles body-vs-body occlusion. Always on — it
+  // draws only the bodies whose Leaflet group is currently on the map.
+  map.createPane('body-canvas');
+  map.getPane('body-canvas').style.zIndex = '719';
+  map.getPane('body-canvas').style.pointerEvents = 'none';
+  _bodyCanvas = new BodyCanvasLayer({ paneName: 'body-canvas' });
+  _bodyCanvas.addTo(map);
 
   // ---- Custom Pane for LP Tiles (Band 100–199: Map Fundamentals) ----
   map.createPane('lp');
@@ -1550,15 +1581,16 @@ function initMap() {
   });
 
   // ── Veil pair (600–699 band, below-veil sub-zone) ──────────────────
-  // moonlight-mask(611): frosted-glass milky veil on moon-up hemisphere.
-  //   Sits below twilight-mask so daylight wins in daytime regions.
-  //   Pane carries backdrop-filter blur via CSS; clip-path keeps blur
-  //   confined to the moon-up polygon. See .leaflet-moonlight-mask-pane.
+  // moonlight-mask(611): milky veil on the moon-up hemisphere. Sits below
+  //   twilight-mask so daylight wins in daytime regions.
   // twilight-mask(612): white day-side veil covering deep-sky elements
   //   (stars, asterisms, milkyway, DSO/comet labels). Coordinate grids +
   //   eclipse-event layers sit ABOVE this pane and remain visible in daylight.
-  //   Geometry: outer ring = giant lat/lng rect, holes = night-cap small
-  //   circles around antisolar (radius 90+T° ≤ 90° → no Case C).
+  // Both are canvas-rendered (veil-canvas-layer.js): the canvas fills its
+  //   rectangle and punches night-cap holes around the anti-body point (radius
+  //   90+T° ≤ 90° → no Case C). The canvas only setTransform()s during the zoom
+  //   tween, so the big viewport-filling veil no longer re-rasterizes the GPU
+  //   every animated-zoom frame (the old SVG polygon did, saturating it).
   map.createPane('moonlight-mask');
   map.getPane('moonlight-mask').style.zIndex = '611';
   map.getPane('moonlight-mask').style.pointerEvents = 'none';
@@ -1630,18 +1662,6 @@ function initMap() {
     _twiClipPolys.push(b);
   }
   const _nightRingCache = { key: '', rings: [] };
-  // Moonlight soft-edge filter — Gaussian blur on each moonlight polygon's
-  // edges so the milky veil fades smoothly into the surrounding night side.
-  const moonFilterEl = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-  moonFilterEl.id = 'moonlight-soften';
-  moonFilterEl.setAttribute('x', '-10%');
-  moonFilterEl.setAttribute('y', '-10%');
-  moonFilterEl.setAttribute('width', '120%');
-  moonFilterEl.setAttribute('height', '120%');
-  const moonBlurEl = document.createElementNS('http://www.w3.org/2000/svg', 'feGaussianBlur');
-  moonBlurEl.setAttribute('stdDeviation', '3');
-  moonFilterEl.appendChild(moonBlurEl);
-  lpClipDefs.appendChild(moonFilterEl);
   lpClipSvg.appendChild(lpClipDefs);
   map.getContainer().appendChild(lpClipSvg);
   map.getPane('lp').style.clipPath = 'url(#lp-night-clip)';
@@ -1812,7 +1832,12 @@ function initMap() {
     if (!lpClipRaf) {
       lpClipRaf = requestAnimationFrame(() => {
         lpClipRaf = 0;
-        rebuildNightClipPaths();
+        // The night clip only matters while the daylight veil is rendered (the lp
+        // pane's clipPath is 'none' otherwise — see syncLpClip). With the Sun layer
+        // off nothing reads the polygons, so reprojecting the 7×180 ring every
+        // frame is pure waste; skip it. syncLpClip rebuilds once when twilight
+        // re-activates, so the clip is never left stale.
+        if (_twilightActive) rebuildNightClipPaths();
       });
     }
   }
@@ -1966,160 +1991,129 @@ function initMap() {
   // ring + multiple inner-ring holes. Default 'nonzero' would require outer
   // and holes to be wound opposite ways; 'evenodd' is winding-agnostic and
   // robust to whatever orientation _computeAltitudeContourAround produces.
-  const dayMaskStyles = [
-    // First band edge OVERRIDDEN per-frame by sunHorizonDeg(date) in
-    // rebuildDayMask (distance-aware ≈ −0.826°, almanac sunrise), so the
-    // terminator sweeps a point at the same instant SearchRiseSet's rise/set
-    // fires (~0s). The placeholder below is the mean value; night-cap radius
-    // 90 + (−0.83) ≈ 89.17° ≤ 90° → Case A/B, never Case C. Twilight bands geometric.
-    {
-      altThreshold: SUN_HORIZON_DEG,
-      fillColor: '#f5f2ee',
-      fillOpacity: 0.04,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'twilight-mask',
-      interactive: false,
-    },
-    {
-      altThreshold: -6,
-      fillColor: '#f5f2ee',
-      fillOpacity: 0.02,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'twilight-mask',
-      interactive: false,
-    },
-    {
-      altThreshold: -12,
-      fillColor: '#f5f2ee',
-      fillOpacity: 0.02,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'twilight-mask',
-      interactive: false,
-    },
-    {
-      altThreshold: -18,
-      fillColor: '#f5f2ee',
-      fillOpacity: 0.01,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'twilight-mask',
-      interactive: false,
-    },
-  ];
+  // Canvas bands read only altThreshold / fillColor / fillOpacity (the layer
+  // gets its pane + non-interactivity from VeilCanvasLayer, not from here).
+  // First band edge is OVERRIDDEN per-frame by sunHorizonDeg(date) in getBands
+  // (distance-aware ≈ −0.826°, almanac sunrise) so the terminator sweeps a point
+  // at the same instant SearchRiseSet's rise/set fires (~0s); the placeholder
+  // below is the mean value. Night-cap radius 90 + (−0.83) ≈ 89.17° ≤ 90° →
+  // Case A/B, never Case C. The −6/−12/−18 twilight bands are geometric.
+  // When day-brighten is active its soft-light wash carries part of the visual
+  // weight, so the plain-alpha day veil stays light (0.04/0.02/0.02/0.01).
+  // Without it the veil must carry the full day/night distinction alone; values
+  // are ×3 higher (0.12/0.06/0.06/0.03) to preserve comparable day contrast.
+  const DAY_BRIGHTEN_ENABLED = true;
 
-  // Day-brighten polygon styles — warm neutral tone (#f5f2ee, HSL ~34°,26%,96%;
-  // warm mirror of moonlight #eef2f5), soft-light blend (set in CSS).
+  const dayMaskStyles = DAY_BRIGHTEN_ENABLED
+    ? [
+        { altThreshold: SUN_HORIZON_DEG, fillColor: '#f5f2ee', fillOpacity: 0.04 },
+        { altThreshold: -6, fillColor: '#f5f2ee', fillOpacity: 0.02 },
+        { altThreshold: -12, fillColor: '#f5f2ee', fillOpacity: 0.02 },
+        { altThreshold: -18, fillColor: '#f5f2ee', fillOpacity: 0.01 },
+      ]
+    : [
+        { altThreshold: SUN_HORIZON_DEG, fillColor: '#f5f2ee', fillOpacity: 0.12 },
+        { altThreshold: -6, fillColor: '#f5f2ee', fillOpacity: 0.06 },
+        { altThreshold: -12, fillColor: '#f5f2ee', fillOpacity: 0.06 },
+        { altThreshold: -18, fillColor: '#f5f2ee', fillOpacity: 0.03 },
+      ];
+
+  // Day-brighten bands — warm neutral tone (#f5f2ee, HSL ~34°,26%,96%; warm
+  // mirror of moonlight #eef2f5), soft-light blend (set in CSS on the pane).
   // α values are higher than twilight-mask because soft-light has a gentler
-  // visual weight than direct alpha overlay on very dark Carto tiles.
+  // visual weight than direct alpha overlay on very dark Carto tiles. Canvas
+  // bands read only altThreshold / fillColor / fillOpacity.
   const DAY_BRIGHTEN_TINT = '#f5f2ee'; // warm neutral — HSL ~34°, 26%, 96%; mirrors moonlight #eef2f5 on the warm side
   const dayBrightenStyles = [
-    {
-      altThreshold: SUN_HORIZON_DEG,
-      fillColor: DAY_BRIGHTEN_TINT,
-      fillOpacity: 0.35,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'day-brighten',
-      interactive: false,
-    },
-    {
-      altThreshold: -6,
-      fillColor: DAY_BRIGHTEN_TINT,
-      fillOpacity: 0.22,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'day-brighten',
-      interactive: false,
-    },
-    {
-      altThreshold: -12,
-      fillColor: DAY_BRIGHTEN_TINT,
-      fillOpacity: 0.13,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'day-brighten',
-      interactive: false,
-    },
-    {
-      altThreshold: -18,
-      fillColor: DAY_BRIGHTEN_TINT,
-      fillOpacity: 0.08,
-      fillRule: 'evenodd',
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true,
-      pane: 'day-brighten',
-      interactive: false,
-    },
+    { altThreshold: SUN_HORIZON_DEG, fillColor: DAY_BRIGHTEN_TINT, fillOpacity: 0.35 },
+    { altThreshold: -6, fillColor: DAY_BRIGHTEN_TINT, fillOpacity: 0.22 },
+    { altThreshold: -12, fillColor: DAY_BRIGHTEN_TINT, fillOpacity: 0.13 },
+    { altThreshold: -18, fillColor: DAY_BRIGHTEN_TINT, fillOpacity: 0.08 },
   ];
 
-  // The mask layers are rebuilt in place (clearLayers + repopulate) on
-  // every time/zoom/move-end so the geometry tracks the subsolar point.
-  const dayMaskGroup = L.layerGroup();
-  const dayBrightenGroup = L.layerGroup();
+  // Day twilight veil — canvas-rendered (see veil-canvas-layer.js). The big
+  // viewport-filling SVG polygon-with-holes saturated the GPU on every animated-
+  // zoom frame; a canvas only setTransform()s during the tween and repaints on
+  // settle. getBands() pulls the live date and hands the layer ready-to-project
+  // lat/lng bands; all geometry stays here in _computeVeilBands.
+  const dayMaskGroup = new VeilCanvasLayer({
+    paneName: 'twilight-mask',
+    maxDpr: 1, // soft alpha gradient — full retina DPR just bloats GPU texture (see VeilCanvasLayer)
+    getBands: function () {
+      const date = typeof TimeState !== 'undefined' && TimeState.current ? TimeState.current : new Date();
+      return _computeVeilBands(_withHorizon(dayMaskStyles, sunHorizonDeg(date)), date, antiSunPoint);
+    },
+  });
+  // Day-brighten warm wash — canvas-rendered like the day veil. The pane carries
+  // mix-blend-mode: soft-light (CSS), which the canvas element inherits, so the
+  // warm tone still blends with the base tiles below. (The zoomanim visibility
+  // gate above still hides it during high-zoom animated zooms as a soft-light
+  // safety net.)
+  const dayBrightenGroup = new VeilCanvasLayer({
+    paneName: 'day-brighten',
+    maxDpr: 1, // soft alpha gradient — full retina DPR just bloats GPU texture (see VeilCanvasLayer)
+    getBands: function () {
+      const date = typeof TimeState !== 'undefined' && TimeState.current ? TimeState.current : new Date();
+      return _computeVeilBands(_withHorizon(dayBrightenStyles, sunHorizonDeg(date)), date, antiSunPoint);
+    },
+  });
 
-  // ---- Day-Veil Renderer: Anti-Center Small Cap as Hole in a Giant Rect ----
+  // ---- Veil Geometry: Anti-Center Night Cap as a Hole ----
   //
   // The "draw a body-side cap" approach (radius 90 − T° around the sub-body
   // point) breaks topologically when T<0 pushes the cap past a hemisphere
-  // (dDeg > 90°): for sub-body |lat| small enough, the cap encloses BOTH
-  // poles, the θ-sweep emits two antimeridian jumps, and the pole-walk
-  // splice produces a self-intersecting polygon that Leaflet renders as
-  // crossing/discontinuous bands. Shifting that broken polygon across wrap
-  // copies further amplifies the seams.
+  // (dDeg > 90°): the cap can enclose BOTH poles, the θ-sweep emits two
+  // antimeridian jumps, and the pole-walk splice self-intersects. Instead, for
+  // every band threshold T compute the COMPLEMENTARY night cap around the anti-
+  // body point with radius dDeg = 90 + T (always ≤ 90°) and render the veil as
+  // "everywhere minus the night cap". The cap stays in Case A / Case B, for which
+  // _computeAltitudeContourAround is correct.
   //
-  // Instead, for every band threshold T compute the COMPLEMENTARY night cap
-  // around the anti-body point with radius dDeg = 90 + T (always ≤ 90°),
-  // and render the white veil as "world rectangle minus night cap" via
-  // Leaflet's polygon-with-holes. The night cap stays in Case A / Case B,
-  // for which _computeAltitudeContourAround is already correct, and the
-  // single outer ring covers all wrap copies seamlessly with one hole per
-  // visible copy of the anti-body point.
-  //
-  // OUTER_RING / WRAP_RANGE live at module scope (see top of file). The
-  // long-comment rationale: outer ring far larger than pannable so 1) hole
-  // pole-walk segments at lat=±90 stay strictly inside outer (no SVG even-odd
-  // fill-rule ambiguity at coincident edges) and 2) hole wrap-copies whose
-  // lng range spills past outer ring don't create spurious fills visible at
-  // low zoom. 7 copies (w∈{-3..+3}) span 2520° of lng — enough to fully tile
-  // the outer ring for any anti-body lng.
+  // The canvas renderer fills its whole rectangle and punches the cap as an
+  // evenodd hole (veil-canvas-layer.js), so — unlike the former SVG polygon — it
+  // needs no giant outer ring, no 7-copy outer tiling, and no pole-walk-vs-even-
+  // odd bookkeeping: only the wrap copies whose cap actually crosses the viewport
+  // are punched. Holes stay in lat/lng so the layer reprojects them cheaply on
+  // every zoom/move without rerunning this geometry.
 
-  function rebuildVeilGroup(group, styles, date, antiCenterFn) {
-    group.clearLayers();
+  // _computeVeilBands returns the per-band geometry as ready-to-project data (no
+  // SVG nodes). Each band → null (contributes nothing), { solid } (viewport
+  // wholly day-side → fill the canvas), or { holes } (canvas rect minus the night
+  // caps, one ring per visible wrap copy). dDeg = 90 + T is the night-cap radius;
+  // -T is passed as altThresholdDeg to _computeAltitudeContourAround.
+  function _computeVeilBands(styles, date, antiCenterFn) {
     const anti = antiCenterFn(date);
-    for (let i = styles.length - 1; i >= 0; i--) {
+    const bands = [];
+    for (let i = 0; i < styles.length; i++) {
       const st = styles[i];
       const T = st.altThreshold;
-      // Night-cap radius dDeg = 90 + T → pass altThresholdDeg = −T to
-      // _computeAltitudeContourAround (which uses dDeg = 90 − altThresholdDeg).
-      if (90 + T <= 0.001) continue;
-      const holes = [];
-      for (let w = -VEIL_WRAP_RANGE; w <= VEIL_WRAP_RANGE; w++) {
-        const cLng = anti.lng + w * 360;
-        const thetas = _densifyCapThetas(anti.lat, cLng, -T);
-        const hole = _computeAltitudeContourAround(anti.lat, cLng, -T, VEIL_CAP_SAMPLES, thetas);
-        if (hole.length >= 3) holes.push(hole);
+      let band = null;
+      if (90 + T > 0.001) {
+        const dDeg = 90 + T;
+        const cull = _veilBandCull(anti.lat, anti.lng, dDeg);
+        if (cull.mode === 'empty') {
+          band = null;
+        } else if (cull.mode === 'solid') {
+          band = { solid: true, color: st.fillColor, alpha: st.fillOpacity };
+        } else {
+          const wLo = cull.mode === 'crossing' ? cull.wrap : -VEIL_WRAP_RANGE;
+          const wHi = cull.mode === 'crossing' ? cull.wrap : VEIL_WRAP_RANGE;
+          const holes = [];
+          for (let w = wLo; w <= wHi; w++) {
+            const cLng = anti.lng + w * 360;
+            const thetas = _densifyCapThetas(anti.lat, cLng, -T);
+            const hole = _computeAltitudeContourAround(anti.lat, cLng, -T, VEIL_CAP_SAMPLES, thetas);
+            if (hole.length >= 3) holes.push(hole);
+          }
+          // A crossing band with no usable hole over-covers with solid veil —
+          // at the terminator that is safer than punching it open (same as SVG).
+          if (holes.length) band = { holes: holes, color: st.fillColor, alpha: st.fillOpacity };
+          else if (cull.mode === 'crossing') band = { solid: true, color: st.fillColor, alpha: st.fillOpacity };
+        }
       }
-      if (!holes.length) continue;
-      L.polygon([VEIL_OUTER_RING].concat(holes), st).addTo(group);
+      bands.push(band);
     }
+    return bands;
   }
 
   function antiSunPoint(date) {
@@ -2139,10 +2133,7 @@ function initMap() {
   // bringing the veil edge to <1s of the compass moonrise. (Earlier code/docs
   // wrongly treated it as a permanent ~few-minute offset.) See moonHorizonDeg.
   function antiMoonPoint(date) {
-    const t = Astronomy.MakeTime(date);
-    let v = Astronomy.GeoVector(Astronomy.Body.Moon, t, true);
-    v = Astronomy.RotateVector(Astronomy.Rotation_EQJ_EQD(t), v);
-    const r = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    const { v, r } = _getMoonVec(date);
     const ra = Math.atan2(v.y, v.x);
     const dec = Math.asin(v.z / r);
     const gast = _GAST(date);
@@ -2158,7 +2149,36 @@ function initMap() {
   // 2-band frosted veil centered on the moon's sub-point. Per-frame alpha is
   // modulated by the moon's apparent magnitude (full moon = peak, new moon
   // ≈ 0) so the veil rises/falls with the lunar cycle.
-  const moonMaskGroup = L.layerGroup();
+  const moonMaskGroup = new VeilCanvasLayer({
+    paneName: 'moonlight-mask',
+    maxDpr: 1, // soft alpha gradient — full retina DPR just bloats GPU texture (see VeilCanvasLayer)
+    blur: 3, // Gaussian feather for the moonset/moonrise edge
+    blurMaxZoom: 10, // off at z≥10; coarser zooms need no sub-px precision so the blur overhead is not worth it
+    getBands: function () {
+      const date = typeof TimeState !== 'undefined' && TimeState.current ? TimeState.current : new Date();
+      // Compute alphaMax once: used for the new-moon skip guard AND passed into
+      // _moonlightStylesFor so it doesn't call moonlightAlphaMax a second time.
+      // _getMoonVec is similarly shared: antiMoonPoint and moonHorizonDeg (called
+      // inside _moonlightStylesFor) both call _getMoonVec(date); the module-level
+      // cache collapses those into a single GeoVector+RotateVector per redraw.
+      let alphaMax = moonlightAlphaMax(date);
+      // Astronomy.Illumination's magnitude is phase-only — it ignores Earth's
+      // shadow, so the veil would stay full-strength through an eclipse while the
+      // real moon darkens. Scale it down by the shadowed disk area (penumbra is
+      // negligible, so lunarRedness=0 leaves this untouched).
+      // m reaches 1 only during the totality plateau; partial phase uses a
+      // higher floor so the veil stays more visible than during totality.
+      const m = typeof Eclipse !== 'undefined' && Eclipse.lunarRedness ? Eclipse.lunarRedness(date) : 0;
+      if (m > 0) {
+        const _eclFloor = m >= 1 ? MOONLIGHT_TOTAL_FLOOR : MOONLIGHT_PARTIAL_FLOOR;
+        alphaMax *= Math.max(_eclFloor, 1 - umbralAreaLoss(m));
+      }
+      // Near new moon the per-frame alpha falls to ~0 → no visible veil; draw
+      // nothing (cheaper than building an invisible cap on every tick/pan).
+      if (alphaMax <= MOONLIGHT_ALPHA_EPS) return [];
+      return _computeVeilBands(_moonlightStylesFor(date, alphaMax), date, antiMoonPoint);
+    },
+  });
   // Style templates — per-frame fillOpacity = alphaMax × ratio.
   const moonlightStyleTemplates = [
     // Edge OVERRIDDEN per-frame by moonHorizonDeg(date) in _moonlightStylesFor
@@ -2166,15 +2186,25 @@ function initMap() {
     // edge matches the topocentric compass moonrise to <1s — the lunar parallax
     // is folded into the threshold, NOT irreducible. Placeholder below is the
     // mean apparent-limb value. See the moonHorizonDeg / _horizonDeg block comment.
-    { altThreshold: MOON_HORIZON_DEG, ratio: 1.0 },
-    { altThreshold: -3, ratio: 0.35 }, // soft moonset/moonrise edge
+    { altThreshold: MOON_HORIZON_DEG, ratio: 1.0 }, // full veil where the moon is up
+    { altThreshold: -3, ratio: 0.35 }, // alpha step for the moonset/moonrise fringe
   ];
 
   const MOONLIGHT_TINT = '#eef2f5'; // cool milky white
   const ECLIPSE_RED = (window.C && C.eclipseRed) || '#a8432c'; // umbral-eclipse tint (brick/rust)
 
   const MOON_MAG_FULL = -11.5; // gibbous reference; full moon (−12.7) is clamped to peak
-  const MOONLIGHT_ALPHA_PEAK = 0.12;
+  const MOONLIGHT_ALPHA_PEAK = 0.15;
+  // Below this absolute fill opacity (~1.7% of MOONLIGHT_ALPHA_PEAK) the
+  // veil is imperceptible over the basemap, so near new moon we skip building it
+  // entirely.
+  const MOONLIGHT_ALPHA_EPS = 0.002;
+  // Residual veil fraction during eclipse. The moon is physically ~10⁴–10⁵×
+  // fainter inside the umbra, but zeroing the veil would also kill the red
+  // tint — keep a faint wash. Two floors: totality is darker than the peak
+  // of a partial eclipse (partial is subjectively less dramatic).
+  const MOONLIGHT_TOTAL_FLOOR = 0.2;
+  const MOONLIGHT_PARTIAL_FLOOR = 0.3;
 
   function moonlightAlphaMax(date) {
     try {
@@ -2188,8 +2218,16 @@ function initMap() {
     }
   }
 
-  function _moonlightStylesFor(date) {
-    const alphaMax = moonlightAlphaMax(date);
+  // Fraction of the lunar disk AREA shadowed, given m = fraction of the disk
+  // DIAMETER inside the umbra (Eclipse.lunarRedness already yields that ramp).
+  // The umbra dwarfs the moon, so its edge across the disk is ~straight — a
+  // single circular segment is exact enough. m=0→0, 0.5→0.5, 1→1.
+  function umbralAreaLoss(m) {
+    const h = 1 - 2 * m; // signed chord-to-centre distance, normalised to R
+    return (Math.acos(h) - h * Math.sqrt(1 - h * h)) / Math.PI;
+  }
+
+  function _moonlightStylesFor(date, alphaMax) {
     // During a lunar eclipse's umbral phase, redden the moonlight veil
     // (cool milky white → blood red) by umbral depth — replaces the old
     // bright lunar-visibility raster overlay.
@@ -2201,22 +2239,20 @@ function initMap() {
     // First band (i===0) = distance-aware moonHorizonDeg (apparent limb at
     // horizon, parallax-corrected, pole-guarded). The −3° soft band stays put.
     const horizon = moonHorizonDeg(date);
+    // Canvas bands read only altThreshold / fillColor / fillOpacity.
     return moonlightStyleTemplates.map((t, i) => ({
       altThreshold: i === 0 ? horizon : t.altThreshold,
       fillColor: tint,
       fillOpacity: alphaMax * t.ratio,
-      fillRule: 'evenodd', // multi-ring outer-rect+holes, see rebuildVeilGroup
-      weight: 0,
-      smoothFactor: 0,
-      noClip: true, // preserve cap polygon's polar excursions across viewport edges
-      pane: 'moonlight-mask',
-      interactive: false,
     }));
   }
 
-  function rebuildMoonMask(date) {
-    const styles = _moonlightStylesFor(date);
-    rebuildVeilGroup(moonMaskGroup, styles, date, antiMoonPoint);
+  function rebuildMoonMask() {
+    // The moonlight veil is canvas now. New-moon skip, eclipse reddening, and
+    // per-frame alpha modulation all live in moonMaskGroup's getBands; redraw()
+    // pulls the live date and reprojects. (Lunar eclipses occur at full moon, so
+    // the new-moon skip never suppresses the eclipse-reddened veil.)
+    moonMaskGroup.redraw();
   }
 
   // Shallow-clone a style array, overriding the first band's altThreshold (the
@@ -2228,10 +2264,11 @@ function initMap() {
     return out;
   }
 
-  function rebuildDayMask(date) {
-    const h = sunHorizonDeg(date);
-    rebuildVeilGroup(dayMaskGroup, _withHorizon(dayMaskStyles, h), date, antiSunPoint);
-    rebuildVeilGroup(dayBrightenGroup, _withHorizon(dayBrightenStyles, h), date, antiSunPoint);
+  function rebuildDayMask() {
+    // Day veil and day-brighten are both canvas now; redraw() pulls the live date
+    // via each layer's getBands and reprojects (no SVG polygon rebuild).
+    dayMaskGroup.redraw();
+    if (DAY_BRIGHTEN_ENABLED) dayBrightenGroup.redraw();
   }
 
   // One call per time/zoom/wrap refresh: each mask group checks its own
@@ -2541,9 +2578,9 @@ function initMap() {
   };
 
   const INNER_Z_SLOTS = [
-    [740, 741, 742],
-    [743, 744, 745],
-    [746, 747, 748],
+    [741, 742, 743],
+    [744, 745, 746],
+    [747, 748, 749],
   ];
 
   function updateInnerBodyZOrder(date) {
@@ -2576,7 +2613,9 @@ function initMap() {
       _t('map.celestial.sun'),
       onSunLeftClick,
       onSunContextMenu,
-      null
+      null,
+      'sun',
+      1
     );
     ssLatLabel.style.display = 'none';
     currentSSLat = ss.lat;
@@ -2912,7 +2951,19 @@ function initMap() {
     // Day-veil visibility gates rail/tick/label casing (via _eqSS below), so it
     // is a render input and must be in the memo key — else toggling the veil
     // with zoom/wraps/time unchanged early-returns and strands the old casing.
-    var _eqKey = _eqTier + '|' + _eqWrapsKey + '|' + (date || now).getTime() + '|' + (window._dayMaskVisible ? 1 : 0);
+    // Locale is in the key so a language switch (date/view unchanged) still
+    // rebuilds the 「赤道」 label rather than early-returning on the stale text.
+    var _eqLoc = typeof I18n !== 'undefined' ? I18n.getLocale() : '';
+    var _eqKey =
+      _eqTier +
+      '|' +
+      _eqWrapsKey +
+      '|' +
+      (date || now).getTime() +
+      '|' +
+      (window._dayMaskVisible ? 1 : 0) +
+      '|' +
+      _eqLoc;
     if (_eqKey === _lastEquatorKey) return;
     _lastEquatorKey = _eqKey;
 
@@ -3182,7 +3233,7 @@ function initMap() {
     if (showDay) {
       rebuildDayMask(TimeState.current);
       if (!dayMaskGroup._map) dayMaskGroup.addTo(map);
-      if (!dayBrightenGroup._map) dayBrightenGroup.addTo(map);
+      if (DAY_BRIGHTEN_ENABLED && !dayBrightenGroup._map) dayBrightenGroup.addTo(map);
     } else {
       if (dayMaskGroup._map) map.removeLayer(dayMaskGroup);
       if (dayBrightenGroup._map) map.removeLayer(dayBrightenGroup);
@@ -3210,34 +3261,49 @@ function initMap() {
 
     // Sync overlay checkboxes
     _syncOverlayCheckboxes();
+
+    // Repaint bodies: a layer toggled off here detaches its group from the map,
+    // so the canvas drops it on this redraw (the in-draw group-presence check).
+    if (_bodyCanvas) _bodyCanvas.redraw();
   }
 
+  let _zoomEndTimer = null;
   map.on('zoomend', function () {
-    Planets.updateMarkerSizes(map, planetEntries);
+    // Debounce the expensive chain (grids + veil + planet sizes) so rapid
+    // scroll-wheel zooming through N levels fires one rebuild, not N.
+    // Lightweight opacity listeners (updateMaskOpacity, updateLabelOpacity)
+    // keep their own immediate handlers and are unaffected.
+    if (_zoomEndTimer) clearTimeout(_zoomEndTimer);
+    _zoomEndTimer = setTimeout(function () {
+      _zoomEndTimer = null;
+      Planets.updateMarkerSizes(map, planetEntries);
 
-    // Rebuild sun marker (disk size depends on zoom via footprintPx)
-    const date = typeof TimeState !== 'undefined' && TimeState.current ? TimeState.current : new Date();
-    const ss = computeSubsolarPoint(date);
-    const sunVis = buildSunOpts(map.getZoom(), ss.lat);
-    placeWrappedLumBody(
-      ss.lat,
-      ss.lng,
-      sunVis.coreOpts,
-      sunVis.glowSpec,
-      sunVis.diskHtml,
-      subsolarGroup,
-      _t('map.celestial.sun'),
-      onSunLeftClick,
-      onSunContextMenu,
-      null
-    );
+      // Rebuild sun marker (disk size depends on zoom via footprintPx)
+      const date = typeof TimeState !== 'undefined' && TimeState.current ? TimeState.current : new Date();
+      const ss = computeSubsolarPoint(date);
+      const sunVis = buildSunOpts(map.getZoom(), ss.lat);
+      placeWrappedLumBody(
+        ss.lat,
+        ss.lng,
+        sunVis.coreOpts,
+        sunVis.glowSpec,
+        sunVis.diskHtml,
+        subsolarGroup,
+        _t('map.celestial.sun'),
+        onSunLeftClick,
+        onSunContextMenu,
+        null,
+        'sun',
+        1
+      );
 
-    // Ecliptic tick density & solar-term names are zoom-tiered.
-    if (Ecliptic.isOn()) Ecliptic.update(date);
-    if (typeof LunarPath !== 'undefined' && LunarPath.isOn()) LunarPath.update(date);
-    if (typeof GalacticEquator !== 'undefined' && GalacticEquator.isOn()) GalacticEquator.update(date);
-    if (CelestialEquator.isOn()) _rebuildEquator(date);
-    refreshTimeMasks(date);
+      // Ecliptic tick density & solar-term names are zoom-tiered.
+      if (Ecliptic.isOn()) Ecliptic.update(date);
+      if (typeof LunarPath !== 'undefined' && LunarPath.isOn()) LunarPath.update(date);
+      if (typeof GalacticEquator !== 'undefined' && GalacticEquator.isOn()) GalacticEquator.update(date);
+      if (CelestialEquator.isOn()) _rebuildEquator(date);
+      refreshTimeMasks(date);
+    }, 150);
   });
 
   // v3.1: ecliptic / lunar-path / galactic-equator now viewport-clip their
@@ -3247,14 +3313,14 @@ function initMap() {
   // the user toggles the layer off→on. Constellation lines (sky.js) already
   // handle this in their own moveend handler; here we cover the rest.
   //
-  // Perf: pan that stays within the SAME wrap set should NOT rebuild — each
-  // .update() is 20–50ms (rebuilds hundreds of polylines). Compare the wrap
-  // set to its last value and short-circuit when identical. This makes
-  // intra-wrap drags feel as light as before; only crossings pay the cost.
+  // Perf: a pan that reveals no new sky should NOT rebuild — each .update() is
+  // 20–50ms (rebuilds hundreds of polylines). viewportRebuildKey short-circuits
+  // when neither the visible wrap set nor the viewport bucket changed, so
+  // negligible jitter pans stay light; a wrap set keyed on wraps alone would miss
+  // intra-wrap pans that scroll fresh, viewport-clipped copies into view.
   let _lastWrapsKey = '';
   map.on('moveend', function () {
-    const wraps = visibleWrapsFromBounds(map);
-    const key = wraps.join(',');
+    const key = GeoUtils.viewportRebuildKey(map);
     if (key === _lastWrapsKey) return;
     _lastWrapsKey = key;
     const d = typeof TimeState !== 'undefined' && TimeState.current ? TimeState.current : new Date();
@@ -3279,7 +3345,9 @@ function initMap() {
       _t('map.celestial.sun'),
       onSunLeftClick,
       onSunContextMenu,
-      null
+      null,
+      'sun',
+      1
     );
     refreshTimeMasks(d);
   });
@@ -3328,7 +3396,9 @@ function initMap() {
       _t('map.celestial.sun'),
       onSunLeftClick,
       onSunContextMenu,
-      null
+      null,
+      'sun',
+      1
     );
     if (typeof Planets !== 'undefined') Planets.updateMarkers(map, planetEntries, date);
   }
@@ -3380,7 +3450,9 @@ function initMap() {
       _t('map.celestial.sun'),
       onSunLeftClick,
       onSunContextMenu,
-      null
+      null,
+      'sun',
+      1
     );
     currentSSLat = ss.lat;
 
@@ -3445,6 +3517,23 @@ function initMap() {
       { position: 'topright' }
     )
     .addTo(map);
+
+  if (typeof AppState !== 'undefined') {
+    AppState.registerParam('base', {
+      get: () => (map.hasLayer(baseStadiaSmoothDark) ? 'stadia' : null),
+      set: (val) => {
+        if (val === 'stadia') {
+          map.removeLayer(baseDarkGroup);
+          map.addLayer(baseStadiaSmoothDark);
+          applyBasemapOverlays('Stadia Alidade Smooth Dark');
+        } else {
+          map.removeLayer(baseStadiaSmoothDark);
+          map.addLayer(baseDarkGroup);
+          applyBasemapOverlays('CARTO Dark Matter');
+        }
+      },
+    });
+  }
 
   // Re-theme Leaflet's built-in control tooltips from the white native `title`.
   // Zoom ± get a localized dark data-tip chip (js/glossary-tip.js), refreshed on
@@ -3994,6 +4083,10 @@ function initMap() {
             if (map.hasLayer(ent.contourLayer)) map.removeLayer(ent.contourLayer);
             if (activeContourLayer === ent.contourLayer) activeContourLayer = null;
           }
+          // Jupiter/Saturn moons live in their own layer groups gated on the
+          // parent marker being on the map; re-run the marker pass so they clear
+          // immediately instead of lingering until the next time/zoom tick.
+          Planets.updateMarkers(map, planetEntries, TimeState.current);
         } else {
           for (var j = 0; j < planetsOnlyEntries.length; j++) {
             if (!map.hasLayer(planetsOnlyEntries[j].markerLayer)) map.addLayer(planetsOnlyEntries[j].markerLayer);
@@ -4328,11 +4421,24 @@ function initMap() {
       toggleCtrl._refreshI18n();
     });
     I18n.subscribe(function () {
+      // The grids memo on (view|time|locale); locale is now part of that key, so
+      // these update() calls rebuild with the new-language labels instead of
+      // early-returning. Off layers are skipped — they pick up the locale on their
+      // next rebuild (e.g. when toggled on), since the key carries it.
       if (Ecliptic.isOn()) Ecliptic.update(TimeState.current);
       if (typeof LunarPath !== 'undefined' && LunarPath.isOn()) LunarPath.update(TimeState.current);
       if (typeof GalacticEquator !== 'undefined' && GalacticEquator.isOn()) GalacticEquator.update(TimeState.current);
       if (CelestialEquator.isOn()) _rebuildEquator(TimeState.current);
       _syncOverlayCheckboxes();
+    });
+    // Body name labels live as HTML inside Leaflet panes, so their text is frozen
+    // until the marker is rebuilt — the name getters alone never re-read. Re-run
+    // the marker pass on locale change so planet and Galilean-moon labels switch
+    // language immediately, without waiting for a time tick or zoom.
+    I18n.subscribe(function () {
+      if (typeof Planets !== 'undefined' && Planets.updateMarkers) {
+        Planets.updateMarkers(map, planetEntries, TimeState.current || new Date());
+      }
     });
   }
 

@@ -86,6 +86,8 @@ const Sidebar = (() => {
       }
     }
 
+    if (typeof AppState !== 'undefined') AppState.touch();
+
     // Render-on-open for the right panel: its time-dependent content is cached HTML
     // and the TimeState.subscribe below is gated on the panel being open, so a
     // time/timezone change while closed would show stale times on reopen.
@@ -1336,19 +1338,11 @@ const Sidebar = (() => {
 
     // Click a body/satellite name → fly the map to its current sub-point and open
     // its info card. Reuses CelestialSearch.select (the same path the search box
-    // uses), so longitude-wrap, reduced-motion and popup handling are shared.
-    const _jumpVia = async (r) => {
+    // uses), so longitude-wrap, reduced-motion, popup handling AND the auto-enable
+    // of the body's layer are all shared from one place.
+    const _jumpVia = (r) => {
       const map = window.appMap;
       if (!map || typeof CelestialSearch === 'undefined' || !CelestialSearch.select) return;
-      // Auto-enable the relevant layer if it is currently off, so the jump always
-      // lands with the body/satellite visible on the map.
-      if (r.kind === 'satellite') {
-        if (typeof Sat !== 'undefined' && !Sat.isOn()) await Sat.toggle(map);
-      } else if (r.kind === 'moon') {
-        if (typeof AppState !== 'undefined' && !AppState.isLayerOn('moon')) AppState.setLayerOn('moon', true);
-      } else if (r.kind === 'planet') {
-        if (typeof AppState !== 'undefined' && !AppState.isLayerOn('planets')) AppState.setLayerOn('planets', true);
-      }
       CelestialSearch.select(r, map);
     };
     contentRight()
@@ -2175,8 +2169,18 @@ const Sidebar = (() => {
     }
   }
 
+  function _updateAtlasInfoHref() {
+    var el = document.getElementById('atlas-info-link');
+    if (!el) return;
+    var loc = typeof I18n !== 'undefined' ? I18n.getLocale() : 'en';
+    el.href = 'https://github.com/Higashimado/SubstellarAtlas/blob/main/' + loc + '/README.md';
+  }
+
+  _updateAtlasInfoHref();
+
   if (typeof I18n !== 'undefined') {
     I18n.subscribe(function () {
+      _updateAtlasInfoHref();
       // Re-render right sidebar if open, preserving scroll position. The full
       // innerHTML rebuild destroys and recreates .sidebar-scroll, so we save
       // scrollTop before and restore it to the new element after.
@@ -2197,6 +2201,20 @@ const Sidebar = (() => {
         }
         _origShowEclipseList(_eclipseListCtrl, _eclipseListOnSelect);
       }
+    });
+  }
+
+  if (typeof AppState !== 'undefined') {
+    AppState.registerParam('panel', {
+      get: () => {
+        const l = sidebarState.left.open;
+        const r = sidebarState.right.open;
+        return l && r ? 'lr' : l ? 'l' : r ? 'r' : null;
+      },
+      set: (v) => {
+        setSidebar('left', v.includes('l'), 'manual');
+        setSidebar('right', v.includes('r'), 'manual');
+      },
     });
   }
 

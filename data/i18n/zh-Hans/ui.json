@@ -324,6 +324,16 @@
   "planet.saturn": "土星",
   "planet.uranus": "天王星",
   "planet.neptune": "海王星",
+  "planet.io": "木卫一",
+  "planet.europa": "木卫二",
+  "planet.ganymede": "木卫三",
+  "planet.callisto": "木卫四",
+  "planet.enceladus": "土卫二",
+  "planet.tethys": "土卫三",
+  "planet.dione": "土卫四",
+  "planet.rhea": "土卫五",
+  "planet.titan": "土卫六",
+  "planet.iapetus": "土卫八",
 
   "rays.sunrise": "日出",
   "rays.sunset": "日落",
@@ -394,6 +404,7 @@
   "star.always_invisible": "整夜不可见",
 
   "sky.object_data": "天体参数",
+  "sky.parent_body": "母天体",
 
   "comet.magnitude": "视星等",
   "comet.distance": "地心距离",

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>功能介绍 — 星下点地图 The Substellar Atlas</title>
+  <meta name="description" content="星下点地图(The Substellar Atlas)介绍:把星空沿地心方向投回地面的天文气象观测规划地图,逐图层说明其功能。">
+  <link rel="alternate" hreflang="en" href="../en/index.html">
+  <link rel="icon" type="image/svg+xml" href="../../img/mark.svg">
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../about.css">
+</head>
+<body class="about chapter-1">
+
+<header class="ab-header">
+  <a class="ab-mark" href="../../">
+    <svg viewBox="0 0 30 30" width="20" height="20" aria-hidden="true"><g transform="translate(15,15)"><path d="M 0,-10 L 2.4,-2.4 L 10,0 L 2.4,2.4 L 0,10 L -2.4,2.4 L -10,0 L -2.4,-2.4 Z M -2.1,0 A 2.1,2.1 0 1,0 2.1,0 A 2.1,2.1 0 1,0 -2.1,0 Z" fill="#b39468" fill-rule="evenodd"/><path d="M 0,-6 L 0,-10 M 0,6 L 0,10 M -6,0 L -10,0 M 6,0 L 10,0" stroke="#b39468" stroke-width="1.2" stroke-opacity="0.9" transform="rotate(45)"/></g></svg>
+    <span>星下点地图 <span class="latin">The Substellar Atlas</span></span>
+  </a>
+  <nav class="ab-nav" aria-label="章节导航">
+    <a href="./" aria-current="page">功能介绍</a>
+    <a href="mechanisms.html">核心机制</a>
+    <a href="design.html">设计理念</a>
+  </nav>
+  <div class="ab-lang" aria-label="语言">
+    <span class="current">中文</span><span>/</span><a href="../en/index.html" hreflang="en">EN</a>
+  </div>
+</header>
+
+<!-- ===== 封面 ===== -->
+<div class="hero">
+  <svg class="hero-watermark" viewBox="0 0 30 30" aria-hidden="true"><g transform="translate(15,15)"><path d="M 0,-10 L 2.4,-2.4 L 10,0 L 2.4,2.4 L 0,10 L -2.4,2.4 L -10,0 L -2.4,-2.4 Z M -2.1,0 A 2.1,2.1 0 1,0 2.1,0 A 2.1,2.1 0 1,0 -2.1,0 Z" fill="#b39468" fill-rule="evenodd"/><path d="M 0,-6 L 0,-10 M 0,6 L 0,10 M -6,0 L -10,0 M 6,0 L 10,0" stroke="#b39468" stroke-width="1.2" stroke-opacity="0.9" transform="rotate(45)"/></g></svg>
+
+  <p class="hero-kicker">天文气象观测规划地图 · A Dark-sky &amp; Eclipse Planner</p>
+  <h1 class="hero-title">星下点地图<span class="hero-latin">The Substellar Atlas</span></h1>
+  <p class="hero-intro">把整幅星空沿地心方向投回地面,每颗天体都落在它此刻正悬于头顶的地方。这里是它的说明书——功能、机制,与来历。</p>
+
+  <ul class="toc-cards">
+    <li><a class="toc-card" href="#substellar">
+      <span class="toc-num">其一 · Part I</span>
+      <span class="toc-title">功能介绍</span>
+      <span class="toc-desc">逐图层说明:星图、日月行星、坐标框线、方位圈、日月食、卫星、极光与光污染。(本页)</span>
+    </a></li>
+    <li><a class="toc-card" href="mechanisms.html">
+      <span class="toc-num">其二 · Part II</span>
+      <span class="toc-title">核心机制</span>
+      <span class="toc-desc">数据与算法:天体目录、地名库、渲染管线、贝塞尔日食计算与地图引擎。</span>
+    </a></li>
+    <li><a class="toc-card" href="design.html">
+      <span class="toc-num">其三 · Part III</span>
+      <span class="toc-title">设计理念</span>
+      <span class="toc-desc">概念参考、图标设计、个人表达,以及对开源世界的致谢。</span>
+    </a></li>
+  </ul>
+
+  <a class="scroll-cue" href="#substellar">下滚阅读</a>
+</div>
+
+<main>
+
+<!-- ===== 一 · 星下点地图 ===== -->
+<section id="substellar">
+  <div class="section-content">
+    <p class="kicker">图层 · 一 — Layer I</p>
+    <h2>星下点地图 <em>Substellar Atlas</em></h2>
+
+    <p><span class="opener">每一颗恒星,</span>此刻都恰好悬在地球上某一点的正头顶。从星到地心连一条线,它与地表的交点便是这颗星的<a href="https://zh.wikipedia.org/wiki/%E5%A4%AA%E9%98%B3%E7%9B%B4%E5%B0%84%E7%82%B9" target="_blank" rel="noopener">星下点</a>(对太阳而言即直射点)。把全天星图按星下点铺到世界地图上,就得到了本站的底层——相当于把<a href="https://zh.wikipedia.org/wiki/%E5%A4%A9%E7%90%83" target="_blank" rel="noopener">天球</a>反转过来,扣在地球上。</p>
+
+    <div class="note">
+      <p>读这张图前,有三条规则值得记住:</p>
+      <ul>
+        <li>星空会随<a href="https://zh.wikipedia.org/wiki/%E5%9C%B0%E7%90%83%E8%87%AA%E8%BD%AC" target="_blank" rel="noopener">地球自转</a>不断西移——整幅星图约每 23 时 56 分绕地球一周。</li>
+        <li>星下点的左右排列与天球<strong>东西相反</strong>:星图是从天球外向内看的,而我们仰望星空是从内向外看。</li>
+        <li>星下点只表示「这颗星此刻在此地的天顶」。地球上整个半球都能看见它,这个点本身并无特殊的物理含义。</li>
+      </ul>
+    </div>
+
+    <p>恒星取自 <a href="https://www.astronexus.com/projects/hyg" target="_blank" rel="noopener">HYG v4.1</a> 星表:亮于 6.0 等(肉眼可见)的恒星常驻加载,6–8 等与 8–10 等的暗星随视野按瓦片增量加载。<a href="https://zh.wikipedia.org/wiki/%E8%A7%86%E6%98%9F%E7%AD%89" target="_blank" rel="noopener">视星等</a>越亮,渲染的星点越大、光晕越足。</p>
+
+    <h3>三种显示模式</h3>
+    <p>星图层提供三种连线模式,循环切换:</p>
+    <ul>
+      <li><strong>IAU 星座</strong>——<a href="https://www.iau.org/public/themes/constellations/" target="_blank" rel="noopener">国际天文学联合会</a>划定的全天 88 <a href="https://zh.wikipedia.org/wiki/%E6%98%9F%E5%BA%A7" target="_blank" rel="noopener">星座</a>,连线与边界取自 <a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener">d3-celestial</a>。</li>
+      <li><strong>中国星官</strong>——三垣<a href="https://zh.wikipedia.org/wiki/%E4%BA%8C%E5%8D%81%E5%85%AB%E5%AE%BF" target="_blank" rel="noopener">二十八宿</a>体系的传统<a href="https://zh.wikipedia.org/wiki/%E6%98%9F%E5%AE%98" target="_blank" rel="noopener">星官</a>连线,星名采用 <a href="https://github.com/Stellarium/stellarium-skycultures" target="_blank" rel="noopener">Stellarium 星空文化</a>整理的现代中文星名。</li>
+      <li><strong>纯恒星</strong>——隐去全部连线,只留星点本身。</li>
+    </ul>
+
+    <p>此外有十二组<a href="https://zh.wikipedia.org/wiki/%E6%98%9F%E7%BE%A4" target="_blank" rel="noopener">星群</a>(北斗、夏季大三角、冬季六边形、南十字等)——它们不是正式星座,而是跨星座的醒目星组,鼠标悬停时显示连线与名称。</p>
+
+    <p>星图层的子选项里还可叠加四条天球参考线:天赤道、黄道、白道与银道,详见下文「坐标框线」。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="substellar-iau">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>IAU 星座模式下的星下点投影。统一视图:中心 30°N 10°E,缩放级别 3,1440×900。</figcaption>
+    </figure>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="substellar-cn">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>中国星官模式,同一视野下的三垣二十八宿连线。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 二 · 太阳、月亮与行星 ===== -->
+<section id="sun-moon-planets">
+  <div class="section-content">
+    <p class="kicker">图层 · 二 — Layer II</p>
+    <h2>太阳、月亮与行星</h2>
+
+    <p><span class="opener">太阳的星下点</span>就是此刻的直射点。以它的对跖点(反日点)为圆心,夜半球被一层薄纱状的暗化蒙版覆盖;昼半球则以暖白微调增亮底图。明暗交界处按太阳高度 −6°、−12°、−18° 分为民用、航海、天文三级<a href="https://zh.wikipedia.org/wiki/%E6%99%99%E6%9A%AE%E5%85%89" target="_blank" rel="noopener">曙暮光</a>,逐层加深——这正是观星者最关心的「天黑程度」。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="sun-twilight">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>太阳星下点与三级曙暮光蒙版(民用 −6°、航海 −12°、天文 −18°)。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+
+    <p>月亮以月下点标记,旁附实时<a href="https://zh.wikipedia.org/wiki/%E6%9C%88%E7%9B%B8" target="_blank" rel="noopener">月相</a>图形——相位、明暗朝向与亮度都随时间连续变化。月光蒙版标出月光照亮的半球:满月前后最亮,新月时几乎消失。这层与白道(月球轨道)线配合,可以直观读出月亮在天球上的行进。时间栏同时给出<a href="https://zh.wikipedia.org/wiki/%E5%86%9C%E5%8E%86" target="_blank" rel="noopener">农历</a>日期与月龄。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="moon-moonlight">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>满月时的月下点与月光蒙版(2026-08-28 04:13 UTC)。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+
+    <p>行星层显示水星到海王星七颗行星,使用版画风格的矢量图标。图标尺寸随<a href="https://zh.wikipedia.org/wiki/%E8%A7%92%E7%9B%B4%E5%BE%84" target="_blank" rel="noopener">视直径</a>缩放,亮度按视星等的光度模型渲染;内行星(水星、金星)还会呈现<a href="https://en.wikipedia.org/wiki/Planetary_phase" target="_blank" rel="noopener">相位</a>盈亏。位置由 <a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noopener">Astronomy Engine</a> 历表实时计算。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="planets">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>行星星下点与版画图标:大小随视直径、亮度随星等。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 三 · 坐标框线 ===== -->
+<section id="grids">
+  <div class="section-content">
+    <p class="kicker">图层 · 三 — Layer III</p>
+    <h2>坐标框线</h2>
+
+    <p><span class="opener">四条参考大圆</span>构成这张图的坐标骨架,即使在白昼蒙版之上也保持可读。</p>
+
+    <p><strong>黄道</strong>——太阳周年视运动的轨迹,与赤道面交角 23.44°(<a href="https://zh.wikipedia.org/wiki/%E8%BD%AC%E8%BD%B4%E5%80%BE%E8%A7%92" target="_blank" rel="noopener">转轴倾角</a>)。线上按太阳黄经每 15° 标注<a href="https://zh.wikipedia.org/wiki/%E8%8A%82%E6%B0%94" target="_blank" rel="noopener">二十四节气</a>刻度:缩小时只显示二分二至,放大后渐次展开八节与全部节气——<a href="https://zh.wikipedia.org/wiki/%E9%BB%84%E9%81%93" target="_blank" rel="noopener">黄道</a>因此成为一圈摊开在地图上的节气历。</p>
+
+    <p><strong>天赤道</strong>——<a href="https://zh.wikipedia.org/wiki/%E5%A4%A9%E8%B5%A4%E9%81%93" target="_blank" rel="noopener">天球赤道</a>的投影,恒与地理赤道重合。</p>
+
+    <p><strong>白道</strong>——月球轨道面与天球的交线,即<a href="https://zh.wikipedia.org/wiki/%E7%99%BD%E9%81%93" target="_blank" rel="noopener">白道</a>,与黄道交角约 5.1°。本站由月球的位置与速度矢量实时求出轨道面,因此白道线始终是「此刻的」轨道,而非平均轨道。</p>
+
+    <p><strong>银道</strong>——银河系盘面所在的大圆(<a href="https://zh.wikipedia.org/wiki/%E9%93%B6%E9%81%93%E5%9D%90%E6%A0%87%E7%B3%BB" target="_blank" rel="noopener">银道坐标系</a>的赤道,北银极 J2000 坐标 RA 192.86°、Dec +27.13°)。夏夜银河的走向,就藏在这条紫线之下。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="grids">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>四条参考线同框:黄道(金)、天赤道(蓝)、白道(月白)、银道(紫)。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 四 · 观测者方位圈 ===== -->
+<section id="compass">
+  <div class="section-content">
+    <p class="kicker">图层 · 四 — Layer IV</p>
+    <h2>观测者方位圈</h2>
+
+    <p><span class="opener">在地图上点下观测点,</span>一圈方位盘便以它为中心展开。这是一幅<a href="https://zh.wikipedia.org/wiki/%E7%AD%89%E8%B7%9D%E6%96%B9%E4%BD%8D%E6%8A%95%E5%BD%B1" target="_blank" rel="noopener">方位等距投影</a>的局部天空图:圆心是天顶,外圈是地平线,把<a href="https://zh.wikipedia.org/wiki/%E5%9C%B0%E5%B9%B3%E5%9D%90%E6%A0%87%E7%B3%BB" target="_blank" rel="noopener">地平坐标系</a>压平在地图上。</p>
+
+    <ul>
+      <li><strong>外圈</strong>:地平线(高度 0°),标注 N/S/E/W 四个<a href="https://zh.wikipedia.org/wiki/%E6%96%B9%E4%BD%8D%E8%A7%92" target="_blank" rel="noopener">方位</a>。</li>
+      <li><strong>内环</strong>:高度 30° 与 60° 的等高圈;圆心即天顶(90°)。</li>
+      <li><strong>太阳轨迹</strong>:前后 ±12 小时的逐时位置连线(金色);<strong>月亮轨迹</strong>同理(银白)。</li>
+      <li><strong>行星符号</strong>:落在盘内的行星以小图标标出,悬停可见名称。</li>
+      <li><strong>季节包络</strong>:夏至与冬至的日出日落方位弧,框出全年太阳出没方位的摆动范围。</li>
+    </ul>
+
+    <p>一眼可以读出:今夜月亮几点从哪个方位升起、太阳落向何处、行星此刻挂在哪片天。</p>
+
+    <figure>
+      <img src="../assets/fig/observer-compass.svg" alt="观测者方位圈示意图:地平外圈、等高环、日月轨迹与季节日出日落包络">
+      <figcaption>观测者方位圈:地平外圈、30°/60° 等高环、日月 ±12 小时轨迹与季节日出日落包络。统一视图:缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 五 · 日月食事件 ===== -->
+<section id="eclipses">
+  <div class="section-content">
+    <p class="kicker">图层 · 五 — Layer V</p>
+    <h2>日月食事件</h2>
+
+    <p><span class="opener">本站内置</span> 2000–2049 年的食事件目录:112 次<a href="https://zh.wikipedia.org/wiki/%E6%97%A5%E9%A3%9F" target="_blank" rel="noopener">日食</a>与 114 次<a href="https://zh.wikipedia.org/wiki/%E6%9C%88%E9%A3%9F" target="_blank" rel="noopener">月食</a>,由 <a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noopener">Astronomy Engine</a> 计算生成。</p>
+
+    <h3>日食</h3>
+    <p>日食按月影与地面的几何关系分为全食、环食、全环食与偏食。选中一次日食,地图会铺开它完整的地面曲线族:中心线、本影/伪本影南北界、半影界、等食分线,以及日出日落时分的食像曲线——这套画法承袭传统日食图的制图语言(参见 <a href="https://eclipse.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA Eclipse Web Site</a> 与 <a href="https://www.eclipsewise.com/" target="_blank" rel="noopener">EclipseWise</a>)。</p>
+
+    <p>播放时间时,本影与半影的椭圆轮廓按<a href="https://en.wikipedia.org/wiki/Besselian_elements" target="_blank" rel="noopener">贝塞尔元素</a>逐帧实时计算,沿食带滑行。2024–2027 年的日食带有预先计算的高精度曲线。</p>
+
+    <div class="note">
+      <p><strong>为什么日食发生时,太阳和月亮的星下点并不重合?</strong></p>
+      <p>星下点取的是从<em>地心</em>指向天体的方向;而日食的影锥落点,是日月连线与地表的交点。太阳远在 1.5 亿公里外,<a href="https://zh.wikipedia.org/wiki/%E8%A7%86%E5%B7%AE" target="_blank" rel="noopener">视差</a>可以忽略;月亮却只有 38 万公里,从地心看与从影锥落点看,方向差可达约 1°。只有当影轴恰好穿过地心(γ = 0)时,两个星下点才会与食带中心重合——一般情形下,月下点会偏到食带一侧数百乃至上千公里处。</p>
+    </div>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="eclipse-2026">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>2026 年 8 月 12 日全食(冰岛—西班牙):中心线、本影/半影界限与实时影锥(17:46 UTC)。视图中心 45°N 10°W,缩放级别 3。</figcaption>
+    </figure>
+
+    <h3>月食</h3>
+    <p>月食分半影食、偏食与全食。它没有专门的地面图层——月食发生时,月光蒙版本身会按月亮陷入本影的深度逐渐<strong>染红</strong>,半影食几乎不变色,全食时整个被月光照亮的半球都浸在铜红色里。选中某次月食,还可显示初亏至复圆(P1–P4)各阶段的可见范围圈。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="lunar-red">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>月全食时染红的月光蒙版:红度随本影深度渐变。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 六 · 人造卫星 ===== -->
+<section id="satellites">
+  <div class="section-content">
+    <p class="kicker">图层 · 六 — Layer VI</p>
+    <h2>人造卫星<span class="tag-exp">实验功能</span></h2>
+
+    <p><span class="opener">卫星图层</span>显示空间站的实时位置与前后 90 分钟的地面轨迹,<a href="https://zh.wikipedia.org/wiki/%E5%9B%BD%E9%99%85%E7%A9%BA%E9%97%B4%E7%AB%99" target="_blank" rel="noopener">国际空间站</a>(ISS)与<a href="https://zh.wikipedia.org/wiki/%E5%A4%A9%E5%AE%AB%E7%A9%BA%E9%97%B4%E7%AB%99" target="_blank" rel="noopener">天宫空间站</a>(CSS)以高亮标出。</p>
+
+    <p>轨道根数取自 <a href="https://celestrak.org/" target="_blank" rel="noopener">CelesTrak</a> 发布的<a href="https://en.wikipedia.org/wiki/Two-line_element_set" target="_blank" rel="noopener">两行根数</a>(TLE),本地缓存六小时;位置由 <a href="https://github.com/shashwatak/satellite-js" target="_blank" rel="noopener">satellite.js</a> 以 <a href="https://en.wikipedia.org/wiki/Simplified_perturbations_models" target="_blank" rel="noopener">SGP4</a> 模型传播。感谢 CelesTrak 三十余年如一日维护的公开轨道数据,以及 satellite.js 社区的开源实现。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="satellites">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>ISS 与 CSS 的实时位置及 ±90 分钟地面轨迹。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 七 · 极光卵 ===== -->
+<section id="aurora">
+  <div class="section-content">
+    <p class="kicker">图层 · 七 — Layer VII</p>
+    <h2>极光卵<span class="tag-exp">实验功能</span></h2>
+
+    <p><span class="opener">极光并非随处可见,</span>它集中在围绕地磁极的一圈环带上——所谓「极光卵」。这一层渲染 <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA 空间天气预报中心</a>的 OVATION 模型短临预报:未来约 30 分钟内的<a href="https://zh.wikipedia.org/wiki/%E6%9E%81%E5%85%89" target="_blank" rel="noopener">极光</a>出现概率。</p>
+
+    <p>数据为 1°×1° 全球网格,经双线性插值平滑着色——绿、黄、红分别对应约 10%、50%、90% 的概率,与 NOAA 官方图例一致。图层每 5 分钟自动刷新,数据超过 60 分钟有效期后降饱和提示过期;同时拉取行星 <a href="https://en.wikipedia.org/wiki/K-index" target="_blank" rel="noopener">K 指数</a>预报作参考。感谢 NOAA SWPC 的开放数据服务。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="aurora-oval">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>北半球极光卵(OVATION 实时数据快照,捕图时另注日期)。视图中心 62°N 40°W,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 八 · 光污染 ===== -->
+<section id="light-pollution">
+  <div class="section-content">
+    <p class="kicker">图层 · 八 — Layer VIII</p>
+    <h2>光污染</h2>
+
+    <p><span class="opener">城市的灯火</span>把夜空抬亮,星星便一颗颗沉下去——这就是<a href="https://zh.wikipedia.org/wiki/%E5%85%89%E5%AE%B3" target="_blank" rel="noopener">光污染</a>。衡量它的尺度是天顶夜空亮度,单位 mag/arcsec²(<a href="https://en.wikipedia.org/wiki/Surface_brightness" target="_blank" rel="noopener">面亮度</a>):数值越大天越黑,城市中心约 17–18,真正的暗夜可达 21.9 以上,可与<a href="https://zh.wikipedia.org/wiki/%E6%B3%A2%E7%89%B9%E5%B0%94%E6%9A%97%E7%A9%BA%E5%88%86%E7%B1%BB%E6%B3%95" target="_blank" rel="noopener">波特尔暗空分类</a>对照阅读。</p>
+
+    <p>数据采用 <a href="https://djlorenz.github.io/astronomy/lp/" target="_blank" rel="noopener">David J. Lorenz 的世界光污染图集</a>——基于 <a href="https://en.wikipedia.org/wiki/Visible_Infrared_Imaging_Radiometer_Suite" target="_blank" rel="noopener">VIIRS</a> 卫星辐射测量制作,提供 2016 至 2024 多个年份,分辨率 1/120°(约 0.8 km)。本站既叠加其整幅图层,也在查询地点时换算出该处的天空亮度数值。感谢 Lorenz 多年持续更新并无偿公开这份图集。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="light-pollution">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>光污染图层(Lorenz 2022):亮区即夜空被人工光抬亮之处。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 附录 · 资料来源 ===== -->
+<section id="sources">
+  <div class="section-content">
+    <p class="kicker">附录 — Appendix</p>
+    <h2>本页资料来源</h2>
+    <ul class="source-list">
+      <li><a href="https://www.astronexus.com/projects/hyg" target="_blank" rel="noopener">HYG Database v4.1</a> <span class="src-note">— 恒星目录(Hipparcos/Yale/Gliese 合编,David Nash 维护)</span></li>
+      <li><a href="https://github.com/ofrohn/d3-celestial" target="_blank" rel="noopener">d3-celestial</a> <span class="src-note">— IAU 星座连线与边界、中国星官连线(Olaf Frohn)</span></li>
+      <li><a href="https://github.com/Stellarium/stellarium-skycultures" target="_blank" rel="noopener">Stellarium Sky Cultures</a> <span class="src-note">— 中国星官现代/传统中文星名</span></li>
+      <li><a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noopener">Astronomy Engine</a> <span class="src-note">— 日月行星历表与食事件计算(Don Cross)</span></li>
+      <li><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noopener">lunar-javascript</a> <span class="src-note">— 农历与月龄</span></li>
+      <li><a href="https://eclipse.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA Eclipse Web Site</a> / <a href="https://www.eclipsewise.com/" target="_blank" rel="noopener">EclipseWise</a> <span class="src-note">— 日食贝塞尔元素与制图传统(Fred Espenak)</span></li>
+      <li><a href="https://celestrak.org/" target="_blank" rel="noopener">CelesTrak</a> <span class="src-note">— 卫星 TLE 轨道根数(T.S. Kelso)</span></li>
+      <li><a href="https://github.com/shashwatak/satellite-js" target="_blank" rel="noopener">satellite.js</a> <span class="src-note">— SGP4 轨道传播</span></li>
+      <li><a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA SWPC — OVATION Aurora Forecast</a> <span class="src-note">— 极光概率短临预报与 K 指数</span></li>
+      <li><a href="https://djlorenz.github.io/astronomy/lp/" target="_blank" rel="noopener">David J. Lorenz — Light Pollution Atlas</a> <span class="src-note">— 世界光污染图集(2016–2024)</span></li>
+    </ul>
+    <p>实现细节、地名数据与地图引擎的完整来源,见下一章<a href="mechanisms.html">核心机制</a>。</p>
+  </div>
+</section>
+
+</main>
+
+<nav class="pager" aria-label="章节翻页">
+  <a class="next" href="mechanisms.html">
+    <span class="pager-label">下一章 · Next</span>
+    <span class="pager-title">核心机制</span>
+  </a>
+</nav>
+
+<footer class="ab-footer">
+  <a href="../../">← 回到地图 · Back to the map</a><span class="sep">·</span>© 2026 Higashimado
+</footer>
+
+</body>
+</html>

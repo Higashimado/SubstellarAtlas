@@ -1,5 +1,5 @@
 {
-  "_comment": "Manual CJK name patches. Structure: patches.{CC}.{asciiName} = zh-Hans string or {zh: ..., ja: ...} object. Applied by build-places.mjs.",
+  "_comment": "Manual name patches. Structure: patches.{CC}.{asciiName} = zh-Hans string or {en:..., zh:..., ja:...} object. Applied by build-places.mjs. 'force:true' overrides existing values; omit to fill gaps only.",
   "patches": {
     "AD": {
       "Andorra la Vella": {

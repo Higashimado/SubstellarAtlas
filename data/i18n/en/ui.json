@@ -304,6 +304,16 @@
   "planet.saturn": "Saturn",
   "planet.uranus": "Uranus",
   "planet.neptune": "Neptune",
+  "planet.io": "Io",
+  "planet.europa": "Europa",
+  "planet.ganymede": "Ganymede",
+  "planet.callisto": "Callisto",
+  "planet.enceladus": "Enceladus",
+  "planet.tethys": "Tethys",
+  "planet.dione": "Dione",
+  "planet.rhea": "Rhea",
+  "planet.titan": "Titan",
+  "planet.iapetus": "Iapetus",
 
   "rays.sunrise": "Sunrise",
   "rays.sunset": "Sunset",
@@ -374,6 +384,7 @@
   "star.always_invisible": "Always invisible",
 
   "sky.object_data": "Object data",
+  "sky.parent_body": "Parent body",
 
   "comet.magnitude": "Visual mag.",
   "comet.distance": "Geocentric dist.",

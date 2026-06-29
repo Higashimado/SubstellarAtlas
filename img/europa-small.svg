@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="282 348 16 16">
+<clipPath id="eu290_356"><circle cx="290" cy="356" r="8"/></clipPath>
+<g clip-path="url(#eu290_356)">
+<rect x="282" y="348" width="16" height="16" fill="#e7ddc9"/>
+<ellipse cx="290.0" cy="356.0" rx="9.4" ry="7.3" fill="#e9d8b8" opacity="0.3" transform="rotate(0 290.0 356.0)"/>
+<path d="M282.0 354.5 L283.1 354.6 L284.3 354.8 L285.4 355.2 L286.6 355.0 L287.7 355.7 L288.8 355.8 L290.0 356.0 L291.2 356.2 L292.3 356.6 L293.5 356.5 L294.5 357.1 L295.7 357.0 L296.9 357.2 L298.0 357.6" fill="none" stroke="#9a5a3e" stroke-width="0.7" opacity="0.6" stroke-linecap="round"/>
+<path d="M287.5 348.0 L288.0 349.1 L288.0 350.3 L288.4 351.4 L288.7 352.6 L289.1 353.7 L289.4 354.8 L289.3 356.1 L289.6 357.2 L290.3 358.3 L290.8 359.3 L290.8 360.6 L291.0 361.7 L291.3 362.9 L291.7 364.0" fill="none" stroke="#9a5a3e" stroke-width="0.7" opacity="0.6" stroke-linecap="round"/>
+<path d="M282.0 358.4 L283.1 358.1 L284.2 357.8 L285.2 357.4 L286.3 357.1 L287.5 357.2 L288.6 356.9 L289.6 356.4 L290.7 356.3 L291.8 355.9 L292.9 355.5 L294.0 355.4 L295.0 354.8 L296.1 354.7 L297.2 354.5" fill="none" stroke="#9a5a3e" stroke-width="0.7" opacity="0.6" stroke-linecap="round"/>
+<path d="M290.0 348.0 A8 8 0 0 1 290.0 364.0 A7.2 8 0 0 0 290.0 348.0 Z" fill="#1c2226" opacity="0.14"/>
+</g>
+<circle cx="290" cy="356" r="8" fill="none" stroke="#9a937f" stroke-width="0.6" opacity="0.7"/>
+</svg>

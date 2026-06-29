@@ -277,6 +277,7 @@ const Observer = (() => {
     window.currentObserverLatLng = null;
     if (typeof TimeState !== 'undefined') TimeState.setTime(TimeState.current);
     _compassClear();
+    if (typeof AppState !== 'undefined') AppState.touch();
   }
 
   function lock() {
@@ -300,6 +301,42 @@ const Observer = (() => {
     _locked = true;
     _updateMarkerIcon();
     _compassShow();
+    if (typeof AppState !== 'undefined') AppState.touch();
+  }
+
+  // Toggle the observer lock, opening or hiding the compass to match. Shared by
+  // the right-click menu and the compass-centre hit-target so a single click on
+  // the hub releases (or re-locks) the marker — the primary observer interaction.
+  function _toggleLock() {
+    _locked = !_locked;
+    _updateMarkerIcon();
+    if (_locked) _compassShow();
+    else _compassHide();
+    if (typeof AppState !== 'undefined') AppState.touch();
+  }
+
+  // Lock/unlock, remove, and (when any exist) clear-direction-line items for the
+  // observer marker's context menu. Shared by the map-level right-click near the
+  // pin and the compass-centre hit-target so both raise an identical menu.
+  function _markerMenuItems() {
+    const items = [
+      {
+        label: _locked ? _t('map.context.unlock_marker') : _t('map.context.lock_marker'),
+        onClick: _toggleLock,
+      },
+      { label: _t('map.context.remove_marker'), onClick: clear },
+    ];
+    if (Object.keys(_lockedBodies).length || _pinnedBodyIds.size) {
+      items.push({
+        label: _t('map.context.clear_direction_lines'),
+        onClick: () => {
+          _clearLockedLines();
+          _pinnedBodyIds.clear();
+          _renderPins();
+        },
+      });
+    }
+    return items;
   }
 
   // Wire map events and initialise the compass.
@@ -393,32 +430,7 @@ const Observer = (() => {
       const clickPx = map.latLngToContainerPoint(e.latlng);
       if (Math.hypot(markerPx.x - clickPx.x, markerPx.y - clickPx.y) > 40) return;
       L.DomEvent.preventDefault(e.originalEvent);
-      const items = [
-        {
-          label: _locked ? _t('map.context.unlock_marker') : _t('map.context.lock_marker'),
-          onClick: () => {
-            _locked = !_locked;
-            _updateMarkerIcon();
-            if (_locked) _compassShow();
-            else _compassHide();
-          },
-        },
-        { label: _t('map.context.remove_marker'), onClick: clear },
-      ];
-      // Offer to release direction lines when any exist — either a locked
-      // great-circle line on the map or a pinned compass azimuth ray. Kept at the
-      // very bottom of the menu; clears both kinds.
-      if (Object.keys(_lockedBodies).length || _pinnedBodyIds.size) {
-        items.push({
-          label: _t('map.context.clear_direction_lines'),
-          onClick: () => {
-            _clearLockedLines();
-            _pinnedBodyIds.clear();
-            _renderPins();
-          },
-        });
-      }
-      if (typeof window.showCtxMenu === 'function') window.showCtxMenu(clickPx, items);
+      if (typeof window.showCtxMenu === 'function') window.showCtxMenu(clickPx, _markerMenuItems());
     });
 
     // Backwards-compatible global (used by external callers, e.g. the preview
@@ -1659,6 +1671,31 @@ const Observer = (() => {
         }
         wire(hit, id);
       });
+
+    // Centre hub hit-target, appended LAST so it sits above every glyph/ray/event
+    // hit (_rootFx is translated to the compass centre, so 0,0 is the hub). Locking
+    // and clearing the observer is the primary interaction, so a click in the hub
+    // must never be stolen by a body glyph that happens to fall near the centre.
+    const centerHit = svgEl('circle', {
+      cx: '0',
+      cy: '0',
+      r: String(DIR_CENTER_GAP),
+      fill: 'transparent',
+      class: 'compass-hit',
+    });
+    centerHit.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      if (ev.preventDefault) ev.preventDefault();
+      _toggleLock();
+    });
+    centerHit.addEventListener('contextmenu', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      if (typeof window.showCtxMenu === 'function') {
+        window.showCtxMenu(_map.mouseEventToContainerPoint(ev), _markerMenuItems());
+      }
+    });
+    _rootFx.appendChild(centerHit);
   }
 
   // Toggle a body's pinned azimuth line, then redraw the pin layer + refresh the
@@ -2918,6 +2955,15 @@ const Observer = (() => {
     _clearLockedLines();
     window.currentObserverLatLng = null;
     clearCompass();
+  }
+
+  if (typeof AppState !== 'undefined') {
+    AppState.registerParam('c', {
+      get: () => (isLocked() ? '1' : null),
+      set: (v) => {
+        if (v === '1') lockAndShowCompass();
+      },
+    });
   }
 
   return { init, place, clear, lock, unlock, isLocked, lockAndShowCompass, toggleGreatCircleTo };

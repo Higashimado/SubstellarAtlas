@@ -1,4 +1,4 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><script>
 var r=new XMLHttpRequest();r.open('GET','../index.html',false);r.send();
-document.open();document.write(r.responseText.replace('<base href="/SubstellarAtlas/">','<base href="../">'));document.close();
+document.open();document.write(r.responseText.replace('<base href="/SubstellarAtlas/">','<base href="../">').replace('<html lang="zh">','<html lang="en">'));document.close();
 </script></body></html>

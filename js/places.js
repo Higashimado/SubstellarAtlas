@@ -538,6 +538,11 @@ const Places = (() => {
           if (typeof window.enterLocationMode === 'function') {
             window.enterLocationMode(r.lat, r.lng);
           }
+          // Match the locate button and place-name/coords click: a chosen search
+          // result should also lock the observer and open the compass.
+          if (typeof Observer !== 'undefined' && Observer.lockAndShowCompass) {
+            Observer.lockAndShowCompass();
+          }
           if (typeof Sidebar !== 'undefined' && Sidebar.show) {
             Sidebar.show(r.lat, r.lng);
           }

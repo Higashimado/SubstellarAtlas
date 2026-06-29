@@ -142,6 +142,17 @@ const Lum = (() => {
     return smoothstep(diskOn, diskFull, zoom);
   }
 
+  // Disk-vs-glow reveal: while a body's true disk is much smaller than its glow
+  // bloom, the glow's bright center reads as a dense point and the (often dark)
+  // engraving disk stays hidden behind it. As the disk grows toward the glow's
+  // scale it takes over and the glow retires. Keyed to the disk/glow size ratio
+  // so every body crosses over at the same visual proportion regardless of zoom;
+  // falls back to absolute px when there is no glow to hide behind.
+  function diskGlowReveal(fpPx, glowR) {
+    if (!(glowR > 0)) return smoothstep(6, 40, fpPx);
+    return smoothstep(0.1 * glowR, 0.6 * glowR, fpPx / 2);
+  }
+
   const PX_PER_KM_Z0 = 256 / 40075.017;
   function footprintPx(zoom, diamKm, lat) {
     if (lat === undefined) lat = 0;
@@ -222,6 +233,12 @@ const Lum = (() => {
     Uranus: { core: '#d5f4ff', halo: '#d5f4ff', disk: '#a8c8dc' }, // 0.837, 0.959, 1.0
     Neptune: { core: '#b7e8ff', halo: '#b7e8ff', disk: '#8aa8c4' }, // 0.718, 0.910, 1.0
     Moon: { core: '#fffcf7', halo: '#fffcf7', disk: null }, // 1.0, 0.986, 0.968
+    // Jupiter's Galilean moons — companion dots only (no disk). Halo RGB from
+    // Stellarium ssystem_major.ini `color`; Io's sulfur yellow stands out.
+    Io: { core: '#ffe198', halo: '#ffe198', disk: null }, // 1.0, 0.885, 0.598
+    Europa: { core: '#fff7e2', halo: '#fff7e2', disk: null }, // 1.0, 0.968, 0.887
+    Ganymede: { core: '#fff5de', halo: '#fff5de', disk: null }, // 1.0, 0.962, 0.871
+    Callisto: { core: '#fffae5', halo: '#fffae5', disk: null }, // 1.0, 0.979, 0.897
   };
 
   // ---- Per-channel clip core color (spec §5) ----
@@ -395,6 +412,7 @@ const Lum = (() => {
     adaptationFactor,
     adaptedMagCutoff,
     diskAlpha,
+    diskGlowReveal,
     footprintPx,
     coreColor,
     colorForBody,

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>核心机制 — 星下点地图 The Substellar Atlas</title>
+  <meta name="description" content="星下点地图的实现机制:天体数据库、地名数据库、渲染管线、贝塞尔日食计算与地图引擎,以及全部数据来源。">
+  <link rel="alternate" hreflang="en" href="../en/mechanisms.html">
+  <link rel="icon" type="image/svg+xml" href="../../img/mark.svg">
+  <link rel="stylesheet" href="../../css/tokens.css">
+  <link rel="stylesheet" href="../about.css">
+</head>
+<body class="about chapter-2">
+
+<header class="ab-header">
+  <a class="ab-mark" href="../../">
+    <svg viewBox="0 0 30 30" width="20" height="20" aria-hidden="true"><g transform="translate(15,15)"><path d="M 0,-10 L 2.4,-2.4 L 10,0 L 2.4,2.4 L 0,10 L -2.4,2.4 L -10,0 L -2.4,-2.4 Z M -2.1,0 A 2.1,2.1 0 1,0 2.1,0 A 2.1,2.1 0 1,0 -2.1,0 Z" fill="#b39468" fill-rule="evenodd"/><path d="M 0,-6 L 0,-10 M 0,6 L 0,10 M -6,0 L -10,0 M 6,0 L 10,0" stroke="#b39468" stroke-width="1.2" stroke-opacity="0.9" transform="rotate(45)"/></g></svg>
+    <span>星下点地图 <span class="latin">The Substellar Atlas</span></span>
+  </a>
+  <nav class="ab-nav" aria-label="章节导航">
+    <a href="./">功能介绍</a>
+    <a href="mechanisms.html" aria-current="page">核心机制</a>
+    <a href="design.html">设计理念</a>
+  </nav>
+  <div class="ab-lang" aria-label="语言">
+    <span class="current">中文</span><span>/</span><a href="../en/mechanisms.html" hreflang="en">EN</a>
+  </div>
+</header>
+
+<div class="chapter-head">
+  <p class="kicker">其二 · Part II</p>
+  <h1>核心机制</h1>
+  <p class="chapter-sub">数据、算法与渲染 — Data, algorithms &amp; rendering</p>
+</div>
+
+<main>
+
+<!-- ===== 一 · 天体数据库 ===== -->
+<section id="celestial-db">
+  <div class="section-content">
+    <p class="kicker">机制 · 一 — Mechanism I</p>
+    <h2>天体数据库</h2>
+
+    <p><span class="opener">全部天体数据</span>在构建期离线生成、入库为静态文件,运行时无需任何天文数据服务器。</p>
+
+    <p><strong>恒星</strong>来自 <a href="https://www.astronexus.com/projects/hyg" target="_blank" rel="noopener">HYG v4.1</a>——Hipparcos、Yale 亮星表与 Gliese 近星表的合编目录(David Nash 维护)。构建脚本按星等切层:亮于 6.0 等的恒星打包为常驻文件,6–8 等与 8–10 等切成天区瓦片,随视野按需加载,在流畅与完整之间取得平衡。</p>
+
+    <p><strong>深空天体</strong>取自 <a href="https://github.com/mattiaverga/OpenNGC" target="_blank" rel="noopener">OpenNGC</a>(Mattia Verga 维护,CC-BY-SA 4.0),收录全部 110 个<a href="https://zh.wikipedia.org/wiki/%E6%A2%85%E8%A5%BF%E8%80%B6%E5%A4%A9%E4%BD%93" target="_blank" rel="noopener">梅西耶天体</a>与 109 个<a href="https://zh.wikipedia.org/wiki/%E7%A7%91%E5%87%AF%E6%96%87%E6%B7%B1%E7%A9%BA%E5%A4%A9%E4%BD%93%E8%A1%A8" target="_blank" rel="noopener">科德韦尔天体</a>,带星等、角尺寸与常用名。</p>
+
+    <p><strong>彗星</strong>是一份人工筛选的轨道根数表:2024–2030 年间预期亮于 10 等的彗星,根数取自 <a href="https://ssd.jpl.nasa.gov/" target="_blank" rel="noopener">JPL 小天体数据库</a>与<a href="https://www.minorplanetcenter.net/" target="_blank" rel="noopener">小行星中心</a>(MPC)。位置在运行时解<a href="https://zh.wikipedia.org/wiki/%E5%BC%80%E6%99%AE%E5%8B%92%E6%96%B9%E7%A8%8B" target="_blank" rel="noopener">开普勒方程</a>求得,椭圆与抛物线轨道分支兼备。</p>
+
+    <p><strong>流星雨</strong>收录主要群的辐射点、活动期与 ZHR 参数,活动窗口以太阳黄经而非日历日期标记——这样无论哪一年,峰值都自动落在正确的时刻(参考<a href="https://www.imo.net/" target="_blank" rel="noopener">国际流星组织</a>历表体例)。</p>
+  </div>
+</section>
+
+<!-- ===== 二 · 地名数据库 ===== -->
+<section id="places-db">
+  <div class="section-content">
+    <p class="kicker">机制 · 二 — Mechanism II</p>
+    <h2>地名数据库</h2>
+
+    <p><span class="opener">全球城市</span>来自 <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a>(<a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hans" target="_blank" rel="noopener">CC BY 4.0</a>):cities15000 提供人口 1.5 万以上的城市,辅以 alternateNamesV2 的多语言译名与 admin1 省级行政区表。构建期合并压缩为单个文件,运行时解压检索。</p>
+
+    <p>中国境内在城市之外补充了约 3.9 万条乡镇级地名(街道、镇、乡、苏木),整理自 © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> 贡献者的开放数据——这让搜索与定位可以下探到县城之下的尺度。城区街道经去重过滤,避免与 GeoNames 城市重复。</p>
+
+    <p>东亚地名(中日韩)的通名与译名缺口,由人工维护的补丁表逐条修正——约 1900 条,覆盖 170 个国家的主要城市。</p>
+  </div>
+</section>
+
+<!-- ===== 三 · 天体渲染 ===== -->
+<section id="rendering">
+  <div class="section-content">
+    <p class="kicker">机制 · 三 — Mechanism III</p>
+    <h2>天体渲染</h2>
+
+    <p><span class="opener">上万颗恒星</span>同屏时,逐颗 DOM 元素无法承受——星点在 canvas 上绘制,标签经防撞算法筛选后落位。</p>
+
+    <p>每颗星按星等代入光度模型,换算出核心亮点、光晕与光盘的尺寸;颜色按<a href="https://zh.wikipedia.org/wiki/%E6%81%92%E6%98%9F%E5%85%89%E8%B0%B1" target="_blank" rel="noopener">光谱型</a>在 <a href="https://bottosson.github.io/posts/oklab/" target="_blank" rel="noopener">OKLab 色彩空间</a>中连续插值——从 O 型星的蓝白到 M 型星的橙红,不分档、不跳变。</p>
+
+    <p>太阳、月亮与行星各占独立图层(pane),发光体的光晕层永远紧贴在本体层之下;天体在白昼区的可见性由 SVG 裁剪路径控制,按各自星下点处的太阳高度做昼夜混合,日间自然隐去、夜间浮现。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="planets">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>行星渲染:版画图标按视直径缩放,亮度按星等光度模型。统一视图:中心 30°N 10°E,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 四 · 日月食计算 ===== -->
+<section id="eclipse-calc">
+  <div class="section-content">
+    <p class="kicker">机制 · 四 — Mechanism IV</p>
+    <h2>日月食计算</h2>
+
+    <p><span class="opener">日食计算的核心</span>是<a href="https://en.wikipedia.org/wiki/Besselian_elements" target="_blank" rel="noopener">贝塞尔元素</a>:把月影锥投影到一张垂直于影轴的「基本面」上,用少数几个随时间变化的量完整描述整场日食的几何。这套 19 世纪的方法至今仍是日食制图的标准语言。</p>
+
+    <p>计算分四级管线:</p>
+    <ul>
+      <li><strong>事件目录</strong>——构建期用 <a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noopener">Astronomy Engine</a> 扫描 2000–2049 年,生成 112 次日食与 114 次月食的元数据(类型、峰值、食分、γ、<a href="https://zh.wikipedia.org/wiki/%E6%B2%99%E7%BD%97%E5%91%A8%E6%9C%9F" target="_blank" rel="noopener">沙罗周期</a>序号)。</li>
+      <li><strong>贝塞尔元素</strong>——部分事件缓存 <a href="https://eclipse.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA GSFC</a> 发布的多项式系数,其余由 Astronomy Engine 的历表实时推导。</li>
+      <li><strong>实时影锥</strong>——播放时间时,运行时求值器逐帧解出本影/伪本影与半影椭圆在地表的轮廓,与预计算曲线实测吻合在数公里之内。</li>
+      <li><strong>地面曲线族</strong>——对 2024–2027 年的日食,预先以食分网格扫描配合等值线提取,统一生成本影界、半影界与等食分线;中心线沿影轴轨迹直接求出。同族曲线同一算法,保证嵌套关系永不交错。</li>
+    </ul>
+
+    <p>制图惯例(中心线、南北界、日出日落食像线的画法)参考 Fred Espenak 的 <a href="https://www.eclipsewise.com/" target="_blank" rel="noopener">EclipseWise</a> 与 Xavier Jubier 的<a href="http://xjubier.free.fr/" target="_blank" rel="noopener">交互日食地图</a>。月食一侧的几何要简单得多:可见范围即月下点半球,本站以月光蒙版染红的方式呈现(见<a href="./#eclipses">功能介绍·日月食</a>)。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="eclipse-2026">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>2026-08-12 全食的完整曲线族:中心线、本影/半影界、等食分线与实时影锥(17:46 UTC)。视图中心 45°N 10°W,缩放级别 3。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 五 · 地图引擎 ===== -->
+<section id="map-engine">
+  <div class="section-content">
+    <p class="kicker">机制 · 五 — Mechanism V</p>
+    <h2>地图引擎</h2>
+
+    <p><span class="opener">整张地图</span>构建在 <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a> 之上——轻量、开源、久经考验的网页地图库。数十个图层面板(pane)按 z-index 分带管理:底图之上是光污染与云图栅格,再往上依次是星图、坐标框线、昼夜蒙版、日月行星与界面,遮挡关系因而可预测、可维护。</p>
+
+    <p>全球性的蒙版(昼夜、月光、可见范围)有一个共同的几何难题:以星下点为中心、半径接近 90° 的球冠多边形在极区会自相交。本站的解法是反其道而行——以<strong>反点</strong>为中心画「夜帽」,在一张覆盖全图的巨幅矩形上把它挖成洞。帽半径恒不超过 90°,几何始终良定;地图横向平铺七份副本,无缝环绕滚动。</p>
+
+    <p>底图瓦片来自 <a href="https://carto.com/basemaps/" target="_blank" rel="noopener">CARTO</a>(默认暗色无标注)、<a href="https://stadiamaps.com/" target="_blank" rel="noopener">Stadia Maps</a>(Alidade 暗色与 Stamen Toner)与 <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> 标准图——所有底图的道路与海岸线数据均源于 © OpenStreetMap 贡献者。</p>
+
+    <figure>
+      <div class="fig-placeholder" data-shot="basemaps">
+        <div class="ph-inner">
+          <svg viewBox="0 0 30 30" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="11.5" fill="none" stroke="#b39468" stroke-width=".9"/><ellipse cx="15" cy="15" rx="11.5" ry="4" fill="none" stroke="#b39468" stroke-width=".8" transform="rotate(-23 15 15)"/><ellipse cx="15" cy="15" rx="4" ry="11.5" fill="none" stroke="#9aa0aa" stroke-width=".55"/><circle cx="15" cy="15" r="1.6" fill="#b39468"/></svg>
+          <span>图示待补 · Figure forthcoming</span>
+        </div>
+      </div>
+      <figcaption>可选底图对比:CARTO 暗色(默认)、Stadia Alidade、Toner Lite、CARTO Positron 与 OSM 标准。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ===== 六 · 运行时库与其他来源 ===== -->
+<section id="libraries">
+  <div class="section-content">
+    <p class="kicker">机制 · 六 — Mechanism VI</p>
+    <h2>运行时库与其他来源</h2>
+
+    <p><span class="opener">本站没有构建步骤,</span>也没有后端——纯静态的 HTML/CSS/JS,全部计算在浏览器内完成。运行时依赖以下开源库:</p>
+
+    <table>
+      <thead><tr><th>库</th><th>版本</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a></td><td>1.9.4</td><td>地图框架</td></tr>
+        <tr><td><a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noopener">Astronomy Engine</a></td><td>2.1.19</td><td>日月行星历表、食事件与贝塞尔推导</td></tr>
+        <tr><td><a href="https://github.com/mourner/suncalc" target="_blank" rel="noopener">SunCalc</a></td><td>1.9.0</td><td>地点日出日落时刻</td></tr>
+        <tr><td><a href="https://github.com/joergdietrich/Leaflet.Terminator" target="_blank" rel="noopener">Leaflet.Terminator</a></td><td>1.1.0</td><td>晨昏线</td></tr>
+        <tr><td><a href="https://github.com/shashwatak/satellite-js" target="_blank" rel="noopener">satellite.js</a></td><td>5.0.0</td><td>卫星 SGP4 轨道传播</td></tr>
+        <tr><td><a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noopener">lunar-javascript</a></td><td>1.7.7</td><td>农历、月龄与节气历法</td></tr>
+        <tr><td><a href="https://github.com/nodeca/pako" target="_blank" rel="noopener">Pako</a></td><td>2.1.0</td><td>gzip 数据解压(地名库、光污染瓦片)</td></tr>
+      </tbody>
+    </table>
+
+    <p>实时数据(卫星 TLE、极光预报、光污染瓦片)直连各机构的公开服务,来源已在<a href="./#sources">功能介绍·资料来源</a>中列明;基础底图版权归 © OpenStreetMap 贡献者及各瓦片服务商。</p>
+  </div>
+</section>
+
+</main>
+
+<nav class="pager" aria-label="章节翻页">
+  <a class="prev" href="./">
+    <span class="pager-label">上一章 · Previous</span>
+    <span class="pager-title">功能介绍</span>
+  </a>
+  <a class="next" href="design.html">
+    <span class="pager-label">下一章 · Next</span>
+    <span class="pager-title">设计理念</span>
+  </a>
+</nav>
+
+<footer class="ab-footer">
+  <a href="../../">← 回到地图 · Back to the map</a><span class="sep">·</span>© 2026 Higashimado
+</footer>
+
+</body>
+</html>

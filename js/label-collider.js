@@ -110,9 +110,102 @@
   const HIDDEN_CLASS = 'label-occluded';
   const CELL = 64; // px — spatial grid cell
 
+  // ---- Fast Screen Rect (no per-sweep layout flush) ----
+  // getBoundingClientRect forces a synchronous layout; over hundreds of labels at
+  // high zoom that single flush is the sweep's dominant cost. Every priority class
+  // is a Leaflet divIcon className, so the matched node IS the marker icon root —
+  // it carries _leaflet_pos (its layer point) and an inline margin (the iconAnchor).
+  // The on-screen rect is then pure math: layerPointToContainerPoint(pos) + margin
+  // + intrinsic size. Intrinsic size/margin only change with zoom-tier or locale,
+  // so they're cached across pans (keyed by a generation counter bumped on every
+  // non-pan event) and a pan sweep reads the DOM zero times. Nodes without
+  // _leaflet_pos fall back to getBoundingClientRect — correctness over speed.
+  const _sizeCache = new WeakMap();
+  let _sizeGen = 0;
+  let _containerOx = 0;
+  let _containerOy = 0;
+  // Container offset is re-read lazily in the rAF sweep, not in the (synchronous)
+  // invalidation handler — see _invalidateSizes / _runSweep.
+  let _offsetDirty = true;
+
+  function _refreshContainerOffset() {
+    if (!_map) return;
+    const cr = _map.getContainer().getBoundingClientRect();
+    _containerOx = cr.left;
+    _containerOy = cr.top;
+  }
+
+  // Bumped on every event that can resize labels or move the map element — i.e.
+  // everything except a pure pan, which is exactly the case the size cache is meant
+  // to make free. The container-offset read used to happen here too, but as a
+  // synchronous getBoundingClientRect fired inside the layeradd/layerremove burst
+  // (thousands of polyline adds per zoom) it forced a fresh layout every time — the
+  // sweep's dominant cost. We now just flag it dirty; _runSweep reads it once in the
+  // rAF tick, after all DOM writes settle. A pure pan never flags dirty, so its sweep
+  // still reads the DOM zero times.
+  function _invalidateSizes() {
+    _sizeGen++;
+    _offsetDirty = true;
+  }
+
+  function _measureSize(el) {
+    const cached = _sizeCache.get(el);
+    if (cached && cached.gen === _sizeGen) return cached;
+    // offsetWidth/Height force layout (one flush per cold sweep); iconSize:null
+    // divIcons auto-size to text, so they give the true box. style.margin* are
+    // inline reads (Leaflet writes the anchor there) and don't touch layout.
+    const sz = {
+      w: el.offsetWidth,
+      h: el.offsetHeight,
+      mx: parseFloat(el.style.marginLeft) || 0,
+      my: parseFloat(el.style.marginTop) || 0,
+      gen: _sizeGen,
+    };
+    _sizeCache.set(el, sz);
+    return sz;
+  }
+
+  function _auditRect(el, fast) {
+    const t = el.getBoundingClientRect();
+    const d = Math.max(
+      Math.abs(t.left - fast.left),
+      Math.abs(t.top - fast.top),
+      Math.abs(t.right - fast.right),
+      Math.abs(t.bottom - fast.bottom)
+    );
+    if (d > (window._labelColliderAuditMax || 0)) {
+      window._labelColliderAuditMax = d;
+      // eslint-disable-next-line no-console
+      console.log('[LabelCollider audit] max rect delta', d.toFixed(2), 'px on', el.className);
+    }
+  }
+
+  // Screen-pixel rect of a label. Returns a plain {left,top,right,bottom,width,
+  // height}; a zero-width result is treated as "skip" by the caller (matching the
+  // old getBoundingClientRect 0×0 behaviour for hidden / empty nodes).
+  function _screenRect(el) {
+    const pos = el._leaflet_pos;
+    if (!pos) return el.getBoundingClientRect();
+    const sz = _measureSize(el);
+    const cp = _map.layerPointToContainerPoint(pos);
+    const left = _containerOx + cp.x + sz.mx;
+    const top = _containerOy + cp.y + sz.my;
+    const r = { left, top, right: left + sz.w, bottom: top + sz.h, width: sz.w, height: sz.h };
+    if (window._labelColliderAudit) _auditRect(el, r);
+    return r;
+  }
+
   function _runSweep() {
     _pending = false;
     if (!_map) return;
+    // Refresh the container's screen offset here — once per sweep, in the rAF tick
+    // after the event burst's DOM writes have settled — so the single
+    // getBoundingClientRect forces at most one layout instead of one per layeradd.
+    // Only when something flagged it dirty (zoom/resize/layer toggle), never on pan.
+    if (_offsetDirty) {
+      _refreshContainerOffset();
+      _offsetDirty = false;
+    }
     const t0 = typeof performance !== 'undefined' && performance.now ? performance.now() : 0;
 
     const nodes = document.querySelectorAll(SELECTOR);
@@ -133,9 +226,7 @@
     let _veilOn = false,
       _veilSin = 0,
       _veilCos = 0,
-      _veilLngR = 0,
-      _ox = 0,
-      _oy = 0;
+      _veilLngR = 0;
     const _DEG = Math.PI / 180;
     if (
       window._twilightActive &&
@@ -149,9 +240,6 @@
         _veilSin = Math.sin(ss.lat * _DEG);
         _veilCos = Math.cos(ss.lat * _DEG);
         _veilLngR = ss.lng * _DEG;
-        const cr = _map.getContainer().getBoundingClientRect();
-        _ox = cr.left;
-        _oy = cr.top;
       }
     }
     function _covered(r) {
@@ -162,7 +250,7 @@
         [r.right, r.bottom],
       ];
       for (let c = 0; c < 4; c++) {
-        const ll = _map.containerPointToLatLng(L.point(corners[c][0] - _ox, corners[c][1] - _oy));
+        const ll = _map.containerPointToLatLng(L.point(corners[c][0] - _containerOx, corners[c][1] - _containerOy));
         const sinAlt =
           Math.sin(ll.lat * _DEG) * _veilSin + Math.cos(ll.lat * _DEG) * _veilCos * Math.cos(ll.lng * _DEG - _veilLngR);
         if (sinAlt > 0) return true;
@@ -176,7 +264,7 @@
     const items = [];
     for (let i = 0; i < nodes.length; i++) {
       const el = nodes[i];
-      const r = el.getBoundingClientRect();
+      const r = _screenRect(el);
       if (r.width <= 0 || r.height <= 0) continue;
       // Off-screen nodes (Leaflet's wrap copies that fell out of viewport)
       // contribute nothing — skip to save grid work. Check all four sides:
@@ -283,6 +371,12 @@
     if (_map) return;
     _map = map;
     map.on('moveend zoomend overlayadd overlayremove layeradd layerremove', schedule);
+    // Invalidate cached label sizes + container offset on everything except a pure
+    // pan (moveend with unchanged zoom): zoom changes the tiered text, layer/overlay
+    // toggles add producers, resize moves the map element. A pan leaves all three
+    // untouched, so its sweep reuses the cache and reads the DOM zero times.
+    map.on('zoomend resize overlayadd overlayremove layeradd layerremove', _invalidateSizes);
+    _refreshContainerOffset();
     // First sweep after initial layout settles.
     schedule();
   }

@@ -1,4 +1,4 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><script>
 var r=new XMLHttpRequest();r.open('GET','../index.html',false);r.send();
-document.open();document.write(r.responseText.replace('<base href="/SubstellarAtlas/">','<base href="../">'));document.close();
+document.open();document.write(r.responseText.replace('<base href="/SubstellarAtlas/">','<base href="../">').replace('<html lang="zh">','<html lang="es">').replace(/content="An open-source interactive visualization that projects the night sky onto Earth\."/g,'content="Visualización interactiva de código abierto que proyecta el cielo nocturno sobre la Tierra."'));document.close();
 </script></body></html>

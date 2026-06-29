@@ -324,6 +324,16 @@
   "planet.saturn": "土星",
   "planet.uranus": "天王星",
   "planet.neptune": "海王星",
+  "planet.io": "イオ",
+  "planet.europa": "エウロパ",
+  "planet.ganymede": "ガニメデ",
+  "planet.callisto": "カリスト",
+  "planet.enceladus": "エンケラドゥス",
+  "planet.tethys": "テティス",
+  "planet.dione": "ディオネ",
+  "planet.rhea": "レア",
+  "planet.titan": "タイタン",
+  "planet.iapetus": "イアペトゥス",
 
   "rays.sunrise": "日の出",
   "rays.sunset": "日の入り",
@@ -394,6 +404,7 @@
   "star.always_invisible": "終夜不可視",
 
   "sky.object_data": "天体データ",
+  "sky.parent_body": "母天体",
 
   "comet.magnitude": "視等級",
   "comet.distance": "地心距離",

@@ -1,0 +1,427 @@
+/* ============================================================
+   About pages — shared stylesheet (星下点地图 / The Substellar Atlas)
+   Layout DNA adapted from c82.net Clavis Cælestis (1.333 modular
+   scale, narrow centered measure, per-chapter accent, generous
+   section padding), re-keyed to a dark-parchment palette built on
+   the site's brass tokens. Load order: ../../css/tokens.css first,
+   then this file. No webfonts; --font-serif from tokens.css.
+   ============================================================ */
+
+:root {
+  --ab-bg:        #1d1a15;                   /* dark parchment: warm near-black */
+  --ab-bg-raise:  #26221a;                   /* figure mats, cards */
+  --ab-ink:       #e2d9c5;                   /* warm ivory body text */
+  --ab-ink-muted: #a59b86;                   /* captions, kickers, footer */
+  --ab-rule:      rgba(226, 217, 197, 0.16); /* section dividers */
+  --ab-hairline:  rgba(179, 148, 104, 0.38); /* brass hairline for figures */
+  --ab-link:        var(--gilt-calm, #c9a86a);
+  --ab-link-hover:  var(--gilt-bright, #ecc874);
+
+  /* 1.333 modular scale (c82 ratio, smaller base for CJK) */
+  --fs-s:   0.79rem;
+  --fs-b:   1rem;
+  --fs-m:   1.333rem;
+  --fs-l:   1.777rem;
+  --fs-xl:  3.157rem;
+  --fs-xxl: 4.209rem;
+
+  /* chapter accent colors = the three coordinate-grid colors (js/colors.js) */
+  --accent-ch1: #c9a86a;  /* ecliptic gold   — cover + features */
+  --accent-ch2: #7682a0;  /* equator slate   — mechanisms */
+  --accent-ch3: #b09cc4;  /* galactic violet — design */
+}
+body.chapter-1 { --accent: var(--accent-ch1); }
+body.chapter-2 { --accent: var(--accent-ch2); }
+body.chapter-3 { --accent: var(--accent-ch3); }
+
+/* ---------------- Base ---------------- */
+
+html { font-size: 20px; }
+html[lang^="zh"] { font-size: 19px; }
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(226, 217, 197, 0.15) transparent;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(226, 217, 197, 0.15);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(226, 217, 197, 0.30); }
+
+body {
+  margin: 0;
+  background: var(--ab-bg);
+  color: var(--ab-ink);
+  font-family: var(--font-serif, Georgia, serif);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+html[lang^="zh"] body { line-height: 1.85; letter-spacing: 0.01em; }
+
+::selection { background: var(--accent, #c9a86a); color: #1d1a15; }
+
+a { color: var(--ab-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: rgba(201, 168, 106, 0.45); }
+a:hover { color: var(--ab-link-hover); text-decoration-color: currentColor; }
+
+p { margin: 0 0 1.2em; }
+em { font-style: italic; }
+strong { font-weight: 600; color: var(--ab-ink); }
+
+h1, h2, h3 { font-weight: 500; color: var(--ab-ink); }
+h1 { font-size: var(--fs-xl); line-height: 1.12; margin: 0; }
+h2 { font-size: var(--fs-l); line-height: 1.2; margin: 0 0 1.2rem; }
+h3 { font-size: var(--fs-m); line-height: 1.3; margin: 2.2rem 0 0.9rem; }
+
+ul, ol { margin: 0 0 1.2em; padding-inline-start: 1.4em; }
+li { margin-block: 0.35em; }
+
+/* ---------------- Header ---------------- */
+
+.ab-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  padding: 0.9rem 1.4rem;
+  border-bottom: 1px solid var(--ab-rule);
+  font-size: var(--fs-s);
+}
+.ab-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-inline-end: auto;
+  color: var(--ab-ink);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.ab-mark svg { display: block; }
+.ab-mark .latin { font-style: italic; color: var(--ab-ink-muted); }
+.ab-mark:hover { color: var(--ab-link-hover); }
+
+.ab-nav { display: flex; align-items: center; gap: 1.1rem; }
+.ab-nav a {
+  color: var(--ab-ink-muted);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+}
+.ab-nav a:hover { color: var(--ab-link-hover); }
+.ab-nav a[aria-current="page"] { color: var(--accent); }
+
+.ab-lang { display: flex; gap: 0.45rem; align-items: center; color: var(--ab-ink-muted); }
+.ab-lang a { color: var(--ab-ink-muted); text-decoration: none; }
+.ab-lang a:hover { color: var(--ab-link-hover); }
+.ab-lang .current { color: var(--accent); }
+
+/* ---------------- Cover hero (page 1 only) ---------------- */
+
+.hero {
+  position: relative;
+  min-height: calc(100svh - 3.4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4rem 1.25rem 5rem;
+  overflow: hidden;
+}
+.hero-watermark {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: min(120vmin, 900px);
+  height: min(120vmin, 900px);
+  opacity: 0.055;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero-kicker {
+  font-size: var(--fs-s);
+  text-transform: uppercase;
+  letter-spacing: 0.38em;
+  color: var(--accent);
+  margin: 0 0 1.6rem;
+}
+.hero-title { font-size: var(--fs-xxl); letter-spacing: 0.06em; }
+.hero-latin {
+  display: block;
+  font-size: var(--fs-l);
+  font-style: italic;
+  color: var(--ab-ink-muted);
+  letter-spacing: 0.05em;
+  margin-top: 0.7rem;
+  font-weight: 400;
+}
+.hero-intro {
+  max-width: 30rem;
+  margin: 2.2rem auto 0;
+  color: var(--ab-ink);
+}
+
+/* Chapter entry cards on the cover */
+.toc-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: min(54rem, 100%);
+  margin: 2.8rem auto 0;
+  padding: 0;
+  list-style: none;
+}
+.toc-cards li { margin: 0; }
+.toc-card {
+  display: block;
+  height: 100%;
+  padding: 1.3rem 1.2rem 1.4rem;
+  background: var(--ab-bg-raise);
+  border: 1px solid var(--ab-rule);
+  border-top: 2px solid var(--card-accent, var(--accent));
+  border-radius: 2px;
+  text-align: left;
+  text-decoration: none;
+  color: var(--ab-ink);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.toc-card:hover { border-color: var(--card-accent, var(--accent)); background: #2b2620; }
+.toc-cards li:nth-child(1) .toc-card { --card-accent: var(--accent-ch1); }
+.toc-cards li:nth-child(2) .toc-card { --card-accent: var(--accent-ch2); }
+.toc-cards li:nth-child(3) .toc-card { --card-accent: var(--accent-ch3); }
+.toc-num {
+  display: block;
+  font-size: var(--fs-s);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--card-accent, var(--accent));
+  margin-bottom: 0.55rem;
+}
+.toc-title { display: block; font-size: var(--fs-m); margin-bottom: 0.45rem; }
+.toc-desc { display: block; font-size: var(--fs-s); color: var(--ab-ink-muted); line-height: 1.6; }
+
+/* Scroll cue */
+.scroll-cue {
+  position: absolute;
+  inset: auto auto 1.6rem 50%;
+  transform: translateX(-50%);
+  color: var(--ab-ink-muted);
+  font-size: var(--fs-s);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+.scroll-cue::after {
+  content: "";
+  width: 10px; height: 10px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  animation: cue-bob 2.2s ease-in-out infinite;
+}
+.scroll-cue:hover { color: var(--ab-link-hover); }
+@keyframes cue-bob {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.7; }
+  50%      { transform: rotate(45deg) translate(3px, 3px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue::after { animation: none; }
+}
+
+/* ---------------- Chapter head (pages 2–3) ---------------- */
+
+.chapter-head {
+  background: #232730; /* fallback before color-mix */
+  background: color-mix(in oklab, var(--accent) 14%, var(--ab-bg));
+  padding: 8vw 1.25rem 4vw;
+  text-align: center;
+}
+.chapter-head .kicker { margin-bottom: 1.3rem; }
+.chapter-sub {
+  font-size: var(--fs-m);
+  font-style: italic;
+  color: var(--ab-ink-muted);
+  margin: 0.8rem 0 0;
+}
+
+/* ---------------- Sections ---------------- */
+
+main > section {
+  border-bottom: 1px solid var(--ab-rule);
+  padding: 4.5rem 1.25rem 5rem;
+}
+main > section:last-of-type { border-bottom: none; }
+
+.section-content { max-width: 36rem; margin-inline: auto; }
+.section-content.wide { max-width: 54rem; }
+
+.kicker {
+  font-size: var(--fs-s);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  color: var(--accent);
+  margin: 0 0 0.8rem;
+}
+
+/* Section opener emphasis — c82 .scaps, CJK-adapted */
+html[lang="en"] .opener { font-variant: small-caps; letter-spacing: 0.05em; }
+html[lang^="zh"] .opener { color: var(--accent); font-weight: 600; }
+
+/* Note block (usage caveats, experimental notices) */
+.note {
+  border-inline-start: 2px solid var(--accent);
+  background: var(--ab-bg-raise);
+  padding: 0.9rem 1.1rem;
+  margin: 1.4rem 0;
+  font-size: calc(var(--fs-b) * 0.92);
+  color: var(--ab-ink);
+}
+.note p:last-child, .note ul:last-child { margin-bottom: 0; }
+
+/* Experimental tag next to a heading */
+.tag-exp {
+  display: inline-block;
+  vertical-align: 0.25em;
+  margin-inline-start: 0.5em;
+  padding: 0.1em 0.55em;
+  border: 1px solid var(--ab-hairline);
+  border-radius: 2px;
+  font-size: var(--fs-s);
+  letter-spacing: 0.12em;
+  color: var(--ab-ink-muted);
+}
+
+/* ---------------- Figures ---------------- */
+
+figure { margin: 3rem auto; max-width: 54rem; }
+figure a { display: block; line-height: 0; }
+figure img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--ab-hairline);
+  border-radius: 2px;
+}
+figcaption {
+  text-align: center;
+  font-size: var(--fs-s);
+  color: var(--ab-ink-muted);
+  margin-top: 0.8rem;
+  line-height: 1.6;
+}
+
+.fig-placeholder {
+  aspect-ratio: 16 / 10;
+  border: 1px dashed var(--ab-hairline);
+  border-radius: 2px;
+  background: var(--ab-bg-raise);
+  display: grid;
+  place-items: center;
+}
+.fig-placeholder .ph-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--ab-ink-muted);
+  font-size: var(--fs-s);
+  letter-spacing: 0.15em;
+}
+.fig-placeholder svg { opacity: 0.45; }
+
+/* Engraved planet icon strip (design page) */
+.icon-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.6rem 2rem;
+  padding: 2.2rem 1.4rem;
+  background: var(--ab-bg-raise);
+  border: 1px solid var(--ab-hairline);
+  border-radius: 2px;
+}
+.icon-strip img { height: 52px; width: auto; }
+
+/* ---------------- Tables (library versions etc.) ---------------- */
+
+table { border-collapse: collapse; width: 100%; margin: 1.4rem 0; font-size: calc(var(--fs-b) * 0.92); }
+th, td { text-align: left; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--ab-rule); vertical-align: top; }
+th { font-weight: 600; color: var(--ab-ink-muted); font-size: var(--fs-s); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* ---------------- Source list ---------------- */
+
+.source-list { list-style: none; padding: 0; }
+.source-list li {
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--ab-rule);
+  font-size: calc(var(--fs-b) * 0.92);
+}
+.source-list li:last-child { border-bottom: none; }
+.source-list .src-note { color: var(--ab-ink-muted); }
+
+/* ---------------- Pager ---------------- */
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--ab-rule);
+}
+.pager a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 2.6rem 2rem;
+  text-decoration: none;
+  color: var(--ab-ink);
+  background: #2b2620; /* fallback */
+  background: color-mix(in oklab, var(--accent) 16%, var(--ab-bg));
+  transition: filter 0.15s ease;
+}
+.pager a:hover { filter: brightness(1.25); }
+.pager a.next { text-align: right; align-items: flex-end; border-inline-start: 1px solid var(--ab-rule); }
+.pager a:only-child { grid-column: 1 / -1; }
+.pager-label {
+  font-size: var(--fs-s);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: var(--ab-ink-muted);
+}
+.pager-title { font-size: var(--fs-m); }
+
+/* ---------------- Footer ---------------- */
+
+.ab-footer {
+  padding: 2.4rem 1.25rem 3rem;
+  text-align: center;
+  font-size: var(--fs-s);
+  color: var(--ab-ink-muted);
+}
+.ab-footer a { color: var(--ab-ink-muted); }
+.ab-footer a:hover { color: var(--ab-link-hover); }
+.ab-footer .sep { margin: 0 0.6em; opacity: 0.6; }
+
+/* ---------------- Responsive ---------------- */
+
+@media (max-width: 720px) {
+  /* Per user request: font and icon sizes stay FIXED across screen sizes —
+     no rem-base/hero-title/icon shrink here; only layout reflow remains. */
+  .ab-header { padding: 0.8rem 1rem; }
+  .ab-nav { gap: 0.8rem; flex-wrap: wrap; }
+
+  .toc-cards { grid-template-columns: 1fr; }
+
+  main > section { padding: 3rem 1rem 3.4rem; }
+  .chapter-head { padding: 14vw 1rem 8vw; }
+
+  .pager { grid-template-columns: 1fr; }
+  .pager a.next { border-inline-start: none; border-top: 1px solid var(--ab-rule); align-items: flex-start; text-align: left; }
+}

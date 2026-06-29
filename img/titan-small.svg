@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="162 348 16 16">
+<clipPath id="ti170_356"><circle cx="170" cy="356" r="8"/></clipPath>
+<g clip-path="url(#ti170_356)">
+<rect x="162" y="348" width="16" height="16" fill="#cf9846"/>
+<ellipse cx="170.0" cy="352.0" rx="8.8" ry="4.4" fill="#e6b466" opacity="0.5" transform="rotate(0 170.0 352.0)"/>
+<ellipse cx="170.0" cy="357.1" rx="7.9" ry="3.3" fill="#8a5e26" opacity="0.4" transform="rotate(0 170.0 357.1)"/>
+<path d="M170.0 348.0 A8 8 0 0 1 170.0 364.0 A6.9 8 0 0 0 170.0 348.0 Z" fill="#3a2a10" opacity="0.16"/>
+</g>
+<circle cx="170" cy="356" r="8" fill="none" stroke="#9a6e2e" stroke-width="0.6" opacity="0.7"/>
+</svg>

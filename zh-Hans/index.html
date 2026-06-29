@@ -1,4 +1,4 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><script>
 var r=new XMLHttpRequest();r.open('GET','../index.html',false);r.send();
-document.open();document.write(r.responseText.replace('<base href="/SubstellarAtlas/">','<base href="../">'));document.close();
+document.open();document.write(r.responseText.replace('<base href="/SubstellarAtlas/">','<base href="../">').replace('<html lang="zh">','<html lang="zh-Hans">').replace('<title>SubstellarAtlas</title>','<title>SubstellarAtlas | 星下点地图</title>').replace('content="SubstellarAtlas"','content="SubstellarAtlas | 星下点地图"').replace(/content="An open-source interactive visualization that projects the night sky onto Earth\."/g,'content="星图与地图相叠的交互式天文网站"'));document.close();
 </script></body></html>

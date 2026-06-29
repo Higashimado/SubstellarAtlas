@@ -313,7 +313,8 @@ function bootTimeControl() {
         const lunarDay = lunar.getDay();
         const phase = getLunarPhaseLabel_zh(lunarDay);
         const anchorKey = { 1: 'new', 8: 'first_quarter', 15: 'full', 23: 'last_quarter' };
-        const phaseKey = anchorKey[lunarDay] ||
+        const phaseKey =
+          anchorKey[lunarDay] ||
           (window.SunCalc && typeof moonPhaseKey === 'function'
             ? moonPhaseKey(SunCalc.getMoonIllumination(date).phase)
             : null);
@@ -555,7 +556,8 @@ function bootTimeControl() {
     // must come from the same map (via lab.phaseKey) rather than being
     // re-derived from the SunCalc fraction, which diverges from the calendar
     // anchor on boundary days and would produce a name/definition mismatch.
-    const _glossPhaseKey = lab.phaseKey ||
+    const _glossPhaseKey =
+      lab.phaseKey ||
       (typeof SunCalc !== 'undefined' && SunCalc.getMoonIllumination && typeof moonPhaseKey === 'function'
         ? moonPhaseKey(SunCalc.getMoonIllumination(d).phase)
         : null);

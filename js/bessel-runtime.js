@@ -242,7 +242,9 @@ const BesselRT = (() => {
       last = null;
     for (let k = 0; k < 24; k++) {
       const r = 0.5 * (lo + hi);
-      const g = fundamentalToGeo(b.x + r * ct, b.y + r * st, b);
+      const xi = b.x + r * ct,
+        eta = b.y + r * st;
+      const g = fundamentalToGeo(xi, eta, b);
       let inside = false;
       if (g) {
         const L1p = b.l1 - g.zeta * b.tan_f1;
@@ -543,6 +545,147 @@ const BesselRT = (() => {
     return arcs;
   }
 
+  // Live umbra/antumbra outline as a fillable [lat,lng] ring. The shadow boundary is
+  // exactly m = |L2'| in the fundamental plane — a circle of radius |L2'| about the axis
+  // (b.x, b.y), |L2'| = |b.l2 − ζ·tan_f2| barely varying across the ~30 km shadow. We
+  // parametrise that circle by ANGLE because it is defined for every azimuth, unlike the
+  // radial boundary search projectAzimuth whose r∈[0,2] bisection assumes the shadow is
+  // the interval [0, r_edge] — true only while the axis sits on the disc. At a sunset-
+  // terminus eclipse the axis grazes just off-disc, so "inside" becomes a thin middle
+  // band [r_enter, r_edge] that the power-of-two bisection hits-or-misses per azimuth, and
+  // the ring shreds into a sawtooth. Here we instead build the analytic (ξ,η) circle, clip
+  // it to Earth's disc (clipChainToDisc, exact ρ=1 roots) and close any grazing lens along
+  // the terminator — the same disc-clip + limb-close discipline the iso-magnitude lenses
+  // use. Returns a closed ring, or null when the shadow misses Earth entirely.
+  function umbraLensGeo(b, nAz, maxMercDeg) {
+    nAz = nAz || 256;
+    const TWO_PI = 2 * Math.PI;
+    const rUmbra = Math.abs(b.l2); // shadow radius at the limb (ζ=0), and fixed-point seed
+
+    // Analytic boundary circle in (ξ,η): the shadow edge is m = |L2'(ζ)|, solved by 4
+    // fixed-point passes (|L2'| moves <1% across the shadow, so it converges immediately).
+    const xy = new Array(nAz);
+    let anyOn = false,
+      anyOff = false,
+      maxRho2 = 0;
+    for (let i = 0; i < nAz; i++) {
+      const th = (TWO_PI * i) / nAz;
+      const ct = Math.cos(th),
+        st = Math.sin(th);
+      let r = rUmbra,
+        xi = 0,
+        eta = 0,
+        rho2 = 0;
+      for (let k = 0; k < 4; k++) {
+        xi = b.x + r * ct;
+        eta = b.y + r * st;
+        rho2 = xi * xi + eta * eta;
+        const zeta = rho2 < 1 ? Math.sqrt(1 - rho2) : 0;
+        r = Math.abs(b.l2 - zeta * b.tan_f2);
+      }
+      xy[i] = [xi, eta];
+      if (rho2 <= 1) anyOn = true;
+      else anyOff = true;
+      if (rho2 > maxRho2) maxRho2 = rho2;
+    }
+    if (!anyOn) return null; // shadow wholly off Earth (partial phase / no landfall)
+
+    // ONE inverse per lens, never mixed within a contour. Near the terminator the ellipsoid
+    // and spherical inverses sit the same ~perpendicular distance from the true curve but up
+    // to a few degrees apart ALONG it, so alternating them per vertex makes the boundary
+    // double back into 180° spikes. A deep on-disc umbra (well inside ρ=0.997, where the
+    // ellipsoid is both defined and tangent to the cached limits to ~metres) takes the
+    // ellipsoid; anything grazing the limb takes the spherical inverse throughout — smooth
+    // and defined everywhere on ρ=1, exactly as the iso-magnitude lenses do.
+    const useEllipsoid = !anyOff && maxRho2 <= 0.997 * 0.997;
+    const proj = useEllipsoid
+      ? (p) => {
+          const g = fundamentalToGeo(p[0], p[1], b);
+          return [g.lat, g.lng];
+        }
+      : (p) => {
+          const g = fundamentalToGeoSphere(p[0], p[1], b);
+          return [g.lat, g.lng];
+        };
+
+    // Mercator-adaptive densifier over an open (ξ,η) chain: bisect each segment IN (ξ,η)
+    // and re-project (never interpolate geo) until the on-map chord ≤ maxMercDeg. The
+    // boundary is locally straight in (ξ,η), so midpoints stay on the true curve.
+    const densifyXY = (chain) => {
+      const pj = chain.map((p) => ({ x: p, g: proj(p) }));
+      const out = [pj[0].g];
+      for (let i = 1; i < pj.length; i++) {
+        const A = pj[i - 1],
+          B = pj[i];
+        (function rec(ax, ag, bx, bg, depth) {
+          if (depth > 16) return;
+          if (Math.abs(ag[1] - bg[1]) > 180) return; // antimeridian: addPolyline splits it
+          if (mercatorChordDeg(ag[0], ag[1], bg[0], bg[1]) <= maxMercDeg) return;
+          const mx = [(ax[0] + bx[0]) / 2, (ax[1] + bx[1]) / 2];
+          const mg = proj(mx);
+          rec(ax, ag, mx, mg, depth + 1);
+          out.push(mg);
+          rec(mx, mg, bx, bg, depth + 1);
+        })(A.x, A.g, B.x, B.g, 0);
+        out.push(B.g);
+      }
+      return out;
+    };
+
+    // Axis well on the disc → the circle is a closed loop on the ground; fill it directly.
+    if (!anyOff) {
+      const closed = xy.slice();
+      closed.push(xy[0]);
+      return densifyXY(closed);
+    }
+
+    // Grazing: rotate so the chain starts off-disc, then clip to the disc. A circle meets
+    // the limb in ≤2 points, so the on-disc part is a single arc with both ends on ρ=1.
+    let off0 = 0;
+    for (let i = 0; i < nAz; i++) {
+      if (xy[i][0] * xy[i][0] + xy[i][1] * xy[i][1] > 1) {
+        off0 = i;
+        break;
+      }
+    }
+    const rot = new Array(nAz + 1);
+    for (let i = 0; i <= nAz; i++) rot[i] = xy[(off0 + i) % nAz];
+    const subs = clipChainToDisc(rot).filter((s) => s.length >= 2);
+    if (!subs.length) return null;
+    const arc = subs[0]; // (ξ,η) vertices, both ends exactly on ρ=1
+
+    // The two clip ends' limb angles bound the terminator that closes the lens. Walk ρ=1
+    // from the arc's end back to its start along the side INSIDE the shadow (limb point
+    // within rUmbra of the axis), so the closing curve is the true terminator, not a chord.
+    const thA = Math.atan2(arc[arc.length - 1][1], arc[arc.length - 1][0]);
+    const thStart = Math.atan2(arc[0][1], arc[0][0]);
+    const dccw = (((thStart - thA) % TWO_PI) + TWO_PI) % TWO_PI;
+    const mid = thA + dccw / 2;
+    const ccwInside = Math.hypot(b.x - Math.cos(mid), b.y - Math.sin(mid)) < rUmbra;
+    const thB = ccwInside ? thA + dccw : thA + dccw - TWO_PI;
+
+    // Densify the limb arc in angle with the same (spherical, in this grazing branch)
+    // inverse the shadow arc uses, so the lens closes with zero seam at the junction.
+    const projTh = (th) => proj([Math.cos(th), Math.sin(th)]);
+    const limb = [projTh(thA)];
+    (function rec(ta, pa, tb, pb, depth) {
+      if (depth > 16 || Math.abs(tb - ta) < 1e-6) return;
+      if (Math.abs(pa[1] - pb[1]) > 180) return;
+      if (mercatorChordDeg(pa[0], pa[1], pb[0], pb[1]) <= maxMercDeg) return;
+      const tm = 0.5 * (ta + tb),
+        pm = projTh(tm);
+      rec(ta, pa, tm, pm, depth + 1);
+      limb.push(pm);
+      rec(tm, pm, tb, pb, depth + 1);
+    })(thA, projTh(thA), thB, projTh(thB), 0);
+    limb.push(projTh(thB));
+
+    // Assemble: shadow arc (start→end) then the limb back (end→start). The arc's end and
+    // limb[0] are the same ρ=1 point, as are the limb's end and the arc's start, so drop
+    // the duplicate junction and let the polygon auto-close.
+    return densifyXY(arc).concat(limb.slice(1));
+  }
+
   // Marching squares on a generic uniform grid {x0,y0,step,nX,nY}. Returns an
   // array of [x1,y1,x2,y2] cell-edge segments at the iso `target`. Ported from
   // tools/lib/bessel.mjs:marchingSquares (lat/lng → generic x/y). Cells with any
@@ -717,6 +860,7 @@ const BesselRT = (() => {
     limbMagnitude,
     limbCrossings,
     terminatorArcs,
+    umbraLensGeo,
     marchingSquares,
     chainSegments,
     maxTurnDeg,

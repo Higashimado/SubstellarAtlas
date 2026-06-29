@@ -260,7 +260,15 @@ const Ecliptic = (() => {
     } else {
       _cullKey = GeoUtils.visibleWrapsFromBounds(_map).join(',');
     }
-    const _key = _tier + '|' + _cull + '|' + _cullKey + '|' + date.getTime();
+    // Day-veil visibility gates label casing (_adaptAt reads _dayMaskVisible),
+    // so it must be in the memo key — else toggling the veil with time/pan
+    // unchanged hits the early-return and leaves labels stuck in their bright
+    // daylight stroke against the now-dark map.
+    // Locale is in the key so a language switch (date/view unchanged) still
+    // rebuilds — the term/「黄道」 labels are I18n.t lookups, not just geometry.
+    const _loc = typeof I18n !== 'undefined' ? I18n.getLocale() : '';
+    const _key =
+      _tier + '|' + _cull + '|' + _cullKey + '|' + date.getTime() + '|' + (window._dayMaskVisible ? 1 : 0) + '|' + _loc;
     if (_key === _lastKey) return;
     _lastKey = _key;
 
