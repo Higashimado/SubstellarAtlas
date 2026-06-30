@@ -81,13 +81,25 @@ const GeoUtils = (() => {
     return { lat: decDeg, lng: lon };
   }
 
-  function skyObservation(raDeg, decDeg, date) {
+  function skyObservation(raDeg, decDeg, date, body) {
     const obs = window.currentObserverLatLng;
     if (!obs || typeof Astronomy === 'undefined') return null;
     try {
       const time = Astronomy.MakeTime(date);
       const observer = new Astronomy.Observer(obs.lat, obs.lng, 0);
-      const hor = Astronomy.Horizon(time, observer, raDeg / 15, decDeg, 'normal');
+      // A resolvable body (sun/moon/planet): take its topocentric apparent altitude
+      // via Equator (observer + of-date + aberration) → Horizon 'normal' (refraction),
+      // so the card matches the compass ray. This folds in horizontal parallax —
+      // ~0.9° for the Moon — which a geocentric altitude would miss. Fixed inputs
+      // (stars/DSOs, planetary moons) pass no body: a direction at infinity, taken
+      // straight to the horizon.
+      const hor =
+        body != null
+          ? (function () {
+              const equ = Astronomy.Equator(body, time, observer, true, true);
+              return Astronomy.Horizon(time, observer, equ.ra, equ.dec, 'normal');
+            })()
+          : Astronomy.Horizon(time, observer, raDeg / 15, decDeg, 'normal');
       return { alt: hor.altitude, az: hor.azimuth, observer: obs };
     } catch (e) {
       return null;
@@ -147,7 +159,7 @@ const GeoUtils = (() => {
     return dirs[Math.round((((az % 360) + 360) % 360) / 22.5) % 16];
   }
 
-  function buildSkyInfoHTML(raDeg, decDeg, date, _t) {
+  function buildSkyInfoHTML(raDeg, decDeg, date, _t, body) {
     if (!_t)
       _t = function (k) {
         return k;
@@ -155,7 +167,22 @@ const GeoUtils = (() => {
     date = date || (typeof TimeState !== 'undefined' ? TimeState.current : new Date());
     let html = '';
 
-    const sub = subStellarPoint(raDeg, decDeg, date);
+    // For a resolvable body the sub-point must use OF-DATE geocentric RA/Dec (rotate
+    // the EQJ vector to EQD) so it pairs with GAST inside subStellarPoint and lands
+    // where the body glyph is drawn; the raDeg/decDeg passed in are J2000 (catalog
+    // convention for the displayed RA/Dec rows) and would trail by ~0.4° precession.
+    let subRa = raDeg,
+      subDec = decDeg;
+    if (body != null) {
+      try {
+        const t = Astronomy.MakeTime(date);
+        const v = Astronomy.RotateVector(Astronomy.Rotation_EQJ_EQD(t), Astronomy.GeoVector(body, t, true));
+        const d = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        subRa = ((((Math.atan2(v.y, v.x) * 180) / Math.PI) % 360) + 360) % 360;
+        subDec = (Math.asin(v.z / d) * 180) / Math.PI;
+      } catch (_) {}
+    }
+    const sub = subStellarPoint(subRa, subDec, date);
     if (sub) {
       const ns = sub.lat >= 0 ? 'N' : 'S';
       const ew = sub.lng >= 0 ? 'E' : 'W';
@@ -187,16 +214,25 @@ const GeoUtils = (() => {
         '</div>';
     }
 
-    const obs = skyObservation(raDeg, decDeg, date);
+    const obs = skyObservation(raDeg, decDeg, date, body);
     if (obs) {
       let riseSetLine = '';
       let circumpolar = false;
       try {
         const aTime = Astronomy.MakeTime(date);
         const observer = new Astronomy.Observer(obs.observer.lat, obs.observer.lng, 0);
-        Astronomy.DefineStar(Astronomy.Body.Star2, raDeg / 15, decDeg, 1000);
-        const rise = Astronomy.SearchRiseSet(Astronomy.Body.Star2, observer, +1, aTime, 1);
-        const set = Astronomy.SearchRiseSet(Astronomy.Body.Star2, observer, -1, aTime, 1);
+        // Rise/set from the real body when resolvable — the Moon moves ~0.5°/h, so a
+        // frozen fixed-star at its current RA/Dec mistimes moonrise/set by tens of
+        // minutes. Stars/DSOs (no body) use the fixed-direction DefineStar path.
+        let rise, set;
+        if (body != null) {
+          rise = Astronomy.SearchRiseSet(body, observer, +1, aTime, 1);
+          set = Astronomy.SearchRiseSet(body, observer, -1, aTime, 1);
+        } else {
+          Astronomy.DefineStar(Astronomy.Body.Star2, raDeg / 15, decDeg, 1000);
+          rise = Astronomy.SearchRiseSet(Astronomy.Body.Star2, observer, +1, aTime, 1);
+          set = Astronomy.SearchRiseSet(Astronomy.Body.Star2, observer, -1, aTime, 1);
+        }
         if (!rise && !set) {
           circumpolar = true;
         } else if (rise && set) {

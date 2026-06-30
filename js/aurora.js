@@ -299,6 +299,13 @@ const Aurora = (() => {
     return _valid;
   }
 
+  // CSS hex colour for a probability value (%), matching the rendered ramp.
+  function colorFor(prob) {
+    const [r, g, b] = _rampColor(prob);
+    const h = (v) => Math.round(v).toString(16).padStart(2, '0');
+    return '#' + h(r) + h(g) + h(b);
+  }
+
   return {
     init,
     addTo,
@@ -310,5 +317,6 @@ const Aurora = (() => {
     getAuroraProbAt,
     getObservationTime,
     isValidForCurrentTime,
+    colorFor,
   };
 })();

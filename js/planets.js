@@ -18,14 +18,6 @@ const Planets = (() => {
     return r * DEG;
   }
 
-  function jd(date) {
-    return date.getTime() / 86400000 + 2440587.5;
-  }
-
-  function gmst(j) {
-    return 280.46061837 + 360.98564736629 * (j - 2451545.0);
-  }
-
   // ---- Body Position (RA / Dec in Radians) via Astronomy Engine ----
   function bodyPosition(date, body) {
     const t = Astronomy.MakeTime(date);
@@ -56,18 +48,25 @@ const Planets = (() => {
   }
 
   // ---- Geographic Sub-Point (the Point on Earth Where the Body Is at Zenith) ----
+  // EQJ geocentric vector → of-date ground sub-point. The vector is EQJ (J2000
+  // equator); it MUST be rotated to EQD (true equator of date) before its right
+  // ascension is paired with apparent sidereal time (GAST). Pairing a raw J2000 RA
+  // with of-date sidereal time trails the true sub-point by the precession
+  // accumulated since J2000 (~0.4° by 2026) — the same EQJ/of-date frame mismatch the
+  // day-veil terminator path corrects in map.js via _GAST + an EQJ→EQD rotation.
+  function _eqjVecToSubPoint(date, vec) {
+    const t = Astronomy.MakeTime(date);
+    const v = Astronomy.RotateVector(Astronomy.Rotation_EQJ_EQD(t), vec);
+    const d = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    const gast = Astronomy.SiderealTime(t) * 15; // apparent sidereal time (deg) — pairs with EQD α
+    const raw = deg(Math.atan2(v.y, v.x)) - gast;
+    // distAU: geocentric distance — the body canvas paints far→near by this so the
+    // nearer body occludes (the Moon, nearest, always lands on top).
+    return { lat: deg(Math.asin(v.z / d)), lng: ((raw % 360) + 360) % 360, distAU: d };
+  }
+
   function bodySubPoint(date, body) {
-    const j = jd(date);
-    const g = gmst(j);
-    const { alpha, delta, dist } = bodyPosition(date, body);
-    const raw = deg(alpha) - g;
-    return {
-      lat: deg(delta),
-      lng: ((raw % 360) + 360) % 360,
-      // Geocentric distance (AU) — the body canvas paints far→near by this so
-      // the nearer body occludes (the Moon, nearest, always lands on top).
-      distAU: dist,
-    };
+    return _eqjVecToSubPoint(date, Astronomy.GeoVector(body, Astronomy.MakeTime(date), true));
   }
 
   // ---- Anti-Body Sub-Point (Antipode of bodySubPoint) ----
@@ -151,6 +150,21 @@ const Planets = (() => {
     moon: 3474,
   };
 
+  // Disk (body-only) diameters for apparent angular diameter display. Saturn's
+  // ring-inclusive BODY_DIAM_KM gives the correct icon footprint, but the
+  // apparent diameter shown in the almanac should be the bare spheroid — 120536 km
+  // is Saturn's IAU equatorial radius × 2.
+  const BODY_DISK_DIAM_KM = {
+    mercury: 4879,
+    venus: 12104,
+    mars: 6779,
+    jupiter: 139822,
+    saturn: 120536,
+    uranus: 50724,
+    neptune: 49244,
+    moon: 3474,
+  };
+
   // Major-moon diameters (km), used to size engraving disks by real angular
   // extent through the same footprint chain as the planets — so a moon disk is
   // always proportional to, and smaller than, its parent planet's.
@@ -177,6 +191,19 @@ const Planets = (() => {
     const v = Astronomy.GeoVector(body, t, true);
     const distAU = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
     return footprintKmFromDist(BODY_DIAM_KM[bodyId] || 1, distAU);
+  }
+
+  function bodyAngularDiamArcsec(body, bodyId, date) {
+    try {
+      const t = Astronomy.MakeTime(date);
+      const v = Astronomy.GeoVector(body, t, true);
+      const distAU = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+      const diamKm = BODY_DISK_DIAM_KM[bodyId];
+      if (!diamKm || !distAU) return NaN;
+      return (diamKm / (distAU * AU_KM)) * 206265;
+    } catch (_) {
+      return NaN;
+    }
   }
 
   // ---- Disk Rasterization Cap ----
@@ -401,7 +428,7 @@ const Planets = (() => {
       get name() {
         return _t('planet.uranus');
       },
-      symbol: '♅',
+      symbol: '⛢',
       color: '#9fc9dc',
       labelColor: '#bfd7e2',
     },
@@ -1142,15 +1169,12 @@ const Planets = (() => {
   // Start loading the TASS 1.7 table immediately; state() stays null until it lands.
   if (typeof SaturnMoons !== 'undefined') SaturnMoons.init();
 
-  // Geocentric EQJ vector → sub-point, mirroring bodySubPoint (which is locked
-  // to an Astronomy.Body). Returns the geocentric distance (AU) too, so callers
-  // get Δ for the magnitude model without a second pass over the vector.
+  // Geocentric EQJ vector → sub-point for the planetary moons (Galilean / Saturnian),
+  // delegating to the shared of-date converter so the EQJ→EQD + GAST framing matches
+  // bodySubPoint. Returns the geocentric distance (AU) too, so callers get Δ for the
+  // magnitude model without a second pass over the vector.
   function vecSubPoint(date, vec) {
-    const d = Math.sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-    const alpha = Math.atan2(vec.y, vec.x);
-    const delta = Math.asin(vec.z / d);
-    const raw = deg(alpha) - gmst(jd(date));
-    return { lat: deg(delta), lng: ((raw % 360) + 360) % 360, distAU: d };
+    return _eqjVecToSubPoint(date, vec);
   }
 
   // One pass over a Galilean moon's geometry, shared by the renderer, the info
@@ -1525,7 +1549,7 @@ const Planets = (() => {
     mars: '♂',
     jupiter: '♃',
     saturn: '♄',
-    uranus: '♅',
+    uranus: '⛢',
     neptune: '♆',
   };
 
@@ -1728,6 +1752,7 @@ const Planets = (() => {
     const decDeg = deg(bp.delta);
 
     let magRow = '',
+      diamRow = '',
       phaseRow = '',
       illumRow = '',
       libRow = '',
@@ -1835,6 +1860,20 @@ const Planets = (() => {
           distAU.toFixed(3) +
           ' AU</span></div>';
       }
+      const _SUN_DIAM_KM = 1391400;
+      const _diskKm = id === 'sun' ? _SUN_DIAM_KM : BODY_DISK_DIAM_KM[id];
+      if (_diskKm) {
+        const _arcsec = (_diskKm / (distAU * AU_KM)) * (180 / Math.PI) * 3600;
+        const _diamVal = _arcsec >= 60 ? (_arcsec / 60).toFixed(1) + '′' : _arcsec.toFixed(1) + '″';
+        diamRow =
+          '<div class="info-row"><span class="label"' +
+          _glossAttr('apparent_diameter') +
+          '>' +
+          _t('sky.angular_diam') +
+          '</span><span class="value">' +
+          _diamVal +
+          '</span></div>';
+      }
       try {
         const ecl = Astronomy.Ecliptic(v);
         if (ecl && Number.isFinite(ecl.elon) && Number.isFinite(ecl.elat)) {
@@ -1873,7 +1912,7 @@ const Planets = (() => {
         '</span><span class="value">5778 K</span></div>';
     }
 
-    const skyInfo = GeoUtils.buildSkyInfoHTML(raDeg, decDeg, date, _t);
+    const skyInfo = GeoUtils.buildSkyInfoHTML(raDeg, decDeg, date, _t, body);
     return (
       '<div class="star-panel">' +
       '<h2 class="star-name">' +
@@ -1903,6 +1942,7 @@ const Planets = (() => {
       elonRow +
       elatRow +
       magRow +
+      diamRow +
       spectralRow +
       tempRow +
       phaseRow +
@@ -1966,6 +2006,7 @@ const Planets = (() => {
     updateMarkerSizes,
     CONFIGS,
     bodySubPoint,
+    bodyAngularDiamArcsec,
     getSearchLatLng,
     getBodyRaDec,
     getMoonIds,

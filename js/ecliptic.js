@@ -20,6 +20,12 @@
  * Auto-shown when Sun or Planets layer is on, hidden when both off
  * (wired in map.js, not here).
  *
+ * Interactive ruler: hovering a tick label reveals the next time the Sun
+ * reaches that solar-term longitude (clicking jumps there, selects the Sun,
+ * and opens its card — out-of-range jumps clamp to the time wall). Hovering a
+ * 1° micro-tick (z≥6) shows its longitude. The micro-tick hit bands sit on a
+ * low pane ('ecliptic-hit', z=190) so stars/bodies keep click priority.
+ *
  * Depends on globals: L (Leaflet), GeoUtils.subStellarPoint, I18n,
  * MAP_LNG_WEST / MAP_LNG_EAST (from map.js).
  */
@@ -77,6 +83,51 @@ const Ecliptic = (() => {
   let _map = null;
   let _group = null;
   let _lastKey = '';
+
+  // Transient hover read-outs (micro-tick longitude labels) live in their own
+  // group so they can be cleared independently of the memoized _group rebuild.
+  let _hoverGroup = null;
+
+  // ---- Solar-Term Time (hover/jump easter egg) ----
+  // A tick at ecliptic longitude λ marks a solar term; the Sun sits over the
+  // tick exactly when its apparent longitude equals λ. Hovering a tick label
+  // reveals when that next happens, and clicking jumps there.
+  function _fmtFullTime(date) {
+    if (!date || isNaN(date.getTime()) || typeof TimeState === 'undefined') return '';
+    const parts = new Intl.DateTimeFormat('en', {
+      timeZone: TimeState.timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).formatToParts(date);
+    const g = (t) => parts.find((p) => p.type === t).value;
+    // ISO calendar order with '-' separators.
+    return `${g('year')}-${g('month')}-${g('day')} ${g('hour')}:${g('minute')}:${g('second')}`;
+  }
+
+  // Next time (from the current app time) the Sun reaches longitude λ. AE's
+  // SearchSunLongitude is a narrow-window root finder, not a wide scanner — a
+  // year-wide window straddles the longitude sawtooth's ±180° wrap and skips the
+  // crossing (285°/小寒 returned null). So estimate the arrival from the Sun's
+  // current longitude at the mean rate, then root a tight window around it; ±5 days
+  // covers the ≤2-day error from the Sun's uneven perihelion-to-aphelion speed.
+  function _nextTermDate(lambda) {
+    if (typeof Astronomy === 'undefined' || !Astronomy.SearchSunLongitude || !Astronomy.SunPosition) {
+      return null;
+    }
+    const start = typeof TimeState !== 'undefined' ? TimeState.current : new Date();
+    const target = ((lambda % 360) + 360) % 360;
+    let ahead = (target - Astronomy.SunPosition(start).elon) % 360;
+    if (ahead < 0) ahead += 360;
+    const DAY_MS = 86400000;
+    const estStart = new Date(start.getTime() + (ahead / (360 / 365.2422) - 5) * DAY_MS);
+    const t = Astronomy.SearchSunLongitude(target, estStart, 11);
+    return t ? t.date : null;
+  }
 
   // ---- (β, λ) → (RA, Dec) ----
   const _eps = OBLIQUITY_DEG * RAD;
@@ -156,6 +207,12 @@ const Ecliptic = (() => {
     return z >= 5;
   }
 
+  // Micro-tick hover read-outs need a comfortable hit band; only worth wiring
+  // once zoomed in far enough that the 1° ticks are visually separable.
+  function _showMicroHit(z) {
+    return z >= 6;
+  }
+
   // ---- Tangent at a Lambda Offset (degrees), using centerPts0 ----
   // Returns the angle (deg) of the curve's tangent in screen-y-inverted frame.
   // The unwrapped table spans 360° monotonically — wrapping the index modulo
@@ -231,6 +288,66 @@ const Ecliptic = (() => {
     });
   }
 
+  // ---- Tick-Label Interactivity ----
+  // The marker's icon div is 0×0; the visible text overflows it, so the hit
+  // target must be the span itself. The pane is pointer-events:none, so we flip
+  // just this span back to auto — bodies and the map keep their click priority.
+  function _wireTermLabel(marker, lambda) {
+    // The icon DOM exists only once the marker is on the map. At the layer's
+    // toggle-on site map.js calls update() (this rebuild) *before* addTo(map),
+    // so getElement() is null here on first show — defer to the marker's 'add'.
+    const el = marker.getElement();
+    if (!el) {
+      marker.once('add', () => _wireTermLabel(marker, lambda));
+      return;
+    }
+    const span = el.querySelector('span');
+    if (!span) return;
+    span.style.pointerEvents = 'auto';
+    span.style.cursor = 'pointer';
+    // Date line lives in a sibling element so the label span's bounding box (and
+    // therefore its transform-origin) never changes on hover — no position drift.
+    let dateSpan = null;
+    span.addEventListener('mouseenter', () => {
+      const d = _nextTermDate(lambda);
+      if (!d) return;
+      if (!dateSpan) {
+        dateSpan = document.createElement('span');
+        // Inherit visual style from the label span, then shift one line down in
+        // the rotated coordinate frame (translateY in the ecliptic-local frame).
+        dateSpan.style.cssText = span.style.cssText;
+        dateSpan.style.pointerEvents = 'none';
+        dateSpan.style.cursor = 'default';
+        dateSpan.style.transform = span.style.transform + ' translateY(18px)';
+        el.appendChild(dateSpan);
+      }
+      dateSpan.textContent = _fmtFullTime(d);
+      dateSpan.style.display = '';
+    });
+    span.addEventListener('mouseleave', () => {
+      if (dateSpan) dateSpan.style.display = 'none';
+    });
+    span.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const d = _nextTermDate(lambda);
+      if (!d || typeof TimeState === 'undefined') return;
+      // setTime clamps past-2049 jumps to the time wall on its own.
+      TimeState.setTime(d);
+      if (typeof CelestialSearch !== 'undefined' && CelestialSearch.select) {
+        CelestialSearch.select({ kind: 'sun', refKey: 'sun' }, _map);
+      }
+    });
+  }
+
+  // Transient brass longitude read-out beside a hovered 1° micro-tick — same
+  // brass styling/tangent/offset as a tick label, so it reads as one of the ruler.
+  function _showMicroLabel(lam, centerPts0, off, date) {
+    _hoverGroup.clearLayers();
+    const here = centerPts0[Math.max(0, Math.min(SAMPLES - 1, Math.round(lam / STEP_DEG)))];
+    const angle = _tangentAtLambda(centerPts0, lam);
+    _placeTickLabel(here[0], here[1] + off, angle, lam + '°', date).addTo(_hoverGroup);
+  }
+
   // ---- Rebuild ----
   function _rebuild(date) {
     const _z = _map ? _map.getZoom() : 0;
@@ -273,6 +390,7 @@ const Ecliptic = (() => {
     _lastKey = _key;
 
     _group.clearLayers();
+    if (_hoverGroup) _hoverGroup.clearLayers();
 
     const topPts0 = _unwrap(_projectTable(_railTop, date));
     const botPts0 = _unwrap(_projectTable(_railBot, date));
@@ -378,7 +496,8 @@ const Ecliptic = (() => {
         const angle = _tangentAtLambda(centerPts0, t.lambda);
         for (const off of offsets) {
           if (!_inView(tickCenterLng + off)) continue;
-          _placeTickLabel(tickCenterLat, tickCenterLng + off, angle, labelText, date).addTo(_group);
+          const mk = _placeTickLabel(tickCenterLat, tickCenterLng + off, angle, labelText, date).addTo(_group);
+          _wireTermLabel(mk, t.lambda);
         }
       }
     }
@@ -425,15 +544,33 @@ const Ecliptic = (() => {
         const microStyle = Object.assign({}, MICRO_TICK, {
           color: GeoUtils.lerpHex(COLOR_BRASS, COLOR_BRASS_DAY, microT),
         });
+        const wireHit = _showMicroHit(z);
         for (const off of offsets) {
           if (!_inView((lngT + lngB) / 2 + off)) continue;
-          L.polyline(
-            [
-              [spT.lat, lngT + off],
-              [spB.lat, lngB + off],
-            ],
-            microStyle
-          ).addTo(_group);
+          const pts = [
+            [spT.lat, lngT + off],
+            [spB.lat, lngB + off],
+          ];
+          L.polyline(pts, microStyle).addTo(_group);
+          // Transparent fat hit band on a low pane (z=190): bodies/stars sit
+          // above it, so they always win an overlapping point; the band only
+          // catches hover where nothing celestial is on top. Hover-only —
+          // bubblingMouseEvents lets clicks fall through to the map.
+          if (wireHit) {
+            L.polyline(pts, {
+              pane: 'ecliptic-hit',
+              color: '#000',
+              opacity: 0,
+              weight: HitWidths.MIN,
+              interactive: true,
+              bubblingMouseEvents: true,
+              noClip: true,
+              smoothFactor: 0,
+            })
+              .addTo(_group)
+              .on('mouseover', () => _showMicroLabel(lam, centerPts0, off, date))
+              .on('mouseout', () => _hoverGroup.clearLayers());
+          }
         }
       }
     }
@@ -465,7 +602,15 @@ const Ecliptic = (() => {
       map.getPane('ecliptic-labels').style.zIndex = '623';
       map.getPane('ecliptic-labels').style.pointerEvents = 'none';
     }
+    // Micro-tick hover hit bands live below the deep-sky/star band so stars and
+    // bodies keep click/hover priority on overlapping points (see _rebuild).
+    if (!map.getPane('ecliptic-hit')) {
+      map.createPane('ecliptic-hit');
+      map.getPane('ecliptic-hit').style.zIndex = '190';
+      map.getPane('ecliptic-hit').style.pointerEvents = 'none';
+    }
     _group = L.layerGroup();
+    _hoverGroup = L.layerGroup().addTo(map);
   }
 
   function update(date) {
@@ -479,6 +624,7 @@ const Ecliptic = (() => {
 
   function removeFrom(map) {
     if (_group && map.hasLayer(_group)) map.removeLayer(_group);
+    if (_hoverGroup) _hoverGroup.clearLayers();
   }
 
   function isOn() {

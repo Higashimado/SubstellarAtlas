@@ -25,6 +25,12 @@ const LightPollution = (() => {
     { zone: '7b', min: 46.77, max: Infinity, color: '#f2f2f2' },
   ];
 
+  // Tile cache: key `${tileX}_${tileY}_${year}` → ungzipped Int8Array.
+  // Caching the raw tile (not a single decoded point) lets sampleAt serve any
+  // coordinate within that 5°×5° tile on subsequent mouse-moves without a round-trip.
+  const _tileCache = new Map();
+  const _tilePending = new Set();
+
   function mod(n, m) {
     return ((n % m) + m) % m;
   }
@@ -48,6 +54,79 @@ const LightPollution = (() => {
 
   function brightnessToMpsas(br) {
     return 22.0 - 2.5 * Math.log10(1.0 + br);
+  }
+
+  // Decode one point from a cached tile's Int8Array by cumulative delta sum.
+  // ix and iy are 1-based grid indices (1..600). Cost: O(ix + iy) ≈ O(1200).
+  function _valueAt(data, ix, iy) {
+    const firstNumber = 128 * data[0] + data[1];
+    let change = 0;
+    for (let i = 1; i < iy; i++) change += data[600 * i + 1];
+    for (let i = 1; i < ix; i++) change += data[600 * (iy - 1) + 1 + i];
+    return firstNumber + change;
+  }
+
+  function _tileKey(tileX, tileY, year) {
+    return `${tileX}_${tileY}_${year}`;
+  }
+
+  function _decodeResult(data, ix, iy, lat, lng, year) {
+    const compressed = _valueAt(data, ix, iy);
+    const ratio = compressed2full(compressed);
+    const mpsas = brightnessToMpsas(ratio);
+    const zi = zoneInfo(ratio);
+    return { lat, lng, outOfBounds: false, ratio, mpsas, zone: zi.zone, zoneColor: zi.color, year };
+  }
+
+  function _tileCoords(lat, lng) {
+    const lonFromDateLine = mod(lng + 180.0, 360.0);
+    const latFromStart = lat + 65.0;
+    const tileX = Math.floor(lonFromDateLine / 5.0) + 1;
+    const tileY = Math.floor(latFromStart / 5.0) + 1;
+    const ix = Math.round(120 * (lonFromDateLine - 5.0 * (tileX - 1) + 1 / 240));
+    const iy = Math.round(120 * (latFromStart - 5.0 * (tileY - 1) + 1 / 240));
+    return { tileX, tileY, ix, iy };
+  }
+
+  // Synchronous point sample. Returns a result object on cache hit, null on miss
+  // (a background fetch is triggered so the next mouse-move will hit the cache).
+  // Returns null also for out-of-bounds locations.
+  function sampleAt(lat, lng, year) {
+    const lonFromDateLine = mod(lng + 180.0, 360.0);
+    const latFromStart = lat + 65.0;
+    const tileX = Math.floor(lonFromDateLine / 5.0) + 1;
+    const tileY = Math.floor(latFromStart / 5.0) + 1;
+    if (tileY < 1 || tileY > 28) return null;
+
+    const key = _tileKey(tileX, tileY, year);
+    const cached = _tileCache.get(key);
+    if (cached) {
+      const ix = Math.round(120 * (lonFromDateLine - 5.0 * (tileX - 1) + 1 / 240));
+      const iy = Math.round(120 * (latFromStart - 5.0 * (tileY - 1) + 1 / 240));
+      return _decodeResult(cached, ix, iy, lat, lng, year);
+    }
+
+    // Cache miss — trigger background fetch so subsequent mouse-moves get a hit.
+    if (!_tilePending.has(key)) {
+      _tilePending.add(key);
+      const url = `${BINARY_BASE}/${year}/binary_tile_${tileX}_${tileY}.dat.gz`;
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = 'arraybuffer';
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          try {
+            _tileCache.set(key, new Int8Array(pako.ungzip(xhr.response)));
+          } catch (_) {}
+        }
+        _tilePending.delete(key);
+      };
+      xhr.onerror = function () {
+        _tilePending.delete(key);
+      };
+      xhr.open('GET', url, true);
+      xhr.send();
+    }
+    return null;
   }
 
   /**
@@ -74,6 +153,14 @@ const LightPollution = (() => {
     const ix = Math.round(120 * (lonFromDateLine - 5.0 * (tileX - 1) + 1 / 240));
     const iy = Math.round(120 * (latFromStart - 5.0 * (tileY - 1) + 1 / 240));
 
+    // Serve from cache if available — avoids a second network round-trip.
+    const key = _tileKey(tileX, tileY, year);
+    const cached = _tileCache.get(key);
+    if (cached) {
+      cb(null, _decodeResult(cached, ix, iy, lat, lng, year));
+      return;
+    }
+
     const url = `${BINARY_BASE}/${year}/binary_tile_${tileX}_${tileY}.dat.gz`;
 
     const xhr = new XMLHttpRequest();
@@ -85,32 +172,8 @@ const LightPollution = (() => {
       }
       try {
         const data = new Int8Array(pako.ungzip(xhr.response));
-
-        const firstNumber = 128 * data[0] + data[1];
-
-        let change = 0;
-        for (let i = 1; i < iy; i++) {
-          change += data[600 * i + 1];
-        }
-        for (let i = 1; i < ix; i++) {
-          change += data[600 * (iy - 1) + 1 + i];
-        }
-
-        const compressed = firstNumber + change;
-        const ratio = compressed2full(compressed);
-        const mpsas = brightnessToMpsas(ratio);
-        const zi = zoneInfo(ratio);
-
-        cb(null, {
-          lat,
-          lng,
-          outOfBounds: false,
-          ratio,
-          mpsas,
-          zone: zi.zone,
-          zoneColor: zi.color,
-          year,
-        });
+        _tileCache.set(key, data);
+        cb(null, _decodeResult(data, ix, iy, lat, lng, year));
       } catch (e) {
         cb(e);
       }
@@ -122,5 +185,17 @@ const LightPollution = (() => {
     xhr.send();
   }
 
-  return { fetch, ZONES, zoneInfo, roundBrightness, brightnessToMpsas };
+  // True when a tile fetch for this point is in flight (sampleAt returned null
+  // for an in-bounds location). Lets callers distinguish "tile pending" from
+  // "genuinely out of coverage" without duplicating the bounds check.
+  function isPending(lat, lng, year) {
+    const lonFromDateLine = mod(lng + 180.0, 360.0);
+    const latFromStart = lat + 65.0;
+    const tileX = Math.floor(lonFromDateLine / 5.0) + 1;
+    const tileY = Math.floor(latFromStart / 5.0) + 1;
+    if (tileY < 1 || tileY > 28) return false;
+    return _tilePending.has(_tileKey(tileX, tileY, year));
+  }
+
+  return { fetch, sampleAt, isPending, ZONES, zoneInfo, roundBrightness, brightnessToMpsas };
 })();

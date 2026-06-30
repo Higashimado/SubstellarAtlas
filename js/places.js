@@ -538,8 +538,11 @@ const Places = (() => {
           if (typeof window.enterLocationMode === 'function') {
             window.enterLocationMode(r.lat, r.lng);
           }
-          // Match the locate button and place-name/coords click: a chosen search
-          // result should also lock the observer and open the compass.
+
+          // Lock + show the compass immediately (marker placed just above). The compass
+          // follows the flyTo via its own map 'move' subscription and re-syncs on moveend,
+          // so deferring to moveend is unnecessary — and unsafe: a near-zero flyTo may
+          // never fire moveend, leaving the observer unlocked (no c=1 in the permalink).
           if (typeof Observer !== 'undefined' && Observer.lockAndShowCompass) {
             Observer.lockAndShowCompass();
           }

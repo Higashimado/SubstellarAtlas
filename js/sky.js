@@ -1386,6 +1386,11 @@ const Sky = (() => {
         scale: _starScale,
         clickMagCutoff: _lastClickCutoff,
       }),
+      // Bodies (sun/moon/planets) are the foreground layer; if one sits under the
+      // click, it owns it. Cross-querying the body canvas here (rather than racing the
+      // shared _skyClickConsumed flag, whose handler order isn't guaranteed) keeps a
+      // star hidden behind the Sun's disc/glow from stealing the click.
+      priorityHitTest: (point) => typeof window.__bodyCanvasHitTest === 'function' && window.__bodyCanvasHitTest(point),
       onBeforeRedraw: (zoom) => {
         // Lock sprite scale to the zoom the canvas is about to paint at,
         // including fractional mid-flyTo zooms (zoomend hasn't fired yet). Plain

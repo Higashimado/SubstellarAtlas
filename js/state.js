@@ -70,11 +70,12 @@ const AppState = (() => {
     if (on.length) p.set('layers', on.join(','));
 
     // ---- Interaction ----
-    _emitParam(p, 'c');
-
+    // Compass lock flag (c) is appended as a third comma-separated field of obs
+    // (obs=lat,lng,1) so the two semantically coupled values share one URL key.
     if (window.currentObserverLatLng) {
       const o = window.currentObserverLatLng;
-      p.set('obs', o.lat.toFixed(4) + ',' + o.lng.toFixed(4));
+      const locked = _params['c'] && _params['c'].get ? _params['c'].get() : null;
+      p.set('obs', o.lat.toFixed(4) + ',' + o.lng.toFixed(4) + (locked === '1' ? ',1' : ''));
     }
 
     _emitParam(p, 'panel');
@@ -149,17 +150,22 @@ const AppState = (() => {
     }
 
     // ---- Interaction ----
-    // obs must be applied before c (compass attaches to the observer marker)
-    // and before panel (right sidebar renders observer-dependent content).
+    // obs must be applied before the compass flag (compass attaches to the
+    // observer marker) and before panel (right sidebar renders observer content).
+    // The compass lock flag is the optional third field: obs=lat,lng[,1].
+    // Standalone c=1 is accepted as a fallback for old-format permalinks.
     const obs = p.get('obs');
     if (obs) {
-      const [oLat, oLng] = obs.split(',').map(Number);
+      const parts = obs.split(',');
+      const oLat = Number(parts[0]);
+      const oLng = Number(parts[1]);
       if (!isNaN(oLat) && !isNaN(oLng) && typeof window.enterLocationMode === 'function') {
         window.enterLocationMode(oLat, oLng);
       }
+      if (parts[2] === '1' && _params['c'] && _params['c'].set) _params['c'].set('1');
     }
 
-    if (p.get('c') === '1' && _params['c'] && _params['c'].set) _params['c'].set('1');
+    if (!obs && p.get('c') === '1' && _params['c'] && _params['c'].set) _params['c'].set('1');
 
     const panel = p.get('panel');
     if (panel && _params['panel'] && _params['panel'].set) _params['panel'].set(panel);

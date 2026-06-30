@@ -63,6 +63,23 @@ const Sidebar = (() => {
   const contentRight = () => document.getElementById('sidebar-right-content');
   const elFor = (side) => (side === 'left' ? elLeft() : elRight());
 
+  // Sync the chevron handle visibility for both sidebars from live state.
+  // Left handle follows the eclipse layer; right handle follows the observer pin / lock.
+  // A handle also stays visible whenever its panel is still open, so the user can
+  // always collapse a panel that lost its content (e.g. clearing the observer) —
+  // the handle then rides out with the slide and is hidden only after the panel
+  // has fully retracted (see the transitionend hook in wireToggles).
+  // Called at every state-change that could flip either condition.
+  function _updateHandleVisibility() {
+    const eclipseOn = typeof AppState !== 'undefined' && AppState.isLayerOn && AppState.isLayerOn('eclipse');
+    const pinOn =
+      !!window.currentObserverLatLng || !!(typeof Observer !== 'undefined' && Observer.isLocked && Observer.isLocked());
+    const leftEl = elLeft();
+    const rightEl = elRight();
+    if (leftEl) leftEl.dataset.hasContent = eclipseOn || sidebarState.left.open ? 'true' : 'false';
+    if (rightEl) rightEl.dataset.hasContent = pinOn || sidebarState.right.open ? 'true' : 'false';
+  }
+
   function setSidebar(side, open, source = 'auto') {
     const aside = elFor(side);
     if (!aside) return;
@@ -122,6 +139,7 @@ const Sidebar = (() => {
       sidebarState[meta.defaultPanel].manualOverride = null;
       setSidebar(meta.defaultPanel, false, 'auto');
     }
+    _updateHandleVisibility();
   }
 
   // Wire toggle handles after DOM ready
@@ -131,6 +149,18 @@ const Sidebar = (() => {
         const aside = e.currentTarget.closest('.sidebar');
         const side = aside.classList.contains('sidebar--left') ? 'left' : 'right';
         setSidebar(side, !sidebarState[side].open, 'manual');
+      });
+    });
+
+    // Once a panel finishes its collapse slide, re-evaluate handle visibility so a
+    // content-less, now-retracted panel finally drops its handle. The handle stayed
+    // visible through the slide (the open OR-clause above) so the user could trigger
+    // the collapse in the first place.
+    ['left', 'right'].forEach((side) => {
+      const aside = elFor(side);
+      if (!aside) return;
+      aside.addEventListener('transitionend', (e) => {
+        if (e.propertyName === 'transform' && !sidebarState[side].open) _updateHandleVisibility();
       });
     });
   }
@@ -693,6 +723,11 @@ const Sidebar = (() => {
           map.flyTo([lat, targetLng], zoom, { animate: !reduced });
         }
         if (typeof window.enterLocationMode === 'function') window.enterLocationMode(lat, lng);
+        // Lock + show the compass immediately (places marker first, above). The compass
+        // follows the flyTo via its own map 'move' subscription and re-syncs on moveend,
+        // so deferring to moveend is unnecessary — and unsafe: a near-zero flyTo may
+        // never fire moveend, leaving the observer unlocked (no c=1 in the permalink,
+        // no compass on reload), which is exactly the "locate didn't open compass" bug.
         if (typeof Observer !== 'undefined' && Observer.lockAndShowCompass) Observer.lockAndShowCompass();
         Sidebar.show(lat, lng);
         if (typeof LightPollution !== 'undefined' && LightPollution.fetch) {
@@ -1825,8 +1860,7 @@ const Sidebar = (() => {
           <button class="eclipse-load-more eclipse-load-later" type="button">${_t('eclipse.list.load_later')}</button>
         </div>`;
     }
-    // First population of the left sidebar — reveal its chevron handle.
-    elLeft().dataset.hasContent = 'true';
+    _updateHandleVisibility();
     return content;
   }
 
@@ -2223,8 +2257,7 @@ const Sidebar = (() => {
       _lat = lat;
       _lng = lng;
       render(lat, lng, TimeState.current);
-      // First population of the right sidebar — reveal its chevron handle.
-      elRight().dataset.hasContent = 'true';
+      _updateHandleVisibility();
       setSidebar('right', true, 'auto');
     },
 
@@ -2254,6 +2287,7 @@ const Sidebar = (() => {
     // State machine API (called by map layer toggles, time slider, etc.)
     setSidebar,
     onLayerToggle,
+    updateHandleVisibility: _updateHandleVisibility,
 
     hide() {
       setSidebar('right', false, 'auto');

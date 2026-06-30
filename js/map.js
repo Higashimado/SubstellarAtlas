@@ -1392,6 +1392,8 @@ function initMap() {
   // ║  80    ║  day-brighten (soft-light blend on day-side basemap) ║
   // ║100–199 ║  overlayPane(101) shadowPane(102) lp(150)            ║
   // ║        ║  body-vis(180) celestial-body visible-range fills   ║
+  // ║        ║  ecliptic-hit(190) micro-tick hover bands (below     ║
+  // ║        ║    stars so bodies/stars keep click priority)        ║
   // ║200–299 ║  aurora(200)                                        ║
   // ║300–399 ║  clouds(300)                                        ║
   // ║500–599 ║  Deep-sky icon/frame layer (all BELOW twilight mask) ║
@@ -1536,6 +1538,12 @@ function initMap() {
   map.getPane('body-canvas').style.pointerEvents = 'none';
   _bodyCanvas = new BodyCanvasLayer({ paneName: 'body-canvas' });
   _bodyCanvas.addTo(map);
+
+  // Foreground hit-test bridge: the body canvas (z=719) paints sun/moon/planets ABOVE
+  // the star canvas, so a click landing on a body's disc/glow belongs to that body even
+  // when a star sits behind it. The star layer queries this before claiming a click
+  // (see sky.js `priorityHitTest`), so a star hidden under the Sun never steals it.
+  window.__bodyCanvasHitTest = (point) => !!(_bodyCanvas && _bodyCanvas.hitTest(point, 12));
 
   // ---- Custom Pane for LP Tiles (Band 100–199: Map Fundamentals) ----
   map.createPane('lp');
@@ -4565,31 +4573,53 @@ function initMap() {
     }
   });
 
-  // ---- Aurora Hover Readout (Cursor Tooltip Over the Oval) ----
-  // The aurora pane has pointer-events:none, so the map still receives
-  // mousemove. We show a tooltip only while the layer is on and the cursor is
-  // over modelled aurora (sampled probability ≥ 1%).
-  let _auroraTip = null,
-    _auroraTipShown = false;
-  function _hideAuroraTip() {
-    if (_auroraTipShown && _auroraTip) {
-      map.closeTooltip(_auroraTip);
-    }
-    _auroraTipShown = false;
+  // ---- Hover Readout: Aurora + Light Pollution ----
+  // Both panes have pointer-events:none, so the map receives mousemove.
+  // When one or both layers are active, a single tooltip shows the merged readout.
+  let _hoverTip = null,
+    _hoverTipShown = false;
+
+  function _hideHoverTip() {
+    if (_hoverTipShown && _hoverTip) map.closeTooltip(_hoverTip);
+    _hoverTipShown = false;
   }
+
   map.on('mousemove', (e) => {
-    if (typeof Aurora === 'undefined' || !Aurora.isOn()) {
-      _hideAuroraTip();
-      return;
-    }
-    const v = Aurora.sampleAt(e.latlng.lat, e.latlng.lng);
-    if (v == null || v < 1) {
-      _hideAuroraTip();
-      return;
-    }
     const _t = typeof I18n !== 'undefined' ? I18n.t.bind(I18n) : (k) => k;
-    if (!_auroraTip) {
-      _auroraTip = L.tooltip({
+    const lines = [];
+
+    // Order the lines to match the layer stack (LP sits above aurora): the
+    // light-pollution reading is the top line, aurora probability the bottom.
+    if (_lpLayerActive && typeof LightPollution !== 'undefined' && LightPollution.sampleAt) {
+      const lp = LightPollution.sampleAt(e.latlng.lat, e.latlng.lng, 2024);
+      if (lp === null && LightPollution.isPending(e.latlng.lat, e.latlng.lng, 2024)) {
+        // Tile fetch in flight — wait for the next mouse-move that will hit the
+        // cache, so LP and aurora appear together instead of one beat apart.
+        _hideHoverTip();
+        return;
+      }
+      if (lp && !lp.outOfBounds) {
+        const zoneSpan = `<span style="color:var(--accent-gold)">${lp.zone}</span>`;
+        lines.push(_t('tooltip.lp.level', { zone: zoneSpan }));
+      }
+    }
+
+    const auroraOn = typeof Aurora !== 'undefined' && Aurora.isOn();
+    if (auroraOn) {
+      const v = Aurora.sampleAt(e.latlng.lat, e.latlng.lng);
+      if (v != null && v >= 1) {
+        const probSpan = `<span style="color:var(--accent-gold)">${Math.round(v)}%</span>`;
+        lines.push(_t('tooltip.aurora.prob', { prob: probSpan }));
+      }
+    }
+
+    if (!lines.length) {
+      _hideHoverTip();
+      return;
+    }
+
+    if (!_hoverTip) {
+      _hoverTip = L.tooltip({
         direction: 'top',
         offset: [0, -4],
         opacity: 0.95,
@@ -4597,13 +4627,13 @@ function initMap() {
         sticky: true,
       });
     }
-    _auroraTip.setContent(_t('tooltip.aurora.prob', { prob: Math.round(v) })).setLatLng(e.latlng);
-    if (!_auroraTipShown) {
-      map.openTooltip(_auroraTip);
-      _auroraTipShown = true;
+    _hoverTip.setContent(lines.join('<br>')).setLatLng(e.latlng);
+    if (!_hoverTipShown) {
+      map.openTooltip(_hoverTip);
+      _hoverTipShown = true;
     }
   });
-  map.on('mouseout', _hideAuroraTip);
+  map.on('mouseout', _hideHoverTip);
 
   // Expose subsolar helper for the compass (current sun direction line). A distinct
   // name avoids shadowing the script-level `function computeSubsolarPoint` —

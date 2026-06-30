@@ -454,6 +454,8 @@ const SkyCanvasLayer =
 
         _onMapClick: function (ev) {
           if (!this.options.onClick) return;
+          // A foreground layer (e.g. the body canvas) may own this click — yield if so.
+          if (this.options.priorityHitTest && this.options.priorityHitTest(ev.containerPoint)) return;
           const target = this.hitTest(ev.containerPoint, 12);
           if (target) {
             window._skyClickConsumed = true;
@@ -463,6 +465,7 @@ const SkyCanvasLayer =
 
         _onMapContextMenu: function (ev) {
           if (!this.options.onContextMenu) return;
+          if (this.options.priorityHitTest && this.options.priorityHitTest(ev.containerPoint)) return;
           const target = this.hitTest(ev.containerPoint, 12);
           if (target) {
             window._skyClickConsumed = true;

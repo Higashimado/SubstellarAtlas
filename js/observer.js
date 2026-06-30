@@ -226,6 +226,16 @@ const Observer = (() => {
 
   // Move or create the observer marker and update the global latlng.
   function place(lat, lng) {
+    // Snap to the world copy nearest the current view. The map spans -200°…+520°,
+    // so callers may pass a raw lng (geolocation, place search, a permalink's obs=
+    // normalized to [-180,180)) that sits a full wrap away from the on-screen copy —
+    // placing the marker there would render it (and the whole compass) off-screen.
+    // A map click already arrives in the view's copy, so this is a no-op there.
+    if (_map) {
+      const viewLng = _map.getCenter().lng;
+      lng += 360 * Math.round((viewLng - lng) / 360);
+    }
+
     // Relocating the observer invalidates every locked great-circle line and
     // pinned azimuth line (both anchored to the old point) — clear them. A double-
     // click both relocates and locks, so this is also the "release" channel.
@@ -262,6 +272,7 @@ const Observer = (() => {
 
     window.currentObserverLatLng = { lat, lng };
     if (typeof TimeState !== 'undefined') TimeState.setTime(TimeState.current);
+    if (typeof Sidebar !== 'undefined' && Sidebar.updateHandleVisibility) Sidebar.updateHandleVisibility();
 
     // Allow map.js to react (e.g. dismiss any active altitude-contour layer).
     if (typeof _onPlace === 'function') _onPlace(lat, lng);
@@ -278,16 +289,19 @@ const Observer = (() => {
     if (typeof TimeState !== 'undefined') TimeState.setTime(TimeState.current);
     _compassClear();
     if (typeof AppState !== 'undefined') AppState.touch();
+    if (typeof Sidebar !== 'undefined' && Sidebar.updateHandleVisibility) Sidebar.updateHandleVisibility();
   }
 
   function lock() {
     _locked = true;
     _updateMarkerIcon();
+    if (typeof Sidebar !== 'undefined' && Sidebar.updateHandleVisibility) Sidebar.updateHandleVisibility();
   }
 
   function unlock() {
     _locked = false;
     _updateMarkerIcon();
+    if (typeof Sidebar !== 'undefined' && Sidebar.updateHandleVisibility) Sidebar.updateHandleVisibility();
   }
 
   function isLocked() {
@@ -439,6 +453,20 @@ const Observer = (() => {
 
     // Initialise the compass after the map and pane are ready.
     _compassInit(map);
+
+    // Register the compass permalink param here, not at module load: observer.js
+    // is loaded before state.js, so AppState is undefined at module-eval time and a
+    // top-level registration would silently no-op (leaving c=1 links unable to
+    // restore the compass). init() runs during initMap, after state.js has defined
+    // AppState and before applyFromURL, so the param is live when the URL is read.
+    if (typeof AppState !== 'undefined') {
+      AppState.registerParam('c', {
+        get: () => (isLocked() ? '1' : null),
+        set: (v) => {
+          if (v === '1') lockAndShowCompass();
+        },
+      });
+    }
   }
 
   // ---- Compass Renderer ----
@@ -640,11 +668,19 @@ const Observer = (() => {
   // (or null) and segs is drawTrace-ready point arrays.
   function computeMoonArc(obs, date, aeObs) {
     const Moon = Astronomy.Body.Moon;
-    const up = bodyAzAlt(Moon, date, aeObs).alt > 0;
+
+    // Determine up/down via event ordering rather than geometric centre altitude.
+    // SearchRiseSet uses apparent upper-limb at −0.833°, so a centre-alt check
+    // would disagree during the ~5 min window when the limb has risen but the
+    // centre is still below zero, causing the arc to jump to the next day.
+    const lastRise = searchRiseSet(Moon, aeObs, +1, date, -2);
+    const lastSet = searchRiseSet(Moon, aeObs, -1, date, -2);
+    const up = !!lastRise && (!lastSet || lastRise.date > lastSet.date);
+
     let mRise, mSet;
     if (up) {
-      // Up now: bracket the current arc — last rise (search backwards), next set.
-      mRise = searchRiseSet(Moon, aeObs, +1, date, -2);
+      // Up now: last rise already found above; search forward for the next set.
+      mRise = lastRise;
       mSet = searchRiseSet(Moon, aeObs, -1, date, 2);
     } else {
       // Down now: show the next arc — next rise, then its following set.
@@ -1992,12 +2028,24 @@ const Observer = (() => {
       // Far-end label inputs (per spec; one locked body at a time). Azimuth is the
       // observer→sub-point bearing.
       const azR = Math.round(_initialBearing(obs.lat, obs.lng, sub.lat, sub.lng));
-      // Elevation: angular altitude of the body above the observer's horizon.
+      // Elevation: report the body's apparent topocentric altitude — the value the
+      // compass ray shows. A resolvable body goes through Equator/Horizon 'normal',
+      // which folds in horizontal parallax (~0.9° for the Moon); the observer→sub-point
+      // central angle would give the geocentric altitude, off by enough to round a
+      // whole degree. Stars/DSOs and planetary moons (no Astronomy.Body, negligible
+      // parallax) fall back to that central angle + refraction.
       const _D = Math.PI / 180;
-      const _sinAlt =
-        Math.sin(obs.lat * _D) * Math.sin(sub.lat * _D) +
-        Math.cos(obs.lat * _D) * Math.cos(sub.lat * _D) * Math.cos((sub.lng - obs.lng) * _D);
-      const gcAlt = Math.round(Math.asin(Math.max(-1, Math.min(1, _sinAlt))) / _D);
+      const _aeBody = spec.kind === 'body' ? Astronomy.Body[spec.id.charAt(0).toUpperCase() + spec.id.slice(1)] : null;
+      let gcAlt;
+      if (_aeBody != null) {
+        gcAlt = Math.round(bodyAzAlt(_aeBody, date, aeObserver(obs)).alt);
+      } else {
+        const _sinAlt =
+          Math.sin(obs.lat * _D) * Math.sin(sub.lat * _D) +
+          Math.cos(obs.lat * _D) * Math.cos(sub.lat * _D) * Math.cos((sub.lng - obs.lng) * _D);
+        const _geomAlt = Math.asin(Math.max(-1, Math.min(1, _sinAlt))) / _D;
+        gcAlt = Math.round(_geomAlt + Astronomy.Refraction('normal', _geomAlt));
+      }
       // Below the horizon (el<0) the body isn't visible from the observer, so the
       // whole line reads one notch fainter than a line pointing at a visible body.
       const elFactor = gcAlt < 0 ? GC_BELOW_HORIZON_FACTOR : 1;
@@ -2955,15 +3003,6 @@ const Observer = (() => {
     _clearLockedLines();
     window.currentObserverLatLng = null;
     clearCompass();
-  }
-
-  if (typeof AppState !== 'undefined') {
-    AppState.registerParam('c', {
-      get: () => (isLocked() ? '1' : null),
-      set: (v) => {
-        if (v === '1') lockAndShowCompass();
-      },
-    });
   }
 
   return { init, place, clear, lock, unlock, isLocked, lockAndShowCompass, toggleGreatCircleTo };

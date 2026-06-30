@@ -204,61 +204,97 @@ const _INNER_GE_FRAC = 0.7; // inner planet "well placed" = elongation ≥ 0.7×
 function _planetObserveWindow(body, observer, grid) {
   // Grid: [{ ms, astroTime, sunAlt }] solar-noon → next solar-noon, 15-min steps.
   const alt = grid.map((g) => _bodyAltAt(body, observer, g.astroTime));
-  const ok = (i) => alt[i] > _ALMANAC_FLOOR_DEG && grid[i].sunAlt < _ALMANAC_DARK_DEG;
 
-  // Longest contiguous observable run (the night sits mid-grid; no wrap needed).
-  let bestS = -1,
-    bestE = -1,
-    runS = -1;
-  for (let i = 0; i < grid.length; i++) {
-    if (ok(i)) {
-      if (runS < 0) runS = i;
-      if (i - runS > bestE - bestS) {
-        bestS = runS;
-        bestE = i;
+  // Precise civil dusk/dawn via SearchAltitude — exact crossings, no grid approximation.
+  // Anchor BOTH searches at the grid's noon start (grid[0].ms): the grid spans
+  // noon→noon, so the dark interval we want is this evening's dusk through the NEXT
+  // morning's dawn. Anchoring at local midnight (noon − 12 h) instead made the
+  // ascending dawn search resolve to the SAME morning — hours before the grid even
+  // begins — producing an inverted [dusk, dawn] window that no evening body could
+  // intersect, so every planet fell through to "—".
+  const searchAnchor = new Date(grid[0].ms);
+  const dusk = _searchSunAltitude(observer, -1, searchAnchor, _ALMANAC_DARK_DEG);
+  const dawn = _searchSunAltitude(observer, +1, searchAnchor, _ALMANAC_DARK_DEG);
+  const duskMs = dusk ? dusk.getTime() : null;
+  const dawnMs = dawn ? dawn.getTime() : null;
+
+  // Bail early if no dark sky exists today (polar summer / midnight sun).
+  const hasDark = duskMs !== null || dawnMs !== null || grid.some((g) => g.sunAlt < _ALMANAC_DARK_DEG);
+  if (!hasDark) {
+    const everUp = alt.some((a) => a > _ALMANAC_FLOOR_DEG);
+    return { window: null, peakAlt: NaN, reason: everUp ? 'no_dark' : 'below_horizon' };
+  }
+
+  // Dark interval bounds: use SearchAltitude results when available; fall back to
+  // full grid extent for polar night (sun perpetually below threshold → always dark).
+  const darkStartMs = duskMs !== null ? duskMs : grid[0].ms;
+  const darkEndMs = dawnMs !== null ? dawnMs : grid[grid.length - 1].ms;
+
+  // Body above-horizon intervals: detect alt sign changes in the coarse 15-min grid,
+  // then 1-min sub-scan each 15-min bracket to pin the crossing to ±1 min. Only
+  // the bracket cells (≤ 15 evals each, 1–2 brackets typical) are densified — not
+  // the full grid — so the cost is ~96 coarse + ~30 fine evals per body.
+  function findCrossing(msA, msB, rising) {
+    // rising=true: return the first minute in [msA, msB] where body is above floor.
+    // rising=false: return the last such minute (body sets within this bracket).
+    let result = rising ? msB : msA;
+    for (let ms = msA; ms <= msB; ms += 60000) {
+      const a = _bodyAltAt(body, observer, Astronomy.MakeTime(new Date(ms)));
+      if (rising && a > _ALMANAC_FLOOR_DEG) {
+        result = ms;
+        break;
       }
-    } else {
-      runS = -1;
+      if (!rising && a > _ALMANAC_FLOOR_DEG) result = ms;
+    }
+    return result;
+  }
+
+  const rises = [],
+    sets = [];
+  for (let i = 1; i < grid.length; i++) {
+    const wasUp = alt[i - 1] > _ALMANAC_FLOOR_DEG;
+    const isUp = alt[i] > _ALMANAC_FLOOR_DEG;
+    if (!wasUp && isUp) rises.push(findCrossing(grid[i - 1].ms, grid[i].ms, true));
+    if (wasUp && !isUp) sets.push(findCrossing(grid[i - 1].ms, grid[i].ms, false));
+  }
+
+  // Body already up at grid start or still up at end: add boundary anchors so
+  // the first/last interval is properly paired.
+  if (alt[0] > _ALMANAC_FLOOR_DEG) rises.unshift(grid[0].ms);
+  if (alt[grid.length - 1] > _ALMANAC_FLOOR_DEG) sets.push(grid[grid.length - 1].ms);
+
+  // Pair interleaved rises with sets to form above-horizon intervals.
+  const intervals = [];
+  for (let i = 0; i < Math.min(rises.length, sets.length); i++) {
+    if (rises[i] < sets[i]) intervals.push({ rMs: rises[i], sMs: sets[i] });
+  }
+
+  // Longest intersection of each body interval with the dark window.
+  let bestWindow = null,
+    bestLen = 0;
+  for (const iv of intervals) {
+    const winStart = Math.max(iv.rMs, darkStartMs);
+    const winEnd = Math.min(iv.sMs, darkEndMs);
+    if (winEnd > winStart && winEnd - winStart > bestLen) {
+      bestLen = winEnd - winStart;
+      bestWindow = { start: new Date(winStart), end: new Date(winEnd) };
     }
   }
-  if (bestS < 0) {
-    // No window — classify WHY, so the UI can show a precise '—' reason rather
-    // than a catch-all. Priority: never-up (body-specific) → no-dark-tonight
-    // (global) → up-only-in-daylight (near solar conjunction).
+
+  if (!bestWindow) {
     const everUp = alt.some((a) => a > _ALMANAC_FLOOR_DEG);
-    const hasDark = grid.some((g) => g.sunAlt < _ALMANAC_DARK_DEG);
-    const reason = !everUp ? 'below_horizon' : !hasDark ? 'no_dark' : 'daylight_only';
+    const reason = !everUp ? 'below_horizon' : 'daylight_only';
     return { window: null, peakAlt: NaN, reason };
   }
 
+  // Peak altitude: 1-min scan within the observable window.
   let peakAlt = -Infinity;
-  for (let i = bestS; i <= bestE; i++) peakAlt = Math.max(peakAlt, alt[i]);
+  for (let ms = bestWindow.start.getTime(); ms <= bestWindow.end.getTime(); ms += 60000) {
+    const a = _bodyAltAt(body, observer, Astronomy.MakeTime(new Date(ms)));
+    if (a > peakAlt) peakAlt = a;
+  }
 
-  // Refine each edge: interpolate the binding constraint between the boundary
-  // sample (inside the run) and its outside neighbour to a minute-level time.
-  const startMs = _refineEdge(grid, alt, bestS, -1);
-  const endMs = _refineEdge(grid, alt, bestE, +1);
-  return { window: { start: new Date(startMs), end: new Date(endMs) }, peakAlt, reason: null };
-}
-
-// Linear-interpolate the moment the observability boundary is crossed between
-// grid[inIdx] (observable) and its neighbour in `dir` (outside, or off-grid).
-// Picks whichever constraint (altitude→floor or sun→dark) actually flips.
-function _refineEdge(grid, alt, inIdx, dir) {
-  const outIdx = inIdx + dir;
-  if (outIdx < 0 || outIdx >= grid.length) return grid[inIdx].ms; // run touches grid end
-  const a0 = alt[inIdx],
-    a1 = alt[outIdx];
-  const s0 = grid[inIdx].sunAlt,
-    s1 = grid[outIdx].sunAlt;
-  const fracs = [];
-  if (a0 > _ALMANAC_FLOOR_DEG !== a1 > _ALMANAC_FLOOR_DEG && a0 !== a1)
-    fracs.push((a0 - _ALMANAC_FLOOR_DEG) / (a0 - a1));
-  if (s0 < _ALMANAC_DARK_DEG !== s1 < _ALMANAC_DARK_DEG && s0 !== s1) fracs.push((s0 - _ALMANAC_DARK_DEG) / (s0 - s1));
-  // The binding crossing is the one nearest the inside sample (smallest frac).
-  const valid = fracs.filter((x) => x >= 0 && x <= 1);
-  const f = valid.length ? Math.min(...valid) : 0;
-  return grid[inIdx].ms + (Number.isFinite(f) ? f : 0) * (grid[outIdx].ms - grid[inIdx].ms);
+  return { window: bestWindow, peakAlt, reason: null };
 }
 
 // Magnitude of this apparition's nearest greatest elongation for an inner planet
@@ -330,10 +366,17 @@ function getBodyAlmanac(lat, lng, date) {
       // daylight (e.g. a thin crescent). Show the up-interval that contains, or
       // next follows, the current time so it stays coherent with the planets'
       // "tonight" windows rather than a stale earlier-today interval.
-      const upNow = getBodyAltNow(cfg.body, observer, date) > 0;
+      //
+      // Use event ordering rather than geometric centre altitude to avoid the
+      // ~5 min window where the apparent limb has risen (per SearchRiseSet at
+      // −0.833°) but the centre is still below zero, which would misclassify
+      // the moon as "down" and display the next arc instead of the current one.
+      const lastRise = _searchRiseSet(cfg.body, observer, +1, date, -1.5);
+      const lastSet = _searchRiseSet(cfg.body, observer, -1, date, -1.5);
+      const upNow = !!lastRise && (!lastSet || lastRise > lastSet);
       let rise, set;
       if (upNow) {
-        rise = _searchRiseSet(cfg.body, observer, +1, date, -1.5); // last rise before now
+        rise = lastRise; // already found above
         set = _searchRiseSet(cfg.body, observer, -1, date, +1.5); // next set after now
       } else {
         rise = _searchRiseSet(cfg.body, observer, +1, date, +1.5); // next rise
@@ -361,6 +404,11 @@ function getBodyAlmanac(lat, lng, date) {
       reason = w.reason || null;
     }
 
+    const diam =
+      typeof Planets !== 'undefined' && Planets.bodyAngularDiamArcsec
+        ? Planets.bodyAngularDiamArcsec(cfg.body, cfg.id, date)
+        : NaN;
+
     return {
       id: cfg.id,
       name: cfg.name,
@@ -368,6 +416,7 @@ function getBodyAlmanac(lat, lng, date) {
       window,
       peakAlt,
       mag,
+      diam, // apparent angular diameter in arcseconds (Saturn = bare spheroid, not rings)
       reason, // null when a window exists; else why it is N/A (drives the '—' tooltip)
       hasWindow: !!window,
       // Gold-highlight only when the body both has an observable window AND is well

@@ -312,12 +312,15 @@ body {
   width: 100px;
 } /* body name (fits es "Mercurio") */
 .body-almanac-table thead th:nth-child(2) {
-  width: 100px;
+  width: 86px;
   text-align: center;
 } /* observe window — header sits on the "–" */
 .body-almanac-table thead th:nth-child(3) {
   width: 64px;
 } /* visual magnitude */
+.body-almanac-table thead th:nth-child(4) {
+  width: 52px;
+} /* apparent angular diameter */
 .body-almanac-table thead th:last-child {
   width: 64px;
 } /* peak altitude (right edge aligns with twilight table) */
@@ -336,6 +339,7 @@ body {
    centre, directly under the centred header (no padding hack; cf. satellite passes). */
 .body-almanac-table .ba-win,
 .body-almanac-table .ba-mag,
+.body-almanac-table .ba-diam,
 .body-almanac-table .ba-alt {
   text-align: right;
   color: var(--fg-muted);
@@ -355,6 +359,7 @@ body {
 }
 .body-almanac-table tr.body-observable .ba-win,
 .body-almanac-table tr.body-observable .ba-mag,
+.body-almanac-table tr.body-observable .ba-diam,
 .body-almanac-table tr.body-observable .ba-alt {
   color: var(--accent-gold);
 }

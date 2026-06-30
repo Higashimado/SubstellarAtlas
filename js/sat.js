@@ -31,8 +31,8 @@ const Sat = (() => {
   const TLE_FRESH_DAYS = 7; // SGP4 trust window: epoch ± this many days
   const TLE_FRESH_MS = TLE_FRESH_DAYS * 86400000;
 
-  const TRACK_STEPS = 360;
-  const TRACK_STEP_SEC = 15;
+  const TRACK_STEPS = 720;
+  const TRACK_STEP_SEC = 7.5;
 
   const RAD2DEG = 180 / Math.PI;
   const DEG2RAD = Math.PI / 180;

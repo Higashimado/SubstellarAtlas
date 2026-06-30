@@ -594,39 +594,86 @@ function bootTimeControl() {
     syncPlayBtn(TimeState.isPlaying()); // playback may have auto-stopped at the edge
   });
 
-  // ---- Jump Buttons (incl. Now) ----
-  document.querySelectorAll('.rail-jump[data-jump]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const jump = btn.dataset.jump;
-      if (jump === 'now') {
-        TimeState.stopPlayback();
-        syncPlayBtn(false);
-        TimeState.now();
-        return;
+  // ---- Hold-To-Repeat ----
+  // Shared press-and-hold: fire once on pointerdown, then after HOLD_DELAY repeat at
+  // REPEAT_MS until the pointer releases/cancels/leaves. Used by both the time-field
+  // steppers and the bottom-bar jump buttons. `fire(btn)` returning false suppresses
+  // the repeat (one-shot controls like "Now"). Keyboard activation reports detail 0,
+  // so it fires once via click; pointer-driven clicks are ignored since pointerdown
+  // already fired — this keeps keyboard support without double-firing on mouse/touch.
+  const HOLD_DELAY = 400,
+    REPEAT_MS = 80;
+  function attachHoldRepeat(container, selector, fire) {
+    let timer = null,
+      interval = null;
+    const stop = () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+      timer = interval = null;
+    };
+
+    container.addEventListener('pointerdown', (e) => {
+      const btn = e.target.closest(selector);
+      if (!btn || !container.contains(btn)) return;
+      e.preventDefault(); // suppress text selection and the synthetic mouse click
+      if (fire(btn) === false) return; // fire first (immediate feedback); one-shot → no repeat
+      try {
+        btn.setPointerCapture(e.pointerId);
+      } catch (_) {
+        // ignore — capture is a nicety for tracking the hold, not required to fire
       }
-      const m = jump.match(/^([+-])(\d+)([ymwdh])$/);
-      if (!m) return;
-      const sign = m[1] === '+' ? 1 : -1;
-      const amount = parseInt(m[2], 10) * sign;
-      switch (m[3]) {
-        case 'y':
-          TimeState.adjustYears(amount);
-          break;
-        case 'm':
-          TimeState.adjustMonths(amount);
-          break;
-        case 'w':
-          TimeState.adjustDays(amount * 7);
-          break;
-        case 'd':
-          TimeState.adjustDays(amount);
-          break;
-        case 'h':
-          TimeState.adjustHours(amount);
-          break;
-      }
+      timer = setTimeout(() => {
+        interval = setInterval(() => fire(btn), REPEAT_MS);
+      }, HOLD_DELAY);
     });
-  });
+    container.addEventListener('pointerup', (e) => {
+      stop();
+      e.target.closest(selector)?.blur();
+    });
+    container.addEventListener('pointercancel', stop);
+    container.addEventListener('pointerleave', (e) => {
+      if (e.target.closest(selector)) stop();
+    });
+    container.addEventListener('click', (e) => {
+      const btn = e.target.closest(selector);
+      if (btn && container.contains(btn) && e.detail === 0) fire(btn);
+    });
+  }
+
+  // ---- Jump Buttons (incl. Now) ----
+  // Returns false for the one-shot "Now" (and no-op) so attachHoldRepeat won't repeat it.
+  function _railJump(jump) {
+    if (jump === 'now') {
+      TimeState.stopPlayback();
+      syncPlayBtn(false);
+      TimeState.now();
+      return false;
+    }
+    const m = jump.match(/^([+-])(\d+)([ymwdh])$/);
+    if (!m) return false;
+    const sign = m[1] === '+' ? 1 : -1;
+    const amount = parseInt(m[2], 10) * sign;
+    switch (m[3]) {
+      case 'y':
+        TimeState.adjustYears(amount);
+        break;
+      case 'm':
+        TimeState.adjustMonths(amount);
+        break;
+      case 'w':
+        TimeState.adjustDays(amount * 7);
+        break;
+      case 'd':
+        TimeState.adjustDays(amount);
+        break;
+      case 'h':
+        TimeState.adjustHours(amount);
+        break;
+    }
+  }
+
+  const railRow = document.querySelector('.rail-row2');
+  if (railRow) attachHoldRepeat(railRow, '.rail-jump[data-jump]', (btn) => _railJump(btn.dataset.jump));
 
   // ---- Narrow-Screen Drawer: collapse/expand the timeline + extra controls ----
   // The `.rail-expanded` class only has a visual effect at ≤768px (see the CSS
@@ -795,38 +842,8 @@ function bootTimeControl() {
     });
   });
 
-  // Delegated stepper clicks + long-press repeat.
-  // First fire on pointerdown; after HOLD_DELAY ms start repeating at REPEAT_MS.
-  const HOLD_DELAY = 400,
-    REPEAT_MS = 80;
-  let _stepTimer = null,
-    _stepInterval = null;
-  function _stepStop() {
-    clearTimeout(_stepTimer);
-    clearInterval(_stepInterval);
-    _stepTimer = _stepInterval = null;
-  }
-
-  fieldsBox.addEventListener('pointerdown', (e) => {
-    const btn = e.target.closest('.tc-step');
-    if (!btn) return;
-    e.preventDefault(); // prevent text selection and ghost click
-    const unit = btn.dataset.unit,
-      dir = parseInt(btn.dataset.dir, 10);
-    _step(unit, dir);
-    btn.setPointerCapture(e.pointerId);
-    _stepTimer = setTimeout(() => {
-      _stepInterval = setInterval(() => _step(unit, dir), REPEAT_MS);
-    }, HOLD_DELAY);
-  });
-  fieldsBox.addEventListener('pointerup', (e) => {
-    _stepStop();
-    e.target.closest('.tc-step')?.blur();
-  });
-  fieldsBox.addEventListener('pointercancel', _stepStop);
-  fieldsBox.addEventListener('pointerleave', (e) => {
-    if (e.target.closest('.tc-step')) _stepStop();
-  });
+  // Delegated stepper press-and-hold (see attachHoldRepeat under Jump Buttons).
+  attachHoldRepeat(fieldsBox, '.tc-step', (btn) => _step(btn.dataset.unit, parseInt(btn.dataset.dir, 10)));
 
   // Accessible labels for the fields + steppers (re-applied on locale change).
   const _FIELD_KEY = { y: 'year', mo: 'month', d: 'day', h: 'hour', mi: 'minute', s: 'second' };
