@@ -6,6 +6,8 @@
   <img src="../docs/demo/world_map.png" width="100%">
 </p>
 
+**Sito web**: https://higashimado.github.io/SubstellarAtlas/
+
 Substellar Atlas è una visualizzazione costruita sul concetto di *punto sottostellare*. La sfera celeste viene proiettata sulla superficie della Terra, e le due vengono sovrapposte. Su questa mappa ogni corpo celeste si trova nella posizione geografica del suo punto sottostellare, spostandosi con la Terra e ruotando lentamente con un periodo di 23 h 56 min. L'interazione tra cielo e Terra rivela in modo naturale dove ogni tipo di evento astronomico è visibile in tutto il globo: giorno e notte, pianeti, oggetti del cielo profondo, eclissi, aurore, satelliti artificiali e altro ancora.
 
 ## Concetto
@@ -72,6 +74,14 @@ Il diagramma dell'eclissi di Luna si presenta su uno sfondo di **mappa dell'ombr
   <br>
 </p>
 
+### Veli di luce solare e lunare
+
+I livelli del Sole e della Luna comprendono veli di luce che ne simulano le aree di visibilità. Il velo solare è formato da quattro fasce di luminosità costante, corrispondenti rispettivamente al giorno pieno e ai crepuscoli civile, nautico e astronomico. Il velo lunare varia di luminosità secondo l'illuminazione della Luna: il più luminoso alla Luna piena, quasi invisibile in prossimità della Luna nuova. Durante un'eclissi di Luna assume una tinta rosso ruggine che si accentua con la magnitudine dell'ombra. Il controllo dei livelli in alto a destra attiva e disattiva i veli di luce.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
 ### Incisioni celesti
 
 Il Sole, la Luna e i pianeti (i corpi che mostrano un disco visibile) compaiono sulla mappa come icone in stile incisione, sul modello delle tavole incise che il costruttore di strumenti ottici e cartografo britannico [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) pubblicò nelle *Monthly Notices of the Royal Astronomical Society* nel 1870. Ogni disco sottende esattamente il suo diametro apparente sulla mappa e varia quindi con la distanza del corpo dalla Terra; l'ombra sul disco è resa a partire dal suo angolo di fase. Per i corpi del Sistema solare, la dimensione di resa sulla mappa corrisponde al diametro apparente come segue:
@@ -85,12 +95,12 @@ Il Sole, la Luna e i pianeti (i corpi che mostrano un disco visibile) compaiono 
   <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
 </p>
 
-### Veli di luce solare e lunare
+### Graduazioni dell'eclittica
 
-L'attivazione del livello del Sole o della Luna fa comparire anche il suo velo di luce. Il velo solare è formato da quattro fasce di luminosità costante, corrispondenti rispettivamente al giorno pieno e ai crepuscoli civile, nautico e astronomico. Il velo lunare varia di luminosità secondo l'illuminazione della Luna: il più luminoso alla Luna piena, quasi invisibile in prossimità della Luna nuova. Durante un'eclissi di Luna assume una tinta rosso ruggine che si accentua con la magnitudine dell'ombra. Il controllo dei livelli in alto a destra attiva e disattiva i veli di luce.
+Per offrire un riferimento alle posizioni del Sole e degli altri corpi, si tracciano linee di riferimento delle coordinate per l'eclittica, l'equatore celeste, il percorso della Luna, l'equatore galattico e altro ancora, ciascuna attivabile o disattivabile dal controllo dei livelli in alto a destra. In quanto linea di riferimento su cui giace il Sole, l'eclittica è disegnata come una banda di bronzo a doppio binario; la banda segna le longitudini eclittiche dei solstizi e degli equinozi, insieme a tacche di grado ogni 1°. Passando il cursore sull'etichetta di un solstizio o di un equinozio si mostra l'istante esatto della sua prossima comparsa. Attiva il livello xingguan per vedere le ventotto dimore lunari disposte attorno all'eclittica.
 
 <p align="center">
-  <img src="../docs/demo/moonlight.png" width="100%">
+  <img src="../docs/demo/eclipse_belt.png" width="100%">
 </p>
 
 ### Sovrapposizione dei dati
@@ -123,6 +133,10 @@ Il progetto utilizza i vettori di posizione del Sole e della Luna forniti da [As
 
 Il progetto fornisce un set di dati multilingue di nomi stellari tradizionali cinesi indicizzati per HIP, che raccoglie attualmente 3035 nomi di stelle e 312 voci di xingguan (uffici stellari). Le voci si basano principalmente sul catalogo di nomi stellari tradizionali cinesi della comunità [Stellarium](https://stellarium.org/), con voci integrative tratte dal [sito personale di Yu Zhaohuan](https://yzhxxzxy.github.io/cn/index.html), da [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), da Wikipedia e da altre risorse collaborative. Le linee degli xingguan cinesi provengono dai dati celesti di d3-celestial. Le traduzioni multilingue (inglese, francese, spagnolo, italiano) offrono sia una trascrizione fonetica sia una traduzione semantica.
 
+<p align="center">
+  <img src="../docs/demo/xingguan_translation_wudizuo.png" width="80%">
+</p>
+
 **Struttura delle cartelle**
 
 | File | Contenuto |
@@ -136,6 +150,12 @@ Il progetto fornisce un set di dati multilingue di nomi stellari tradizionali ci
 ### Toponimi della Cina continentale
 
 Il progetto si basa principalmente sulla base cities15000 di [GeoNames](https://www.geonames.org/) per la ricerca diretta e inversa, ma le sue coordinate delle città e i suoi nomi multilingue sono spesso incompleti. Per la Cina continentale, il progetto riprende l'elenco 2023 delle località di livello cantonale di [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage), lo converte in JSON e lo unisce alla banca dati delle città di GeoNames. Integra inoltre le traduzioni cinesi di alcuni toponimi di GeoNames, garantendo una copertura bilingue cinese/giapponese in Asia orientale.
+
+<p align="center">
+  <img src="../docs/demo/place_lookup.png" width="80%">
+</p>
+
+**Struttura delle cartelle**
 
 | File | Contenuto |
 |---|---|

@@ -6,6 +6,8 @@
   <img src="docs/demo/world_map.png" width="100%">
 </p>
 
+**网站链接**：https://higashimado.github.io/SubstellarAtlas/
+
 星下点地图是以“星下点”为概念来源，将天球与地球表面相叠后制成的地图。在星下点地图中，每个天体都被投影到其星下点所对应的地理位置上，跟随地球以 23 时 56 分为周期缓慢旋转。天球与地球的交互，可以自然地展示各类天文事件在地球上的可见范围，例如昼夜、行星、深空天体、日月食、极光和人造卫星等。
 
 The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
@@ -20,7 +22,7 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 
 天有列宿，地有州域。天空中的现象和地理上的区域之间的联系，是自天文学和占星学诞生之初就存在的概念：古代中国有二十八宿对九州郡国的“分野”之说，希腊-罗马的托勒密提出过黄道十二宫与国家的对应关系。尽管有“支离穿凿”的评价，但其展示的天文与地理之间的对称和同构，仍是后世诸多想象与思考的来源。
 
-现代测地学为天球与地球给出了一种更严谨的对应关系：```lat = Dec, lon = RA − GMST```．︀具体地说，将天体沿垂线投影到地球上，如此落得的地表点便是唯一的、可精确计算的星下点。相对于静置的世界地图，被投影下的星图有如下特点：
+现代测地学为天球与地球给出了一种更严谨的对应关系：```lat = Dec, lon = RA − GMST```．︀具体地说，将天体沿垂线投影到地球上，落得的地表点便是唯一的、可精确计算的星下点。相对于静置的世界地图，被投影的星图有如下特点：
 
 * 向西旋转：星图随天球自西向东以恒星日为周期旋转，与地球自身的自转方向恰好相反
 * 东西反向：使用者从星图外侧向下观察，与地面观测者从星空内侧向上的视角东西反向
@@ -51,7 +53,7 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 - 全年的太阳运行轨迹范围
 - 天空中可见行星的当前方位
 
-单击罗盘中的图标或标签可显示对应的延长**方位射线**。罗盘出现时，单击天体星下点可显示该地点到星下点的大圆连线。右侧信息栏则提供了详细的地点信息，以及当日的日、月、行星观测数据，单击数据栏中的时间可跳转至对应时刻。
+单击罗盘中的图标或标签可显示相应的**方位射线**。罗盘出现时，单击天体星下点可显示该地点到星下点的大圆连线。右侧信息栏则提供了详细的地点信息，以及当日的日、月、行星观测数据，单击数据栏中的时间可跳转至对应时刻。
 
 <p align="center">
   <img src="docs/demo/compass_sunrise.png" width="100%">
@@ -74,6 +76,14 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
   <br>
 </p>
 
+### 日月光蒙版
+
+在打开太阳、月亮图层时，日月光蒙版也随之自动打开。日光蒙版以四层恒定的亮度叠加，分别对应白昼、民用曙光、航海曙光和天文曙光的可见范围。月光蒙版的亮度则随月照亮度线性变化，满月时最亮，亏相时接近不可见。月食发生时，月光蒙版会随本影食分的大小而染上岩红色。右上角的图层选项提供了日月光蒙版的开关。
+
+<p align="center">
+  <img src="docs/demo/moonlight.png" width="100%">
+</p>
+
 ### 天体版画
 
 太阳、月亮和各行星等可见盘面的天体在地图中以版画图标的形式展示，画风参考了英国光学仪器制造商兼制图师 [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) 在 1870 年发布于《皇家天文学会月报》上的版画插图。天体盘面在地图上所占的角度大小与其视直径严格一致，会随其相对地球的距离而发生变化。天体盘面上的阴影范围则按其相位角计算渲染。具体地，太阳系内天体在地图上的渲染大小与其视直径的对应关系为：
@@ -87,12 +97,12 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
   <img src="docs/demo/jupiter_over_hong_kong.png" width="100%">
 </p>
 
-### 日月光蒙版
+### 黄道刻度
 
-在打开太阳、月亮图层时，日月光蒙版也随之自动打开。对于日光，蒙版以四层恒定的亮度叠加，分别对应白昼、民用曙光、航海曙光和天文曙光的可见范围。对于月光，蒙版的亮度则随月照亮度线性变化，满月时最亮，亏相时接近不可见。月食发生时，月光蒙版会随本影食分的大小而染上岩红色。右上角的图层选项提供了日月光蒙版的开关。
+为给太阳等天体的位置提供参考，网站绘制了黄道、赤道、白道、银道等坐标参考线，可以在右上角的图层选项中选择打开或关闭。作为太阳所在的参考线，黄道以双线铜带的风格绘制，铜带中标注二十四节气对应黄经，以及间隔 1° 的黄经刻度。鼠标悬浮在节气标签上时，可见下次节气对应的具体时刻。打开星官图层，可见二十八宿围绕在黄道周围。
 
 <p align="center">
-  <img src="docs/demo/moonlight.png" width="100%">
+  <img src="docs/demo/eclipse_belt.png" width="100%">
 </p>
 
 ### 图层叠加
@@ -125,6 +135,10 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 
 本项目提供以 HIP 为索引的多语言中国传统星名数据集，现收录 3035 条中国传统星名和 312 项星官条目。条目的来源主题为 [Stellarium](https://stellarium.org/) 社区提供的中国传统星名名录，部分补充条目参考自[余钊焕的个人网站](https://yzhxxzxy.github.io/cn/index.html)、[Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement) 及维基百科等众源资料。中国星官连线取自 d3-celestial 的星空数据。多语言翻译（含英语、法语、西班牙语、意大利语）提供了音译和意译两种译法。
 
+<p align="center">
+  <img src="docs/demo/xingguan_translation_wudizuo.png" width="80%">
+</p>
+
 **目录结构**
 
 | 文件 | 内容 |
@@ -138,6 +152,12 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 ### 中国大陆地名
 
 本项目的地名正反查询功能主要由 [GeoNames](https://www.geonames.org/) 提供的 cities15000 城市数据集支持。然而， cities15000 中的城市坐标及多语言名称多有缺失。为此，本项目在中国大陆地区增补了 [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage) 中的 2023 年中国大陆乡镇列表，将其转换至 json 格式合并入 GeoNames 城市数据库中。此外，本项目还填补了 cities15000 中部分地名的中文翻译缺失，并在东亚地区保证了地名的中文/日文的双语互译。
+
+<p align="center">
+  <img src="docs/demo/place_lookup.png" width="80%">
+</p>
+
+**目录结构**
 
 | 文件 | 内容 |
 |---|---|
@@ -174,12 +194,6 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 | 数据解压 | [Pako](https://github.com/nodeca/pako) 2.1.0 | Nodeca | MIT |
 
 ---
-
-<p align="center">
-  <img src="docs/demo/world_map.png" width="100%">
-</p>
-
-The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
 
 ## Concept
 
@@ -245,6 +259,14 @@ The lunar-eclipse diagram is set against a **shadow map** of the Earth's penumbr
   <br>
 </p>
 
+### Sunlight & Moonlight Veils
+
+The Sun and Moon layers come with light veils that simulate their visible ranges. The sunlight veil is built from four bands of constant brightness, one each for daylight and the civil, nautical and astronomical twilight zones. The moonlight veil instead varies in brightness with the Moon's illumination (brightest at full Moon, all but invisible near the new), and during a lunar eclipse it takes on a rust-red cast that deepens with the umbral magnitude. The layer control at the top right toggles the light veils on and off.
+
+<p align="center">
+  <img src="docs/demo/moonlight.png" width="100%">
+</p>
+
 ### Celestial Engravings
 
 The Sun, the Moon and the planets (bodies that show a visible disc) appear on the map as engraving-style icons, drawn in the manner of the engraved plates the British optical-instrument maker and mapmaker [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) published in the *Monthly Notices of the Royal Astronomical Society* in 1870. Each disc subtends exactly its apparent diameter on the map and so changes with the body's distance from the Earth; the shadow across the disc is rendered from its phase angle. For Solar System bodies, the rendered size corresponds to apparent diameter as follows:
@@ -258,12 +280,12 @@ The Sun, the Moon and the planets (bodies that show a visible disc) appear on th
   <img src="docs/demo/jupiter_over_hong_kong.png" width="100%">
 </p>
 
-### Sunlight & Moonlight Veils
+### Ecliptic Graduations
 
-Turning on the Sun or Moon layer also brings up its light veil. The sunlight veil is built from four bands of constant brightness, one each for daylight and the civil, nautical and astronomical twilight zones. The moonlight veil instead varies in brightness with the Moon's illumination (brightest at full Moon, all but invisible near the new), and during a lunar eclipse it takes on a rust-red cast that deepens with the umbral magnitude. The layer control at the top right toggles the light veils on and off.
+To give a reference for the positions of the Sun and the other bodies, coordinate reference lines are drawn for the ecliptic, the celestial equator, the Moon's path, the galactic equator and more, each of which can be turned on or off from the layer control at the top right. As the reference line on which the Sun lies, the ecliptic is drawn as a bronze band of twin rails; the band marks the ecliptic longitudes of the solstices and equinoxes, along with longitude ticks every 1°. Hovering over a solstice or equinox label reveals the exact time of its next occurrence. Turn on the xingguan layer to see the twenty-eight lunar mansions arrayed around the ecliptic.
 
 <p align="center">
-  <img src="docs/demo/moonlight.png" width="100%">
+  <img src="docs/demo/eclipse_belt.png" width="100%">
 </p>
 
 ### Data Overlays
@@ -296,6 +318,10 @@ The project uses the solar and lunar position vectors from [Astronomy Engine](ht
 
 The project provides a multilingual dataset of traditional Chinese star names indexed by HIP, currently holding 3,035 star names and 312 star-official (xingguan) entries. The entries are based primarily on the traditional Chinese star-name catalogue from the [Stellarium](https://stellarium.org/) community, with supplementary entries drawn from [Yu Zhaohuan's personal site](https://yzhxxzxy.github.io/cn/index.html), [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), Wikipedia and other crowd-sourced material. The Chinese star-official lines are taken from d3-celestial's sky data. The multilingual translations (English, French, Spanish, Italian) offer both transliterated and meaning-based renderings.
 
+<p align="center">
+  <img src="docs/demo/xingguan_translation_wudizuo.png" width="80%">
+</p>
+
 **Directory structure**
 
 | File | Contents |
@@ -309,6 +335,12 @@ The project provides a multilingual dataset of traditional Chinese star names in
 ### Place Names in Mainland China
 
 The project relies mainly on the cities15000 database from [GeoNames](https://www.geonames.org/) for forward and reverse lookup, but its city coordinates and multilingual names are often incomplete. For mainland China, the project takes the 2023 list of township-level towns from [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage), converts it to JSON and merges it into the GeoNames city database. It also fills in Chinese translations for some GeoNames place names, ensuring Chinese/Japanese bilingual coverage across East Asia.
+
+<p align="center">
+  <img src="docs/demo/place_lookup.png" width="80%">
+</p>
+
+**Directory structure**
 
 | File | Contents |
 |---|---|

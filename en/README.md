@@ -6,6 +6,8 @@
   <img src="../docs/demo/world_map.png" width="100%">
 </p>
 
+**Website**: https://higashimado.github.io/SubstellarAtlas/
+
 The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
 
 ## Concept
@@ -72,6 +74,14 @@ The lunar-eclipse diagram is set against a **shadow map** of the Earth's penumbr
   <br>
 </p>
 
+### Sunlight & Moonlight Veils
+
+The Sun and Moon layers come with light veils that simulate their visible ranges. The sunlight veil is built from four bands of constant brightness, one each for daylight and the civil, nautical and astronomical twilight zones. The moonlight veil instead varies in brightness with the Moon's illumination (brightest at full Moon, all but invisible near the new), and during a lunar eclipse it takes on a rust-red cast that deepens with the umbral magnitude. The layer control at the top right toggles the light veils on and off.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
 ### Celestial Engravings
 
 The Sun, the Moon and the planets (bodies that show a visible disc) appear on the map as engraving-style icons, drawn in the manner of the engraved plates the British optical-instrument maker and mapmaker [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) published in the *Monthly Notices of the Royal Astronomical Society* in 1870. Each disc subtends exactly its apparent diameter on the map and so changes with the body's distance from the Earth; the shadow across the disc is rendered from its phase angle. For Solar System bodies, the rendered size corresponds to apparent diameter as follows:
@@ -85,12 +95,12 @@ The Sun, the Moon and the planets (bodies that show a visible disc) appear on th
   <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
 </p>
 
-### Sunlight & Moonlight Veils
+### Ecliptic Graduations
 
-Turning on the Sun or Moon layer also brings up its light veil. The sunlight veil is built from four bands of constant brightness, one each for daylight and the civil, nautical and astronomical twilight zones. The moonlight veil instead varies in brightness with the Moon's illumination (brightest at full Moon, all but invisible near the new), and during a lunar eclipse it takes on a rust-red cast that deepens with the umbral magnitude. The layer control at the top right toggles the light veils on and off.
+To give a reference for the positions of the Sun and the other bodies, coordinate reference lines are drawn for the ecliptic, the celestial equator, the Moon's path, the galactic equator and more, each of which can be turned on or off from the layer control at the top right. As the reference line on which the Sun lies, the ecliptic is drawn as a bronze band of twin rails; the band marks the ecliptic longitudes of the solstices and equinoxes, along with longitude ticks every 1°. Hovering over a solstice or equinox label reveals the exact time of its next occurrence. Turn on the xingguan layer to see the twenty-eight lunar mansions arrayed around the ecliptic.
 
 <p align="center">
-  <img src="../docs/demo/moonlight.png" width="100%">
+  <img src="../docs/demo/eclipse_belt.png" width="100%">
 </p>
 
 ### Data Overlays
@@ -123,6 +133,10 @@ The project uses the solar and lunar position vectors from [Astronomy Engine](ht
 
 The project provides a multilingual dataset of traditional Chinese star names indexed by HIP, currently holding 3,035 star names and 312 star-official (xingguan) entries. The entries are based primarily on the traditional Chinese star-name catalogue from the [Stellarium](https://stellarium.org/) community, with supplementary entries drawn from [Yu Zhaohuan's personal site](https://yzhxxzxy.github.io/cn/index.html), [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), Wikipedia and other crowd-sourced material. The Chinese star-official lines are taken from d3-celestial's sky data. The multilingual translations (English, French, Spanish, Italian) offer both transliterated and meaning-based renderings.
 
+<p align="center">
+  <img src="../docs/demo/xingguan_translation_wudizuo.png" width="80%">
+</p>
+
 **Directory structure**
 
 | File | Contents |
@@ -136,6 +150,12 @@ The project provides a multilingual dataset of traditional Chinese star names in
 ### Place Names in Mainland China
 
 The project relies mainly on the cities15000 database from [GeoNames](https://www.geonames.org/) for forward and reverse lookup, but its city coordinates and multilingual names are often incomplete. For mainland China, the project takes the 2023 list of township-level towns from [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage), converts it to JSON and merges it into the GeoNames city database. It also fills in Chinese translations for some GeoNames place names, ensuring Chinese/Japanese bilingual coverage across East Asia.
+
+<p align="center">
+  <img src="../docs/demo/place_lookup.png" width="80%">
+</p>
+
+**Directory structure**
 
 | File | Contents |
 |---|---|

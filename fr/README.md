@@ -6,6 +6,8 @@
   <img src="../docs/demo/world_map.png" width="100%">
 </p>
 
+**Site web** : https://higashimado.github.io/SubstellarAtlas/
+
 Substellar Atlas est une visualisation construite sur le concept du *point substellaire*. La sphère céleste est projetée sur la surface de la Terre, et les deux sont superposées. Sur cette carte, chaque corps céleste se trouve à l'emplacement géographique de son point substellaire, dérivant avec la Terre et tournant lentement avec une période de 23 h 56 min. L'interaction du ciel et de la Terre révèle naturellement où chaque type d'événement astronomique est visible à travers le globe : jour et nuit, planètes, objets du ciel profond, éclipses, aurores, satellites artificiels, et plus encore.
 
 ## Concept
@@ -72,6 +74,14 @@ Le diagramme d'éclipse de Lune se présente sur un fond de **carte de l'ombre**
   <br>
 </p>
 
+### Voiles de lumière solaire et lunaire
+
+Les couches du Soleil et de la Lune comportent des voiles de lumière qui simulent leurs zones de visibilité. Le voile solaire est constitué de quatre bandes de luminosité constante, correspondant respectivement au plein jour et aux crépuscules civil, nautique et astronomique. Le voile lunaire varie en luminosité selon l'éclat de la Lune : le plus brillant à la pleine Lune, presque invisible près de la nouvelle Lune. Pendant une éclipse de Lune, il prend une teinte rouge rouille qui s'accentue avec la magnitude de l'ombre. Le sélecteur de couches en haut à droite active ou désactive les voiles de lumière.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
 ### Gravures célestes
 
 Le Soleil, la Lune et les planètes (les corps qui présentent un disque visible) apparaissent sur la carte sous forme d'icônes façon gravure, dans le style des planches gravées que le fabricant d'instruments d'optique et cartographe britannique [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) a publiées dans les *Monthly Notices of the Royal Astronomical Society* en 1870. Chaque disque sous-tend exactement son diamètre apparent sur la carte et varie donc avec la distance du corps à la Terre ; l'ombre portée sur le disque est rendue à partir de son angle de phase. Pour les corps du Système solaire, la taille de rendu sur la carte correspond au diamètre apparent comme suit :
@@ -85,12 +95,12 @@ Le Soleil, la Lune et les planètes (les corps qui présentent un disque visible
   <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
 </p>
 
-### Voiles de lumière solaire et lunaire
+### Graduations de l'écliptique
 
-L'activation de la couche du Soleil ou de la Lune fait également apparaître son voile de lumière. Le voile solaire est constitué de quatre bandes de luminosité constante, correspondant respectivement au plein jour et aux crépuscules civil, nautique et astronomique. Le voile lunaire varie en luminosité selon l'éclat de la Lune : le plus brillant à la pleine Lune, presque invisible près de la nouvelle Lune. Pendant une éclipse de Lune, il prend une teinte rouge rouille qui s'accentue avec la magnitude de l'ombre. Le sélecteur de couches en haut à droite active ou désactive les voiles de lumière.
+Pour fournir une référence aux positions du Soleil et des autres corps, des lignes de référence des coordonnées sont tracées pour l'écliptique, l'équateur céleste, la trajectoire de la Lune, l'équateur galactique et d'autres encore, chacune pouvant être activée ou désactivée depuis le sélecteur de couches en haut à droite. Ligne de référence sur laquelle se trouve le Soleil, l'écliptique est tracée comme une bande de bronze à double rail ; la bande indique les longitudes écliptiques des solstices et des équinoxes, ainsi que des graduations tous les 1°. Survoler l'étiquette d'un solstice ou d'un équinoxe affiche l'instant exact de sa prochaine occurrence. Activez la couche xingguan pour voir les vingt-huit loges lunaires disposées autour de l'écliptique.
 
 <p align="center">
-  <img src="../docs/demo/moonlight.png" width="100%">
+  <img src="../docs/demo/eclipse_belt.png" width="100%">
 </p>
 
 ### Superposition des données
@@ -123,6 +133,10 @@ Le projet utilise les vecteurs de position du Soleil et de la Lune fournis par [
 
 Le projet fournit un jeu de données multilingue de noms d'étoiles traditionnels chinois indexés par HIP, comptant actuellement 3 035 noms d'étoiles et 312 entrées de xingguan (offices stellaires). Les entrées s'appuient principalement sur le catalogue de noms d'étoiles traditionnels chinois de la communauté [Stellarium](https://stellarium.org/), avec des entrées complémentaires tirées du [site personnel de Yu Zhaohuan](https://yzhxxzxy.github.io/cn/index.html), de [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement), de Wikipédia et d'autres ressources collaboratives. Les lignes des xingguan chinois proviennent des données célestes de d3-celestial. Les traductions multilingues (anglais, français, espagnol, italien) proposent à la fois une transcription phonétique et une traduction sémantique.
 
+<p align="center">
+  <img src="../docs/demo/xingguan_translation_wudizuo.png" width="80%">
+</p>
+
 **Structure des répertoires**
 
 | Fichier | Contenu |
@@ -136,6 +150,12 @@ Le projet fournit un jeu de données multilingue de noms d'étoiles traditionnel
 ### Noms de lieux en Chine continentale
 
 Le projet s'appuie principalement sur la base cities15000 de [GeoNames](https://www.geonames.org/) pour la recherche directe et inverse, mais ses coordonnées de villes et ses noms multilingues sont souvent incomplets. Pour la Chine continentale, le projet reprend la liste 2023 des localités de niveau cantonal de [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage), la convertit en JSON et la fusionne dans la base de données des villes de GeoNames. Il complète aussi les traductions chinoises de certains noms de lieux de GeoNames, assurant une couverture bilingue chinois/japonais en Asie de l'Est.
+
+<p align="center">
+  <img src="../docs/demo/place_lookup.png" width="80%">
+</p>
+
+**Structure des répertoires**
 
 | Fichier | Contenu |
 |---|---|
