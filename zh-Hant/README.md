@@ -3,7 +3,7 @@
 [简体中文](../zh-Hans/README.md) · **繁體中文** · [English](../en/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · [Italiano](../it/README.md) · [日本語](../ja/README.md)
 
 <p align="center">
-  <img src="../docs/demo/world_map.png" width="100%">
+  <img src="../docs/demo/constellation.png" width="100%">
 </p>
 
 **網站連結**：https://higashimado.github.io/SubstellarAtlas/
