@@ -7,6 +7,7 @@
 </p>
 
 **Sitio web**: https://higashimado.github.io/SubstellarAtlas/
+
 Substellar Atlas es una visualización construida sobre el concepto del *punto subestelar*. La esfera celeste se proyecta sobre la superficie de la Tierra, y ambas se superponen. En este mapa, cada cuerpo celeste se sitúa en la ubicación geográfica de su punto subestelar, desplazándose con la Tierra y girando lentamente con un período de 23 h 56 min. La interacción entre el cielo y la Tierra revela de forma natural dónde es visible cada tipo de evento astronómico en todo el globo: día y noche, planetas, cometas, objetos de cielo profundo, eclipses, auroras, satélites artificiales y más.
 
 ## Concepto
@@ -83,7 +84,7 @@ El Sol, la Luna, los planetas y algunos cometas (los cuerpos que muestran un dis
 La capa de Planetas y Cometas ofrece una lista de eventos relacionados con conjunciones y oposiciones, con filtros vinculados a cuerpos concretos; al hacer clic en un evento se salta al lugar donde se encuentra el cuerpo en el instante en que ocurre. Al llegar, la trayectoria del planeta o del cometa durante los días en torno al evento se abre automáticamente, marcando su posición en fechas sucesivas a un intervalo fijo. Un clic en una etiqueta de hora a lo largo de la trayectoria lleva a ese instante. Más allá de la Luna y los planetas, la lista de eventos abarca actualmente tres de los asteroides más grandes (Ceres, Palas, Vesta) y los cometas brillantes descubiertos entre 2000 y 2025 que alcanzan una magnitud aparente de 6 o más brillante (como [Tsuchinshan–ATLAS](https://es.wikipedia.org/wiki/Cometa_Tsuchinshan-ATLAS)).
 
 <p align="center">
-  <img src="../docs/demo/planet_tracks.png" width="100%">
+  <img src="../docs/demo/planet_trajectories.png" width="100%">
 </p>
 
 ### Interacción con los eclipses

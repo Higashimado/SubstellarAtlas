@@ -6,7 +6,7 @@
   <img src="docs/demo/constellation.png" width="100%">
 </p>
 
-**网站链接**：https://higashimado.github.io/SubstellarAtlas/
+**网站链接 / Website**：https://higashimado.github.io/SubstellarAtlas/
 
 星下点地图是以“星下点”为概念来源，将天球与地球表面相叠后制成的地图。在星下点地图中，每个天体都被投影到其星下点所对应的地理位置上，跟随地球以 23 时 56 分为周期缓慢旋转。天球与地球的交互，可以自然地展示各类天文事件在地球上的可见范围，例如昼夜更替、行星、彗星、深空天体、日月食、极光和人造卫星等。
 
@@ -22,7 +22,7 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 
 天有列宿，地有州域。天空中的现象和地理上的区域之间的联系，是自天文学和占星学诞生之初就存在的概念：古代中国有二十八宿对九州郡国的“分野”之说，希腊-罗马的托勒密提出过黄道十二宫与国家的对应关系。尽管有“支离穿凿”的评价，但其展示的天文与地理之间的对称和同构，仍是后世诸多想象与思考的来源。
 
-现代测地学为天球与地球给出了一种更严谨的对应关系：```lat = Dec, lon = RA − GMST```．︀具体地说，将天体沿垂线投影到地球上，如此落得的地表点便是唯一的、可精确计算的星下点。相对于静置的世界地图，被投影下的星图有如下特点：
+现代测地学为天球与地球给出了一种更严谨的对应关系：```lat = Dec, lon = RA − GMST```．︀具体地说，将天体沿垂线投影到地球上，落得的地表点便是唯一的、可精确计算的星下点。相对于静置的世界地图，被投影的星图有如下特点：
 
 * 向西旋转：星图随天球自西向东以恒星日为周期旋转，与地球自身的自转方向恰好相反
 * 东西反向：使用者从星图外侧向下观察，与地面观测者从星空内侧向上的视角东西反向
@@ -54,7 +54,7 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 - 全年的太阳运行轨迹范围
 - 天空中可见行星的当前方位
 
-单击罗盘中的图标或标签可显示对应的延长**方位射线**。罗盘出现时，单击天体星下点可显示该地点到星下点的大圆连线。右侧信息栏则提供了详细的地点信息，以及当日的日、月、行星观测数据，单击数据栏中的时间可跳转至对应时刻。
+单击罗盘中的图标或标签可显示相应的**方位射线**。罗盘出现时，单击天体星下点可显示该地点到星下点的大圆连线。右侧信息栏则提供了详细的地点信息，以及当日的日、月、行星观测数据，单击数据栏中的时间可跳转至对应时刻。
 
 <p align="center">
   <img src="docs/demo/compass_sunrise.png" width="100%">
@@ -199,12 +199,6 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 | 数据解压 | [Pako](https://github.com/nodeca/pako) 2.1.0 | Nodeca | MIT |
 
 ---
-
-<p align="center">
-  <img src="docs/demo/world_map.png" width="100%">
-</p>
-
-The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, comets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
 
 ## Concept
 

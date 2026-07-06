@@ -84,7 +84,7 @@ Le Soleil, la Lune, les planètes et certaines comètes (les corps qui présente
 La couche Planètes et Comètes propose une liste d'événements liés aux conjonctions et aux oppositions, avec des filtres associés à des corps particuliers ; un clic sur un événement mène à l'endroit où se trouve le corps à l'instant où il se produit. À l'arrivée, la trajectoire de la planète ou de la comète au fil des jours entourant l'événement s'ouvre automatiquement, marquant sa position aux dates successives à un intervalle donné. Un clic sur une étiquette temporelle le long de la trajectoire mène à cet instant. Au-delà de la Lune et des planètes, la liste d'événements couvre actuellement trois des plus grands astéroïdes (Cérès, Pallas, Vesta) ainsi que les comètes brillantes découvertes entre 2000 et 2025 qui atteignent la magnitude apparente 6 ou davantage (telles que [Tsuchinshan–ATLAS](https://fr.wikipedia.org/wiki/Com%C3%A8te_Tsuchinshan-ATLAS)).
 
 <p align="center">
-  <img src="../docs/demo/eclipse_belt.png" width="100%">
+  <img src="../docs/demo/planet_trajectories.png" width="100%">
 </p>
 
 ### Interaction avec les éclipses

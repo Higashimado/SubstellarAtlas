@@ -7,6 +7,7 @@
 </p>
 
 **Sito web**: https://higashimado.github.io/SubstellarAtlas/
+
 Substellar Atlas è una visualizzazione costruita sul concetto di *punto sottostellare*. La sfera celeste viene proiettata sulla superficie della Terra, e le due vengono sovrapposte. Su questa mappa ogni corpo celeste si trova nella posizione geografica del suo punto sottostellare, spostandosi con la Terra e ruotando lentamente con un periodo di 23 h 56 min. L'interazione tra cielo e Terra rivela in modo naturale dove ogni tipo di evento astronomico è visibile in tutto il globo: giorno e notte, pianeti, comete, oggetti del cielo profondo, eclissi, aurore, satelliti artificiali e altro ancora.
 
 ## Concetto
@@ -83,7 +84,7 @@ Il Sole, la Luna, i pianeti e alcune comete (i corpi che mostrano un disco visib
 Il livello Pianeti e Comete offre un elenco di eventi legati a congiunzioni e opposizioni, con filtri associati a corpi specifici; un clic su un evento porta al punto in cui il corpo si trova nell'istante in cui l'evento si verifica. All'arrivo, il percorso del pianeta o della cometa nei giorni intorno all'evento si apre automaticamente, segnandone la posizione a date successive a un intervallo prestabilito. Un clic su un'etichetta oraria lungo la traiettoria porta a quell'istante. Oltre alla Luna e ai pianeti, l'elenco degli eventi copre attualmente tre dei maggiori asteroidi (Cerere, Pallade, Vesta) e le comete luminose scoperte tra il 2000 e il 2025 che raggiungono una magnitudine apparente pari o superiore a 6 (come [Tsuchinshan–ATLAS](https://it.wikipedia.org/wiki/Cometa_Tsuchinshan-ATLAS)).
 
 <p align="center">
-  <img src="../docs/demo/planet_tracks.png" width="100%">
+  <img src="../docs/demo/planet_trajectories.png" width="100%">
 </p>
 
 ### Interazione con le eclissi

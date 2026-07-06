@@ -7,6 +7,7 @@
 </p>
 
 **Website**: https://higashimado.github.io/SubstellarAtlas/
+
 The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, comets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
 
 ## Concept
@@ -83,7 +84,7 @@ The Sun, the Moon, the planets and some comets (bodies that show a visible disc)
 The Planets & Comets layer offers a list of conjunction- and opposition-related events, with filters tied to particular bodies; clicking an event jumps to where the body sits at the moment it occurs. On arrival, the planet's or comet's path over the days around the event opens automatically, marking its position on successive dates at a set interval. Click a time label along the trajectory to jump to that instant. Beyond the Moon and the planets, the event list currently covers three of the larger asteroids (Ceres, Pallas, Vesta) and the bright comets discovered between 2000 and 2025 that reach apparent magnitude 6 or brighter (such as [Tsuchinshan–ATLAS](https://en.wikipedia.org/wiki/Comet_Tsuchinshan%E2%80%93ATLAS)).
 
 <p align="center">
-  <img src="../docs/demo/planet_tracks.png" width="100%">
+  <img src="../docs/demo/planet_trajectories.png" width="100%">
 </p>
 
 ### Eclipse Interaction
