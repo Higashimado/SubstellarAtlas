@@ -29,10 +29,16 @@ const I18n = (() => {
   // encyclopedia-style term definitions, shared across panels and cards so
   // one concept (magnitude, RA, …) is defined once and reused everywhere.
   // Returns '' when the slug has no entry (so callers can no-op cleanly).
-  function gloss(slug) {
+  function gloss(slug, params) {
     const key = 'glossary.' + slug;
-    const str = _dict[key] ?? _fallbackDict[key];
-    return str == null ? '' : str;
+    let str = _dict[key] ?? _fallbackDict[key];
+    if (str == null) return '';
+    if (params) {
+      for (const k of Object.keys(params)) {
+        str = str.replace(new RegExp('\\{' + k + '\\}', 'g'), params[k]);
+      }
+    }
+    return str;
   }
 
   // HTML attribute form of gloss(): returns ` data-gloss="…"` (escaped) for
@@ -40,15 +46,15 @@ const I18n = (() => {
   // leading space lets call sites write `'<span class="label"' + glossAttr('ra') + '>'`.
   // The custom glossary tooltip (js/glossary-tip.js) reads [data-gloss] and renders
   // a themed definition card instead of the browser's white native title tooltip.
-  function glossAttr(slug) {
-    const str = gloss(slug);
+  function glossAttr(slug, params) {
+    const str = gloss(slug, params);
     if (!str) return '';
     const esc = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
     return ' data-gloss="' + esc + '"';
   }
 
   async function _loadDict(locale) {
-    const url = 'data/i18n/' + locale + '/ui.json?v=5';
+    const url = 'data/i18n/' + locale + '/ui.json?v=6';
     const resp = await fetch(url);
     if (!resp.ok) throw new Error('i18n load failed: ' + url);
     return resp.json();

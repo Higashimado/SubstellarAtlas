@@ -2303,6 +2303,7 @@ const Observer = (() => {
           { x: cx + hx, y: cy + hy },
           { x: cx - hx, y: cy + hy },
         ];
+
         let hit = false;
         for (let i = 0; i < obstacles.length; i++)
           if (_quadsOverlap(quad, obstacles[i])) {

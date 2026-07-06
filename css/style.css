@@ -438,8 +438,11 @@ body {
   right: 0;
   z-index: 3000;
   background: var(--bg-rail, #242628);
-  border-top: 0.5px solid var(--hairline-strong, rgba(210, 215, 222, 0.26));
-  box-shadow: inset 0 1px 0 var(--bevel-light, rgba(255, 255, 255, 0.06));
+  background-image: var(--surface-texture);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light, rgba(255, 255, 255, 0.06)),
+    0 0 0 1px var(--gilt-ring),
+    0 -4px 8px rgba(0, 0, 0, 0.32);
   font-family: var(--font-serif);
   color: var(--text-high, #e7e3da);
   user-select: none;
@@ -961,20 +964,67 @@ html[lang='ja'] .rail-lang-label {
   width: 360px;
   z-index: 2000;
   background: var(--bg-overlay);
+  background-image: var(--surface-texture);
   display: flex;
   flex-direction: column;
   transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Chiseled slab edges: light falls from the top-left, so the free edges get a
+   lit lip toward the light and a groove away from it, ringed by a faint brass
+   hairline (a shadow ring, so no layout shift). Radius tightens to 2px and the
+   drop shadow halves — a slab set on the plate, not a floating glass sheet. */
 .sidebar--left {
   left: 0;
-  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
-  border-radius: 0 8px 8px 0;
+  /* The right edge faces the map; the left edge is pinned to the screen edge
+     (its ring would be off-screen, so it is dropped). The map-facing edge is
+     defined by the gilt ring alone — NO horizontal drop shadow: the panel is a
+     flat chiseled slab (matching how its own top/bottom edges are already ring-
+     only), and a rightward drop shadow would project under the protruding
+     handle and bleed through its 0.90 fill as a seam. Where the handle docks,
+     the ring is covered by the handle; above and below it the ring reads as the
+     panel's own carved edge. */
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 -1px 0 var(--gilt-ring),
+    1px 0 0 var(--gilt-ring),
+    0 1px 0 var(--gilt-ring);
+  border-radius: 0 4px 4px 0;
+  /* Hug content: the event lists size the panel and the bottom edge follows
+     the last card; the old top/bottom bracket survives as a max-height cap,
+     past which the inner list scrolls (the whole flex chain below carries
+     flex-shrink + min-height:0 for that). */
+  bottom: auto;
+  max-height: calc(100vh - var(--toggle-bottom, 57px) - var(--rail-h, 71px) - 2 * var(--sidebar-gap));
+  /* dvh re-declaration: on mobile the URL bar collapse changes the viewport,
+     and 100vh is pinned to the LARGE viewport — the panel would overshoot past
+     the rail until the next resize. Browsers without dvh keep the line above. */
+  max-height: calc(100dvh - var(--toggle-bottom, 57px) - var(--rail-h, 71px) - 2 * var(--sidebar-gap));
+  /* Floor for the inner event lists so a short or heavily-filtered list keeps a
+     usable height instead of collapsing up to a stub — most visible on a tall
+     screen, where a handful of cards would otherwise leave the panel tiny. The
+     50vh term scales the floor with the viewport and drives it on tall screens
+     (the feature). The calc term is the short-screen safety clamp: the list's own
+     available height is roughly the max-height cap above (~100vh − 233px) minus
+     the header/chip-row/load-bar chrome (~140px), i.e. ~100vh − 375px, so
+     subtracting 420px keeps the floor safely under it. That guarantees the floor
+     never exceeds available space, so the flex-shrink scroll idiom still works and
+     a long list keeps scrolling instead of overflowing the panel. */
+  --event-list-floor: min(50vh, calc(100vh - 420px));
 }
 .sidebar--right {
   right: 0;
-  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.4);
-  border-radius: 8px 0 0 8px;
+  /* Mirror of .sidebar--left: the left edge faces the map and is defined by the
+     gilt ring alone (no leftward drop shadow, which would bleed under the
+     handle); the right edge is pinned to the screen edge and its ring dropped. */
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 -1px 0 var(--gilt-ring),
+    -1px 0 0 var(--gilt-ring),
+    0 1px 0 var(--gilt-ring);
+  border-radius: 4px 0 0 4px;
 }
 
 .sidebar[data-state='closed'].sidebar--left {
@@ -1045,10 +1095,12 @@ html[lang='ja'] .rail-lang-label {
 }
 #sidebar-right-content > .coords-section {
   flex: 0 0 auto; /* fixed header: never scrolls, never shrinks */
-  /* margin (not padding) keeps the border-bottom divider inset 16px exactly
-     where it was; margin-bottom:16px still comes from .sidebar-section. */
+  /* margin (not padding) keeps the divider inset 16px exactly where it was;
+     margin-bottom:16px still comes from .sidebar-section. The flat
+     border-bottom is swapped for the gilt-fade background set above. */
   margin-left: 16px;
   margin-right: 16px;
+  border-bottom: none;
   display: flex; /* place name/coords on the left, locate button on the right */
   align-items: center; /* vertically centre the locate arrow on the two text lines */
   gap: 8px;
@@ -1066,82 +1118,302 @@ html[lang='ja'] .rail-lang-label {
   display: flex;
   flex-direction: column;
   padding: 0;
+  /* Perspective so the card-flip header's rotateX reads as a turn, not a squish. */
+  perspective: 900px;
 }
 #sidebar-left-list {
-  flex: 1 1 0;
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
   min-height: 0;
   padding: 10px 0 4px;
+  position: relative;
 }
-#sidebar-left-list h3 {
+#sidebar-left-list h3,
+#sidebar-left-plist h3 {
   margin: 0;
   /* Panel title — explicit so it no longer falls through to the UA default
      <h3> (17.55px/700); matches the right sidebar's .place-name. */
   font-size: var(--fs-title);
   font-weight: var(--fw-medium);
   color: var(--fg-primary);
+  letter-spacing: 0.1em;
+}
+
+/* ---- Left Panel Flip Card ---- */
+/* Flip button grafted onto the front list header (right of the title) when both
+   lists claim the panel: a slim slab holding just a two-arrow swap glyph, stroked
+   in currentColor so :hover recolours it. Mirrors the .eclipse-load-more chevrons;
+   no data-tip, which would drag in the [data-tip] dashed underline. */
+.left-flip-btn {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  background: transparent;
+  border: 0.5px solid var(--border-hairline);
+  color: var(--fg-muted);
+  padding: 1px 3px;
+  margin: 0 0 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 100ms;
+}
+.left-flip-btn:hover {
+  color: var(--fg-primary);
+}
+.left-flip-btn svg {
+  display: block;
+}
+/* The turn itself: the outgoing header tilts away from its bottom edge while the
+   body fades; the incoming header (fresh DOM after the innerHTML swap) flips in
+   from the opposite tilt at its top edge. Together they read as one card turning. */
+.left-flip-out .eclipse-list-header {
+  transform-origin: bottom center;
+  transition:
+    transform 130ms ease-in,
+    opacity 130ms ease-in;
+  transform: rotateX(90deg);
+  opacity: 0;
+}
+.left-flip-out > :not(.eclipse-list-header) {
+  transition: opacity 130ms ease-in;
+  opacity: 0;
+}
+@keyframes leftFlipInHeader {
+  from {
+    transform: rotateX(-90deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotateX(0);
+    opacity: 1;
+  }
+}
+@keyframes leftFlipInBody {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.left-flip-in .eclipse-list-header {
+  transform-origin: top center;
+  animation: leftFlipInHeader 150ms ease-out;
+}
+.left-flip-in > :not(.eclipse-list-header) {
+  animation: leftFlipInBody 180ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .left-flip-out .eclipse-list-header,
+  .left-flip-out > :not(.eclipse-list-header),
+  .left-flip-in .eclipse-list-header,
+  .left-flip-in > :not(.eclipse-list-header) {
+    animation: none;
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+/* Stele-forehead divider: a solid gilt rule shared by the list header title bar
+   and the right-sidebar coordinate row, in place of a flat grey border-bottom.
+   Must be a real border, not a sized background: background-size only clips a
+   background *image* (a gradient), so a solid colour given `/ 100% 1px` ignores
+   the size and floods the whole box. A plain solid line also avoids the
+   gradient's fade-to-transparent, which read shorter than an ordinary divider.
+   Sits after the .coords-section border-bottom reset above, so it wins there. */
+.eclipse-list-header,
+#sidebar-right-content > .coords-section {
+  border-bottom: 1px solid rgba(201, 168, 106, 0.4);
 }
 .eclipse-list-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   margin: 0 16px 8px;
+  padding-bottom: 6px;
 }
-.eclipse-filter {
-  display: flex;
-  gap: 4px;
-}
-.eclipse-filter-btn {
+/* Square chiseled seals (not pills) — text labels stamped into the slab, in the
+   same lapidary grammar as the round body-chip seals in the planet list; the 4px
+   corner matches the chiseled-slab family. */
+.eclipse-filter-btn,
+.eclipse-subfilter-btn {
   background: transparent;
   border: 0.5px solid var(--border-hairline);
   color: var(--fg-muted);
   font-family: var(--font-serif);
   font-size: var(--fs-caption);
-  padding: 2px 8px;
-  border-radius: 3px;
+  padding: 2px 10px;
+  border-radius: 4px;
   cursor: pointer;
   transition:
     color 120ms,
-    border-color 120ms;
+    border-color 120ms,
+    background 120ms;
 }
-.eclipse-filter-btn:hover {
+.eclipse-filter-btn:hover,
+.eclipse-subfilter-btn:hover {
   color: var(--fg-primary);
 }
-.eclipse-filter-btn[aria-pressed='true'] {
-  color: var(--accent-gold);
-  border-color: var(--accent-gold);
+/* Pressed state carries a perceptible gilt wash, not just a text-colour flip —
+   which filters are armed must survive a glance, not a read. */
+.eclipse-filter-btn[aria-pressed='true'],
+.eclipse-subfilter-btn[aria-pressed='true'] {
+  color: var(--gilt-bright);
+  border-color: var(--gilt-edge);
+  background: rgba(201, 168, 106, 0.12);
 }
 #sidebar-left-list .eclipse-list {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   overflow-y: auto;
-  min-height: 0;
+  min-height: var(--event-list-floor);
   padding: 0 12px 4px;
 }
 
-/* Load-more buttons (load earlier above, load later below the list) */
+/* ---- Planetary Events List ---- */
+/* Reuses .eclipse-card / .ec-* card chrome; only the body-chip filter row, the
+   glyph sizing and the accent time differ from the eclipse list. */
+#sidebar-left-plist {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 0 1 auto;
+  padding: 10px 0 4px;
+  position: relative;
+}
+#sidebar-left-plist .eclipse-list {
+  flex: 0 1 auto;
+  overflow-y: auto;
+  min-height: var(--event-list-floor);
+  padding: 0 12px 4px;
+}
+/* Shared filter row under the list header — the eclipse and planet panels both
+   hang their filter controls here so the two read as one family. */
+.list-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0 16px 6px;
+}
+.pev-body-chip {
+  background: transparent;
+  border: 0.5px solid var(--border-hairline);
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition:
+    color 120ms,
+    border-color 120ms,
+    background 120ms;
+}
+/* Body chips as round bronze seals — a ring of hairline until pressed, then a
+   gilt ring over a faint gold wash (a stamped seal, in the panel's material
+   language rather than a square debug chip). */
+.pev-body-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: var(--fs-body);
+  line-height: 1;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+.pev-body-chip:hover {
+  color: var(--fg-primary);
+}
+.pev-body-chip[aria-pressed='true'] {
+  color: var(--gilt-bright);
+  border-color: var(--gilt-edge);
+  background: rgba(201, 168, 106, 0.12);
+}
+/* Two slots + 2px gap fill the .ec-glyph box: a phased planet disk (or star
+   point) each side, or disk + phenomenon symbol for single-body Sun-relative
+   events. Widened past the base eclipse-card 42px box (24px slots vs 20px) to
+   give Saturn's oversized, tilted ring room to clear the neighbouring slot —
+   applied to every planet-event card, not just Saturn's, so the text column
+   in .ec-body starts at the same x whether or not the card involves Saturn. */
+.pev-card .ec-glyph {
+  width: 50px;
+}
+.pev-card .pev-glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.pev-glyph-slot {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  overflow: visible;
+}
+.pev-glyph-phenom {
+  font-size: 16px;
+  color: var(--fg-primary);
+}
+/* A small rendered point standing in for a star's disk (real stars have no
+   resolvable diameter, unlike the phased planet icons beside it) — a bright
+   core plus a soft glow halo, echoing the map's own star rendering rather
+   than a flat Unicode glyph. */
+.pev-glyph-star {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e7e3da;
+  box-shadow: 0 0 5px 2px rgba(231, 227, 218, 0.65);
+}
+/* Comets have no resolvable disk either — a plain glyph in the disk slot, sized
+   to read alongside the phased planet icons rather than dominate the row. */
+.pev-glyph-comet {
+  font-size: 17px;
+  line-height: 1;
+  color: var(--fg-primary);
+}
+.pev-phrase {
+  color: var(--text-primary);
+}
+/* Load-more controls (load earlier above, load later below the list): slim
+   chiseled-slab bars holding just a chevron — wheel-to-edge auto-load is the
+   primary affordance, so these stay quiet. The chevron is stroked with
+   currentColor, so :hover and the .eclipse-load-flash pulse recolour it. */
 .eclipse-load-more {
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: 0.5px solid var(--bg-line);
   color: var(--fg-muted);
-  font-family: var(--font-serif);
-  font-size: var(--fs-body);
-  padding: 6px;
+  padding: 1px 0;
   margin: 4px 12px;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 4px;
   transition:
     background 100ms,
     color 100ms;
 }
+.eclipse-load-more svg {
+  display: block;
+}
 .eclipse-load-more:hover {
-  background: var(--bg-mid);
-  color: var(--fg-primary);
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--accent-gold);
 }
 .eclipse-load-more:disabled {
   opacity: 0.4;
   cursor: default;
+}
+/* An end-of-list button is inert, so it must not light up gold on hover. */
+.eclipse-load-more:disabled:hover {
+  background: none;
+  color: inherit;
 }
 .eclipse-load-more.eclipse-load-flash {
   background: rgba(179, 148, 104, 0.18);
@@ -1172,14 +1444,34 @@ html[lang='ja'] .rail-lang-label {
   }
 }
 
-/* Toggle handle: 22×60 chevron tab on the inner edge */
+/* Toggle handle: 22×60 chevron tab that protrudes from the panel's map-facing
+   edge. Shares the sidebar's own --bg-overlay (not --bg-rail, a different
+   token) so its fill is the same slab material, and abuts the panel edge-to-
+   edge — the two translucent fills read as one continuous stone.
+
+   Edge treatment traces the COMBINED outer silhouette only: the handle carries
+   the gilt ring + inner bevel on its three exposed edges (top / far / bottom),
+   and NOTHING on the docking edge, where the panel is likewise bare (see the
+   sidebar's own comment). No line — ring, bevel, or drop shadow — is allowed
+   on the inside of the junction, so the tab looks carved out of the panel
+   rather than a separate button pressed against it. Light falls from the top-
+   left, so top/left edges take the lit lip and bottom/right the groove. */
 .sidebar-toggle {
   position: absolute;
   top: 50%;
   width: 22px;
   height: 60px;
-  background: var(--bg-rail, #242628);
-  border: 0.5px solid var(--hairline, rgba(210, 215, 222, 0.16));
+  /* Same translucent fill as the panel (0.90) so the basemap shows through
+     both equally — one continuous slab. The panel's own drop shadow used to
+     bleed through this translucency as a dark band at the join; that shadow is
+     gone now (the panel defines its map-facing edge with a gilt ring instead,
+     like its top/bottom edges), so nothing is left behind the handle to seam. */
+  background-color: var(--bg-overlay);
+  background-image: var(--surface-texture);
+  /* Explicit reset: this is a <button>, whose UA default `2px outset` border
+     resurfaces the moment no border is declared and draws a hard black bevel
+     box — the whole edge must be box-shadow only. */
+  border: 0;
   cursor: pointer;
   transform: translateY(-50%);
   display: flex;
@@ -1194,13 +1486,32 @@ html[lang='ja'] .rail-lang-label {
 }
 .sidebar--left .sidebar-toggle {
   right: -22px;
-  border-left: none;
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 4px 4px 0;
+  /* Protrudes right; docking edge = left (bare). Outer edges = top / right
+     (far) / bottom, ring + bevel only — no drop shadow, matching the now flat
+     panel so the tab reads as part of the same slab, not a raised piece. The
+     far edge is away from the top-left light → groove. */
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset -1px 0 0 var(--bevel-groove),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 -1px 0 var(--gilt-ring),
+    1px 0 0 var(--gilt-ring),
+    0 1px 0 var(--gilt-ring);
 }
 .sidebar--right .sidebar-toggle {
   left: -22px;
-  border-right: none;
-  border-radius: 6px 0 0 6px;
+  border-radius: 4px 0 0 4px;
+  /* Protrudes left; docking edge = right (bare). Outer edges = top / left
+     (far) / bottom, ring + bevel only. The far edge faces the top-left
+     light → lit lip. */
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 1px 0 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 -1px 0 var(--gilt-ring),
+    -1px 0 0 var(--gilt-ring),
+    0 1px 0 var(--gilt-ring);
 }
 
 .sidebar-toggle .sidebar-chevron {
@@ -1548,10 +1859,15 @@ html[lang='ja'] .rail-lang-label {
 .map-context-menu {
   position: absolute;
   z-index: 10000;
-  background: var(--bg-shell, rgba(32, 34, 38, 0.92));
+  background-color: var(--bg-shell, rgba(32, 34, 38, 0.92));
+  background-image: var(--surface-texture);
   border: 0.5px solid var(--border-hairline, rgba(210, 215, 222, 0.16));
-  border-radius: 3px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 0 0 1px var(--gilt-ring),
+    0 4px 12px rgba(0, 0, 0, 0.55);
   padding: 2px;
   font-family: var(--font-serif, serif);
   font-size: var(--fs-caption, 13px);
@@ -1649,13 +1965,12 @@ html[lang='ja'] .rail-lang-label {
   font-weight: 500;
   font-size: 13px;
   letter-spacing: 0.04em;
+  /* Denser halo than --engraved-shadow (no hard corners though): these labels
+     sit on the whitened dayside veil, so the dark glow needs body to separate. */
   text-shadow:
-    0 0 4px rgba(0, 0, 0, 0.95),
-    0 0 8px rgba(0, 0, 0, 0.85),
-    1px 1px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000;
+    0 0 2px rgba(0, 0, 0, 0.95),
+    0 0 5px rgba(0, 0, 0, 0.85),
+    0 0 9px rgba(0, 0, 0, 0.55);
   pointer-events: none;
   white-space: nowrap;
 }
@@ -1698,15 +2013,15 @@ html[lang='ja'] .rail-lang-label {
   transform: translate(-50%, 0);
 }
 
-/* Eclipse list ("quest log" sidebar) — fills available height in the left
-   sidebar's flex column so "加载更晚" sticks to the bottom on tall screens
-   rather than leaving whitespace below. The parent chain must propagate
-   `min-height: 0` for the inner scroller to actually scroll. */
+/* Eclipse list ("quest log" sidebar) — sizes to its cards so the panel hugs
+   content and "加载更晚" sits right under the last card; when the panel's
+   max-height cap binds, this is the link that shrinks and scrolls. The parent
+   chain must propagate `min-height: 0` for that inner scroll to engage. */
 .eclipse-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  flex: 1 1 0;
+  flex: 0 1 auto;
   min-height: 0;
   overflow-y: auto;
 }
@@ -1715,12 +2030,20 @@ html[lang='ja'] .rail-lang-label {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  flex: 1 1 0;
+  flex: 0 1 auto;
 }
 /* Solar/lunar filter — toggled via data-filter on the list so switching never
    rebuilds the cards (see js/sidebar.js renderCards). */
 .eclipse-list[data-filter='solar'] .eclipse-card[data-kind='lunar'],
 .eclipse-list[data-filter='lunar'] .eclipse-card[data-kind='solar'] {
+  display: none;
+}
+/* Central-only sub-filter (data-central), armed on top of a solar/lunar primary:
+   solar keeps central eclipses (total/annular/hybrid), lunar keeps totals. Only
+   ever set while data-filter is solar or lunar, so no 'all'-view case is needed. */
+.eclipse-list[data-central='1'][data-filter='solar'] .eclipse-card[data-ecltype='partial'],
+.eclipse-list[data-central='1'][data-filter='lunar'] .eclipse-card[data-ecltype='partial'],
+.eclipse-list[data-central='1'][data-filter='lunar'] .eclipse-card[data-ecltype='penumbral'] {
   display: none;
 }
 .eclipse-card {
@@ -1877,6 +2200,11 @@ html[lang='ja'] .rail-lang-label {
 }
 .ec-detail[hidden] {
   display: none;
+}
+.ec-desc-line {
+  color: var(--text-primary);
+  margin: 0 0 4px;
+  line-height: 1.5;
 }
 .ec-meta-line {
   color: var(--text-secondary);
@@ -2239,6 +2567,9 @@ html[lang='ja'] .rail-lang-label {
   display: inline-block;
   white-space: nowrap;
   pointer-events: none;
+  /* Altitude-contour degree figures join the engraved-numeral voice. */
+  font-family: var(--font-inscription);
+  letter-spacing: 0.05em;
 }
 
 .ecliptic-label {
@@ -2274,6 +2605,76 @@ html[lang='ja'] .rail-lang-label {
   transform-origin: 0 50%;
   white-space: nowrap;
   pointer-events: none;
+}
+
+/* ---- Motion-Trajectory Markers ---- */
+/* Tick + time label at intervals along a body's trajectory ribbon: a short
+ * body-tinted stroke crossing the ribbon perpendicularly, date text engraved
+ * alongside it running parallel (same grammar as the ecliptic solar-term ticks).
+ * The pane is pointer-events:none; the inner wrap re-enables events so clicking
+ * jumps the clock while the empty icon box stays click-through. --btc carries the
+ * body tint. The wrap is a zero-size anchor pinned on the sub-point; its tick and
+ * label are absolutely placed around that origin and rotated together by --btang
+ * (the on-screen tangent), so tick ⊥ ribbon and label ∥ ribbon at every sample. */
+.btraj-marker {
+  background: none !important;
+  border: none !important;
+  pointer-events: none;
+}
+.btraj-disk-wrap {
+  position: relative;
+  display: block;
+  width: 0;
+  height: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: rotate(var(--btang, 0deg));
+  transform-origin: 0 0;
+}
+.btraj-tick {
+  position: absolute;
+  left: -1px; /* 2px bar centred on the origin's x */
+  top: -6px; /* 12px bar straddling the origin's y → crosses the ribbon both sides */
+  width: 2px;
+  height: 12px;
+  border-radius: 1px;
+  background: var(--btc);
+  opacity: 0.75;
+  box-shadow: 0 0 0 0.5px rgba(10, 12, 16, 0.55);
+}
+.btraj-disk-wrap:hover .btraj-tick {
+  opacity: 1;
+}
+/* Highlight the date alongside the tick on hover so it reads as the clickable
+   time-jump target, not just the thin bar — lit white with a body-tint glow. */
+.btraj-disk-wrap:hover .btraj-time {
+  color: #fff;
+  text-shadow: var(--engraved-shadow), 0 0 6px color-mix(in srgb, var(--btc) 65%, transparent);
+}
+.btraj-time {
+  position: absolute;
+  left: 0;
+  top: 9px; /* offset to one side of the ribbon so the date never sits on the spine */
+  transform: translateX(-50%); /* centre the date over the tick along the tangent */
+  font: 12px var(--font-inscription, serif);
+  color: #ded9cc;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums lining-nums;
+  text-shadow: var(--engraved-shadow);
+  white-space: nowrap;
+}
+/* The label-collider hides a crowded label by adding .label-occluded to the divIcon
+   root (visibility:hidden). For trajectory markers keep the tick visible — it stays a
+   clickable time-jump scale along the ribbon — and hide only the redundant date text;
+   hovering the tick reveals its date so nothing is lost. */
+.btraj-marker.label-occluded {
+  visibility: visible;
+}
+.btraj-marker.label-occluded .btraj-time {
+  visibility: hidden;
+}
+.btraj-marker.label-occluded .btraj-disk-wrap:hover .btraj-time {
+  visibility: visible;
 }
 
 .equator-label {
@@ -2343,7 +2744,7 @@ html[lang='ja'] .rail-lang-label {
 /* Leaflet control overrides — dark shell styling, no white backgrounds */
 .leaflet-control-zoom {
   border: 0.5px solid var(--border-hairline) !important;
-  border-radius: 8px !important;
+  border-radius: 4px !important;
   overflow: hidden;
   box-shadow: none !important;
   width: 22.5px !important;
@@ -2352,7 +2753,8 @@ html[lang='ja'] .rail-lang-label {
   height: 45px !important;
 }
 .leaflet-control-zoom a {
-  background: var(--bg-shell) !important;
+  background-color: var(--bg-shell) !important;
+  background-image: var(--surface-texture) !important;
   color: var(--fg-muted) !important;
   border-bottom: 1px solid var(--border-hairline) !important;
   border-right: none !important;
@@ -2372,7 +2774,7 @@ html[lang='ja'] .rail-lang-label {
 .leaflet-control-layers {
   background: transparent !important;
   border: none !important;
-  border-radius: 8px !important;
+  border-radius: 4px !important;
   color: var(--fg-primary) !important;
   box-shadow: none !important;
   position: relative !important;
@@ -2388,11 +2790,15 @@ html[lang='ja'] .rail-lang-label {
 }
 .leaflet-control-layers-toggle {
   background-color: var(--bg-shell) !important;
-  background-image: none !important;
+  background-image: var(--surface-texture) !important;
   width: 45px !important;
   height: 45px !important;
   border: none !important;
-  border-radius: 8px !important;
+  border-radius: 2px !important;
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 0 0 1px var(--gilt-ring) !important;
   filter: none !important;
   position: relative;
 }
@@ -2429,14 +2835,59 @@ html[lang='ja'] .rail-lang-label {
   left: auto !important;
   margin-top: 4px;
   background: var(--bg-shell);
+  background-image: var(--surface-texture);
   border: 0.5px solid var(--border-hairline);
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 8px 12px;
   white-space: nowrap;
   width: auto !important;
   min-width: 180px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 0 0 1px var(--gilt-ring),
+    0 4px 8px rgba(0, 0, 0, 0.4);
   z-index: 2100;
+}
+/* Native radio/checkbox re-cut in the panel's material: a hairline ring (round
+   for basemaps, square-socket for grid overlays) that takes a gilt ring with a
+   bronze pip / gold fill when armed — no browser-white widgets on the slab. */
+.leaflet-control-layers input[type='radio'],
+.leaflet-control-layers input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  margin: 0 6px 0 0;
+  vertical-align: -2px;
+  border: 1px solid var(--border-mid);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 120ms,
+    background 120ms;
+}
+.leaflet-control-layers input[type='radio'] {
+  border-radius: 50%;
+}
+.leaflet-control-layers input[type='checkbox'] {
+  border-radius: 2px;
+}
+.leaflet-control-layers input[type='radio']:hover,
+.leaflet-control-layers input[type='checkbox']:hover {
+  border-color: var(--brass);
+}
+.leaflet-control-layers input[type='radio']:checked {
+  border-color: var(--gilt-edge);
+  background: var(--gilt-bright);
+  /* Opaque ring gap between gilt rim and bronze pip (bg-rail, not the
+     translucent shell, so the pip stays crisp). */
+  box-shadow: inset 0 0 0 2px var(--bg-rail);
+}
+.leaflet-control-layers input[type='checkbox']:checked {
+  border-color: var(--gilt-edge);
+  background: var(--gilt-calm);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.45);
 }
 .leaflet-control-layers label {
   color: var(--fg-muted) !important;
@@ -2534,10 +2985,15 @@ html[lang='ja'] .rail-lang-label {
   flex-wrap: wrap;
   width: 180px; /* 4 × 45px columns; wraps to more rows as needed */
   background: var(--bg-shell);
+  background-image: var(--surface-texture);
   border: 0.5px solid var(--border-hairline);
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 0 0 1px var(--gilt-ring),
+    0 4px 12px rgba(0, 0, 0, 0.5);
   z-index: 2100;
 }
 .layer-overflow-panel.open {
@@ -2551,9 +3007,13 @@ html[lang='ja'] .rail-lang-label {
   gap: 0;
   border: none;
   background: var(--bg-shell);
+  background-image: var(--surface-texture);
   border: 0.5px solid var(--border-hairline);
-  border-radius: 8px;
-  box-shadow: none;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 0 0 1px var(--gilt-ring);
   padding: 0;
   overflow: hidden;
   /* Fixed height so the 0.5px border is absorbed (border-box) and the rail
@@ -2661,13 +3121,22 @@ html[lang='ja'] .rail-lang-label {
   box-sizing: border-box;
   padding: 4px 8px 4px 32px;
   background-color: var(--bg-panel);
-  background-image: var(--engrave-hatch-baked); /* lapidary hatch (input can't host ::before) */
-  border: 1px solid var(--border-soft);
+  background-image: var(--surface-texture); /* grain + hatch baked in (input can't host ::before) */
+  border: 0.5px solid var(--border-hairline);
   color: var(--fg-primary);
   font-family: var(--font-serif);
   font-size: var(--text-sm);
   outline: none;
-  border-radius: 8px;
+  border-radius: 4px;
+  /* Docks flush against .places-results when a search is active — the bottom
+     edge stays bare (no ring), matching the sidebar/toggle-handle docking
+     pattern, so the two read as one slab rather than a seam. */
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    -1px 0 0 var(--gilt-ring),
+    1px 0 0 var(--gilt-ring),
+    0 -1px 0 var(--gilt-ring);
   transition: width 0.2s ease;
 }
 .places-search input:focus {
@@ -2690,25 +3159,49 @@ html[lang='ja'] .rail-lang-label {
   width: calc(100vw - 154px);
 }
 
+/* Outer box: the visual slab (background/ring/max-height). Flex column with
+   two children — .places-list (scrollable, flexes to fill) and .places-credit
+   (fixed-size footer) — so the credit line has its own reserved row instead
+   of sticking over results that haven't scrolled into view yet. */
 .places-results {
   position: absolute;
   top: 100%;
   left: 0;
   width: 100%;
   max-height: 320px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   background: var(--bg-panel);
-  border: 1px solid var(--border-soft);
+  background-image: var(--surface-texture);
+  border: 0.5px solid var(--border-hairline);
   border-top: none;
-  list-style: none;
-  margin: 0;
-  padding: 0;
   z-index: 2100;
-  border-radius: 0 0 2px 2px;
+  border-radius: 0 0 4px 4px;
   box-sizing: border-box;
+  /* Clips .places-list / .places-credit (both plain rectangles) to the
+     rounded bottom corners — same technique as .layer-overflow-panel. */
+  overflow: hidden;
+  /* Top edge is the docking seam with .places-search input above — bare, no
+     ring or bevel, same reasoning as the input's own bottom edge. */
+  box-shadow:
+    inset 0 -1px 0 var(--bevel-groove),
+    -1px 0 0 var(--gilt-ring),
+    1px 0 0 var(--gilt-ring),
+    0 1px 0 var(--gilt-ring),
+    0 4px 12px rgba(0, 0, 0, 0.5);
 }
 .places-results[hidden] {
   display: none;
+}
+/* The actual scrollable option list — same flex/min-height:0 pattern as
+   .star-scroll (fixed header/footer + scrolling middle). */
+.places-list {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 .places-results li {
   display: flex;
@@ -2771,6 +3264,7 @@ html[lang='ja'] .rail-lang-label {
   font-size: var(--fs-title);
   font-weight: var(--fw-medium);
   color: var(--fg-primary);
+  letter-spacing: 0.1em;
   margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -2872,26 +3366,26 @@ html[lang='ja'] .rail-lang-label {
   transform: translateY(0);
 }
 
-/* GeoNames attribution — persistent sticky footer in the search results dropdown */
-.places-results li.places-credit,
-.places-results li.places-credit:hover {
+/* GeoNames attribution — a fixed footer row (.places-results flex child),
+   not part of the scrollable .places-list, so it never overlaps results. */
+.places-results .places-credit {
   display: block;
-  position: sticky;
-  bottom: 0;
+  flex: 0 0 auto;
   font-family: var(--font-serif);
   font-size: 11px;
   color: var(--fg-disabled);
   padding: 5px 8px 6px;
   background: var(--bg-panel);
+  background-image: var(--surface-texture);
   border-top: 1px solid var(--border-hairline);
   cursor: text;
   user-select: text;
 }
-.places-results li.places-credit a {
+.places-results .places-credit a {
   color: var(--fg-disabled);
   text-decoration: underline;
 }
-.places-results li.places-credit a:hover {
+.places-results .places-credit a:hover {
   color: var(--brass);
 }
 
@@ -3204,19 +3698,15 @@ html[lang='ja'] .rail-lang-label {
 }
 
 /* Constellation/xingguan name labels — divIcon markers, not Leaflet
-   tooltips, so we control positioning fully. Serif text + dark stroke
-   for readability on both dark night sky and light continents. */
+   tooltips, so we control positioning fully. Serif text with the engraved
+   soft-halo treatment: separation from the starfield comes from the halo,
+   legibility on the day side is moot (deep-sky labels sit under the veil). */
 .sky-label {
   font-family: var(--font-serif);
   font-size: 17px;
   line-height: 1.1;
   color: #f5f8ff;
-  text-shadow:
-    -1px -1px 0 rgba(0, 0, 0, 0.85),
-    1px -1px 0 rgba(0, 0, 0, 0.85),
-    -1px 1px 0 rgba(0, 0, 0, 0.85),
-    1px 1px 0 rgba(0, 0, 0, 0.85),
-    0 0 4px rgba(0, 0, 0, 0.7);
+  text-shadow: var(--engraved-shadow);
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
@@ -3234,13 +3724,24 @@ html[lang='ja'] .rail-lang-label {
   pointer-events: auto;
   cursor: pointer;
 }
+/* CJK constellation names read as inscriptions, not book type: characters set
+   sparsely (stele-title spacing) at regular weight. Kana names run long, so ja
+   gets a narrower tracking than zh. */
 :lang(zh) .sky-label-iau,
 :lang(ja) .sky-label-iau {
   font-style: normal;
+  font-weight: 400;
+}
+:lang(zh) .sky-label-iau {
+  letter-spacing: 0.2em;
+}
+:lang(ja) .sky-label-iau {
+  letter-spacing: 0.08em;
 }
 .sky-label-cn {
   color: #ffe3c9;
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: 0.2em;
   pointer-events: auto;
   cursor: pointer;
 }
@@ -3256,11 +3757,13 @@ html[lang='ja'] .rail-lang-label {
   font-weight: 400;
 }
 /* Smaller style for individual xingguan (rank 3: 五车、南船、北斗, …)
-   so mansions (rank 1) and enclosure walls (rank 2) stay dominant. */
+   so mansions (rank 1) and enclosure walls (rank 2) stay dominant. Tighter
+   tracking than the majors: minor labels cluster densely. */
 .sky-label-cn-minor {
   font-size: 13px;
   opacity: 0.8;
   font-weight: 400;
+  letter-spacing: 0.1em;
 }
 
 /* Per-star name labels (Sirius / 天狼星, etc). The offset that keeps the text
@@ -3272,11 +3775,7 @@ html[lang='ja'] .rail-lang-label {
   color: #ddd9cf;
   font-weight: 400;
   letter-spacing: 0.02em;
-  text-shadow:
-    -1px -1px 0 rgba(0, 0, 0, 0.85),
-    1px -1px 0 rgba(0, 0, 0, 0.85),
-    -1px 1px 0 rgba(0, 0, 0, 0.85),
-    1px 1px 0 rgba(0, 0, 0, 0.85);
+  text-shadow: var(--engraved-shadow);
 }
 /* Cross-source label overlap hider — set by js/label-collider.js after a
    sweep finds the label has lost a collision against a higher-priority one.
@@ -3300,11 +3799,7 @@ html[lang='ja'] .rail-lang-label {
   letter-spacing: 0.02em;
   white-space: nowrap;
   pointer-events: none;
-  text-shadow:
-    -1px -1px 0 rgba(0, 0, 0, 0.85),
-    1px -1px 0 rgba(0, 0, 0, 0.85),
-    -1px 1px 0 rgba(0, 0, 0, 0.85),
-    1px 1px 0 rgba(0, 0, 0, 0.85);
+  text-shadow: var(--engraved-shadow);
 }
 .sky-label-star-iau {
   font-size: 14px;
@@ -3324,16 +3819,12 @@ html[lang='ja'] .rail-lang-label {
 .gc-end-inner {
   display: inline-block;
   white-space: nowrap;
-  font-family: var(--font-serif);
+  font-family: var(--font-inscription);
   font-size: 12px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
   font-variant-numeric: tabular-nums;
   pointer-events: none;
-  text-shadow:
-    -1px -1px 0 rgba(0, 0, 0, 0.85),
-    1px -1px 0 rgba(0, 0, 0, 0.85),
-    -1px 1px 0 rgba(0, 0, 0, 0.85),
-    1px 1px 0 rgba(0, 0, 0, 0.85);
+  text-shadow: var(--engraved-shadow);
 }
 :lang(zh) .sky-label-star-iau,
 :lang(ja) .sky-label-star-iau {
@@ -3355,6 +3846,16 @@ html[lang='ja'] .rail-lang-label {
 .sky-label-star-stars {
   color: #ddd9cf;
   font-weight: 400;
+}
+
+/* Constellation-line groove lighting: the dark casing rides 0.7px above the
+   lit stroke (light falls from the top of the plate), so the pair reads as an
+   incision with a shaded upper lip rather than a light line with a symmetric
+   dark outline. SVG paths accept CSS transforms; Leaflet's own pane transform
+   composes on top during zoom animation. */
+.sky-line-iau-shadow,
+.sky-line-cn-shadow {
+  transform: translateY(-0.7px);
 }
 
 /* Enlarge the click hit area for sky-star CircleMarkers: every SVG path
@@ -3401,22 +3902,36 @@ body.day-mask-active .star-glare > div {
    filter it reads only this layer's own pixels and bakes into one texture, so
    the zoom tween just transforms it instead of re-rasterizing every frame. */
 
-/* Star detail popup (replaces the former sidebar-right star panel). */
+/* Star detail popup (replaces the former sidebar-right star panel). Brought
+   into the chiseled-slab family: same fill/texture/ring/bevel recipe as the
+   other floating panels — no more frosted-glass blur, which was a pre-
+   lapidary leftover and the odd one out against every other surface. */
 .leaflet-popup.sky-star-popup .leaflet-popup-content-wrapper {
   background: var(--bg-overlay);
+  background-image: var(--surface-texture);
   color: var(--text, #e8eef7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(8px);
+  border: 0.5px solid var(--border-hairline);
+  border-radius: 4px;
+  box-shadow:
+    inset 0 1px 0 var(--bevel-light),
+    inset 0 -1px 0 var(--bevel-groove),
+    0 0 0 1px var(--gilt-ring),
+    0 6px 24px rgba(0, 0, 0, 0.45);
 }
 .leaflet-popup.sky-star-popup .leaflet-popup-content {
   margin: 8px 0; /* horizontal inset moved into the children so .star-scroll's
                     scrollbar can reach the card's outer right edge */
   min-width: 220px;
 }
+/* Rotated-square pointer: same fill/texture as the card it hangs off of, plus
+   a matching gilt ring so the point reads as the card's own carved corner
+   rather than a separate glued-on wedge. Ring via box-shadow (not border) so
+   the 17px square's geometry — and the -10px margin that aims its point —
+   is untouched. */
 .leaflet-popup.sky-star-popup .leaflet-popup-tip {
   background: var(--bg-overlay);
+  background-image: var(--surface-texture);
+  box-shadow: 0 0 0 1px var(--gilt-ring);
 }
 
 /* ======== Asterism layer (hover-reveal celestite overlay) ======== */
@@ -3459,12 +3974,7 @@ body.day-mask-active .star-glare > div {
   letter-spacing: 0.04em;
   white-space: nowrap;
   transform: translate(-50%, -50%);
-  text-shadow:
-    -1px -1px 0 rgba(0, 0, 0, 0.85),
-    1px -1px 0 rgba(0, 0, 0, 0.85),
-    -1px 1px 0 rgba(0, 0, 0, 0.85),
-    1px 1px 0 rgba(0, 0, 0, 0.85),
-    0 0 4px rgba(0, 0, 0, 0.7);
+  text-shadow: var(--engraved-shadow);
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -3481,8 +3991,11 @@ body.day-mask-active .star-glare > div {
   }
 }
 .leaflet-popup.sky-star-popup .leaflet-popup-close-button {
-  color: #cdd6e8;
+  color: var(--text-mid, #9aa0aa);
   padding: 6px 8px 0 0;
+}
+.leaflet-popup.sky-star-popup .leaflet-popup-close-button:hover {
+  color: var(--brass, #b39468);
 }
 .leaflet-popup.sky-star-popup .star-panel {
   padding: 0;
@@ -3746,7 +4259,9 @@ body.day-mask-active .star-glare > div {
   position: fixed;
   z-index: 10001;
   pointer-events: none;
-  max-width: 260px;
+  /* Viewport clamp keeps the card inside narrow phone screens; the JS
+     horizontal clamping assumes the card is never wider than the viewport. */
+  max-width: min(260px, calc(100vw - 16px));
   white-space: normal;
   padding: 6px 10px 6px 11px;
   background: var(--bg-deep, #242628);
@@ -3759,9 +4274,24 @@ body.day-mask-active .star-glare > div {
   line-height: 1.45;
   opacity: 0;
   transition: opacity 120ms;
+  /* The definition text is copyable: a mouse can cross onto the visible card
+     (see the hover/fine rule below) and drag-select it. */
+  user-select: text;
+  -webkit-user-select: text;
 }
 .glossary-tip.is-visible {
   opacity: 1;
+}
+/* Only a real mouse gets to land on the card. The hidden card keeps
+   pointer-events:none so it never blocks clicks; touch (pointer:coarse) keeps
+   its tap-to-toggle path and taps still fall through. The compact name-label
+   chip stays read-only — it carries only a control name, nothing to copy, and
+   it hovers over interactive controls. */
+@media (hover: hover) and (pointer: fine) {
+  .glossary-tip.is-visible:not(.is-label) {
+    pointer-events: auto;
+    cursor: text;
+  }
 }
 /* Compact name-label variant (data-tip): control/layer names — a short dark chip,
    no brass bar, no wrapping, centred. Distinct from the wrapping definition card. */
@@ -3821,4 +4351,170 @@ body.day-mask-active .star-glare > div {
 .leaflet-control-zoom a {
   position: relative;
   isolation: isolate;
+}
+
+/* ---- Touch Adaptation ----
+   Two capability scopes, deliberately NOT width breakpoints: (pointer: coarse)
+   sizes hit areas for fingers, (hover: none) swaps hover-gated affordances for
+   always-on ones. A touchscreen laptop whose primary input is the trackpad
+   reports fine/hover and keeps the desktop behavior; narrowing a desktop
+   window never triggers these. Width-driven adjustments (type scale, density)
+   live in tokens.css and the 768px rail block instead. */
+@media (pointer: coarse) {
+  /* Kill the double-tap-zoom disambiguation delay on app chrome so taps fire
+     immediately. The Leaflet map container is left alone — Leaflet manages its
+     own touch-action for drag/pinch tuning. */
+  .rail,
+  .sidebar,
+  .sidebar-toggle,
+  .layer-btn,
+  .panel-toggle,
+  .rail-jump,
+  #tc-play,
+  .places-search,
+  .leaflet-control-zoom a,
+  .leaflet-control-layers {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* The tap highlight above is suppressed, so every control needs a pressed
+     state; mirror each control's existing hover treatment. */
+  .rail-jump:active {
+    color: var(--text-high, #e7e3da);
+  }
+  .sidebar-toggle:active,
+  .geo-locate-btn:active {
+    color: var(--brass, #b39468);
+  }
+  .layer-btn:active {
+    color: var(--fg-primary);
+  }
+  .leaflet-control-zoom a:active {
+    background: rgba(179, 148, 104, 0.12) !important;
+    color: var(--brass) !important;
+  }
+
+  /* Panel scrolling stays in the panel: pan-y keeps a vertical swipe from
+     doubling as a map pan where the gesture starts on the sheet, and
+     overscroll-behavior stops the rubber-band from chaining to the page. */
+  .sidebar-content,
+  .sidebar-scroll,
+  .eclipse-list,
+  .places-list {
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+  }
+
+  /* Zoom control: 22.5px halves are half a fingertip. Widen to the 45px
+     toolbar rhythm the other corner controls already use (90px = two 45px
+     buttons); !important required to beat the base rules' own !important. */
+  .leaflet-control-zoom {
+    width: 45px !important;
+    height: 90px !important;
+  }
+  .leaflet-control-zoom a {
+    width: 45px !important;
+    line-height: 44px !important;
+    font-size: 18px !important;
+  }
+
+  /* Layer rows: the 12px checkbox itself can stay small because Leaflet wraps
+     each row in a <label> — padding the label turns the whole row into the
+     target (≥36px tall, full panel width). */
+  .leaflet-control-layers label {
+    display: block;
+    margin: 0;
+    padding: 8px 6px;
+  }
+
+  /* Sidebar tab: the 22px protrusion is a design feature, so grow the hit box
+     invisibly instead of the tab. Coarse-only: with a mouse the extra ring
+     would steal clicks meant for the map beside the tab. */
+  .sidebar-toggle::after {
+    content: '';
+    position: absolute;
+    inset: -8px -12px;
+  }
+
+  /* Collapse headers: full-width already, but only as tall as the title text. */
+  .panel-toggle {
+    min-height: 36px;
+  }
+
+  /* Locate-me arrow is an ~18px svg; negative margin gives the padding back so
+     the header row layout doesn't move. */
+  .geo-locate-btn {
+    padding: 10px;
+    margin: -10px -4px -10px -10px;
+  }
+
+  /* 16px floor stops iOS Safari from auto-zooming the field on focus. */
+  .places-search input {
+    font-size: 16px;
+  }
+}
+
+@media (hover: none) {
+  /* The stepper triangles and their invisible reveal strips above/below each
+     time field are a hover affordance; without hover the strips just swallow
+     taps aimed at the fields. The touch path is tapping the field itself,
+     which brings up the numeric keyboard. */
+  .tc-zone-up,
+  .tc-zone-down,
+  .tc-step {
+    pointer-events: none;
+  }
+  .tc-step {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) and (pointer: coarse) {
+  /* Row-3 rail buttons are 22px tall in the drawer layout — grow them to a
+     tappable 32px and relax the row-3 pull-up so the taller rows don't collide. */
+  #tc-play,
+  .rail-jump {
+    height: 32px;
+    min-width: 32px;
+  }
+  #time-bar.rail-expanded #tc-play,
+  #time-bar.rail-expanded .rail-jump:not(.rail-jump-now) {
+    margin-top: -2px;
+  }
+}
+
+@media (max-width: 768px) and (hover: none) {
+  /* The drawer tab is hover-revealed on desktop so it never covers the
+     attribution link; without hover that makes it a ghost control (first tap
+     synthesizes hover, second tap lands). Keep it always visible and a bit
+     taller on touch — covering the link is the lesser evil there. */
+  .rail-handle {
+    opacity: 1;
+    pointer-events: auto;
+    height: 24px;
+    top: -24px;
+  }
+}
+
+/* ---- Phone Density ----
+   Companion to the tokens.css type step-down at the same width: with smaller
+   type, the desktop section/table rhythm leaves oversized gaps, so vertical
+   spacing tightens one notch too. Width-gated like the type scale — this is a
+   space budget, not an input-device question. */
+@media (max-width: 480px) {
+  .sidebar-section {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+  .galactic-meta {
+    margin: 0 0 6px;
+    padding-bottom: 6px;
+  }
+  .twilight-table td,
+  .body-almanac-table td,
+  .sat-pass-table td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
 }

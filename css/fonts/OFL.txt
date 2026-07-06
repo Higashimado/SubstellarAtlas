@@ -1,6 +1,9 @@
-Copyright 2017 The Literata Project Authors (https://github.com/googlefonts/literata)
+Copyright 2017 The Spectral Project Authors (https://github.com/productiontype/Spectral)
+Copyright 2020 The Cinzel Project Authors (https://github.com/NDISCOVER/Cinzel)
+Copyright 2017-2022 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.
 
-This Font Software is licensed under the SIL Open Font License, Version 1.1.
+The Font Software bundled in this directory (Spectral, Cinzel, Source Han Serif)
+is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
 http://scripts.sil.org/OFL
 

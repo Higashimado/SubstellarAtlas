@@ -398,10 +398,16 @@ const Places = (() => {
         input.setAttribute('aria-controls', 'places-results');
         input.setAttribute('aria-label', _t('search.placeholder'));
 
-        const list = L.DomUtil.create('ul', 'places-results', container);
+        // Outer box owns the visual slab (background/ring/max-height) and holds
+        // two independent flex children — the scrollable option list and the
+        // credit footer below it — so the footer has its own reserved space
+        // instead of overlaying results that haven't scrolled into view yet.
+        const wrap = L.DomUtil.create('div', 'places-results', container);
+        wrap.hidden = true;
+
+        const list = L.DomUtil.create('ul', 'places-list', wrap);
         list.id = 'places-results';
         list.setAttribute('role', 'listbox');
-        list.hidden = true;
 
         let composing = false;
         let debounceTimer = null;
@@ -409,7 +415,7 @@ const Places = (() => {
         let highlightIdx = -1;
 
         function closeDropdown() {
-          list.hidden = true;
+          wrap.hidden = true;
           list.innerHTML = '';
           input.setAttribute('aria-expanded', 'false');
           highlightIdx = -1;
@@ -435,19 +441,22 @@ const Places = (() => {
           return h + 'h ' + String(m).padStart(2, '0') + 'm, ' + sign + Math.abs(dec).toFixed(3) + '°';
         }
 
-        // Persistent GeoNames attribution, pinned to the bottom of the dropdown.
-        // Not a role="option" so keyboard navigation skips it. Static text (no i18n).
-        function appendCreditFooter() {
-          const li = document.createElement('li');
-          li.className = 'places-credit';
-          li.setAttribute('aria-hidden', 'true');
+        // Persistent GeoNames attribution — a `wrap` sibling of `list`, not a list
+        // <li>, so it sits in its own reserved footer space below the scrollable
+        // results rather than overlaying them. Not role="option" so keyboard
+        // navigation skips it. One node reused across renders (content re-set,
+        // not recreated) so a language switch mid-session still lands.
+        const credit = L.DomUtil.create('div', 'places-credit', wrap);
+        credit.setAttribute('aria-hidden', 'true');
+        credit.hidden = true;
+        function showCreditFooter() {
           const osmLink =
             '<a href="https://github.com/OSMChina/OSMChina-coverage" target="_blank" rel="noopener">OSMChina</a>';
-          li.innerHTML =
+          credit.innerHTML =
             '© <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0)' +
             ' | ' +
             _t('credits.osmchina').replace('{link}', osmLink);
-          list.appendChild(li);
+          credit.hidden = false;
         }
 
         function renderResults(results) {
@@ -457,8 +466,8 @@ const Places = (() => {
             li.className = 'places-no-results';
             li.textContent = _t('search.noResults');
             list.appendChild(li);
-            appendCreditFooter();
-            list.hidden = false;
+            showCreditFooter();
+            wrap.hidden = false;
             input.setAttribute('aria-expanded', 'true');
             return;
           }
@@ -469,7 +478,10 @@ const Places = (() => {
             if (r.isCelestial) {
               li.className = 'places-celestial';
               const meta = r.meta ? '<span class="places-meta">（' + r.meta + '）</span>' : '';
-              const coord = _fmtCelCoord(r.ra, r.dec);
+              // Eclipses carry a ground point (umbral centre / sub-lunar point at
+              // greatest eclipse), not a fixed RA/Dec — show it as a geographic coord.
+              const coord =
+                r.kind === 'eclipse' && r.lat != null ? _fmtGeoCoord(r.lat, r.lng) : _fmtCelCoord(r.ra, r.dec);
               li.innerHTML =
                 '<span class="search-badge badge-' +
                 r.kind +
@@ -499,8 +511,8 @@ const Places = (() => {
             });
             list.appendChild(li);
           });
-          appendCreditFooter();
-          list.hidden = false;
+          showCreditFooter();
+          wrap.hidden = false;
           input.setAttribute('aria-expanded', 'true');
           highlightIdx = -1;
         }
@@ -600,7 +612,8 @@ const Places = (() => {
               li.textContent = _t('search.unavailable');
               list.innerHTML = '';
               list.appendChild(li);
-              list.hidden = false;
+              credit.hidden = true;
+              wrap.hidden = false;
               input.setAttribute('aria-expanded', 'true');
               return;
             }
@@ -631,7 +644,7 @@ const Places = (() => {
         // (applied above) stops in-dropdown mousedowns from reaching document, so
         // selecting text inside the dropdown keeps it open.
         document.addEventListener('mousedown', (e) => {
-          if (!list.hidden && !container.contains(e.target)) closeDropdown();
+          if (!wrap.hidden && !container.contains(e.target)) closeDropdown();
         });
 
         input.addEventListener('keydown', (e) => {

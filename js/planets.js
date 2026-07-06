@@ -136,6 +136,18 @@ const Planets = (() => {
       small: { src: 'img/iapetus-small.svg', w: 16, h: 16 },
       large: { src: 'img/iapetus-large.svg', w: 124, h: 124 },
     },
+    ceres: {
+      small: { src: 'img/ceres-small.svg', w: 18, h: 18 },
+      large: { src: 'img/ceres-large.svg', w: 126, h: 126 },
+    },
+    vesta: {
+      small: { src: 'img/vesta-small.svg', w: 18, h: 18 },
+      large: { src: 'img/vesta-large.svg', w: 126, h: 121 },
+    },
+    pallas: {
+      small: { src: 'img/pallas-small.svg', w: 19, h: 16 },
+      large: { src: 'img/pallas-large.svg', w: 131, h: 108 },
+    },
   };
 
   // Planet equatorial diameters (km).  Saturn uses ring-inclusive extent.
@@ -368,7 +380,7 @@ const Planets = (() => {
       get name() {
         return _t('planet.moon');
       },
-      symbol: '☽',
+      symbol: '☾',
       color: '#94a3b8',
       labelColor: '#cbd5e1',
     },
@@ -707,6 +719,80 @@ const Planets = (() => {
       '</div>';
     const html = scaleDiskWrap(clipped, renderSz, renderSz, visualSz, visualSz);
     return { html: html, size: visualSz };
+  }
+
+  // Saturn's ringed asset is width-fit to its ring-inclusive box, so at an event
+  // icon's small size its disc renders far smaller than the square-aspect planets
+  // beside it. For the sidebar cards we oversize the render so Saturn's disc reads
+  // as one of the family (SAT_ICON_DISC_BOOST, tuned to ~14px — comfortably under
+  // the ~20px peer disc so the ring keeps a modest footprint and does not dominate
+  // the row), then tilt the whole glyph well past the ring's own spread so it runs
+  // diagonally and clears the adjacent slot instead of bleeding straight across it.
+  // Map markers keep the wide flat footprint (they call buildEngravingIconLOD
+  // directly), so this treatment stays inside buildEventDiskIcon. The wider layout
+  // footprint the tilted ring needs is reserved in CSS (.pev-card .ec-glyph /
+  // .pev-glyph-slot), applied to every planet-event card so the text column starts
+  // at the same x regardless of whether Saturn is present — not a Saturn-only text
+  // shift.
+  const SAT_ICON_DISC_BOOST = 1.8;
+  const SAT_ICON_TILT_DEG = 40;
+  // Asteroids have negligible phase angle (≤6°, always near-full), so the event
+  // icon is a flat engraving disk at 0.8× the slot size.
+  const AST_ICON_SCALE = 0.8;
+
+  // The outer span holds a slot-sized layout footprint so the flex row is not
+  // shoved by the oversized art; the inner span overflows and rotates about the
+  // disc centre, which sits at the box centre of the LOD render.
+  function buildSaturnEventIcon(sizePx) {
+    const art = buildEngravingIconLOD('saturn', Math.round(sizePx * SAT_ICON_DISC_BOOST), 1).html;
+    return (
+      '<span class="pev-saturn-icon" style="position:relative;display:inline-block;vertical-align:middle;overflow:visible;width:' +
+      sizePx +
+      'px;height:' +
+      sizePx +
+      'px"><span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-' +
+      SAT_ICON_TILT_DEG +
+      'deg)">' +
+      art +
+      '</span></span>'
+    );
+  }
+
+  function buildAsteroidEventIcon(bodyId, sizePx) {
+    const fpPx = Math.round(sizePx * AST_ICON_SCALE);
+    const { html, width, height } = buildEngravingIconLOD(bodyId, fpPx, 1);
+    return (
+      '<span style="display:inline-flex;align-items:center;justify-content:center;width:' +
+      sizePx +
+      'px;height:' +
+      sizePx +
+      'px">' +
+      html +
+      '</span>'
+    );
+  }
+
+  // ---- Build a Small Phased Disk Icon for Non-Map Contexts (e.g. Sidebar Cards) ----
+  // Same phase/bright-limb math as the map markers above, sized for an inline
+  // fixed-size icon rather than a zoom-dependent footprint — no LOD crossfade
+  // needed at these small sizes. Saturn skips the terminator (imperceptible
+  // phase from Earth, same treatment as its map marker).
+  function buildEventDiskIcon(bodyId, date, sizePx) {
+    // Asteroids are not AE Body constants; they use a flat engraving icon.
+    if (ENGRAVING[bodyId] && !CONFIGS.find((c) => c.id === bodyId)) return buildAsteroidEventIcon(bodyId, sizePx);
+    const cfg = CONFIGS.find((c) => c.id === bodyId);
+    if (!cfg) return '';
+    const bodyPos = bodyPosition(date, cfg.body);
+    const sunPos = bodyPosition(date, Astronomy.Body.Sun);
+    const illum = Astronomy.Illumination(cfg.body, date);
+    if (bodyId === 'moon') {
+      const paDeg = deg(positionAngle(bodyPos.alpha, bodyPos.delta, sunPos.alpha, sunPos.delta));
+      return buildMoonDiskHtml(illum, paDeg, sizePx, 1, 0, null).html;
+    }
+    if (bodyId === 'saturn') return buildSaturnEventIcon(sizePx);
+    const i = rad(illum.phase_angle);
+    const chi = positionAngle(bodyPos.alpha, bodyPos.delta, sunPos.alpha, sunPos.delta);
+    return buildPhasedEngravingIcon(bodyId, sizePx, 1, i, chi).html;
   }
 
   // ---- Build Luminosity-Model Markers for Any Body ----
@@ -1543,7 +1629,7 @@ const Planets = (() => {
 
   const _SYM_BY_ID = {
     sun: '☉',
-    moon: '☽',
+    moon: '☾',
     mercury: '☿',
     venus: '♀',
     mars: '♂',
@@ -1554,6 +1640,17 @@ const Planets = (() => {
   };
 
   function getSearchLatLng(id, date) {
+    // Comet delegation — a `comet:`-prefixed trajectory id resolves to the Comet
+    // module's own Kepler/Barker solver, keyed by the bare designation.
+    if (typeof id === 'string' && id.slice(0, 6) === 'comet:' && typeof Comet !== 'undefined' && Comet.subPointById) {
+      const cp = Comet.subPointById(id.slice(6), date);
+      return cp ? { lat: cp.lat, lng: GeoUtils.normLng(cp.lng) } : null;
+    }
+    // Asteroid delegation — Asteroids module owns its own Kepler math.
+    if (typeof Asteroids !== 'undefined') {
+      const ast = Asteroids.subPointById(id, date);
+      if (ast) return { lat: ast.lat, lng: GeoUtils.normLng(ast.lng) };
+    }
     if (_JMOON_BY_ID[id]) {
       const sp = jupiterMoonGeo(date, _JMOON_BY_ID[id].key).sp;
       return { lat: sp.lat, lng: GeoUtils.normLng(sp.lng) };
@@ -1627,6 +1724,16 @@ const Planets = (() => {
       '</span><span class="value">' +
       g.sp.distAU.toFixed(3) +
       ' AU</span></div>';
+    const _moonDiamKm = MOON_DIAM_KM[m.id];
+    const diamRow = _moonDiamKm
+      ? '<div class="info-row"><span class="label"' +
+        _glossAttr('apparent_diameter') +
+        '>' +
+        _t('sky.angular_diam') +
+        '</span><span class="value">' +
+        ((_moonDiamKm / (g.sp.distAU * AU_KM)) * 206265).toFixed(2) +
+        '″</span></div>'
+      : '';
     const parentRow =
       '<div class="info-row"><span class="label">' +
       _t('sky.parent_body') +
@@ -1663,6 +1770,7 @@ const Planets = (() => {
       '</span></div>' +
       magRow +
       distRow +
+      diamRow +
       parentRow +
       '</div>' +
       skyInfo +
@@ -1698,6 +1806,16 @@ const Planets = (() => {
       '</span><span class="value">' +
       g.sp.distAU.toFixed(3) +
       ' AU</span></div>';
+    const _smoonDiamKm = MOON_DIAM_KM[m.id];
+    const diamRow = _smoonDiamKm
+      ? '<div class="info-row"><span class="label"' +
+        _glossAttr('apparent_diameter') +
+        '>' +
+        _t('sky.angular_diam') +
+        '</span><span class="value">' +
+        ((_smoonDiamKm / (g.sp.distAU * AU_KM)) * 206265).toFixed(2) +
+        '″</span></div>'
+      : '';
     const parentRow =
       '<div class="info-row"><span class="label">' +
       _t('sky.parent_body') +
@@ -1734,6 +1852,7 @@ const Planets = (() => {
       '</span></div>' +
       magRow +
       distRow +
+      diamRow +
       parentRow +
       '</div>' +
       skyInfo +
@@ -1761,6 +1880,7 @@ const Planets = (() => {
       elatRow = '';
     let spectralRow = '',
       tempRow = '';
+    let absMagRow = '';
 
     try {
       const ill = Astronomy.Illumination(body, date);
@@ -1850,6 +1970,15 @@ const Planets = (() => {
           '</span><span class="value">' +
           distAU.toFixed(3) +
           ' AU</span></div>';
+        // The Sun's V-band absolute magnitude is the fixed +4.83 the whole
+        // stellar-distance ladder is anchored to, so it is a constant, not a
+        // per-date figure — shown so the −26.74 apparent value has a yardstick.
+        absMagRow =
+          '<div class="info-row"><span class="label"' +
+          _glossAttr('absolute_magnitude') +
+          '>' +
+          _t('star.absolute_magnitude') +
+          '</span><span class="value">+4.83</span></div>';
       } else {
         distRow =
           '<div class="info-row"><span class="label"' +
@@ -1903,7 +2032,9 @@ const Planets = (() => {
         _glossAttr('spectral_type') +
         '>' +
         _t('star.spectral_type') +
-        '</span><span class="value">G2V</span></div>';
+        '</span><span class="value"' +
+        Spectral.tipAttr('G2V') +
+        '>G2V</span></div>';
       tempRow =
         '<div class="info-row"><span class="label"' +
         _glossAttr('effective_temp') +
@@ -1949,6 +2080,7 @@ const Planets = (() => {
       illumRow +
       libRow +
       distRow +
+      absMagRow +
       '</div>' +
       skyInfo +
       '</div>' +
@@ -2007,6 +2139,8 @@ const Planets = (() => {
     CONFIGS,
     bodySubPoint,
     bodyAngularDiamArcsec,
+    buildEventDiskIcon,
+    buildEngravingIconLOD,
     getSearchLatLng,
     getBodyRaDec,
     getMoonIds,

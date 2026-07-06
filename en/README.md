@@ -3,12 +3,11 @@
 [简体中文](../zh-Hans/README.md) · [繁體中文](../zh-Hant/README.md) · **English** · [Français](../fr/README.md) · [Español](../es/README.md) · [Italiano](../it/README.md) · [日本語](../ja/README.md)
 
 <p align="center">
-  <img src="../docs/demo/world_map.png" width="100%">
+  <img src="../docs/demo/constellation.png" width="100%">
 </p>
 
 **Website**: https://higashimado.github.io/SubstellarAtlas/
-
-The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
+The Substellar Atlas is a visualization built on the concept of the *substellar point*. The celestial sphere is projected onto the Earth's surface, and the two are laid together. On this map every celestial body sits at the geographic location of its substellar point, drifting with the Earth and turning slowly with a period of 23h 56m. The interplay of sky and Earth naturally reveals where each kind of astronomical event is visible across the globe: day and night, the planets, comets, deep-sky objects, eclipses, the aurora, artificial satellites and more.
 
 ## Concept
 
@@ -17,7 +16,7 @@ The Substellar Atlas is a visualization built on the concept of the *substellar 
 > *— Sima Qian, Records of the Grand Historian, "Treatise on the Celestial Offices" (1st c. BCE): as Mercury appears among different lunar mansions at the equinoxes and solstices, each region of the realm (Qi, Chu, Han, the Central States) is allotted its own quarter of the sky. An early articulation of fēnyě.*
 
 <p align="center">
-  <img src="../docs/demo/xingguan_wuzhuhou.png" width="100%">
+  <img src="../docs/demo/xingguan.png" width="100%">
 </p>
 
 The heavens have their constellations; the Earth has its regions. Linking phenomena in the sky to areas on the ground is an idea as old as astronomy and astrology themselves: ancient China mapped the twenty-eight lunar mansions onto the Nine Provinces and the feudal states through **分野** (*fēnyě*, "field-allocation"), while in the Greco-Roman world Ptolemy proposed correspondences between the twelve signs of the zodiac and nations. Some dismissed the scheme as far-fetched, yet it revealed a symmetry and an isomorphism between sky and Earth, a correspondence that has fed the imagination and inquiry of every age since.
@@ -26,7 +25,7 @@ Modern geodesy gives this linkage a rigorous form: ```lat = Dec, lon = RA − GM
 
 * **Westward rotation**: the star map turns with the celestial sphere over one sidereal day, exactly opposite to the Earth's own rotation, so the stars drift slowly westward across the fixed ground beneath them.
 * **East–west mirrored**: the observer looks down on the star map from outside, the opposite of gazing up at the night sky from within, so east and west are flipped relative to ordinary observation.
-* **Nearer looms larger**: bodies are drawn at their apparent, not physical, size. The Moon, being close to the Earth, takes up far more area than the planets or deep-sky objects.
+* **Nearer looms larger**: bodies are drawn at their apparent, not physical, size; the nearby Moon looms far larger than the distant planets.
 
 ## Features
 
@@ -36,8 +35,9 @@ The base map uses a dark theme: [CARTO Dark Matter](https://github.com/cartodb/b
 
 | Category | Layers |
 |---|---|
-| Stars / Constellations / Xingguan | Stars, deep-sky objects, meteor showers, constellations / star officials (xingguan) / asterisms, multilingual labels, coordinate reference lines |
-| Sun / Moon / Planets | Disc rendering, phase rendering, sunlight / moonlight veils |
+| Stars / Constellations / Xingguan | Stars, deep-sky objects, the Milky Way, meteor showers, constellations / star officials (xingguan) / asterisms, multilingual labels, coordinate reference lines |
+| Sun / Moon | Disc rendering, phase rendering, sunlight / moonlight veils |
+| Planets / Comets | Disc rendering, phase rendering, Jovian / Saturnian moons, asteroids, comets, event list |
 | Eclipses | Event list, visibility range, local circumstances and diagrams |
 | Light pollution | Data rendering (D. J. Lorenz) |
 | Auroral oval | Data rendering (NOAA SWPC OVATION) |
@@ -57,9 +57,38 @@ Click an icon or label on the compass to extend its **bearing ray**. While the c
   <img src="../docs/demo/compass_sunrise.png" width="100%">
 </p>
 
+### Sunlight & Moonlight Veils
+
+Turning on the Sun or Moon layer also brings up its light veil. The sunlight veil is built from four bands of constant brightness, one each for daylight and the civil, nautical and astronomical twilight zones. The moonlight veil instead varies in brightness with the Moon's illumination (brightest at full Moon, all but invisible near the new), and during a lunar eclipse it takes on a rust-red cast that deepens with the umbral magnitude. The layer control at the top right toggles the light veils on and off.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
+### Celestial Engravings
+
+The Sun, the Moon, the planets and some comets (bodies that show a visible disc) appear on the map as engraving-style icons, drawn in the manner of the engraved plates the British optical-instrument maker and mapmaker [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) published in the *Monthly Notices of the Royal Astronomical Society* in 1870. Each disc subtends exactly its apparent diameter on the map and so changes with the body's distance from the Earth; the shadow across the disc is rendered from its phase angle. For Solar System bodies, the rendered size corresponds to apparent diameter as follows:
+
+- the Sun and Moon span at most about 0.53°, roughly 60 km projected onto the Earth's surface, about the size of a giant city;
+- Jupiter spans at most about 50″, roughly 1 km on the surface, about the size of a large neighbourhood;
+- Uranus spans at most about 4″, roughly 80 m on the surface, about the size of a regulation soccer pitch.
+
+
+<p align="center">
+  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
+</p>
+
+### Body Trajectories
+
+The Planets & Comets layer offers a list of conjunction- and opposition-related events, with filters tied to particular bodies; clicking an event jumps to where the body sits at the moment it occurs. On arrival, the planet's or comet's path over the days around the event opens automatically, marking its position on successive dates at a set interval. Click a time label along the trajectory to jump to that instant. Beyond the Moon and the planets, the event list currently covers three of the larger asteroids (Ceres, Pallas, Vesta) and the bright comets discovered between 2000 and 2025 that reach apparent magnitude 6 or brighter (such as [Tsuchinshan–ATLAS](https://en.wikipedia.org/wiki/Comet_Tsuchinshan%E2%80%93ATLAS)).
+
+<p align="center">
+  <img src="../docs/demo/planet_tracks.png" width="100%">
+</p>
+
 ### Eclipse Interaction
 
-When an eclipse is under way, the map shows the pre-loaded envelope curves for its visibility range together with the real-time envelope ring for the instantaneous visibility range. Open the panel on the left for the 2000–2049 list of eclipses; open the panel on the right for the next eclipse visible from the selected location, along with the local circumstances of any eclipse currently in progress.
+When an eclipse is under way, the map shows the pre-loaded envelope curves for its visibility range together with the real-time envelope ring for the instantaneous visibility range. Open the panel on the left for the 2000–2099 list of eclipses; open the panel on the right for the next eclipse visible from the selected location, along with the local circumstances of any eclipse currently in progress.
 
 <p align="center">
   <img src="../docs/demo/total_solar_eclipse_envelope.png" width="100%">
@@ -74,38 +103,9 @@ The lunar-eclipse diagram is set against a **shadow map** of the Earth's penumbr
   <br>
 </p>
 
-### Sunlight & Moonlight Veils
+### Auroral Oval, Light Pollution & Satellites
 
-The Sun and Moon layers come with light veils that simulate their visible ranges. The sunlight veil is built from four bands of constant brightness, one each for daylight and the civil, nautical and astronomical twilight zones. The moonlight veil instead varies in brightness with the Moon's illumination (brightest at full Moon, all but invisible near the new), and during a lunar eclipse it takes on a rust-red cast that deepens with the umbral magnitude. The layer control at the top right toggles the light veils on and off.
-
-<p align="center">
-  <img src="../docs/demo/moonlight.png" width="100%">
-</p>
-
-### Celestial Engravings
-
-The Sun, the Moon and the planets (bodies that show a visible disc) appear on the map as engraving-style icons, drawn in the manner of the engraved plates the British optical-instrument maker and mapmaker [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) published in the *Monthly Notices of the Royal Astronomical Society* in 1870. Each disc subtends exactly its apparent diameter on the map and so changes with the body's distance from the Earth; the shadow across the disc is rendered from its phase angle. For Solar System bodies, the rendered size corresponds to apparent diameter as follows:
-
-- the Sun and Moon span at most about 0.53°, roughly 60 km projected onto the Earth's surface, about the size of a giant city;
-- Jupiter spans at most about 50″, roughly 1 km on the surface, about the size of a large neighbourhood;
-- Uranus spans at most about 4″, roughly 80 m on the surface, about the size of a regulation soccer pitch.
-
-
-<p align="center">
-  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
-</p>
-
-### Ecliptic Graduations
-
-To give a reference for the positions of the Sun and the other bodies, coordinate reference lines are drawn for the ecliptic, the celestial equator, the Moon's path, the galactic equator and more, each of which can be turned on or off from the layer control at the top right. As the reference line on which the Sun lies, the ecliptic is drawn as a bronze band of twin rails; the band marks the ecliptic longitudes of the solstices and equinoxes, along with longitude ticks every 1°. Hovering over a solstice or equinox label reveals the exact time of its next occurrence. Turn on the xingguan layer to see the twenty-eight lunar mansions arrayed around the ecliptic.
-
-<p align="center">
-  <img src="../docs/demo/eclipse_belt.png" width="100%">
-</p>
-
-### Data Overlays
-
-Alongside the astronomical layers, the project integrates light-pollution, auroral-oval and satellite data, all of which can be overlaid at once. To keep the information from clashing, a layer-conflict mechanism closes incompatible layers automatically. The constellation and light-pollution layers, for instance, cannot be open together. The light-pollution and auroral-oval layers follow the colour conventions of their source sites. The satellite layer draws ground tracks in bronze-green, with the gold stretches marking where a satellite's flare may be seen from the ground. The light-pollution, aurora and satellite sections of the right-hand info panel give detailed observing information. Note that the auroral-oval and satellite data are near-real-time forecasts: once the data are out of date, the layer is locked and greyed out.
+Alongside the astronomical layers, the project integrates light-pollution, auroral-oval and satellite data, all of which can be overlaid at once. To keep the information from clashing, a layer-conflict mechanism closes incompatible layers automatically. The constellation and light-pollution layers, for instance, cannot be open together. The light-pollution and auroral-oval layers follow the colour conventions of their source sites. The satellite layer draws ground tracks in bronze-green, with the gold stretches marking where a satellite's flare may be seen from the ground. The light-pollution, aurora and satellite sections of the right-hand info panel give detailed observing information. The auroral-oval and satellite data are near-real-time forecasts: once the data are out of date, the layer is locked and greyed out.
 
 <p align="center">
   <img src="../docs/demo/multi_layers.png" width="100%">
@@ -113,9 +113,9 @@ Alongside the astronomical layers, the project integrates light-pollution, auror
 
 ## Datasets
 
-### Eclipses (2000–2049)
+### Eclipses (2000–2099)
 
-The project uses the solar and lunar position vectors from [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 to compute the 112 solar and 114 lunar eclipses between 2000 and 2049. The dataset holds the Besselian elements used to compute each solar eclipse's contact times and positions, along with the ground-envelope curves that describe its coverage (umbral central line, northern and southern umbral limits, iso-magnitude lines, northern and southern penumbral limits, sunrise/sunset maximum-eclipse lines, sunrise/sunset curves and so on); the lunar-eclipse dataset holds only an index.
+The project uses the solar and lunar position vectors from [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 to compute the 226 solar and 228 lunar eclipses between 2000 and 2099. The dataset holds the Besselian elements used to compute each solar eclipse's contact times and positions, along with the ground-envelope curves that describe its coverage (umbral central line, northern and southern umbral limits, iso-magnitude lines, northern and southern penumbral limits, sunrise/sunset maximum-eclipse lines, sunrise/sunset curves and so on); the lunar-eclipse dataset holds only an index.
 
 **Note:** a solar eclipse's real-time shadow and coverage, and a lunar eclipse's coverage, fall outside the dataset: they are rendered in real time by the same algorithms.
 
@@ -176,8 +176,10 @@ The project's own code is released under the [**GNU General Public License v3.0*
 | Lunar calendar | [lunar-javascript](https://github.com/6tail/lunar-javascript) 1.7.7 | 6tail | MIT |
 | Constellation lines | [d3-celestial](https://github.com/ofrohn/d3-celestial) | Olaf Frohn | BSD |
 | Star data | [HYG database](https://www.astronexus.com/projects/hyg) | David Nash | CC BY-SA 4.0 |
+| Star data | [Gaia DR3](https://www.cosmos.esa.int/gaia) | ESA / Gaia / DPAC | CC BY-NC 3.0 IGO |
 | Traditional Chinese star names | [Stellarium](https://stellarium.org/) | Stellarium community | CC BY-SA |
 | Traditional Chinese star names | [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement) | Guanjin0562 | GPL-2.0 |
+| Saturn's moons | [TASS 1.7](https://ftp.imcce.fr/pub/ephem/satel/tass17/) | Vienne & Duriez / J. Gajdosik | MIT |
 | Comets / Asteroids | [JPL](https://ssd.jpl.nasa.gov/) · [MPC](https://www.minorplanetcenter.net/) | JPL · MPC | Public Domain |
 | Deep-sky objects | [OpenNGC](https://github.com/mattiaverga/OpenNGC) | Mattia Verga | CC BY-SA 4.0 |
 | Eclipses | [EclipseWise](https://www.eclipsewise.com/) | Fred Espenak | © Espenak |
@@ -187,6 +189,7 @@ The project's own code is released under the [**GNU General Public License v3.0*
 | Satellite elements (TLEs) | [CelesTrak](https://celestrak.org/) | T. S. Kelso | Public Domain |
 | Place-name lookup | [GeoNames](https://www.geonames.org/) | GeoNames | CC BY 4.0 |
 | Mainland China places | [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage) | OSMChina | GPL-3.0 |
-| Latin fonts | [Source Serif](https://github.com/adobe-fonts/source-serif) | Adobe | OFL |
+| Latin fonts | [Spectral](https://fonts.google.com/specimen/Spectral) | Production Type | OFL |
 | CJK fonts | [Source Han Serif](https://github.com/adobe-fonts/source-han-serif) | Adobe | OFL |
+| Inscriptional font | [Cinzel](https://fonts.google.com/specimen/Cinzel) | Natanael Gama | OFL |
 | Decompression | [Pako](https://github.com/nodeca/pako) 2.1.0 | Nodeca | MIT |

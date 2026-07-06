@@ -72,11 +72,16 @@ const Sidebar = (() => {
   // Called at every state-change that could flip either condition.
   function _updateHandleVisibility() {
     const eclipseOn = typeof AppState !== 'undefined' && AppState.isLayerOn && AppState.isLayerOn('eclipse');
+    const planetsOn = typeof AppState !== 'undefined' && AppState.isLayerOn && AppState.isLayerOn('planets');
+    // The planet-events list (now "Planets & Comets": planetary events + lunar
+    // phases + comet milestones) rides either the planets or the moon layer.
+    const moonOn = typeof AppState !== 'undefined' && AppState.isLayerOn && AppState.isLayerOn('moon');
     const pinOn =
       !!window.currentObserverLatLng || !!(typeof Observer !== 'undefined' && Observer.isLocked && Observer.isLocked());
     const leftEl = elLeft();
     const rightEl = elRight();
-    if (leftEl) leftEl.dataset.hasContent = eclipseOn || sidebarState.left.open ? 'true' : 'false';
+    if (leftEl)
+      leftEl.dataset.hasContent = eclipseOn || planetsOn || moonOn || sidebarState.left.open ? 'true' : 'false';
     if (rightEl) rightEl.dataset.hasContent = pinOn || sidebarState.right.open ? 'true' : 'false';
   }
 
@@ -121,23 +126,36 @@ const Sidebar = (() => {
     }
   }
 
-  // Layer → sidebar autoOpen mapping. Currently only eclipse-list is wired;
-  // others can be added without code changes elsewhere.
+  // Layer → sidebar autoOpen mapping. Both eclipse-list and planet-events share
+  // the left panel; the owner arbiter (below) resolves contention by priority.
   const LAYERS = {
     'eclipse-list': { defaultPanel: 'left', autoOpen: true },
+    'planet-events': { defaultPanel: 'left', autoOpen: true },
   };
 
   function onLayerToggle(layerId, isOn) {
     const meta = LAYERS[layerId];
     if (!meta || !meta.defaultPanel) return;
-    if (isOn && meta.autoOpen) {
-      if (sidebarState[meta.defaultPanel].manualOverride !== false) {
+    if (isOn) {
+      if (meta.autoOpen && sidebarState[meta.defaultPanel].manualOverride !== false) {
         setSidebar(meta.defaultPanel, true, 'auto');
       }
-    } else if (!isOn) {
-      // Reset override so next time the layer is toggled on, autoOpen works again
-      sidebarState[meta.defaultPanel].manualOverride = null;
-      setSidebar(meta.defaultPanel, false, 'auto');
+    } else {
+      // Release this layer's claim, then re-render whatever still owns the panel.
+      if (layerId === 'eclipse-list') {
+        _eclipseListCtrl = null;
+        _eclipseListOnSelect = null;
+      } else if (layerId === 'planet-events') {
+        _planetListCtrl = null;
+        _planetListOnSelect = null;
+      }
+      if (_leftFront === layerId) _leftFront = null; // released front yields to the survivor
+      _renderLeftOwner();
+      // Close the drawer only when no claimant remains on this panel.
+      if (meta.defaultPanel === 'left' ? _leftOwner() == null : true) {
+        sidebarState[meta.defaultPanel].manualOverride = null;
+        setSidebar(meta.defaultPanel, false, 'auto');
+      }
     }
     _updateHandleVisibility();
   }
@@ -336,6 +354,7 @@ const Sidebar = (() => {
       moon_always_up: 'na_moon_always_up',
       moon_always_down: 'na_moon_always_down',
     };
+
     const tbody = rows
       .map((r) => {
         // '—' = no observable window; r.reason carries the precise cause computed
@@ -368,6 +387,27 @@ const Sidebar = (() => {
   }
 
   // ---- Galactic Core Altitude Chart ----
+  // Text width in SVG user units (= px at a given font-size), via one reused
+  // offscreen canvas. The chart's <text> has no font of its own, so it inherits
+  // the sidebar's — measuring with that same family keeps CJK and Latin widths
+  // honest when the legend centers itself.
+  let _measureCtx = null;
+  function _textWidthUnits(str, px, family) {
+    if (typeof document === 'undefined' || !document.createElement) return str.length * px * 0.6;
+    if (!_measureCtx) _measureCtx = document.createElement('canvas').getContext('2d');
+    _measureCtx.font = px + 'px ' + family;
+    return _measureCtx.measureText(str).width;
+  }
+
+  function _chartFontFamily() {
+    try {
+      const el = (typeof contentRight === 'function' && contentRight()) || document.body;
+      return (el && getComputedStyle(el).fontFamily) || 'serif';
+    } catch (_) {
+      return 'serif';
+    }
+  }
+
   function buildChart(points) {
     const W = 320,
       H = 168;
@@ -491,7 +531,14 @@ const Sidebar = (() => {
     // Border on top
     parts.push(borderRect);
 
-    // Legend — single row; i18n strings are abbreviated so they fit all locales
+    // Legend — single row; i18n strings are abbreviated so they fit all locales.
+    // Items keep their fixed internal offsets; the whole row is then shifted so it
+    // sits centered in the box, since the abbreviated labels differ in width by
+    // locale/script and a fixed left edge leaves them lopsided.
+    const coreLabel = _t('panel.galactic.legend.galactic_core');
+    const legendW = 204 + _textWidthUnits(coreLabel, 13, _chartFontFamily()); // last text's right edge, from PAD.left
+    const legendDx = (W - legendW) / 2 - PAD.left;
+    parts.push(`<g class="galactic-legend" transform="translate(${legendDx.toFixed(1)},0)">`);
     parts.push(`<rect x="${PAD.left}" y="3" width="10" height="7" fill="#0f172a" opacity="0.85"/>`);
     parts.push(
       `<text x="${PAD.left + 14}" y="12" font-size="13" fill="#9aa0aa"${_glossAttr('astro_night')}>${_t('panel.galactic.legend.astro_night')}</text>`
@@ -504,8 +551,9 @@ const Sidebar = (() => {
       `<line x1="${PAD.left + 188}" y1="7" x2="${PAD.left + 200}" y2="7" stroke="#f59e0b" stroke-width="1.5"/>`
     );
     parts.push(
-      `<text x="${PAD.left + 204}" y="12" font-size="13" fill="#9aa0aa"${_glossAttr('galactic_core')}>${_t('panel.galactic.legend.galactic_core')}</text>`
+      `<text x="${PAD.left + 204}" y="12" font-size="13" fill="#9aa0aa"${_glossAttr('galactic_core')}>${coreLabel}</text>`
     );
+    parts.push(`</g>`);
 
     parts.push('</svg>');
 
@@ -544,7 +592,13 @@ const Sidebar = (() => {
   }
 
   function _isCollapsed(panelId) {
-    return _loadCollapse()[panelId] === true;
+    const state = _loadCollapse();
+    // An explicit user choice always wins, on any screen.
+    if (panelId in state) return state[panelId] === true;
+    // Phone default: the stacked right-panel sections overwhelm a small
+    // screen, so untouched panels start folded — except the Sun panel, which
+    // stays open as the anchor so the sheet never opens to a wall of headers.
+    return panelId !== 'sun' && window.matchMedia('(max-width: 768px)').matches;
   }
 
   function section(panelId, headerHtml, bodyHtml) {
@@ -978,6 +1032,7 @@ const Sidebar = (() => {
       c1AtHorizon: !!lc.sunrise,
       c4AtHorizon: !!lc.sunset,
     };
+
     const diagram =
       typeof EclipseGlyph !== 'undefined'
         ? EclipseGlyph.renderSchematic(ev, {
@@ -1043,6 +1098,7 @@ const Sidebar = (() => {
         P4: _gloss('ecl_c_p4_lunar'),
       },
     };
+
     const diagram = typeof EclipseGlyph !== 'undefined' ? EclipseGlyph.renderSchematic(ev, { gloss }) : '';
     if (diagram) html += `<div class="ecl-diagram">${_eclSchemStats(ev)}${diagram}</div>`;
     const defs = [
@@ -1145,7 +1201,7 @@ const Sidebar = (() => {
       if (!slot)
         return (
           `<div class="info-row">${lbl}` +
-          `<span class="value data-value"${I18n.glossAttr('ecl_none_here')}>—</span></div>`
+          `<span class="value data-value"${I18n.glossAttr('ecl_none_here', { year: TimeState.RANGE_END_YEAR_EXCLUSIVE })}>—</span></div>`
         );
       const id = slot.event._kind + '-' + slot.event.date;
       _eclipseFcEvents[id] = slot.event;
@@ -1714,22 +1770,25 @@ const Sidebar = (() => {
     return m + 'm ' + (r < 10 ? '0' : '') + r + 's';
   };
 
-  function _renderInlineDetail(card, { metaLine, times, durLine }, onBack) {
+  function _renderInlineDetail(card, { descLine, metaLine, times, durLine }, onBack) {
     _expandedCard = card;
     _expandedOnBack = onBack;
     card.setAttribute('data-expanded', 'true');
     const detail = card.querySelector('.ec-detail');
     if (!detail) return;
     detail.innerHTML =
+      (descLine ? `<div class="ec-desc-line">${descLine}</div>` : '') +
       (metaLine ? `<div class="ec-meta-line">${metaLine}</div>` : '') +
-      `<table class="ec-detail-times">` +
-      times
-        .map((r) => {
-          const desc = r.key ? r.label.replace(new RegExp(`^${r.key}\\s*`), '') : r.label;
-          return `<tr class="et-clickable" data-time="${r.val}"><td class="et-key">${r.key || ''}</td><td class="et-desc"${r.slug ? _glossAttr(r.slug) : ''}>${desc}</td><td class="et-val">${_fmtTime(r.val)}</td></tr>`;
-        })
-        .join('') +
-      `</table>` +
+      (times.length
+        ? `<table class="ec-detail-times">` +
+          times
+            .map((r) => {
+              const desc = r.key ? r.label.replace(new RegExp(`^${r.key}\\s*`), '') : r.label;
+              return `<tr class="et-clickable" data-time="${r.val}"><td class="et-key">${r.key || ''}</td><td class="et-desc"${r.slug ? _glossAttr(r.slug) : ''}>${desc}</td><td class="et-val">${_fmtTime(r.val)}</td></tr>`;
+            })
+            .join('') +
+          `</table>`
+        : '') +
       (durLine ? `<div class="ec-dur-line">${durLine}</div>` : '');
     detail.hidden = false;
     detail.querySelectorAll('.et-clickable').forEach((row) => {
@@ -1839,6 +1898,40 @@ const Sidebar = (() => {
 
   let _eclipseFilter = 'solar';
 
+  // Sub-filter armed alongside a solar/lunar primary: solar → central eclipses
+  // only (total/annular/hybrid, hiding partials); lunar → total only. Resets on
+  // any primary change so a forced-kind navigation never lands on a hidden card.
+  let _eclipseCentralOnly = false;
+
+  // Sync the contextual sub-seal to the active primary: label + press state when
+  // a specific kind is selected, hidden entirely under the combined ('all') view.
+  function updateEclipseSubSeal(content) {
+    const btn = content.querySelector('.eclipse-subfilter-btn');
+    if (!btn) return;
+    if (_eclipseFilter === 'solar' || _eclipseFilter === 'lunar') {
+      btn.hidden = false;
+      btn.textContent = _t(_eclipseFilter === 'solar' ? 'eclipse.subfilter.central' : 'eclipse.subfilter.total');
+      btn.setAttribute('aria-pressed', _eclipseCentralOnly);
+    } else {
+      btn.hidden = true;
+    }
+  }
+
+  // Icon-only paging control shared by the eclipse and planet lists: a slim
+  // chevron bar (up = earlier, down = later). Auto-load on wheel-to-edge is the
+  // primary affordance, so these stay deliberately quiet. The i18n label rides
+  // on aria-label alone (data-i18n-aria lets applyDOM relabel it on a locale
+  // switch); deliberately NOT data-tip — that carries the [data-tip] glossary
+  // decoration (dashed underline + help cursor), which is wrong for a button,
+  // and the chevron's direction needs no visible tooltip.
+  function loadMoreBtnHtml(dir) {
+    const isEarlier = dir === 'earlier';
+    const key = isEarlier ? 'eclipse.list.load_earlier' : 'eclipse.list.load_later';
+    const label = _t(key);
+    const points = isEarlier ? '6 15 12 9 18 15' : '6 9 12 15 18 9';
+    return `<button class="eclipse-load-more eclipse-load-${dir}" type="button" aria-label="${label}" data-i18n-aria="${key}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="${points}"/></svg></button>`;
+  }
+
   // Lazily construct the two stacked sub-panels of the left sidebar so that
   // showEclipseList and showEclipse/showLunarEclipse can render independently
   // without clobbering each other.
@@ -1850,14 +1943,15 @@ const Sidebar = (() => {
         <div id="sidebar-left-list">
           <div class="eclipse-list-header">
             <h3>${_t('eclipse.list.title')}</h3>
-            <div class="eclipse-filter">
-              <button class="eclipse-filter-btn" data-filter="solar" aria-pressed="${_eclipseFilter === 'solar'}">${_t('eclipse.filter.solar')}</button>
-              <button class="eclipse-filter-btn" data-filter="lunar" aria-pressed="${_eclipseFilter === 'lunar'}">${_t('eclipse.filter.lunar')}</button>
-            </div>
           </div>
-          <button class="eclipse-load-more eclipse-load-earlier" type="button">${_t('eclipse.list.load_earlier')}</button>
+          <div class="list-filter-row eclipse-filter-row">
+            <button class="eclipse-filter-btn" data-filter="solar" aria-pressed="${_eclipseFilter === 'solar'}">${_t('eclipse.filter.solar')}</button>
+            <button class="eclipse-filter-btn" data-filter="lunar" aria-pressed="${_eclipseFilter === 'lunar'}">${_t('eclipse.filter.lunar')}</button>
+            <button class="eclipse-subfilter-btn" data-sub="central" aria-pressed="false" hidden></button>
+          </div>
+          ${loadMoreBtnHtml('earlier')}
           <div class="eclipse-list" id="eclipse-list-cards"></div>
-          <button class="eclipse-load-more eclipse-load-later" type="button">${_t('eclipse.list.load_later')}</button>
+          ${loadMoreBtnHtml('later')}
         </div>`;
     }
     _updateHandleVisibility();
@@ -1943,7 +2037,7 @@ const Sidebar = (() => {
           ? EclipseGlyph.render(e, { size: 42, idPrefix: `eg-${e._kind}-${e.date}` })
           : '';
       return `
-        <div class="eclipse-card" data-idx="${i}" data-kind="${e._kind}">
+        <div class="eclipse-card" data-idx="${i}" data-kind="${e._kind}" data-ecltype="${kindKey}">
           <div class="ec-header">
             <span class="ec-glyph">${glyphSvg}</span>
             <div class="ec-body">
@@ -1966,16 +2060,27 @@ const Sidebar = (() => {
     const listEl = content.querySelector('#eclipse-list-cards');
     let _winEvents = [];
 
-    // Trim helpers: call after expanding the window to keep DOM within MAX_WINDOW.
+    // A filtered list may hold a grown window (up to FILTER_MAX_WINDOW); paging must
+    // trim back to that larger bound, not the 60-event unfiltered cap, or each page
+    // would collapse the window and empty the panel again.
+    const effMax = () => (_eclipseFilter !== 'all' || _eclipseCentralOnly ? FILTER_MAX_WINDOW : controller.maxWindow());
+
+    // Trim helpers: call after expanding the window to keep DOM within the effective cap.
     // Return the number of items actually trimmed (needed to correct scroll indices).
     function _maybeTrimLater() {
-      const excess = controller.windowSize() - controller.maxWindow();
+      // Freeze the tail once the window reaches the true last event: trimming it
+      // there would delete the cards the user just paged down to. Slide only
+      // while the bottom edge is still mid-list.
+      if (!controller.canLoadLater()) return 0;
+      const excess = controller.windowSize() - effMax();
       if (excess <= 0) return 0;
       return controller.trimLater(excess);
     }
 
     function _maybeTrimEarlier() {
-      const excess = controller.windowSize() - controller.maxWindow();
+      // Mirror of _maybeTrimLater: keep the head frozen at the true first event.
+      if (!controller.canLoadEarlier()) return 0;
+      const excess = controller.windowSize() - effMax();
       if (excess <= 0) return 0;
       return controller.trimEarlier(excess);
     }
@@ -2046,21 +2151,30 @@ const Sidebar = (() => {
       { passive: false }
     );
 
-    // The solar/lunar filter is applied purely via CSS (data-filter on the list
-    // container) so toggling it never rebuilds the DOM or re-runs glyph SVG
-    // generation — it only re-centers the cursor onto the nearest visible card.
-    const isVisibleKind = (kind) => _eclipseFilter === 'all' || kind === _eclipseFilter;
+    // Both the primary (solar/lunar) and central-only sub-filter are applied
+    // purely via CSS (data-filter / data-central on the list container) so
+    // toggling never rebuilds the DOM or re-runs glyph SVG generation — it only
+    // re-centers the cursor onto the nearest still-visible card. This mirror of
+    // the CSS rules keeps that cursor math in step with what's actually shown.
+    const isVisibleCard = (node) => {
+      if (_eclipseFilter !== 'all' && node.dataset.kind !== _eclipseFilter) return false;
+      if (!_eclipseCentralOnly) return true;
+      const t = node.dataset.ecltype;
+      if (_eclipseFilter === 'solar') return t !== 'partial';
+      if (_eclipseFilter === 'lunar') return t !== 'partial' && t !== 'penumbral';
+      return true;
+    };
 
     // Scroll to the card at window-index `idx`; if it is filtered out (CSS-
     // hidden) fall back to the nearest visible card so the view never jumps to
     // the top with nothing highlighted.
     function scrollToIdx(idx, block, markActive) {
       let node = listEl.querySelector(`.eclipse-card[data-idx="${idx}"]`);
-      if (node && !isVisibleKind(node.dataset.kind)) node = null;
+      if (node && !isVisibleCard(node)) node = null;
       if (!node) {
         let bestDist = Infinity;
         listEl.querySelectorAll('.eclipse-card').forEach((c) => {
-          if (!isVisibleKind(c.dataset.kind)) return;
+          if (!isVisibleCard(c)) return;
           const d = Math.abs(+c.dataset.idx - idx);
           if (d < bestDist) {
             bestDist = d;
@@ -2079,18 +2193,49 @@ const Sidebar = (() => {
       scrollToIdx(controller.cursorInWin(), 'center', true);
     }
 
-    // Wire filter buttons — CSS-only show/hide, no re-render.
+    // Wire filter buttons — CSS-only show/hide, no re-render. Changing the
+    // primary kind clears any armed central-only sub-filter (its meaning is
+    // tied to the active kind) and re-syncs the contextual sub-seal.
     content.querySelectorAll('.eclipse-filter-btn').forEach((btn) => {
       btn.onclick = () => {
         const f = btn.dataset.filter;
         _eclipseFilter = _eclipseFilter === f ? 'all' : f;
+        _eclipseCentralOnly = false;
+        delete listEl.dataset.central;
         content.querySelectorAll('.eclipse-filter-btn').forEach((b) => {
           b.setAttribute('aria-pressed', b.dataset.filter === _eclipseFilter);
         });
         listEl.dataset.filter = _eclipseFilter;
-        positionCursor();
+        updateEclipseSubSeal(content);
+        const before = controller.windowSize();
+        const active = _eclipseFilter !== 'all' || _eclipseCentralOnly;
+        if (active) autoFillWindow(controller, eclipseEventMatches, fillTarget(listEl), FILTER_MAX_WINDOW);
+        else shrinkWindow(controller);
+        if (controller.windowSize() !== before) renderCards();
+        else positionCursor();
       };
     });
+
+    // Contextual central-only sub-filter — an independent on/off armed on top of
+    // the active primary kind. Kept off the .eclipse-filter-btn class so it never
+    // trips the primary handler, which keys off data-filter.
+    const subBtn = content.querySelector('.eclipse-subfilter-btn');
+    if (subBtn) {
+      subBtn.onclick = () => {
+        _eclipseCentralOnly = !_eclipseCentralOnly;
+        if (_eclipseCentralOnly) listEl.dataset.central = '1';
+        else delete listEl.dataset.central;
+        subBtn.setAttribute('aria-pressed', _eclipseCentralOnly);
+        const before = controller.windowSize();
+        const active = _eclipseFilter !== 'all' || _eclipseCentralOnly;
+        if (active) autoFillWindow(controller, eclipseEventMatches, fillTarget(listEl), FILTER_MAX_WINDOW);
+        else shrinkWindow(controller);
+        if (controller.windowSize() !== before) renderCards();
+        else positionCursor();
+      };
+    }
+    updateEclipseSubSeal(content);
+    if (_eclipseCentralOnly) listEl.dataset.central = '1';
 
     // Single delegated click handler (replaces the per-card listeners).
     listEl.onclick = (ev) => {
@@ -2154,14 +2299,720 @@ const Sidebar = (() => {
     renderCards();
   }
 
-  // Track last eclipse list controller/onSelect for i18n re-render
+  // ---- Planetary Events List (left sidebar) ----
+  // Mirrors showEclipseList's card/scroll machinery for the global planetary
+  // events catalog (js/planet-events.js). Two orthogonal, non-exclusive filters:
+  // event type and body (astronomical-symbol chips). See CLAUDE.md left-panel notes.
+
+  // Body glyphs — Uranus uses the astronomical symbol ⛢ (not astrological ♅),
+  // per [memory: project_body_symbols]. Kept in sync with planets.js CONFIGS.
+  const PEV_BODY_SYM = {
+    sun: '☉',
+    moon: '☾',
+    mercury: '☿',
+    venus: '♀',
+    mars: '♂',
+    jupiter: '♃',
+    saturn: '♄',
+    uranus: '⛢',
+    neptune: '♆',
+  };
+  // Glossary slug per event type, for the type-label hover card.
+  const PEV_TYPE_SLUG = {
+    opposition: 'pev_opposition',
+    conjunction: 'pev_conjunction',
+    inferior_conjunction: 'pev_conj_inferior',
+    superior_conjunction: 'pev_conj_superior',
+    quadrature: 'pev_quadrature',
+    greatest_elongation: 'pev_greatest_elong',
+    station_retrograde: 'pev_station',
+    station_direct: 'pev_station',
+    appulse: 'pev_conjunction',
+    appulse_star: 'pev_conjunction',
+    new_moon: 'pev_moon_phase',
+    first_quarter: 'pev_moon_phase',
+    full_moon: 'pev_moon_phase',
+    last_quarter: 'pev_moon_phase',
+    comet_perihelion: 'pev_perihelion',
+    comet_perigee: 'pev_perigee',
+    comet_reach: 'pev_comet_milestone',
+    comet_fade: 'pev_comet_milestone',
+  };
+  // Phenomenon symbol for single-body (Sun-relative) events — pairs with the
+  // planet disk on the glyph's left slot. Plain astronomical/mathematical
+  // Unicode, no bespoke SVG: opposition/conjunction reuse the same glyphs
+  // this codebase already treats as astronomical (not astrological) per
+  // [memory: project_body_symbols]; quadrature/elongation borrow the
+  // right-angle/angle math symbols (not astrology's aspect glyphs);
+  // station's arrows mirror the retrograde/direct reversal itself.
+  const PEV_PHENOM_SYM = {
+    opposition: '☍',
+    conjunction: '☌',
+    inferior_conjunction: '☌',
+    superior_conjunction: '☌',
+    quadrature: '∟',
+    greatest_elongation: '∠',
+    station_retrograde: '↺',
+    station_direct: '↻',
+    // Comet perihelion/perigee borrow the Sun / Earth marks; a filled star marks
+    // brightening past a magnitude milestone, a hollow star fading past it. Lunar
+    // phases carry no right-slot symbol — the phased disk in the left slot already
+    // states the phase, so a redundant ●◐○◑ beside it only adds noise.
+    comet_perihelion: '☉',
+    comet_perigee: '⊕',
+    comet_reach: '✦',
+    comet_fade: '✧',
+  };
+  // Body-chip ids for the filter row.
+  const PEV_BODY_CHIPS = [
+    'mercury',
+    'venus',
+    'mars',
+    'asteroids',
+    'jupiter',
+    'saturn',
+    'uranus',
+    'neptune',
+    'comet',
+    'star',
+    'moon',
+  ];
+  // The three main-belt bodies collapse into a single 'asteroids' filter chip
+  // (⚳). Events still carry their real per-body id in `bodies`, so the chip
+  // matches any of these — mirroring how the 'star' chip matches 'star:*' ids.
+  const PEV_ASTEROID_IDS = ['ceres', 'pallas', 'vesta'];
+  const PEV_DISK_ICON_PX = 20;
+
+  // Active filter set persists across re-renders (empty set = show all).
+  const _pevFilterBodies = new Set();
+
+  function pevBodyName(id) {
+    if (id.indexOf('star:') === 0) {
+      const s = id.slice(5);
+      return _t('pev.star.' + s) || s.charAt(0).toUpperCase() + s.slice(1);
+    }
+    // Comet labels are proper names baked into the catalog (PlanetEvents.cometName),
+    // not translated strings; before load / for an unknown id, show the bare id.
+    if (id.indexOf('comet:') === 0) {
+      return (typeof PlanetEvents !== 'undefined' && PlanetEvents.cometName(id)) || id.slice(6).toUpperCase();
+    }
+    return _t('pev.body.' + id) || id;
+  }
+
+  // Body name for the merged event+object phrase — tries a locale's short
+  // form first (e.g. zh "月" for the Moon, per the user's explicit ask). Gated
+  // on I18n.isZh() rather than just probing the key: pev.body_short.moon only
+  // exists in zh-Hans/zh-Hant, but _t()'s fallback-to-FALLBACK-dict behavior
+  // (FALLBACK is zh-Hans) would otherwise leak "月" into every other locale
+  // whenever the current dict has no entry of its own.
+  function pevBodyPhraseName(id) {
+    if (I18n.isZh()) {
+      const shortKey = 'pev.body_short.' + id;
+      const s = _t(shortKey);
+      if (s && s !== shortKey) return s;
+    }
+    return pevBodyName(id);
+  }
+
+  function pevTypeLabel(e) {
+    // Directional configs (quadrature, greatest elongation) use per-direction
+    // keys so each locale phrases E/W naturally ("Eastern quadrature", "东方照").
+    let key = 'pev.type.' + e.type;
+    if ((e.type === 'quadrature' || e.type === 'greatest_elongation') && e.elongDir) key += '_' + e.elongDir;
+    // Comet brightness milestones name their threshold inline ("增亮至 3 等"); only
+    // these events carry `level`, so the param is harmless on every other type.
+    const params = e.level != null ? { level: e.level } : undefined;
+    const s = _t(key, params);
+    if (s && s !== key) return s;
+    const base = _t('pev.type.' + e.type, params);
+    return base && base !== 'pev.type.' + e.type ? base : e.type;
+  }
+
+  // Same directional-key-with-fallback shape as pevTypeLabel, for the
+  // pev.desc.* narrative-sentence templates (single-body events only —
+  // appulse/appulse_star share one template, pev.desc.conjunction_pair).
+  function pevDescKey(e) {
+    let key = 'pev.desc.' + e.type;
+    if ((e.type === 'quadrature' || e.type === 'greatest_elongation') && e.elongDir) key += '_' + e.elongDir;
+    return key;
+  }
+
+  // The non-primary body in a two-body event (primary is already picked by
+  // the build script: Moon if present, else the brighter of the pair).
+  function pevOtherBody(e) {
+    return e.bodies[0] === e.primary ? e.bodies[1] : e.bodies[0];
+  }
+
+  // Merged "object + phenomenon" phrase (req: "木星 西方照", "月 合 金星") — a
+  // locale-authored template, not JS string concatenation, so word order can
+  // differ per language. Primary body leads a two-body phrase.
+  function pevPhraseHtml(e) {
+    const slug = PEV_TYPE_SLUG[e.type];
+    const typeHtml = `<span class="ec-kind"${slug ? _glossAttr(slug) : ''}>${pevTypeLabel(e)}</span>`;
+    if (e.bodies.length === 1) {
+      return _t('pev.phrase.single', { body: pevBodyPhraseName(e.bodies[0]), type: typeHtml });
+    }
+    return _t('pev.phrase.pair', {
+      body1: pevBodyPhraseName(e.primary),
+      type: typeHtml,
+      body2: pevBodyPhraseName(pevOtherBody(e)),
+    });
+  }
+
+  // Non-star bodies in a two-body event, ordered by apparent angular
+  // diameter (largest first) — the glyph draws the visually bigger disk on
+  // the left. A star has no disk and always sorts last.
+  function pevOrderedDiskIds(e) {
+    const withSize = e.bodies.map((id) => {
+      if (id.indexOf('star:') === 0) return { id, size: -1 };
+      const cfg = Planets.CONFIGS.find((c) => c.id === id);
+      const size = cfg ? Planets.bodyAngularDiamArcsec(cfg.body, id, new Date(e.time)) : 0;
+      return { id, size: isNaN(size) ? 0 : size };
+    });
+    withSize.sort((a, b) => b.size - a.size);
+    return withSize.map((x) => x.id);
+  }
+
+  function pevDiskOrStarHtml(id, date) {
+    if (id.indexOf('star:') === 0) return '<span class="pev-glyph-star"></span>';
+    if (id.indexOf('comet:') === 0) return '<span class="pev-glyph-comet">☄</span>';
+    return Planets.buildEventDiskIcon(id, date, PEV_DISK_ICON_PX);
+  }
+
+  // Two-slot glyph: single-body events pair the planet disk with its
+  // phenomenon symbol; two-body events pair two disks (or disk + star)
+  // ordered by apparent size.
+  function pevGlyphHtml(e) {
+    const date = new Date(e.time);
+    if (e.bodies.length === 1) {
+      const rightSym = PEV_PHENOM_SYM[e.type] || '';
+      const disk = `<span class="pev-glyph-slot">${pevDiskOrStarHtml(e.bodies[0], date)}</span>`;
+      // Drop the empty phenom slot entirely when there is no right-hand symbol
+      // (e.g. moon phases, whose left disk already shows the phase) so the lone
+      // disk centres in the glyph column instead of hugging the left slot.
+      if (!rightSym) return disk;
+      return disk + `<span class="pev-glyph-slot pev-glyph-phenom">${rightSym}</span>`;
+    }
+    return pevOrderedDiskIds(e)
+      .map((id) => `<span class="pev-glyph-slot">${pevDiskOrStarHtml(id, date)}</span>`)
+      .join('');
+  }
+
+  // Insert a space at Latin↔CJK boundaries so a Latin proper name (a comet's
+  // "ATLAS") or an Arabic numeral doesn't butt against the surrounding Chinese /
+  // Japanese run ("ATLAS视亮度…" → "ATLAS 视亮度…"). Only ideographs and kana count
+  // as CJK, so fullwidth punctuation stays untouched — "（0.937 AU）" keeps its own
+  // spacing. A CJK body name (月 / 木星) sits CJK↔CJK and never triggers. Idempotent:
+  // an already-spaced boundary has no adjacent pair to match.
+  const _CJK_RUN = '\\u4e00-\\u9fff\\u3040-\\u30ff';
+  const _CJK_AFTER_LATIN = new RegExp('([A-Za-z0-9])([' + _CJK_RUN + '])', 'g');
+  const _CJK_BEFORE_LATIN = new RegExp('([' + _CJK_RUN + '])([A-Za-z0-9])', 'g');
+
+  function _cjkLatinSpace(s) {
+    return s.replace(_CJK_AFTER_LATIN, '$1 $2').replace(_CJK_BEFORE_LATIN, '$1 $2');
+  }
+
+  function _fmtSep(deg) {
+    return deg < 1 ? deg.toFixed(2) + '°' : deg.toFixed(1) + '°';
+  }
+
+  function planetDtLabel(ms) {
+    const dt = ms - TimeState.current.getTime();
+    const absDays = Math.abs(dt) / 86400000;
+    const suffix = dt < 0 ? 'ago' : 'later';
+    return absDays < 1
+      ? _t('eclipse.time.hours_' + suffix, { n: Math.round(Math.abs(dt) / 3600000) })
+      : absDays < 365
+        ? _t('eclipse.time.days_' + suffix, { n: Math.round(absDays) })
+        : _t('eclipse.time.years_' + suffix, { n: (absDays / 365).toFixed(1) });
+  }
+
+  function planetCardHtml(e, i) {
+    const dt = planetDtLabel(e._timeMs);
+    const pd = new Date(e.time);
+    const hhmm = String(pd.getUTCHours()).padStart(2, '0') + ':' + String(pd.getUTCMinutes()).padStart(2, '0') + ' UTC';
+    const extras = [];
+    if (e.con) {
+      let con = e.con;
+      if (I18n.isZhOrJa()) {
+        const full = _t('constellation.' + e.con);
+        if (full && full.indexOf('constellation.') !== 0) con = full;
+      }
+      extras.push(`<span${_glossAttr('pev_constellation')}>${_t('pev.card.in_constellation', { con })}</span>`);
+    }
+    if (e.sep != null)
+      extras.push(`<span${_glossAttr('pev_separation')}>${_t('pev.card.separation')}</span> ${_fmtSep(e.sep)}`);
+    else if (e.type === 'greatest_elongation')
+      extras.push(`<span${_glossAttr('pev_elongation')}>${_t('pev.card.elongation')}</span> ${e.elong.toFixed(1)}°`);
+    if (e.mag != null)
+      extras.push(`<span${_glossAttr('magnitude')}>${_t('pev.card.magnitude')}</span> ${e.mag.toFixed(1)}`);
+    return (
+      `<div class="eclipse-card pev-card" data-idx="${i}" data-type="${e.cat}" data-bodies="${e.bodies.join(' ')}">` +
+      `<div class="ec-header">` +
+      `<span class="ec-glyph pev-glyph">${pevGlyphHtml(e)}</span>` +
+      `<div class="ec-body">` +
+      `<div class="ec-row1"><span class="ec-date">${e.date} ${hhmm}</span><span class="ec-dt">${dt}</span></div>` +
+      `<div class="ec-row2 pev-phrase">${pevPhraseHtml(e)}</div>` +
+      `<div class="ec-row3">${extras.join(' · ')}</div>` +
+      `</div></div><div class="ec-detail" hidden></div></div>`
+    );
+  }
+
+  function showPlanetEventDetail(e, card) {
+    collapseExpandedCard(false);
+    if (!card) return;
+    const meta = [];
+    if (e.type === 'greatest_elongation')
+      meta.push(`<span${_glossAttr('pev_elongation')}>${_t('pev.card.elongation')}</span> ${e.elong.toFixed(1)}°`);
+
+    // Descriptive sentences use each body's full name (never the short
+    // "月"/"Moon" form the merged header phrase uses) — a narrative sentence
+    // reads oddly with a one-character subject. Constellation and closest-
+    // approach separation are already implied by the sentence itself, so the
+    // card's own extras (row3) aren't repeated here.
+    let descLine;
+    if (e.bodies.length === 1) {
+      const params = { body: pevBodyName(e.bodies[0]) };
+      if (e.type === 'comet_perigee' && e.dist != null) params.dist = e.dist.toFixed(3);
+      // Perihelion carries a heliocentric distance (q) rather than a geocentric one.
+      if (e.type === 'comet_perihelion' && e.helioDist != null) params.dist = e.helioDist.toFixed(3);
+      if (e.level != null) params.level = e.level;
+      descLine = _t(pevDescKey(e), params);
+    } else {
+      descLine = _t('pev.desc.conjunction_pair', {
+        body1: pevBodyName(e.primary),
+        body2: pevBodyName(pevOtherBody(e)),
+        sep: _fmtSep(e.sep),
+        dir: _t('pev.dir.' + e.dir),
+      });
+    }
+    descLine = _cjkLatinSpace(descLine);
+    _renderInlineDetail(card, { descLine, metaLine: meta.join(' · '), times: [], durLine: '' }, null);
+  }
+
+  // Grow the controller window outward until `target` events pass the predicate,
+  // the dataset is exhausted, or the window hits `maxSize`, then let the caller
+  // re-render; the return says whether it grew. Two callers: the eclipse list,
+  // whose data-filter CSS-hides non-matches in a full-array window, needs the
+  // larger FILTER_MAX_WINDOW so a sparse sub-filter still fills the panel; the
+  // planet list windows over its filtered subset (setFilter) and just tops up to
+  // the viewport height with an always-true predicate against the 60-event cap.
+  const FILTER_MAX_WINDOW = 200; // a filtered list may grow past the 60-event unfiltered cap
+  const PEV_MIN_CARD_PX = 64; // conservative collapsed card height, so fillTarget overshoots the
+  // real count slightly and the panel always fills rather than leaving a bottom gap
+
+  function fillTarget(listEl) {
+    return Math.ceil((listEl.clientHeight || 320) / PEV_MIN_CARD_PX) + 1;
+  }
+
+  function autoFillWindow(controller, predicate, target, maxSize) {
+    const startSize = controller.windowSize();
+    let guard = 0;
+    while (guard++ < 128) {
+      if (controller.events().filter(predicate).length >= target) break;
+      if (controller.windowSize() >= maxSize) break;
+      let grew = false;
+      if (controller.canLoadEarlier()) {
+        controller.loadEarlier();
+        grew = true;
+      }
+      if (controller.canLoadLater()) {
+        controller.loadLater();
+        grew = true;
+      }
+      if (!grew) break;
+    }
+    return controller.windowSize() > startSize;
+  }
+
+  // Trim a cleared filter's oversized window back to the unfiltered cap, split across
+  // both ends so the cursor stays roughly centred. Paired with autoFillWindow: grow on
+  // a filter, shrink on clear.
+  function shrinkWindow(controller) {
+    const excess = controller.windowSize() - controller.maxWindow();
+    if (excess <= 0) return;
+    const half = Math.floor(excess / 2);
+    controller.trimEarlier(half);
+    controller.trimLater(excess - half);
+  }
+
+  // Does body id `b` satisfy the active chip set? Direct membership, plus three
+  // aggregate chips: 'star' covers every 'star:*' id, 'comet' every 'comet:*' id,
+  // 'asteroids' the three main-belt ids. Feeds pevEventMatches, the predicate the
+  // controller windows over when a filter is active.
+  function pevBodyChipMatches(b) {
+    return (
+      _pevFilterBodies.has(b) ||
+      (b.indexOf('star:') === 0 && _pevFilterBodies.has('star')) ||
+      (b.indexOf('comet:') === 0 && _pevFilterBodies.has('comet')) ||
+      (PEV_ASTEROID_IDS.includes(b) && _pevFilterBodies.has('asteroids'))
+    );
+  }
+
+  function pevEventMatches(e) {
+    if (_pevFilterBodies.size === 0) return true;
+    return e.bodies.some(pevBodyChipMatches);
+  }
+
+  function eclipseEventMatches(e) {
+    if (_eclipseFilter !== 'all' && e._kind !== _eclipseFilter) return false;
+    if (!_eclipseCentralOnly) return true;
+    const t = (e.kind || '').toLowerCase();
+    if (_eclipseFilter === 'solar') return t !== 'partial';
+    if (_eclipseFilter === 'lunar') return t !== 'partial' && t !== 'penumbral';
+    return true;
+  }
+
+  function ensurePlanetLeftStructure() {
+    const content = contentLeft();
+    if (!content) return null;
+    if (!content.querySelector('#sidebar-left-plist')) {
+      const bodyChips = PEV_BODY_CHIPS.map((b) => {
+        const sym = b === 'star' ? '✶' : b === 'asteroids' ? '⚳' : b === 'comet' ? '☄' : PEV_BODY_SYM[b];
+        const name =
+          b === 'star'
+            ? _t('pev.filter.star')
+            : b === 'asteroids'
+              ? _t('pev.filter.asteroids')
+              : b === 'comet'
+                ? _t('pev.filter.comet')
+                : pevBodyName(b);
+        return `<button class="pev-body-chip" data-body="${b}" aria-pressed="${_pevFilterBodies.has(b)}"${_glossTip(name)}>${sym}</button>`;
+      }).join('');
+      content.innerHTML = `
+        <div id="sidebar-left-plist">
+          <div class="eclipse-list-header">
+            <h3>${_t('pev.list.title')}</h3>
+          </div>
+          <div class="list-filter-row pev-filter-bodies">${bodyChips}</div>
+          ${loadMoreBtnHtml('earlier')}
+          <div class="eclipse-list" id="planet-list-cards"></div>
+          ${loadMoreBtnHtml('later')}
+        </div>`;
+    }
+    _updateHandleVisibility();
+    return content;
+  }
+
+  // Fly the map to the event's sub-point(s) at event time, jump the clock, and
+  // open trajectories for all participating planets. Stars return null from
+  // getSearchLatLng and are skipped; BodyTrajectory.toggle guards star ids via
+  // SPECS[id] and silently returns false, so no explicit star filter is needed.
+  // jumpTo (not setTime) marks this a discrete navigation, so BodyTrajectory's
+  // jump listener clears any previously-open trajectories before this event's
+  // bodies are opened fresh below.
+  function _jumpToPevEvent(e) {
+    const map = window.appMap;
+    if (!map) return;
+    const t = new Date(e._timeMs);
+    TimeState.jumpTo(t);
+    const pts = e.bodies.map((id) => Planets.getSearchLatLng(id, t)).filter(Boolean);
+    if (pts.length > 0) {
+      const centerLng = map.getCenter().lng;
+      const lngs = pts.map((p) => {
+        let lng = p.lng;
+        while (lng - centerLng > 180) lng -= 360;
+        while (lng - centerLng < -180) lng += 360;
+        return lng;
+      });
+      // Centred on the sub-point (single body) or the wrap-normalized midpoint
+      // (two bodies). The two bodies of an appulse sit ≤ APPULSE_MAX_DEG (5°) apart,
+      // which fits a zoom-6 viewport, so both stay framed without the trajectories
+      // widening the view. Asteroids jump two steps closer (zoom 8): the dot vanishes below zoom 8
+      // (mag cutoff 9 at zoom 8 clears all three main-belt bodies), so the dot
+      // and its engraving icon are guaranteed visible at the landing zoom.
+      const lat = pts.reduce((s, p) => s + p.lat, 0) / pts.length;
+      const lng = lngs.reduce((s, l) => s + l, 0) / lngs.length;
+      const jumpZoom = e.bodies.some((b) => PEV_ASTEROID_IDS.includes(b)) ? 8 : 6;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      map.flyTo([lat, lng], jumpZoom, { animate: !reduced });
+    }
+    if (typeof BodyTrajectory !== 'undefined') {
+      e.bodies.forEach((id) => {
+        if (!BodyTrajectory.isOn(id)) BodyTrajectory.toggle(id);
+      });
+    }
+  }
+
+  function showPlanetEventList(controller, onSelect) {
+    const content = ensurePlanetLeftStructure();
+    if (!content) return;
+    setSidebar('left', true, 'auto');
+
+    const earlierBtn = content.querySelector('.eclipse-load-earlier');
+    const laterBtn = content.querySelector('.eclipse-load-later');
+    const listEl = content.querySelector('#planet-list-cards');
+    let _winEvents = [];
+
+    // The controller windows over the filtered subset (see setFilter), so every
+    // card in the window is a match — the 60-event cap holds whether or not a
+    // filter is active, no larger filtered bound needed.
+    const effMax = () => controller.maxWindow();
+
+    function _maybeTrimLater() {
+      // Freeze the tail once the window reaches the true last event: trimming it
+      // there would delete the cards the user just paged down to. Slide only
+      // while the bottom edge is still mid-list.
+      if (!controller.canLoadLater()) return 0;
+      const excess = controller.windowSize() - effMax();
+      return excess > 0 ? controller.trimLater(excess) : 0;
+    }
+
+    function _maybeTrimEarlier() {
+      // Mirror of _maybeTrimLater: keep the head frozen at the true first event.
+      if (!controller.canLoadEarlier()) return 0;
+      const excess = controller.windowSize() - effMax();
+      return excess > 0 ? controller.trimEarlier(excess) : 0;
+    }
+
+    function scrollToIdx(idx, block, markActive) {
+      let node = listEl.querySelector(`.pev-card[data-idx="${idx}"]`);
+      if (node && node.style.display === 'none') node = null;
+      if (!node) {
+        let best = Infinity;
+        listEl.querySelectorAll('.pev-card').forEach((c) => {
+          if (c.style.display === 'none') return;
+          const d = Math.abs(+c.dataset.idx - idx);
+          if (d < best) {
+            best = d;
+            node = c;
+          }
+        });
+      }
+      if (!node) return;
+      if (markActive) node.setAttribute('data-active', 'true');
+      node.scrollIntoView({ block });
+    }
+
+    function positionCursor() {
+      collapseExpandedCard();
+      listEl.querySelectorAll('.pev-card[data-active]').forEach((c) => c.removeAttribute('data-active'));
+      scrollToIdx(controller.cursorInWin(), 'center', true);
+    }
+
+    function renderCards(opts) {
+      opts = opts || { scrollTo: { type: 'cursor' } };
+      _expandedCard = null;
+      _winEvents = controller.events();
+      listEl.innerHTML = _winEvents.map((e, i) => planetCardHtml(e, i)).join('');
+      earlierBtn.disabled = !controller.canLoadEarlier();
+      laterBtn.disabled = !controller.canLoadLater();
+      const target = opts.scrollTo;
+      if (!target || target.type === 'cursor') positionCursor();
+      else if (target.type === 'index') scrollToIdx(target.index, 'start', false);
+      else if (target.type === 'preserveAfterPrepend') scrollToIdx(target.added, 'start', false);
+      else if (target.type === 'restore') listEl.scrollTop = target.scrollTop;
+      if (opts.newRange) {
+        for (let i = opts.newRange.from; i < opts.newRange.to; i++) {
+          const c = listEl.querySelector(`.pev-card[data-idx="${i}"]`);
+          if (c) c.classList.add('ec-new');
+        }
+      }
+    }
+
+    earlierBtn.onclick = () => {
+      const prevLen = controller.events().length;
+      controller.loadEarlier();
+      const added = controller.events().length - prevLen;
+      _maybeTrimLater();
+      renderCards({ scrollTo: { type: 'preserveAfterPrepend', added }, newRange: { from: 0, to: added } });
+    };
+    laterBtn.onclick = () => {
+      const prevLen = controller.events().length;
+      controller.loadLater();
+      const trimmed = _maybeTrimEarlier();
+      renderCards({ scrollTo: { type: 'index', index: prevLen - trimmed } });
+    };
+
+    let _cooldown = false;
+    listEl.addEventListener(
+      'wheel',
+      (e) => {
+        if (_cooldown) return;
+        const atTop = listEl.scrollTop <= 1;
+        const atBottom = listEl.scrollHeight - listEl.scrollTop - listEl.clientHeight <= 1;
+        if (e.deltaY < 0 && atTop && controller.canLoadEarlier()) {
+          e.preventDefault();
+          _cooldown = true;
+          const prevLen = controller.events().length;
+          controller.loadEarlier();
+          const added = controller.events().length - prevLen;
+          _maybeTrimLater();
+          renderCards({ scrollTo: { type: 'preserveAfterPrepend', added }, newRange: { from: 0, to: added } });
+          setTimeout(() => (_cooldown = false), 400);
+        } else if (e.deltaY > 0 && atBottom && controller.canLoadLater()) {
+          e.preventDefault();
+          _cooldown = true;
+          const savedScrollTop = listEl.scrollTop;
+          const prevLen = controller.events().length;
+          controller.loadLater();
+          const added = controller.events().length - prevLen;
+          const trimmed = _maybeTrimEarlier();
+          renderCards({
+            scrollTo: { type: 'restore', scrollTop: savedScrollTop },
+            newRange: { from: prevLen - trimmed, to: prevLen - trimmed + added },
+          });
+          setTimeout(() => (_cooldown = false), 400);
+        }
+      },
+      { passive: false }
+    );
+
+    // Body-chip filter (multi-select, non-exclusive — unlike the eclipse filter).
+    content.querySelectorAll('.pev-body-chip').forEach((chip) => {
+      chip.onclick = () => {
+        const b = chip.dataset.body;
+        if (_pevFilterBodies.has(b)) _pevFilterBodies.delete(b);
+        else _pevFilterBodies.add(b);
+        chip.setAttribute('aria-pressed', _pevFilterBodies.has(b));
+        controller.setFilter(_pevFilterBodies.size ? pevEventMatches : null);
+        autoFillWindow(controller, () => true, fillTarget(listEl), controller.maxWindow());
+        renderCards();
+      };
+    });
+
+    // Click a card → expand its inline detail (appulse time, extra numbers).
+    listEl.onclick = (ev) => {
+      if (ev.target.closest('.ec-detail')) return;
+      const card = ev.target.closest('.pev-card');
+      if (!card || !listEl.contains(card)) return;
+      if (card === _expandedCard) {
+        collapseExpandedCard();
+        return;
+      }
+      listEl.querySelectorAll('.pev-card[data-active]').forEach((c) => c.removeAttribute('data-active'));
+      card.setAttribute('data-active', 'true');
+      const e = _winEvents[+card.dataset.idx];
+      if (onSelect) onSelect(e);
+      showPlanetEventDetail(e, card);
+      _jumpToPevEvent(e);
+    };
+
+    // Land a persisted filter into the controller so it windows over the matching
+    // subset, then fill the viewport on first open (the default ±10 window can be
+    // shorter than the panel is tall). Reading listEl.clientHeight here forces a
+    // layout, so fillTarget sees the real panel height, not the 320px fallback.
+    if (_pevFilterBodies.size) controller.setFilter(pevEventMatches);
+    autoFillWindow(controller, () => true, fillTarget(listEl), controller.maxWindow());
+
+    renderCards();
+  }
+
+  // ---- Left-Panel Owner Arbiter ----
+  // The eclipse list and the planetary-events list share the single left panel
+  // as a flip card. The front card renders in full; when both layers claim, the
+  // front header grows a flip button that turns the card over to the other list.
+  // Swapping is a view concern only — it never touches the map-layer toggles. A
+  // newly claimed list comes to the front; a released front yields to the
+  // survivor. Each claim also drives the i18n re-render.
   let _eclipseListCtrl = null;
   let _eclipseListOnSelect = null;
+  let _planetListCtrl = null;
+  let _planetListOnSelect = null;
+  let _leftFront = null; // which claim faces front; null = fall back to first claim
+  let _leftSwapPending = false; // rapid re-click guard while the crossfade runs
   const _origShowEclipseList = showEclipseList;
+  const _origShowPlanetEventList = showPlanetEventList;
+  const LEFT_TITLE_KEYS = { 'eclipse-list': 'eclipse.list.title', 'planet-events': 'pev.list.title' };
+
+  function _leftClaims() {
+    const claims = [];
+    if (_eclipseListCtrl) claims.push('eclipse-list');
+    if (_planetListCtrl) claims.push('planet-events');
+    return claims;
+  }
+
+  function _leftOwner() {
+    const claims = _leftClaims();
+    if (claims.length === 0) return null;
+    return _leftFront && claims.indexOf(_leftFront) !== -1 ? _leftFront : claims[0];
+  }
+
+  function _clearLeftStructures() {
+    const content = contentLeft();
+    if (!content) return;
+    const a = content.querySelector('#sidebar-left-list');
+    if (a) a.remove();
+    const b = content.querySelector('#sidebar-left-plist');
+    if (b) b.remove();
+  }
+
+  // Render the front card in full, wiping the loser's DOM so the two list
+  // structures never coexist, then graft the flip control onto the front header.
+  // Called on every claim/release/swap, not on filter/scroll.
+  function _renderLeftOwner() {
+    const owner = _leftOwner();
+    _clearLeftStructures();
+    if (owner === 'eclipse-list') _origShowEclipseList(_eclipseListCtrl, _eclipseListOnSelect);
+    else if (owner === 'planet-events') _origShowPlanetEventList(_planetListCtrl, _planetListOnSelect);
+    _renderLeftFlip(owner);
+  }
+
+  function _renderLeftFlip(owner) {
+    const content = contentLeft();
+    if (!content || !owner) return;
+    const back = _leftClaims().filter((c) => c !== owner)[0];
+    if (!back) return;
+    const list = content.querySelector('#sidebar-left-list, #sidebar-left-plist');
+    const header = list && list.querySelector('.eclipse-list-header');
+    if (!header) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'left-flip-btn';
+    btn.setAttribute('aria-label', _t(LEFT_TITLE_KEYS[back]));
+    // Two counter arrows read as "flip to the other card"; currentColor lets the
+    // hover state recolour the stroke, matching the load-more chevrons. No
+    // data-tip — that carries the [data-tip] dashed-underline glossary decoration,
+    // wrong for a button, and the aria-label already names the switch target.
+    btn.innerHTML =
+      '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="7 4 7 20"/><polyline points="4 7 7 4 10 7"/><polyline points="17 20 17 4"/><polyline points="14 17 17 20 20 17"/></svg>';
+    btn.addEventListener('click', () => _swapLeftFront(back));
+    header.appendChild(btn);
+  }
+
+  function _swapLeftFront(front) {
+    if (_leftSwapPending || _leftOwner() === front) return;
+    _leftSwapPending = true;
+    const content = contentLeft();
+    if (!content) {
+      _leftSwapPending = false;
+      return;
+    }
+    // Two-step card flip: the current front's header turns away (rotateX) while
+    // its body fades, then the stack rebuilds with the new front, whose header
+    // flips in from the opposite tilt. Flipping the outgoing node and animating
+    // the incoming node reads as one continuous turn across the innerHTML swap.
+    // The pending flag absorbs rapid re-clicks mid-flip (same hazard as the
+    // LayerFade pane transitions).
+    const outList = content.querySelector('#sidebar-left-list, #sidebar-left-plist');
+    if (outList) outList.classList.add('left-flip-out');
+    setTimeout(() => {
+      _leftFront = front;
+      _renderLeftOwner();
+      const inList = content.querySelector('#sidebar-left-list, #sidebar-left-plist');
+      if (inList) {
+        inList.classList.add('left-flip-in');
+        setTimeout(() => inList.classList.remove('left-flip-in'), 200);
+      }
+      setTimeout(() => {
+        _leftSwapPending = false;
+      }, 130);
+    }, 130);
+  }
+
   showEclipseList = function (controller, onSelect) {
+    const isNewClaim = !_eclipseListCtrl;
     _eclipseListCtrl = controller;
     _eclipseListOnSelect = onSelect;
-    _origShowEclipseList(controller, onSelect);
+    if (isNewClaim) _leftFront = 'eclipse-list';
+    _renderLeftOwner();
+  };
+  showPlanetEventList = function (controller, onSelect) {
+    const isNewClaim = !_planetListCtrl;
+    _planetListCtrl = controller;
+    _planetListOnSelect = onSelect;
+    if (isNewClaim) _leftFront = 'planet-events';
+    _renderLeftOwner();
   };
 
   // Track last eclipse detail event for i18n re-render
@@ -2185,21 +3036,31 @@ const Sidebar = (() => {
   };
 
   // Reveal a given eclipse kind in the browse list before navigating to it, so
-  // the target event's card isn't hidden by the solar/lunar filter (a hidden
-  // cursor card makes the active-marker fall back to the nearest visible —
-  // wrong-kind — card, which then receives the detail render). No-op when the
-  // filter already shows this kind ('all', or already matching).
+  // the target event's card isn't hidden by the filters (a hidden cursor card
+  // makes the active-marker fall back to the nearest visible — wrong-kind — card,
+  // which then receives the detail render). No-op only when the kind is already
+  // shown and no central-only sub-filter could still hide the target.
   function setEclipseListFilter(kind) {
     if (kind !== 'solar' && kind !== 'lunar') return;
-    if (_eclipseFilter === 'all' || _eclipseFilter === kind) return;
-    _eclipseFilter = kind;
+    // A specific event was targeted, so neither the primary nor the central-only
+    // sub-filter may hide it. Switch the primary unless the combined view already
+    // shows this kind, and disarm central-only unconditionally — a partial target
+    // of the already-active kind would otherwise stay hidden behind it.
+    const needKind = _eclipseFilter !== 'all' && _eclipseFilter !== kind;
+    if (!needKind && !_eclipseCentralOnly) return;
+    if (needKind) _eclipseFilter = kind;
+    _eclipseCentralOnly = false;
     const content = contentLeft();
     if (content) {
       content
         .querySelectorAll('.eclipse-filter-btn')
         .forEach((b) => b.setAttribute('aria-pressed', b.dataset.filter === _eclipseFilter));
       const listEl = content.querySelector('#eclipse-list-cards');
-      if (listEl) listEl.dataset.filter = _eclipseFilter;
+      if (listEl) {
+        listEl.dataset.filter = _eclipseFilter;
+        delete listEl.dataset.central;
+      }
+      updateEclipseSubSeal(content);
     }
   }
 
@@ -2225,15 +3086,9 @@ const Sidebar = (() => {
         var newScroll = contentRight().querySelector('.sidebar-scroll');
         if (newScroll && savedScrollTop > 0) newScroll.scrollTop = savedScrollTop;
       }
-      // Re-render left sidebar eclipse list if present
-      if (_eclipseListCtrl && sidebarState.left.open) {
-        // Force rebuild of left sidebar structure with new locale
-        var content = contentLeft();
-        if (content) {
-          var listEl = content.querySelector('#sidebar-left-list');
-          if (listEl) listEl.remove();
-        }
-        _origShowEclipseList(_eclipseListCtrl, _eclipseListOnSelect);
+      // Re-render whichever list owns the left sidebar with the new locale.
+      if (_leftOwner() && sidebarState.left.open) {
+        _renderLeftOwner();
       }
     });
   }
@@ -2282,6 +3137,7 @@ const Sidebar = (() => {
     showEclipse,
     showLunarEclipse,
     showEclipseList,
+    showPlanetEventList,
     setEclipseListFilter,
 
     // State machine API (called by map layer toggles, time slider, etc.)

@@ -76,7 +76,24 @@ const Sky = (() => {
   const _tileCache = new Map(); // key = `${tier}:${ra}-${dec}`
   let _tileManifest = null; // { raBins, decBins, raStep, decStep, tiers:{1:{...},2:{...}} }
   const _tileInFlight = new Map(); // key -> Promise (dedup concurrent fetches)
-  const TILE_LRU_LIMIT = 96; // max cached tiles across all tiers
+  // Raised from 96→256→384: the Gaia tier-2 uses a much finer 5° grid (72×36),
+  // and now that dust loads from mid zoom (Z_GAIA_MIN) a panning viewport touches
+  // many more (individually light) tiles, so a larger cache avoids thrash.
+  const TILE_LRU_LIMIT = 384; // max cached tiles across all tiers
+
+  // ---- Tier-2 (Gaia dust) flood control ----
+  // The dust field is ~5.5M stars across 2592 5° tiles. When the whole sky is in
+  // view (lngSpan≥360, roughly z≤4-5) tilesIntersecting enumerates EVERY tier-2
+  // cell, so an unguarded fetch would pull tens of MB / thousands of requests and
+  // OOM. Three valves keep it bounded (see refreshViewTiles):
+  //   1. Z_GAIA_MIN — never touch tier-2 below this zoom (synthetic starlight
+  //      layer stands in as dust there instead). Guards the whole-sky case.
+  //   2. MAX_TIER2_TILES_PER_REFRESH — center-first budget per refresh, so the
+  //      boundary zoom where the gate first opens can't burst all its tiles.
+  //   3. MAX_CONCURRENT_FETCH — cap simultaneous network fetches.
+  const Z_GAIA_MIN = 5;
+  const MAX_TIER2_TILES_PER_REFRESH = 64;
+  const MAX_CONCURRENT_FETCH = 6;
 
   let _linesW = null; // GeoJSON FC
   let _linesC = null;
@@ -87,6 +104,14 @@ const Sky = (() => {
   // Leaflet primitives
   let _starsLayer = null; // L.LayerGroup of CircleMarker
   let _dsoLayer = null; // L.LayerGroup of DSO markers
+
+  // Synthetic integrated-starlight underlight (StarlightCanvasLayer). The baked
+  // texture is tinted warm-white once on load; the layer warps it onto the sphere.
+  let _starlightLayer = null;
+  let _starlightTex = null; // tinted offscreen canvas, or null until loaded
+  let _starlightMeta = null; // manifest.starlight block
+  let _starlightAlpha = 0; // computed each update(): baseAlpha·(1−adaptA)·zoomFade
+  const STARLIGHT_TINT = '#fff1dc'; // warm-white multiply tint for the grayscale
 
   let _iauLines = null;
   let _iauBounds = null;
@@ -867,6 +892,8 @@ const Sky = (() => {
     for (const s of stars) _starById.set(s.id, s);
     _namesW = namesW;
     _dsos = dsos;
+    _starlightMeta = manifest && manifest.starlight ? manifest.starlight : null;
+    if (_starlightMeta) _loadStarlightTexture(_starlightMeta.file);
     const initLocale = typeof I18n !== 'undefined' ? I18n.getLocale() : 'zh-Hans';
     await loadLocale(initLocale);
   }
@@ -918,12 +945,22 @@ const Sky = (() => {
   function magCutoffForStarMarkers(zoom) {
     // Low-zoom cutoff 6.0 (naked-eye dark-sky limit). tier-0 covers mag≤6, so no
     // extra network fetch; ~3300 dim-end stars become attached at z=2-4.
+    // Above mag 8 the fill is the Gaia binary tier-2 (V ≈ 13.0); the map's
+    // maxZoom is 19, so the faint end is revealed gradually rather than dumping
+    // ~5M stars at once — each step ~triples the visible count.
+    // Relaxed to reveal the Gaia dust ~1 zoom earlier and deeper (tier-2 now
+    // enters at z7 instead of z8), so mid zoom shows a denser dust field. The
+    // soft magnitude edge in sky-canvas-layer smooths each ~1.5-mag step, and the
+    // flood valves (Z_GAIA_MIN / tile budget) keep the low-zoom fetch bounded.
     let base;
     if (zoom == null || zoom <= 5) base = 6.0;
-    else if (zoom <= 6) base = 6.0;
-    else if (zoom <= 7) base = 7.5;
-    else if (zoom <= 8) base = 9.0;
-    else base = 10.0;
+    else if (zoom <= 6) base = 7.5;
+    else if (zoom <= 7) base = 9.0;
+    else if (zoom <= 8) base = 10.5;
+    else if (zoom <= 9) base = 11.5;
+    else if (zoom <= 10) base = 12.0;
+    else if (zoom <= 11) base = 12.5;
+    else base = 13.0;
     // Day veil cuts the dimmest tier — dim stars wash out first in a bright sky
     // (the mask gradient handles the soft twilight falloff; this is the hard tail).
     if (_isDayMode()) base -= 1.0;
@@ -936,7 +973,10 @@ const Sky = (() => {
     if (zoom == null || zoom <= 5) return 4.0;
     if (zoom <= 6) return 5.0;
     if (zoom <= 7) return 7.5;
-    return magCutoffForStarMarkers(zoom);
+    // Cap clickable stars at the HYG limit (mag 8). The Gaia tier-2 fill is
+    // nameless "dust" with no popup/metadata, so it must never enter the hit
+    // table even when drawn at high zoom.
+    return Math.min(8.0, magCutoffForStarMarkers(zoom));
   }
 
   // Prefix length: _starMarkers[0..count) currently have their copies attached
@@ -978,9 +1018,16 @@ const Sky = (() => {
     ];
   }
 
-  function tilesIntersecting(bounds, gmst) {
+  function tilesIntersecting(bounds, gmst, tier) {
     if (!_tileManifest) return [];
-    const { raBins, decBins, raStep, decStep } = _tileManifest;
+    // Each tier carries its own grid (HYG tiers are coarse 15°×30°; the Gaia
+    // tier-2 is a fine 5°×5°), so read resolution from the tier, falling back
+    // to the manifest's legacy top-level grid for older data.
+    const g = (_tileManifest.tiers && _tileManifest.tiers[tier]) || _tileManifest;
+    const raBins = g.raBins != null ? g.raBins : _tileManifest.raBins;
+    const decBins = g.decBins != null ? g.decBins : _tileManifest.decBins;
+    const raStep = g.raStep != null ? g.raStep : _tileManifest.raStep;
+    const decStep = g.decStep != null ? g.decStep : _tileManifest.decStep;
     const pad = 5;
     const latMin = Math.max(-90, bounds.getSouth() - pad);
     const latMax = Math.min(90, bounds.getNorth() + pad);
@@ -1013,13 +1060,47 @@ const Sky = (() => {
     return `${tier}:${ra}-${dec}`;
   }
 
+  // Decode a Gaia binary star tile (see tools/build-stars-gaia.mjs): 8-byte
+  // header then 11-byte little-endian records (Float32 ra, Float32 dec, Int16
+  // mag*scale, Int8 ci*scale; ci −128 = unknown). Returns lightweight
+  // {ra,dec,mag,ci} records — no id/name, since these are non-interactive dust.
+  function decodeStarBin(buf, tierInfo) {
+    const recSize = tierInfo.recSize || 11;
+    const headerSize = tierInfo.headerSize || 8;
+    const magScale = tierInfo.magScale || 1000;
+    const ciScale = tierInfo.ciScale || 40;
+    const dv = new DataView(buf);
+    const n = Math.floor((buf.byteLength - headerSize) / recSize);
+    const stars = new Array(n);
+    for (let i = 0; i < n; i++) {
+      const o = headerSize + i * recSize;
+      const ciRaw = dv.getInt8(o + 10);
+      stars[i] = {
+        ra: dv.getFloat32(o, true),
+        dec: dv.getFloat32(o + 4, true),
+        mag: dv.getInt16(o + 8, true) / magScale,
+        ci: ciRaw === -128 ? null : ciRaw / ciScale,
+      };
+    }
+    return stars;
+  }
+
   async function _fetchTile(tier, ra, dec) {
     const key = _tileKey(tier, ra, dec);
     if (_tileInFlight.has(key)) return _tileInFlight.get(key);
     const tierInfo = _tileManifest.tiers[tier];
     const tileKey2 = `${ra}-${dec}`;
     if (!tierInfo || !tierInfo.tiles[tileKey2]) return null; // empty/missing tile
-    const p = fetchJson(`data/sky/tiles/m${tier}/${tileKey2}.json`)
+    const dir = tierInfo.dir || `m${tier}`;
+    const isBin = tierInfo.format === 'bin';
+    const url = `data/sky/tiles/${dir}/${tileKey2}.${isBin ? 'bin' : 'json'}`;
+    const load = isBin
+      ? fetch(url).then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+          return r.arrayBuffer().then((b) => decodeStarBin(b, tierInfo));
+        })
+      : fetchJson(url);
+    const p = load
       .then((stars) => {
         const entry = {
           tier,
@@ -1030,7 +1111,9 @@ const Sky = (() => {
           lastUsed: performance.now(),
         };
         _tileCache.set(key, entry);
-        for (const s of stars) _starById.set(s.id, s);
+        // Binary dust stars have no id and are non-clickable, so keep them out
+        // of the _starById index (which would otherwise bloat by millions).
+        if (!isBin) for (const s of stars) _starById.set(s.id, s);
         return entry;
       })
       .catch((err) => {
@@ -1131,21 +1214,75 @@ const Sky = (() => {
 
   let _refreshSeq = 0;
 
+  // Keep the `cap` tiles nearest the viewport center, dropping the rest. Grid
+  // distance (RA wrap-aware) is enough for a center-first ordering — no need for
+  // true angular separation. Used to budget tier-2 dust so a boundary-zoom
+  // refresh can't burst all its tiles at once.
+  function _nearestTiles(tiles, tier, bounds, gmst, cap) {
+    const g = (_tileManifest.tiers && _tileManifest.tiers[tier]) || _tileManifest;
+    const raStep = g.raStep != null ? g.raStep : _tileManifest.raStep;
+    const decStep = g.decStep != null ? g.decStep : _tileManifest.decStep;
+    const raBins = g.raBins != null ? g.raBins : _tileManifest.raBins;
+    const c = bounds.getCenter();
+    const cRa = ((((c.lng + gmst) % 360) + 360) % 360) / raStep;
+    const cDec = (Math.max(-90, Math.min(90, c.lat)) + 90) / decStep;
+    const dist2 = ([ra, dec]) => {
+      let dr = Math.abs(ra + 0.5 - cRa);
+      dr = Math.min(dr, raBins - dr); // RA wraps 0↔360
+      const dd = dec + 0.5 - cDec;
+      return dr * dr + dd * dd;
+    };
+    return tiles
+      .slice()
+      .sort((a, b) => dist2(a) - dist2(b))
+      .slice(0, cap);
+  }
+
+  // Fetch `jobs` ([tier,ra,dec] triples) with at most MAX_CONCURRENT_FETCH in
+  // flight, preserving result order. Caps the network burst when many tier-2
+  // dust tiles enter view together.
+  function _fetchTilesPooled(jobs) {
+    const results = new Array(jobs.length);
+    let next = 0;
+    const worker = () => {
+      if (next >= jobs.length) return Promise.resolve();
+      const i = next++;
+      const [t, r, d] = jobs[i];
+      return _fetchTile(t, r, d).then((e) => {
+        results[i] = e;
+        return worker();
+      });
+    };
+    const n = Math.min(MAX_CONCURRENT_FETCH, jobs.length);
+    const workers = [];
+    for (let i = 0; i < n; i++) workers.push(worker());
+    return Promise.all(workers).then(() => results);
+  }
+
   // Called from update(): ensure all (tier, tile) cells intersecting the
   // current viewport are loaded and attached, with marker prefix matching
   // the current adapted mag cutoff. Detaches tiles that have moved out.
   function refreshViewTiles(cutoff, gmst) {
     if (!_map || !_starsLayer || !_tileManifest) return;
     const maxTier = _maxTierForCutoff(cutoff);
+    const zoom = _currentZoom != null ? _currentZoom : _map.getZoom();
 
-    // Which tiles do we need right now?
+    // Which tiles do we need right now? Each tier has its own grid, so the ra/dec
+    // index sets differ between tiers — compute them per tier.
     const need = new Set();
-    if (maxTier >= 1) {
-      const tiles = tilesIntersecting(_map.getBounds(), gmst);
-      for (const [ra, dec] of tiles) {
-        need.add(_tileKey(1, ra, dec));
-        if (maxTier >= 2) need.add(_tileKey(2, ra, dec));
+    const bounds = _map.getBounds();
+    for (let tier = 1; tier <= maxTier; tier++) {
+      // Flood valve 1: tier-2 dust never loads below Z_GAIA_MIN. The synthetic
+      // starlight layer stands in as dust there, and low zoom is exactly where
+      // the whole-sky tile enumeration (all 2592 cells) would explode.
+      if (tier === 2 && zoom < Z_GAIA_MIN) continue;
+      let tiles = tilesIntersecting(bounds, gmst, tier);
+      // Flood valve 2: cap tier-2 tiles per refresh (center-first); the rest
+      // stay unloaded and the starlight layer covers the gaps at these zooms.
+      if (tier === 2 && tiles.length > MAX_TIER2_TILES_PER_REFRESH) {
+        tiles = _nearestTiles(tiles, tier, bounds, gmst, MAX_TIER2_TILES_PER_REFRESH);
       }
+      for (const [ra, dec] of tiles) need.add(_tileKey(tier, ra, dec));
     }
 
     // Detach tiles no longer needed
@@ -1170,7 +1307,8 @@ const Sky = (() => {
 
     if (toFetch.length) {
       const mySeq = ++_refreshSeq;
-      Promise.all(toFetch.map(([t, r, d]) => _fetchTile(t, r, d))).then((results) => {
+      // Flood valve 3: pooled fetch caps concurrent network requests.
+      _fetchTilesPooled(toFetch).then((results) => {
         // Stale-guard: if another refresh fired since, skip eager-attach entirely
         // and let the trailing update() below run a fresh refreshViewTiles, which
         // will attach from cache only what the current view actually wants and
@@ -1352,6 +1490,37 @@ const Sky = (() => {
       _glowTint: glowTint,
       _adaptAf: 1,
     };
+  }
+
+  // Load the baked starlight PNG and pre-tint it warm-white into an offscreen
+  // canvas. multiply keeps luminance 0 at 0, so black stays transparent under
+  // the layer's additive blend. Fire-and-forget; the layer redraws once ready.
+  function _loadStarlightTexture(file) {
+    if (typeof document === 'undefined' || typeof Image === 'undefined') return;
+    const img = new Image();
+    img.onload = () => {
+      const off = document.createElement('canvas');
+      off.width = img.width;
+      off.height = img.height;
+      const octx = off.getContext('2d');
+      octx.drawImage(img, 0, 0);
+      octx.globalCompositeOperation = 'multiply';
+      octx.fillStyle = STARLIGHT_TINT;
+      octx.fillRect(0, 0, img.width, img.height);
+      octx.globalCompositeOperation = 'source-over';
+      _starlightTex = off;
+      if (_starlightLayer && typeof _starlightLayer.redraw === 'function') _starlightLayer.redraw();
+    };
+    img.src = 'data/sky/' + file;
+  }
+
+  function _createStarlightLayer() {
+    if (typeof StarlightCanvasLayer !== 'function' && typeof StarlightCanvasLayer !== 'object') return null;
+    return new StarlightCanvasLayer({
+      paneName: 'starlight',
+      getTexture: () => _starlightTex,
+      getContext: () => ({ gmst: _lastGmst, alpha: _mode === 'off' ? 0 : _starlightAlpha }),
+    });
   }
 
   function buildStars() {
@@ -2213,11 +2382,14 @@ const Sky = (() => {
       if (!_animating) {
         for (let i = arr.length; i < segs.length; i++) {
           const seg = segs[i];
+          // Groove pair: the dark casing is nudged 0.7px up via CSS on the
+          // *-shadow class (style.css), so the incision has a lit lower lip
+          // and a shaded upper lip instead of a symmetric outline.
           const shadow = L.polyline(seg.latlngs, {
             pane: 'sky-lines',
             className: `${classBase}-shadow`,
             color: '#0e1014',
-            weight: 2.6,
+            weight: 1.8,
             opacity: 0.8,
             interactive: false,
             smoothFactor: 1.2,
@@ -2226,7 +2398,7 @@ const Sky = (() => {
             pane: 'sky-lines',
             className: `${classBase} ${classBase}-${id}`,
             color: '#dad6ca',
-            weight: 1.4,
+            weight: 1.2,
             opacity: 0.85,
             interactive: false,
             smoothFactor: 1.2,
@@ -2681,6 +2853,7 @@ const Sky = (() => {
     // Panes are layered z-index'd; bounds at the bottom, lines mid, stars
     // above, labels on top. Markers (tooltip-divs) live in the labels pane.
     const defs = [
+      ['starlight', 510], // diffuse Milky-band underlight, below the point stars
       ['sky-bounds', 505],
       ['sky-lines', 505],
       ['sky-stars', 520],
@@ -2745,22 +2918,23 @@ const Sky = (() => {
     pane.style.opacity = String(boundsOpacityForZoom(_currentZoom));
   }
 
-  // Bring up shared star/DSO/comet/meteor layers (used by stars, iau, cn modes).
+  // Bring up shared star/DSO/meteor layers (used by stars, iau, cn modes).
   function ensureSharedLayers() {
     buildStars();
     buildDSOs();
+    if (!_starlightLayer) _starlightLayer = _createStarlightLayer();
+    if (_starlightLayer && !_map.hasLayer(_starlightLayer)) _map.addLayer(_starlightLayer);
     if (!_map.hasLayer(_starsLayer)) _map.addLayer(_starsLayer);
     if (_dsoLayer && !_map.hasLayer(_dsoLayer)) _map.addLayer(_dsoLayer);
     applyStarScale(_currentZoom); // see R3 init-load fix above
     applyStarVisibility(magCutoffForStarMarkers(_currentZoom));
-    if (typeof Comet !== 'undefined' && !Comet.isOn()) Comet.addTo(_map);
     if (typeof Meteor !== 'undefined' && !Meteor.isOn()) Meteor.addTo(_map);
   }
 
   function teardownSharedLayers() {
+    if (_starlightLayer && _map.hasLayer(_starlightLayer)) _map.removeLayer(_starlightLayer);
     if (_starsLayer && _map.hasLayer(_starsLayer)) _map.removeLayer(_starsLayer);
     if (_dsoLayer && _map.hasLayer(_dsoLayer)) _map.removeLayer(_dsoLayer);
-    if (typeof Comet !== 'undefined' && Comet.isOn()) Comet.removeFrom(_map);
     if (typeof Meteor !== 'undefined' && Meteor.isOn()) Meteor.removeFrom(_map);
   }
 
@@ -3245,6 +3419,14 @@ const Sky = (() => {
     _lastCutoff = adaptedCutoff;
     _lastClickCutoff = magCutoffForStarClicks(_currentZoom);
     _redrawCanvas();
+
+    // Synthetic starlight underlight: fade out in daylight (A→1) and as per-star
+    // Gaia dust takes over at high zoom (Z_GAIA_MIN crossfade), so the two never
+    // double-count. Recomputed here and pulled by the layer via getContext.
+    const baseAlpha = (Lum.params && Lum.params.starlightAlpha) || 0.45;
+    const zoomFade = 1 - Lum.smoothstep(Z_GAIA_MIN - 0.5, Z_GAIA_MIN + 2, _currentZoom || 0);
+    _starlightAlpha = baseAlpha * (1 - A) * zoomFade;
+    if (_starlightLayer && typeof _starlightLayer.redraw === 'function') _starlightLayer.redraw();
   }
 
   // ---- Star detail panel ----
@@ -3382,6 +3564,13 @@ const Sky = (() => {
       star.d != null
         ? `<div class="info-row"><span class="label"${_glossAttr('distance')}>${_t('star.distance')}</span><span class="value">${(star.d * 3.26156).toFixed(2)} ly</span></div>`
         : '';
+    // Absolute magnitude is not stored — derive it from apparent mag and the same
+    // parsec distance the row above uses (M = m − 5·log10 d + 5), so it stays exactly
+    // consistent with HYG's own distance. Only meaningful when distance is known.
+    const absMagLine =
+      star.d != null && Number.isFinite(star.mag)
+        ? `<div class="info-row"><span class="label"${_glossAttr('absolute_magnitude')}>${_t('star.absolute_magnitude')}</span><span class="value">${(star.mag - 5 * Math.log10(star.d) + 5).toFixed(2)}</span></div>`
+        : '';
 
     let obsBlock = '';
     if (obs) {
@@ -3453,9 +3642,10 @@ const Sky = (() => {
           <div class="info-row"><span class="label"${_glossAttr('ra')}>${_t('star.ra')}</span><span class="value">${fmtRA(star.ra)}</span></div>
           <div class="info-row"><span class="label"${_glossAttr('dec')}>${_t('star.dec')}</span><span class="value">${fmtDec(star.dec)}</span></div>
           <div class="info-row"><span class="label"${_glossAttr('magnitude')}>${_t('star.magnitude')}</span><span class="value">${star.mag.toFixed(2)}</span></div>
-          ${star.sp ? `<div class="info-row"><span class="label"${_glossAttr('spectral_type')}>${_t('star.spectral_type')}</span><span class="value">${star.sp}</span></div>` : ''}
+          ${star.sp ? `<div class="info-row"><span class="label"${_glossAttr('spectral_type')}>${_t('star.spectral_type')}</span><span class="value"${Spectral.tipAttr(star.sp)}>${star.sp}</span></div>` : ''}
           ${Number.isFinite(star.ci) ? `<div class="info-row"><span class="label"${_glossAttr('color_index')}>B−V</span><span class="value">${star.ci.toFixed(3)}  ≈ ${Math.round(bvToTeff(star.ci))} K</span></div>` : ''}
           ${distLine}
+          ${absMagLine}
         </div>
         <div class="info-block">
           <div class="info-block-title"${_glossAttr('substellar_point')}>${_t('star.substellar_point')}</div>
@@ -3608,6 +3798,10 @@ const Sky = (() => {
     setMode,
     cycleMode,
     getMode: () => _mode,
+    // Current zoom-adaptive naked-eye magnitude cutoff. Exposed so sibling sky
+    // objects (asteroids) fade in and out at the same brightness threshold as
+    // stars of equal magnitude, keeping the layer visually coherent.
+    starMagCutoff: () => magCutoffForStarMarkers(_currentZoom != null ? _currentZoom : _map && _map.getZoom()),
     update,
     refreshDayMode,
     onStarClick: (cb) => {

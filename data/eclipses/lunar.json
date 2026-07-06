@@ -6406,5 +6406,6389 @@
       "sep": 0.019903,
       "pa": 2.949589
     }
+  },
+  {
+    "date": "2050-05-06",
+    "kind": "Total",
+    "times": {
+      "p1": "2050-05-06T19:40:04Z",
+      "u1": "2050-05-06T20:47:04Z",
+      "u2": "2050-05-06T22:08:00Z",
+      "peak": "2050-05-06T22:30:26Z",
+      "u3": "2050-05-06T22:52:52Z",
+      "u4": "2050-05-07T00:13:47Z",
+      "p4": "2050-05-07T01:20:48Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -16.9756,
+      "lng": 20.7565
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -16.662,
+        "lng": 61.894
+      },
+      "u1": {
+        "lat": -16.787,
+        "lng": 45.715
+      },
+      "u2": {
+        "lat": -16.935,
+        "lng": 26.174
+      },
+      "peak": {
+        "lat": -16.976,
+        "lng": 20.758
+      },
+      "u3": {
+        "lat": -17.016,
+        "lng": 15.342
+      },
+      "u4": {
+        "lat": -17.16,
+        "lng": -4.193
+      },
+      "p4": {
+        "lat": -17.278,
+        "lng": -20.37
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 2692,
+    "partialDurSec": 12403,
+    "penumbralDurSec": 20444,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004483,
+      "rho_umbra": 0.012127,
+      "rho_penum": 0.021531,
+      "sep": 0.006875,
+      "pa": 0.193634
+    }
+  },
+  {
+    "date": "2050-10-30",
+    "kind": "Total",
+    "times": {
+      "p1": "2050-10-30T00:43:18Z",
+      "u1": "2050-10-30T01:43:25Z",
+      "u2": "2050-10-30T03:02:03Z",
+      "peak": "2050-10-30T03:20:11Z",
+      "u3": "2050-10-30T03:38:20Z",
+      "u4": "2050-10-30T04:56:57Z",
+      "p4": "2050-10-30T05:57:05Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 14.0119,
+      "lng": -54.9349
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 13.617,
+        "lng": -17.207
+      },
+      "u1": {
+        "lat": 13.77,
+        "lng": -31.663
+      },
+      "u2": {
+        "lat": 13.967,
+        "lng": -50.571
+      },
+      "peak": {
+        "lat": 14.012,
+        "lng": -54.931
+      },
+      "u3": {
+        "lat": 14.057,
+        "lng": -59.296
+      },
+      "u4": {
+        "lat": 14.25,
+        "lng": -78.199
+      },
+      "p4": {
+        "lat": 14.395,
+        "lng": -92.657
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 2177,
+    "partialDurSec": 11612,
+    "penumbralDurSec": 18827,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004775,
+      "rho_umbra": 0.013148,
+      "rho_penum": 0.0227,
+      "sep": 0.007771,
+      "pa": 2.903284
+    }
+  },
+  {
+    "date": "2051-04-26",
+    "kind": "Total",
+    "times": {
+      "p1": "2051-04-25T23:12:11Z",
+      "u1": "2051-04-26T00:24:10Z",
+      "u2": "2051-04-26T01:39:40Z",
+      "peak": "2051-04-26T02:14:56Z",
+      "u3": "2051-04-26T02:50:11Z",
+      "u4": "2051-04-26T04:05:41Z",
+      "p4": "2051-04-26T05:17:40Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -12.9261,
+      "lng": -34.8785
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -12.549,
+        "lng": 9.426
+      },
+      "u1": {
+        "lat": -12.698,
+        "lng": -8.026
+      },
+      "u2": {
+        "lat": -12.854,
+        "lng": -26.329
+      },
+      "peak": {
+        "lat": -12.926,
+        "lng": -34.878
+      },
+      "u3": {
+        "lat": -12.998,
+        "lng": -43.423
+      },
+      "u4": {
+        "lat": -13.151,
+        "lng": -61.724
+      },
+      "p4": {
+        "lat": -13.295,
+        "lng": -79.172
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4231,
+    "partialDurSec": 13292,
+    "penumbralDurSec": 21929,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.0043,
+      "rho_umbra": 0.011432,
+      "rho_penum": 0.020862,
+      "sep": 0.005328,
+      "pa": 3.381992
+    }
+  },
+  {
+    "date": "2051-10-19",
+    "kind": "Total",
+    "times": {
+      "p1": "2051-10-19T16:32:51Z",
+      "u1": "2051-10-19T17:27:49Z",
+      "u2": "2051-10-19T18:28:08Z",
+      "peak": "2051-10-19T19:10:15Z",
+      "u3": "2051-10-19T19:52:23Z",
+      "u4": "2051-10-19T20:52:42Z",
+      "p4": "2051-10-19T21:47:40Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 9.654,
+      "lng": 68.0474
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 9.188,
+        "lng": 105.881
+      },
+      "u1": {
+        "lat": 9.352,
+        "lng": 92.669
+      },
+      "u2": {
+        "lat": 9.53,
+        "lng": 78.173
+      },
+      "peak": {
+        "lat": 9.654,
+        "lng": 68.051
+      },
+      "u3": {
+        "lat": 9.777,
+        "lng": 57.926
+      },
+      "u4": {
+        "lat": 9.953,
+        "lng": 43.431
+      },
+      "p4": {
+        "lat": 10.112,
+        "lng": 30.223
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5055,
+    "partialDurSec": 12293,
+    "penumbralDurSec": 18889,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004869,
+      "rho_umbra": 0.013515,
+      "rho_penum": 0.023039,
+      "sep": 0.004545,
+      "pa": 6.00958
+    }
+  },
+  {
+    "date": "2052-04-14",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2052-04-13T23:58:00Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2052-04-14T02:16:24Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2052-04-14T04:34:48Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -8.4257,
+      "lng": -34.47
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -8.099,
+        "lng": -0.893
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -8.426,
+        "lng": -34.469
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -8.749,
+        "lng": -68.044
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 16608,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004305,
+      "rho_umbra": 0.011436,
+      "rho_penum": 0.020895,
+      "sep": 0.016804,
+      "pa": 3.418821
+    }
+  },
+  {
+    "date": "2052-10-08",
+    "kind": "Partial",
+    "times": {
+      "p1": "2052-10-08T08:35:43Z",
+      "u1": "2052-10-08T10:11:47Z",
+      "u2": null,
+      "peak": "2052-10-08T10:44:23Z",
+      "u3": null,
+      "u4": "2052-10-08T11:16:59Z",
+      "p4": "2052-10-08T12:53:04Z"
+    },
+    "magnitude": 0.1917,
+    "obscuration": 0.0368,
+    "subLunar": {
+      "lat": 5.0302,
+      "lng": -164.6554
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 4.639,
+        "lng": -133.638
+      },
+      "u1": {
+        "lat": 4.931,
+        "lng": -156.794
+      },
+      "u2": null,
+      "peak": {
+        "lat": 5.03,
+        "lng": -164.652
+      },
+      "u3": null,
+      "u4": {
+        "lat": 5.129,
+        "lng": -172.51
+      },
+      "p4": {
+        "lat": 5.419,
+        "lng": 164.333
+      }
+    },
+    "umbralMag": 0.1917,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 3912,
+    "penumbralDurSec": 15442,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00474,
+      "rho_umbra": 0.013046,
+      "rho_penum": 0.022542,
+      "sep": 0.016927,
+      "pa": 5.983675
+    }
+  },
+  {
+    "date": "2053-03-04",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2053-03-04T15:14:28Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2053-03-04T17:20:27Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2053-03-04T19:26:27Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 5.3702,
+      "lng": 101.7662
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 5.732,
+        "lng": 132.188
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 5.37,
+        "lng": 101.77
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 5.007,
+        "lng": 71.345
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15118,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00463,
+      "rho_umbra": 0.012598,
+      "rho_penum": 0.022165,
+      "sep": 0.017892,
+      "pa": 0.297726
+    }
+  },
+  {
+    "date": "2053-08-29",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2053-08-29T05:44:56Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2053-08-29T08:04:14Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2053-08-29T10:23:32Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -8.5125,
+      "lng": -121.8074
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -8.848,
+        "lng": -88.05
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -8.512,
+        "lng": -121.806
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -8.173,
+        "lng": -155.562
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 16716,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004377,
+      "rho_umbra": 0.011737,
+      "rho_penum": 0.021131,
+      "sep": 0.016332,
+      "pa": 2.864612
+    }
+  },
+  {
+    "date": "2054-02-22",
+    "kind": "Total",
+    "times": {
+      "p1": "2054-02-22T04:12:02Z",
+      "u1": "2054-02-22T05:08:58Z",
+      "u2": "2054-02-22T06:13:13Z",
+      "peak": "2054-02-22T06:49:44Z",
+      "u3": "2054-02-22T07:26:16Z",
+      "u4": "2054-02-22T08:30:30Z",
+      "p4": "2054-02-22T09:27:26Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 10.0453,
+      "lng": -99.8905
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 10.493,
+        "lng": -61.974
+      },
+      "u1": {
+        "lat": 10.332,
+        "lng": -75.661
+      },
+      "u2": {
+        "lat": 10.15,
+        "lng": -91.108
+      },
+      "peak": {
+        "lat": 10.045,
+        "lng": -99.888
+      },
+      "u3": {
+        "lat": 9.941,
+        "lng": -108.672
+      },
+      "u4": {
+        "lat": 9.755,
+        "lng": -124.117
+      },
+      "p4": {
+        "lat": 9.59,
+        "lng": -137.807
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4383,
+    "partialDurSec": 12092,
+    "penumbralDurSec": 18924,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004837,
+      "rho_umbra": 0.013361,
+      "rho_penum": 0.022952,
+      "sep": 0.005747,
+      "pa": 0.270117
+    }
+  },
+  {
+    "date": "2054-08-18",
+    "kind": "Total",
+    "times": {
+      "p1": "2054-08-18T06:19:41Z",
+      "u1": "2054-08-18T07:31:09Z",
+      "u2": "2054-08-18T08:42:50Z",
+      "peak": "2054-08-18T09:24:46Z",
+      "u3": "2054-08-18T10:06:42Z",
+      "u4": "2054-08-18T11:18:23Z",
+      "p4": "2054-08-18T12:29:51Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -12.9645,
+      "lng": -141.0216
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -13.334,
+        "lng": -96.138
+      },
+      "u1": {
+        "lat": -13.193,
+        "lng": -113.468
+      },
+      "u2": {
+        "lat": -13.049,
+        "lng": -130.85
+      },
+      "peak": {
+        "lat": -12.965,
+        "lng": -141.019
+      },
+      "u3": {
+        "lat": -12.88,
+        "lng": -151.188
+      },
+      "u4": {
+        "lat": -12.733,
+        "lng": -168.573
+      },
+      "p4": {
+        "lat": -12.586,
+        "lng": 174.095
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5031,
+    "partialDurSec": 13634,
+    "penumbralDurSec": 22210,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004277,
+      "rho_umbra": 0.011372,
+      "rho_penum": 0.020744,
+      "sep": 0.004404,
+      "pa": 2.901182
+    }
+  },
+  {
+    "date": "2055-02-11",
+    "kind": "Total",
+    "times": {
+      "p1": "2055-02-11T20:07:49Z",
+      "u1": "2055-02-11T21:05:03Z",
+      "u2": "2055-02-11T22:11:10Z",
+      "peak": "2055-02-11T22:44:34Z",
+      "u3": "2055-02-11T23:17:57Z",
+      "u4": "2055-02-12T00:24:04Z",
+      "p4": "2055-02-12T01:21:18Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 14.3884,
+      "lng": 21.7271
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 14.773,
+        "lng": 59.365
+      },
+      "u1": {
+        "lat": 14.634,
+        "lng": 45.623
+      },
+      "u2": {
+        "lat": 14.471,
+        "lng": 29.748
+      },
+      "peak": {
+        "lat": 14.388,
+        "lng": 21.728
+      },
+      "u3": {
+        "lat": 14.305,
+        "lng": 13.712
+      },
+      "u4": {
+        "lat": 14.138,
+        "lng": -2.164
+      },
+      "p4": {
+        "lat": 13.992,
+        "lng": -15.909
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4007,
+    "partialDurSec": 11941,
+    "penumbralDurSec": 18809,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004846,
+      "rho_umbra": 0.013386,
+      "rho_penum": 0.022999,
+      "sep": 0.006282,
+      "pa": 3.374078
+    }
+  },
+  {
+    "date": "2055-08-07",
+    "kind": "Partial",
+    "times": {
+      "p1": "2055-08-07T07:58:02Z",
+      "u1": "2055-08-07T09:09:29Z",
+      "u2": null,
+      "peak": "2055-08-07T10:51:33Z",
+      "u3": null,
+      "u4": "2055-08-07T12:33:36Z",
+      "p4": "2055-08-07T13:45:04Z"
+    },
+    "magnitude": 0.993,
+    "obscuration": 0.986,
+    "subLunar": {
+      "lat": -17.0012,
+      "lng": -162.1095
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -17.296,
+        "lng": -120.147
+      },
+      "u1": {
+        "lat": -17.176,
+        "lng": -137.425
+      },
+      "u2": null,
+      "peak": {
+        "lat": -17.001,
+        "lng": -162.109
+      },
+      "u3": null,
+      "u4": {
+        "lat": -16.823,
+        "lng": 173.209
+      },
+      "p4": {
+        "lat": -16.696,
+        "lng": 155.922
+      }
+    },
+    "umbralMag": 0.993,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 12247,
+    "penumbralDurSec": 20822,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004378,
+      "rho_umbra": 0.01176,
+      "rho_penum": 0.021114,
+      "sep": 0.007666,
+      "pa": 6.089481
+    }
+  },
+  {
+    "date": "2056-02-01",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2056-02-01T10:20:27Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2056-02-01T12:24:25Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2056-02-01T14:28:24Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 18.3321,
+      "lng": 176.6704
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 18.556,
+        "lng": -153.495
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 18.332,
+        "lng": 176.674
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 18.099,
+        "lng": 146.839
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 14878,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00465,
+      "rho_umbra": 0.012643,
+      "rho_penum": 0.022272,
+      "sep": 0.018243,
+      "pa": 3.325767
+    }
+  },
+  {
+    "date": "2056-06-27",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2056-06-27T08:45:39Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2056-06-27T10:01:14Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2056-06-27T11:16:49Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -21.9391,
+      "lng": -150.2658
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.903,
+        "lng": -132.137
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -21.939,
+        "lng": -150.265
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -21.971,
+        "lng": -168.393
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 9070,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004735,
+      "rho_umbra": 0.013109,
+      "rho_penum": 0.022442,
+      "sep": 0.023936,
+      "pa": 3.19223
+    }
+  },
+  {
+    "date": "2056-07-26",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2056-07-26T16:53:49Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2056-07-26T18:41:29Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2056-07-26T20:29:09Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -20.4729,
+      "lng": 80.639
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -20.621,
+        "lng": 106.542
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -20.473,
+        "lng": 80.641
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -20.318,
+        "lng": 54.736
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 12920,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004615,
+      "rho_umbra": 0.012652,
+      "rho_penum": 0.021994,
+      "sep": 0.020412,
+      "pa": 6.143815
+    }
+  },
+  {
+    "date": "2056-12-22",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2056-12-21T23:38:29Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2056-12-22T01:47:14Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2056-12-22T03:55:59Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 22.3889,
+      "lng": -27.91
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.29,
+        "lng": 3.208
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 22.389,
+        "lng": -27.909
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 22.48,
+        "lng": -59.023
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15450,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004312,
+      "rho_umbra": 0.011368,
+      "rho_penum": 0.021012,
+      "sep": 0.018288,
+      "pa": 6.185487
+    }
+  },
+  {
+    "date": "2057-06-17",
+    "kind": "Partial",
+    "times": {
+      "p1": "2057-06-16T23:58:53Z",
+      "u1": "2057-06-17T00:59:29Z",
+      "u2": null,
+      "peak": "2057-06-17T02:24:30Z",
+      "u3": null,
+      "u4": "2057-06-17T03:49:31Z",
+      "p4": "2057-06-17T04:50:07Z"
+    },
+    "magnitude": 0.888,
+    "obscuration": 0.7885,
+    "subLunar": {
+      "lat": -22.734,
+      "lng": -36.6505
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -22.534,
+        "lng": -1.804
+      },
+      "u1": {
+        "lat": -22.619,
+        "lng": -16.305
+      },
+      "u2": null,
+      "peak": {
+        "lat": -22.734,
+        "lng": -36.648
+      },
+      "u3": null,
+      "u4": {
+        "lat": -22.843,
+        "lng": -56.99
+      },
+      "p4": {
+        "lat": -22.917,
+        "lng": -71.488
+      }
+    },
+    "umbralMag": 0.888,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 10202,
+    "penumbralDurSec": 17474,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004865,
+      "rho_umbra": 0.013589,
+      "rho_penum": 0.022928,
+      "sep": 0.011013,
+      "pa": 3.272094
+    }
+  },
+  {
+    "date": "2057-12-11",
+    "kind": "Partial",
+    "times": {
+      "p1": "2057-12-10T21:52:02Z",
+      "u1": "2057-12-10T23:09:23Z",
+      "u2": null,
+      "peak": "2057-12-11T00:51:48Z",
+      "u3": null,
+      "u4": "2057-12-11T02:34:13Z",
+      "p4": "2057-12-11T03:51:34Z"
+    },
+    "magnitude": 0.9783,
+    "obscuration": 0.9572,
+    "subLunar": {
+      "lat": 22.5161,
+      "lng": -15.4494
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.246,
+        "lng": 28.03
+      },
+      "u1": {
+        "lat": 22.364,
+        "lng": 9.322
+      },
+      "u2": null,
+      "peak": {
+        "lat": 22.516,
+        "lng": -15.447
+      },
+      "u3": null,
+      "u4": {
+        "lat": 22.663,
+        "lng": -40.215
+      },
+      "p4": {
+        "lat": 22.77,
+        "lng": -58.92
+      }
+    },
+    "umbralMag": 0.9783,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 12290,
+    "penumbralDurSec": 21571,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004295,
+      "rho_umbra": 0.01131,
+      "rho_penum": 0.020944,
+      "sep": 0.007647,
+      "pa": 6.097878
+    }
+  },
+  {
+    "date": "2058-06-06",
+    "kind": "Total",
+    "times": {
+      "p1": "2058-06-06T16:31:47Z",
+      "u1": "2058-06-06T17:26:55Z",
+      "u2": "2058-06-06T18:24:56Z",
+      "peak": "2058-06-06T19:13:54Z",
+      "u3": "2058-06-06T20:02:53Z",
+      "u4": "2058-06-06T21:00:54Z",
+      "p4": "2058-06-06T21:56:02Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -22.7631,
+      "lng": 70.3358
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -22.424,
+        "lng": 109.222
+      },
+      "u1": {
+        "lat": -22.541,
+        "lng": 95.998
+      },
+      "u2": {
+        "lat": -22.663,
+        "lng": 82.082
+      },
+      "peak": {
+        "lat": -22.763,
+        "lng": 70.339
+      },
+      "u3": {
+        "lat": -22.862,
+        "lng": 58.593
+      },
+      "u4": {
+        "lat": -22.977,
+        "lng": 44.682
+      },
+      "p4": {
+        "lat": -23.084,
+        "lng": 31.463
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5877,
+    "partialDurSec": 12839,
+    "penumbralDurSec": 19455,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004775,
+      "rho_umbra": 0.013251,
+      "rho_penum": 0.0226,
+      "sep": 0.002071,
+      "pa": 0.206477
+    }
+  },
+  {
+    "date": "2058-11-30",
+    "kind": "Total",
+    "times": {
+      "p1": "2058-11-30T00:17:33Z",
+      "u1": "2058-11-30T01:23:43Z",
+      "u2": "2058-11-30T02:29:10Z",
+      "peak": "2058-11-30T03:14:23Z",
+      "u3": "2058-11-30T03:59:36Z",
+      "u4": "2058-11-30T05:05:03Z",
+      "p4": "2058-11-30T06:11:13Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 21.7265,
+      "lng": -52.3927
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 21.312,
+        "lng": -9.716
+      },
+      "u1": {
+        "lat": 21.469,
+        "lng": -25.685
+      },
+      "u2": {
+        "lat": 21.622,
+        "lng": -41.48
+      },
+      "peak": {
+        "lat": 21.727,
+        "lng": -52.392
+      },
+      "u3": {
+        "lat": 21.83,
+        "lng": -63.304
+      },
+      "u4": {
+        "lat": 21.977,
+        "lng": -79.097
+      },
+      "p4": {
+        "lat": 22.124,
+        "lng": -95.063
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5426,
+    "partialDurSec": 13280,
+    "penumbralDurSec": 21220,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004473,
+      "rho_umbra": 0.011984,
+      "rho_penum": 0.021602,
+      "sep": 0.003625,
+      "pa": 2.875788
+    }
+  },
+  {
+    "date": "2059-05-27",
+    "kind": "Partial",
+    "times": {
+      "p1": "2059-05-27T05:32:32Z",
+      "u1": "2059-05-27T07:04:28Z",
+      "u2": null,
+      "peak": "2059-05-27T07:53:47Z",
+      "u3": null,
+      "u4": "2059-05-27T08:43:06Z",
+      "p4": "2059-05-27T10:15:02Z"
+    },
+    "magnitude": 0.3384,
+    "obscuration": 0.1145,
+    "subLunar": {
+      "lat": -22.0052,
+      "lng": -120.2723
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.649,
+        "lng": -86.215
+      },
+      "u1": {
+        "lat": -21.882,
+        "lng": -108.382
+      },
+      "u2": null,
+      "peak": {
+        "lat": -22.005,
+        "lng": -120.271
+      },
+      "u3": null,
+      "u4": {
+        "lat": -22.127,
+        "lng": -132.159
+      },
+      "p4": {
+        "lat": -22.351,
+        "lng": -154.317
+      }
+    },
+    "umbralMag": 0.3384,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 5918,
+    "penumbralDurSec": 16950,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004538,
+      "rho_umbra": 0.012355,
+      "rho_penum": 0.02172,
+      "sep": 0.015155,
+      "pa": 0.27732
+    }
+  },
+  {
+    "date": "2059-11-19",
+    "kind": "Partial",
+    "times": {
+      "p1": "2059-11-19T10:44:00Z",
+      "u1": "2059-11-19T12:09:21Z",
+      "u2": null,
+      "peak": "2059-11-19T12:59:37Z",
+      "u3": null,
+      "u4": "2059-11-19T13:49:52Z",
+      "p4": "2059-11-19T15:15:13Z"
+    },
+    "magnitude": 0.3704,
+    "obscuration": 0.1372,
+    "subLunar": {
+      "lat": 20.178,
+      "lng": 160.253
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 19.734,
+        "lng": -167.118
+      },
+      "u1": {
+        "lat": 20.015,
+        "lng": 172.346
+      },
+      "u2": null,
+      "peak": {
+        "lat": 20.178,
+        "lng": 160.253
+      },
+      "u3": null,
+      "u4": {
+        "lat": 20.34,
+        "lng": 148.165
+      },
+      "p4": {
+        "lat": 20.611,
+        "lng": 127.634
+      }
+    },
+    "umbralMag": 0.3704,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 6030,
+    "penumbralDurSec": 16273,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004725,
+      "rho_umbra": 0.01294,
+      "rho_penum": 0.022539,
+      "sep": 0.01562,
+      "pa": 2.8068
+    }
+  },
+  {
+    "date": "2060-04-15",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2060-04-15T19:27:14Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2060-04-15T21:35:12Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2060-04-15T23:43:09Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -9.0451,
+      "lng": 35.8213
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -8.575,
+        "lng": 66.947
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -9.045,
+        "lng": 35.822
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -9.513,
+        "lng": 4.705
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15355,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00428,
+      "rho_umbra": 0.011344,
+      "rho_penum": 0.020799,
+      "sep": 0.018259,
+      "pa": 3.611418
+    }
+  },
+  {
+    "date": "2060-10-09",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2060-10-09T16:55:33Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2060-10-09T18:51:38Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2060-10-09T20:47:43Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 5.4851,
+      "lng": 73.5612
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 4.915,
+        "lng": 101.574
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 5.485,
+        "lng": 73.563
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 6.054,
+        "lng": 45.554
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 13930,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004853,
+      "rho_umbra": 0.013468,
+      "rho_penum": 0.022967,
+      "sep": 0.019006,
+      "pa": 5.792855
+    }
+  },
+  {
+    "date": "2060-11-08",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2060-11-08T03:38:46Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2060-11-08T04:02:16Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2060-11-08T04:25:46Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 17.9769,
+      "lng": -66.1076
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 17.883,
+        "lng": -60.459
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 17.977,
+        "lng": -66.107
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 18.07,
+        "lng": -71.754
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 2820,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004869,
+      "rho_umbra": 0.013488,
+      "rho_penum": 0.023063,
+      "sep": 0.027406,
+      "pa": 2.751775
+    }
+  },
+  {
+    "date": "2061-04-04",
+    "kind": "Total",
+    "times": {
+      "p1": "2061-04-04T18:54:16Z",
+      "u1": "2061-04-04T20:06:57Z",
+      "u2": "2061-04-04T21:35:59Z",
+      "peak": "2061-04-04T21:52:08Z",
+      "u3": "2061-04-04T22:08:18Z",
+      "u4": "2061-04-04T23:37:20Z",
+      "p4": "2061-04-05T00:50:01Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -5.4804,
+      "lng": 32.0287
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -4.77,
+        "lng": 75.282
+      },
+      "u1": {
+        "lat": -5.061,
+        "lng": 57.609
+      },
+      "u2": {
+        "lat": -5.416,
+        "lng": 35.96
+      },
+      "peak": {
+        "lat": -5.48,
+        "lng": 32.033
+      },
+      "u3": {
+        "lat": -5.545,
+        "lng": 28.102
+      },
+      "u4": {
+        "lat": -5.899,
+        "lng": 6.453
+      },
+      "p4": {
+        "lat": -6.187,
+        "lng": -11.22
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 1939,
+    "partialDurSec": 12623,
+    "penumbralDurSec": 21345,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004344,
+      "rho_umbra": 0.011569,
+      "rho_penum": 0.021054,
+      "sep": 0.006855,
+      "pa": 3.638068
+    }
+  },
+  {
+    "date": "2061-09-29",
+    "kind": "Total",
+    "times": {
+      "p1": "2061-09-29T06:53:32Z",
+      "u1": "2061-09-29T07:54:43Z",
+      "u2": "2061-09-29T09:06:11Z",
+      "peak": "2061-09-29T09:36:16Z",
+      "u3": "2061-09-29T10:06:21Z",
+      "u4": "2061-09-29T11:17:49Z",
+      "p4": "2061-09-29T12:19:00Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 2.0221,
+      "lng": -147.135
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 1.259,
+        "lng": -107.738
+      },
+      "u1": {
+        "lat": 1.546,
+        "lng": -122.55
+      },
+      "u2": {
+        "lat": 1.881,
+        "lng": -139.851
+      },
+      "peak": {
+        "lat": 2.022,
+        "lng": -147.133
+      },
+      "u3": {
+        "lat": 2.163,
+        "lng": -154.415
+      },
+      "u4": {
+        "lat": 2.498,
+        "lng": -171.714
+      },
+      "p4": {
+        "lat": 2.786,
+        "lng": 173.477
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 3611,
+    "partialDurSec": 12187,
+    "penumbralDurSec": 19527,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004673,
+      "rho_umbra": 0.012807,
+      "rho_penum": 0.022277,
+      "sep": 0.00653,
+      "pa": 5.777211
+    }
+  },
+  {
+    "date": "2062-03-25",
+    "kind": "Total",
+    "times": {
+      "p1": "2062-03-25T00:42:23Z",
+      "u1": "2062-03-25T01:45:53Z",
+      "u2": "2062-03-25T02:54:07Z",
+      "peak": "2062-03-25T03:31:53Z",
+      "u3": "2062-03-25T04:09:38Z",
+      "u4": "2062-03-25T05:17:52Z",
+      "p4": "2062-03-25T06:21:22Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -1.815,
+      "lng": -52.4284
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -1.051,
+        "lng": -11.334
+      },
+      "u1": {
+        "lat": -1.337,
+        "lng": -26.729
+      },
+      "u2": {
+        "lat": -1.645,
+        "lng": -43.271
+      },
+      "peak": {
+        "lat": -1.815,
+        "lng": -52.428
+      },
+      "u3": {
+        "lat": -1.985,
+        "lng": -61.58
+      },
+      "u4": {
+        "lat": -2.291,
+        "lng": -78.124
+      },
+      "p4": {
+        "lat": -2.576,
+        "lng": -93.519
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4531,
+    "partialDurSec": 12719,
+    "penumbralDurSec": 20339,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004569,
+      "rho_umbra": 0.012395,
+      "rho_penum": 0.02191,
+      "sep": 0.005284,
+      "pa": 0.507294
+    }
+  },
+  {
+    "date": "2062-09-18",
+    "kind": "Total",
+    "times": {
+      "p1": "2062-09-18T15:37:02Z",
+      "u1": "2062-09-18T16:45:26Z",
+      "u2": "2062-09-18T18:01:42Z",
+      "peak": "2062-09-18T18:32:00Z",
+      "u3": "2062-09-18T19:02:18Z",
+      "u4": "2062-09-18T20:18:34Z",
+      "p4": "2062-09-18T21:26:58Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -1.5776,
+      "lng": 79.5159
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -2.314,
+        "lng": 122.028
+      },
+      "u1": {
+        "lat": -2.026,
+        "lng": 105.409
+      },
+      "u2": {
+        "lat": -1.705,
+        "lng": 86.88
+      },
+      "peak": {
+        "lat": -1.578,
+        "lng": 79.518
+      },
+      "u3": {
+        "lat": -1.45,
+        "lng": 72.156
+      },
+      "u4": {
+        "lat": -1.128,
+        "lng": 53.627
+      },
+      "p4": {
+        "lat": -0.839,
+        "lng": 37.01
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 3635,
+    "partialDurSec": 12787,
+    "penumbralDurSec": 20995,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004424,
+      "rho_umbra": 0.011888,
+      "rho_penum": 0.021329,
+      "sep": 0.006071,
+      "pa": 2.634649
+    }
+  },
+  {
+    "date": "2063-03-14",
+    "kind": "Partial",
+    "times": {
+      "p1": "2063-03-14T13:59:27Z",
+      "u1": "2063-03-14T15:41:58Z",
+      "u2": null,
+      "peak": "2063-03-14T16:03:44Z",
+      "u3": null,
+      "u4": "2063-03-14T16:25:30Z",
+      "p4": "2063-03-14T18:08:01Z"
+    },
+    "magnitude": 0.106,
+    "obscuration": 0.0112,
+    "subLunar": {
+      "lat": 1.8025,
+      "lng": 120.0345
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 2.415,
+        "lng": 150.06
+      },
+      "u1": {
+        "lat": 1.91,
+        "lng": 125.295
+      },
+      "u2": null,
+      "peak": {
+        "lat": 1.802,
+        "lng": 120.036
+      },
+      "u3": null,
+      "u4": {
+        "lat": 1.695,
+        "lng": 114.778
+      },
+      "p4": {
+        "lat": 1.19,
+        "lng": 90.01
+      }
+    },
+    "umbralMag": 0.106,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 2612,
+    "penumbralDurSec": 14914,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004801,
+      "rho_umbra": 0.01325,
+      "rho_penum": 0.022794,
+      "sep": 0.017639,
+      "pa": 0.503723
+    }
+  },
+  {
+    "date": "2063-09-07",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2063-09-07T18:28:30Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2063-09-07T20:39:09Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2063-09-07T22:49:47Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -5.239,
+      "lng": 48.3769
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -5.74,
+        "lng": 80.172
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -5.239,
+        "lng": 48.378
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -4.736,
+        "lng": 16.586
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15677,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004282,
+      "rho_umbra": 0.01137,
+      "rho_penum": 0.020784,
+      "sep": 0.017882,
+      "pa": 2.648306
+    }
+  },
+  {
+    "date": "2064-02-02",
+    "kind": "Partial",
+    "times": {
+      "p1": "2064-02-02T19:42:03Z",
+      "u1": "2064-02-02T21:24:14Z",
+      "u2": null,
+      "peak": "2064-02-02T21:46:57Z",
+      "u3": null,
+      "u4": "2064-02-02T22:09:41Z",
+      "p4": "2064-02-02T23:51:51Z"
+    },
+    "magnitude": 0.1132,
+    "obscuration": 0.0128,
+    "subLunar": {
+      "lat": 17.8577,
+      "lng": 36.1659
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 18.333,
+        "lng": 66.213
+      },
+      "u1": {
+        "lat": 17.945,
+        "lng": 41.633
+      },
+      "u2": null,
+      "peak": {
+        "lat": 17.858,
+        "lng": 36.169
+      },
+      "u3": null,
+      "u4": {
+        "lat": 17.77,
+        "lng": 30.699
+      },
+      "p4": {
+        "lat": 17.374,
+        "lng": 6.118
+      }
+    },
+    "umbralMag": 0.1132,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 2727,
+    "penumbralDurSec": 14989,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004806,
+      "rho_umbra": 0.013229,
+      "rho_penum": 0.022856,
+      "sep": 0.017588,
+      "pa": 3.527321
+    }
+  },
+  {
+    "date": "2064-07-28",
+    "kind": "Partial",
+    "times": {
+      "p1": "2064-07-28T05:28:07Z",
+      "u1": "2064-07-28T07:11:47Z",
+      "u2": null,
+      "peak": "2064-07-28T07:50:40Z",
+      "u3": null,
+      "u4": "2064-07-28T08:29:33Z",
+      "p4": "2064-07-28T10:13:13Z"
+    },
+    "magnitude": 0.2269,
+    "obscuration": 0.0515,
+    "subLunar": {
+      "lat": -19.8065,
+      "lng": -116.6342
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -20.22,
+        "lng": -82.168
+      },
+      "u1": {
+        "lat": -19.92,
+        "lng": -107.231
+      },
+      "u2": null,
+      "peak": {
+        "lat": -19.806,
+        "lng": -116.632
+      },
+      "u3": null,
+      "u4": {
+        "lat": -19.692,
+        "lng": -126.035
+      },
+      "p4": {
+        "lat": -19.385,
+        "lng": -151.106
+      }
+    },
+    "umbralMag": 0.2269,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 4667,
+    "penumbralDurSec": 17106,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004437,
+      "rho_umbra": 0.011987,
+      "rho_penum": 0.02133,
+      "sep": 0.015425,
+      "pa": 5.940376
+    }
+  },
+  {
+    "date": "2065-01-22",
+    "kind": "Total",
+    "times": {
+      "p1": "2065-01-22T07:07:26Z",
+      "u1": "2065-01-22T08:12:02Z",
+      "u2": "2065-01-22T09:22:00Z",
+      "peak": "2065-01-22T09:56:51Z",
+      "u3": "2065-01-22T10:31:42Z",
+      "u4": "2065-01-22T11:41:41Z",
+      "p4": "2065-01-22T12:46:16Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 20.0113,
+      "lng": -147.1461
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 20.503,
+        "lng": -106.287
+      },
+      "u1": {
+        "lat": 20.317,
+        "lng": -121.865
+      },
+      "u2": {
+        "lat": 20.114,
+        "lng": -138.738
+      },
+      "peak": {
+        "lat": 20.011,
+        "lng": -147.143
+      },
+      "u3": {
+        "lat": 19.908,
+        "lng": -155.548
+      },
+      "u4": {
+        "lat": 19.7,
+        "lng": -172.428
+      },
+      "p4": {
+        "lat": 19.504,
+        "lng": 171.994
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4182,
+    "partialDurSec": 12579,
+    "penumbralDurSec": 20330,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004575,
+      "rho_umbra": 0.012355,
+      "rho_penum": 0.021995,
+      "sep": 0.005662,
+      "pa": 3.467404
+    }
+  },
+  {
+    "date": "2065-07-17",
+    "kind": "Total",
+    "times": {
+      "p1": "2065-07-17T15:00:45Z",
+      "u1": "2065-07-17T15:58:09Z",
+      "u2": "2065-07-17T16:57:45Z",
+      "peak": "2065-07-17T17:46:36Z",
+      "u3": "2065-07-17T18:35:27Z",
+      "u4": "2065-07-17T19:35:03Z",
+      "p4": "2065-07-17T20:32:27Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -21.2923,
+      "lng": 94.0092
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.724,
+        "lng": 133.891
+      },
+      "u1": {
+        "lat": -21.576,
+        "lng": 120.091
+      },
+      "u2": {
+        "lat": -21.421,
+        "lng": 105.759
+      },
+      "peak": {
+        "lat": -21.292,
+        "lng": 94.011
+      },
+      "u3": {
+        "lat": -21.162,
+        "lng": 82.262
+      },
+      "u4": {
+        "lat": -21.002,
+        "lng": 67.926
+      },
+      "p4": {
+        "lat": -20.845,
+        "lng": 54.118
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5861,
+    "partialDurSec": 13014,
+    "penumbralDurSec": 19902,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004685,
+      "rho_umbra": 0.012918,
+      "rho_penum": 0.022253,
+      "sep": 0.002404,
+      "pa": 6.004576
+    }
+  },
+  {
+    "date": "2066-01-11",
+    "kind": "Total",
+    "times": {
+      "p1": "2066-01-11T12:02:00Z",
+      "u1": "2066-01-11T13:14:46Z",
+      "u2": "2066-01-11T14:33:09Z",
+      "peak": "2066-01-11T15:02:43Z",
+      "u3": "2066-01-11T15:32:16Z",
+      "u4": "2066-01-11T16:50:39Z",
+      "p4": "2066-01-11T18:03:25Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 21.4999,
+      "lng": 135.2455
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 21.863,
+        "lng": 178.945
+      },
+      "u1": {
+        "lat": 21.719,
+        "lng": 161.351
+      },
+      "u2": {
+        "lat": 21.56,
+        "lng": 142.397
+      },
+      "peak": {
+        "lat": 21.5,
+        "lng": 135.247
+      },
+      "u3": {
+        "lat": 21.439,
+        "lng": 128.101
+      },
+      "u4": {
+        "lat": 21.275,
+        "lng": 109.145
+      },
+      "p4": {
+        "lat": 21.121,
+        "lng": 91.547
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 3547,
+    "partialDurSec": 12953,
+    "penumbralDurSec": 21685,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004346,
+      "rho_umbra": 0.011497,
+      "rho_penum": 0.021143,
+      "sep": 0.005884,
+      "pa": 0.25245
+    }
+  },
+  {
+    "date": "2066-07-07",
+    "kind": "Partial",
+    "times": {
+      "p1": "2066-07-07T07:01:51Z",
+      "u1": "2066-07-07T08:02:20Z",
+      "u2": null,
+      "peak": "2066-07-07T09:28:20Z",
+      "u3": null,
+      "u4": "2066-07-07T10:54:20Z",
+      "p4": "2066-07-07T11:54:49Z"
+    },
+    "magnitude": 0.9006,
+    "obscuration": 0.8111,
+    "subLunar": {
+      "lat": -22.0162,
+      "lng": -141.9478
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -22.316,
+        "lng": -106.865
+      },
+      "u1": {
+        "lat": -22.194,
+        "lng": -121.349
+      },
+      "u2": null,
+      "peak": {
+        "lat": -22.016,
+        "lng": -141.947
+      },
+      "u3": null,
+      "u4": {
+        "lat": -21.833,
+        "lng": -162.547
+      },
+      "p4": {
+        "lat": -21.701,
+        "lng": -177.037
+      }
+    },
+    "umbralMag": 0.9006,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 10320,
+    "penumbralDurSec": 17578,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004853,
+      "rho_umbra": 0.013552,
+      "rho_penum": 0.022883,
+      "sep": 0.010794,
+      "pa": 2.934595
+    }
+  },
+  {
+    "date": "2066-12-31",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2066-12-31T12:05:53Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2066-12-31T14:27:58Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2066-12-31T16:50:02Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 22.171,
+      "lng": 142.5904
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.352,
+        "lng": 176.959
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 22.171,
+        "lng": 142.591
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 21.98,
+        "lng": 108.223
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 17048,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004279,
+      "rho_umbra": 0.011244,
+      "rho_penum": 0.020892,
+      "sep": 0.016559,
+      "pa": 0.168602
+    }
+  },
+  {
+    "date": "2067-05-28",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2067-05-28T17:09:14Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2067-05-28T18:54:00Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2067-05-28T20:38:46Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -22.5927,
+      "lng": 74.7647
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -22.504,
+        "lng": 99.903
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -22.593,
+        "lng": 74.767
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -22.674,
+        "lng": 49.635
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 12572,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004717,
+      "rho_umbra": 0.013024,
+      "rho_penum": 0.022386,
+      "sep": 0.020792,
+      "pa": 0.073835
+    }
+  },
+  {
+    "date": "2067-06-27",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2067-06-27T01:18:34Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2067-06-27T02:38:57Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2067-06-27T03:59:20Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -22.004,
+      "lng": -40.1671
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -22.104,
+        "lng": -20.908
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -22.004,
+        "lng": -40.165
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -21.899,
+        "lng": -59.422
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 9645,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004813,
+      "rho_umbra": 0.013399,
+      "rho_penum": 0.022733,
+      "sep": 0.023674,
+      "pa": 3.012859
+    }
+  },
+  {
+    "date": "2067-11-21",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2067-11-20T22:11:08Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2067-11-21T00:02:21Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2067-11-21T01:53:35Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 20.8048,
+      "lng": -5.3178
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 20.659,
+        "lng": 21.472
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 20.805,
+        "lng": -5.314
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 20.944,
+        "lng": -32.104
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 13347,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004546,
+      "rho_umbra": 0.012266,
+      "rho_penum": 0.021867,
+      "sep": 0.020203,
+      "pa": 3.010115
+    }
+  },
+  {
+    "date": "2068-05-17",
+    "kind": "Partial",
+    "times": {
+      "p1": "2068-05-17T02:51:23Z",
+      "u1": "2068-05-17T04:00:11Z",
+      "u2": null,
+      "peak": "2068-05-17T05:40:04Z",
+      "u3": null,
+      "u4": "2068-05-17T07:19:57Z",
+      "p4": "2068-05-17T08:28:45Z"
+    },
+    "magnitude": 0.9914,
+    "obscuration": 0.9829,
+    "subLunar": {
+      "lat": -19.7488,
+      "lng": -86.9441
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -19.523,
+        "lng": -46.243
+      },
+      "u1": {
+        "lat": -19.617,
+        "lng": -62.844
+      },
+      "u2": null,
+      "peak": {
+        "lat": -19.749,
+        "lng": -86.942
+      },
+      "u3": null,
+      "u4": {
+        "lat": -19.876,
+        "lng": -111.037
+      },
+      "p4": {
+        "lat": -19.961,
+        "lng": -127.633
+      }
+    },
+    "umbralMag": 0.9914,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 11986,
+    "penumbralDurSec": 20243,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004468,
+      "rho_umbra": 0.012084,
+      "rho_penum": 0.021466,
+      "sep": 0.007951,
+      "pa": 0.137152
+    }
+  },
+  {
+    "date": "2068-11-09",
+    "kind": "Total",
+    "times": {
+      "p1": "2068-11-09T09:08:50Z",
+      "u1": "2068-11-09T10:09:18Z",
+      "u2": "2068-11-09T11:34:03Z",
+      "peak": "2068-11-09T11:44:44Z",
+      "u3": "2068-11-09T11:55:26Z",
+      "u4": "2068-11-09T13:20:11Z",
+      "p4": "2068-11-09T14:20:39Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 17.3483,
+      "lng": 178.7168
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 17.029,
+        "lng": -143.842
+      },
+      "u1": {
+        "lat": 17.155,
+        "lng": -158.363
+      },
+      "u2": {
+        "lat": 17.327,
+        "lng": -178.714
+      },
+      "peak": {
+        "lat": 17.348,
+        "lng": 178.72
+      },
+      "u3": {
+        "lat": 17.37,
+        "lng": 176.151
+      },
+      "u4": {
+        "lat": 17.537,
+        "lng": 155.801
+      },
+      "p4": {
+        "lat": 17.654,
+        "lng": 141.282
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 1283,
+    "partialDurSec": 11453,
+    "penumbralDurSec": 18708,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004785,
+      "rho_umbra": 0.013175,
+      "rho_penum": 0.022753,
+      "sep": 0.00816,
+      "pa": 2.952084
+    }
+  },
+  {
+    "date": "2069-05-06",
+    "kind": "Total",
+    "times": {
+      "p1": "2069-05-06T06:03:17Z",
+      "u1": "2069-05-06T07:14:16Z",
+      "u2": "2069-05-06T08:25:08Z",
+      "peak": "2069-05-06T09:07:41Z",
+      "u3": "2069-05-06T09:50:15Z",
+      "u4": "2069-05-06T11:01:07Z",
+      "p4": "2069-05-06T12:12:06Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -16.2275,
+      "lng": -138.6815
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -15.914,
+        "lng": -94.009
+      },
+      "u1": {
+        "lat": -16.036,
+        "lng": -111.205
+      },
+      "u2": {
+        "lat": -16.156,
+        "lng": -128.371
+      },
+      "peak": {
+        "lat": -16.227,
+        "lng": -138.678
+      },
+      "u3": {
+        "lat": -16.298,
+        "lng": -148.988
+      },
+      "u4": {
+        "lat": -16.415,
+        "lng": -166.153
+      },
+      "p4": {
+        "lat": -16.529,
+        "lng": 176.656
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5107,
+    "partialDurSec": 13611,
+    "penumbralDurSec": 22129,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004295,
+      "rho_umbra": 0.011424,
+      "rho_penum": 0.020829,
+      "sep": 0.004289,
+      "pa": 3.336111
+    }
+  },
+  {
+    "date": "2069-10-30",
+    "kind": "Total",
+    "times": {
+      "p1": "2069-10-30T00:54:47Z",
+      "u1": "2069-10-30T01:49:42Z",
+      "u2": "2069-10-30T02:49:05Z",
+      "peak": "2069-10-30T03:32:49Z",
+      "u3": "2069-10-30T04:16:32Z",
+      "u4": "2069-10-30T05:15:56Z",
+      "p4": "2069-10-30T06:10:51Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 13.3979,
+      "lng": -58.1937
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 12.988,
+        "lng": -20.248
+      },
+      "u1": {
+        "lat": 13.132,
+        "lng": -33.435
+      },
+      "u2": {
+        "lat": 13.286,
+        "lng": -47.693
+      },
+      "peak": {
+        "lat": 13.398,
+        "lng": -58.193
+      },
+      "u3": {
+        "lat": 13.509,
+        "lng": -68.688
+      },
+      "u4": {
+        "lat": 13.659,
+        "lng": -82.948
+      },
+      "p4": {
+        "lat": 13.797,
+        "lng": -96.131
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5247,
+    "partialDurSec": 12374,
+    "penumbralDurSec": 18964,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004868,
+      "rho_umbra": 0.013498,
+      "rho_penum": 0.02305,
+      "sep": 0.004042,
+      "pa": 6.046254
+    }
+  },
+  {
+    "date": "2070-04-25",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2070-04-25T06:55:15Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2070-04-25T09:19:06Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2070-04-25T11:42:57Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -12.1487,
+      "lng": -141.0112
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -11.847,
+        "lng": -106.139
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -12.149,
+        "lng": -141.009
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -12.445,
+        "lng": -175.877
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 17261,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004312,
+      "rho_umbra": 0.011474,
+      "rho_penum": 0.020907,
+      "sep": 0.015906,
+      "pa": 3.384784
+    }
+  },
+  {
+    "date": "2070-10-19",
+    "kind": "Partial",
+    "times": {
+      "p1": "2070-10-19T16:36:58Z",
+      "u1": "2070-10-19T18:07:17Z",
+      "u2": null,
+      "peak": "2070-10-19T18:48:55Z",
+      "u3": null,
+      "u4": "2070-10-19T19:30:33Z",
+      "p4": "2070-10-19T21:00:52Z"
+    },
+    "magnitude": 0.2774,
+    "obscuration": 0.077,
+    "subLunar": {
+      "lat": 9.0452,
+      "lng": 73.3002
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 8.676,
+        "lng": 105.094
+      },
+      "u1": {
+        "lat": 8.929,
+        "lng": 83.333
+      },
+      "u2": null,
+      "peak": {
+        "lat": 9.045,
+        "lng": 73.302
+      },
+      "u3": null,
+      "u4": {
+        "lat": 9.161,
+        "lng": 63.272
+      },
+      "p4": {
+        "lat": 9.41,
+        "lng": 41.515
+      }
+    },
+    "umbralMag": 0.2774,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 4996,
+    "penumbralDurSec": 15835,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004728,
+      "rho_umbra": 0.012987,
+      "rho_penum": 0.022512,
+      "sep": 0.016325,
+      "pa": 6.008113
+    }
+  },
+  {
+    "date": "2071-03-16",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2071-03-15T23:25:45Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2071-03-16T01:28:46Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2071-03-16T03:31:47Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 1.1595,
+      "lng": -21.2639
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 1.531,
+        "lng": 8.442
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 1.159,
+        "lng": -21.262
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 0.788,
+        "lng": -50.969
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 14761,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004644,
+      "rho_umbra": 0.012662,
+      "rho_penum": 0.022203,
+      "sep": 0.01833,
+      "pa": 0.310919
+    }
+  },
+  {
+    "date": "2071-09-09",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2071-09-09T12:50:22Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2071-09-09T15:03:24Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2071-09-09T17:16:26Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -4.5456,
+      "lng": 132.2504
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -4.889,
+        "lng": 164.512
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -4.546,
+        "lng": 132.252
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -4.2,
+        "lng": 99.994
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15964,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004366,
+      "rho_umbra": 0.011684,
+      "rho_penum": 0.021102,
+      "sep": 0.017363,
+      "pa": 2.842472
+    }
+  },
+  {
+    "date": "2072-03-04",
+    "kind": "Total",
+    "times": {
+      "p1": "2072-03-04T12:43:50Z",
+      "u1": "2072-03-04T13:40:42Z",
+      "u2": "2072-03-04T14:46:02Z",
+      "peak": "2072-03-04T15:20:45Z",
+      "u3": "2072-03-04T15:55:27Z",
+      "u4": "2072-03-04T17:00:47Z",
+      "p4": "2072-03-04T17:57:39Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 5.9995,
+      "lng": 131.6229
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 6.488,
+        "lng": 169.374
+      },
+      "u1": {
+        "lat": 6.312,
+        "lng": 155.694
+      },
+      "u2": {
+        "lat": 6.108,
+        "lng": 139.976
+      },
+      "peak": {
+        "lat": 6,
+        "lng": 131.624
+      },
+      "u3": {
+        "lat": 5.891,
+        "lng": 123.275
+      },
+      "u4": {
+        "lat": 5.686,
+        "lng": 107.556
+      },
+      "p4": {
+        "lat": 5.507,
+        "lng": 93.873
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4165,
+    "partialDurSec": 12005,
+    "penumbralDurSec": 18829,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004843,
+      "rho_umbra": 0.013395,
+      "rho_penum": 0.022962,
+      "sep": 0.00609,
+      "pa": 0.295855
+    }
+  },
+  {
+    "date": "2072-08-28",
+    "kind": "Total",
+    "times": {
+      "p1": "2072-08-28T12:59:55Z",
+      "u1": "2072-08-28T14:12:45Z",
+      "u2": "2072-08-28T15:30:35Z",
+      "peak": "2072-08-28T16:03:16Z",
+      "u3": "2072-08-28T16:35:57Z",
+      "u4": "2072-08-28T17:53:48Z",
+      "p4": "2072-08-28T19:06:37Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -9.2928,
+      "lng": 118.3822
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -9.71,
+        "lng": 162.878
+      },
+      "u1": {
+        "lat": -9.545,
+        "lng": 145.204
+      },
+      "u2": {
+        "lat": -9.368,
+        "lng": 126.316
+      },
+      "peak": {
+        "lat": -9.293,
+        "lng": 118.385
+      },
+      "u3": {
+        "lat": -9.218,
+        "lng": 110.453
+      },
+      "u4": {
+        "lat": -9.039,
+        "lng": 91.56
+      },
+      "p4": {
+        "lat": -8.87,
+        "lng": 73.888
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 3922,
+    "partialDurSec": 13263,
+    "penumbralDurSec": 22002,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004277,
+      "rho_umbra": 0.011363,
+      "rho_penum": 0.020755,
+      "sep": 0.005593,
+      "pa": 2.867325
+    }
+  },
+  {
+    "date": "2073-02-22",
+    "kind": "Total",
+    "times": {
+      "p1": "2073-02-22T04:45:17Z",
+      "u1": "2073-02-22T05:42:21Z",
+      "u2": "2073-02-22T06:47:33Z",
+      "peak": "2073-02-22T07:22:31Z",
+      "u3": "2073-02-22T07:57:29Z",
+      "u4": "2073-02-22T09:02:41Z",
+      "p4": "2073-02-22T09:59:44Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 10.6414,
+      "lng": -108.1765
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 11.089,
+        "lng": -70.378
+      },
+      "u1": {
+        "lat": 10.928,
+        "lng": -84.096
+      },
+      "u2": {
+        "lat": 10.742,
+        "lng": -99.77
+      },
+      "peak": {
+        "lat": 10.641,
+        "lng": -108.176
+      },
+      "u3": {
+        "lat": 10.541,
+        "lng": -116.582
+      },
+      "u4": {
+        "lat": 10.352,
+        "lng": -132.257
+      },
+      "p4": {
+        "lat": 10.185,
+        "lng": -145.973
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4196,
+    "partialDurSec": 12020,
+    "penumbralDurSec": 18866,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00484,
+      "rho_umbra": 0.013372,
+      "rho_penum": 0.022964,
+      "sep": 0.006029,
+      "pa": 3.412551
+    }
+  },
+  {
+    "date": "2073-08-17",
+    "kind": "Total",
+    "times": {
+      "p1": "2073-08-17T14:44:41Z",
+      "u1": "2073-08-17T15:54:08Z",
+      "u2": "2073-08-17T17:14:30Z",
+      "peak": "2073-08-17T17:40:16Z",
+      "u3": "2073-08-17T18:06:01Z",
+      "u4": "2073-08-17T19:26:24Z",
+      "p4": "2073-08-17T20:35:50Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -13.735,
+      "lng": 95.0222
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -14.103,
+        "lng": 137.517
+      },
+      "u1": {
+        "lat": -13.958,
+        "lng": 120.71
+      },
+      "u2": {
+        "lat": -13.79,
+        "lng": 101.26
+      },
+      "peak": {
+        "lat": -13.735,
+        "lng": 95.023
+      },
+      "u3": {
+        "lat": -13.68,
+        "lng": 88.791
+      },
+      "u4": {
+        "lat": -13.508,
+        "lng": 69.334
+      },
+      "p4": {
+        "lat": -13.358,
+        "lng": 52.526
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 3091,
+    "partialDurSec": 12736,
+    "penumbralDurSec": 21070,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00439,
+      "rho_umbra": 0.011796,
+      "rho_penum": 0.021167,
+      "sep": 0.006443,
+      "pa": 6.044013
+    }
+  },
+  {
+    "date": "2074-02-11",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2074-02-11T18:48:34Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2074-02-11T20:53:40Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2074-02-11T22:58:47Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 15.0285,
+      "lng": 49.3417
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 15.314,
+        "lng": 79.49
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 15.028,
+        "lng": 49.345
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 14.736,
+        "lng": 19.195
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15013,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004637,
+      "rho_umbra": 0.012601,
+      "rho_penum": 0.022213,
+      "sep": 0.018069,
+      "pa": 3.376605
+    }
+  },
+  {
+    "date": "2074-07-08",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2074-07-08T16:20:00Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2074-07-08T17:19:03Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2074-07-08T18:18:07Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -21.039,
+      "lng": 100.4081
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.056,
+        "lng": 114.574
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -21.039,
+        "lng": 100.411
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -21.02,
+        "lng": 86.244
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 7087,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004749,
+      "rho_umbra": 0.013158,
+      "rho_penum": 0.02249,
+      "sep": 0.025201,
+      "pa": 3.117076
+    }
+  },
+  {
+    "date": "2074-08-07",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2074-08-06T23:57:01Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2074-08-07T01:53:31Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2074-08-07T03:50:01Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -17.7146,
+      "lng": -27.7254
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -17.938,
+        "lng": 0.327
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -17.715,
+        "lng": -27.722
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -17.485,
+        "lng": -55.776
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 13980,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00463,
+      "rho_umbra": 0.012705,
+      "rho_penum": 0.022059,
+      "sep": 0.019195,
+      "pa": 6.087973
+    }
+  },
+  {
+    "date": "2075-01-02",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2075-01-02T07:44:41Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2075-01-02T09:52:39Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2075-01-02T12:00:38Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 21.9147,
+      "lng": -148.2983
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 21.903,
+        "lng": -117.366
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 21.915,
+        "lng": -148.295
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 21.918,
+        "lng": -179.227
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15357,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004306,
+      "rho_umbra": 0.011344,
+      "rho_penum": 0.020992,
+      "sep": 0.018398,
+      "pa": 6.267106
+    }
+  },
+  {
+    "date": "2075-06-28",
+    "kind": "Partial",
+    "times": {
+      "p1": "2075-06-28T07:31:06Z",
+      "u1": "2075-06-28T08:34:17Z",
+      "u2": null,
+      "peak": "2075-06-28T09:53:09Z",
+      "u3": null,
+      "u4": "2075-06-28T11:12:01Z",
+      "p4": "2075-06-28T12:15:11Z"
+    },
+    "magnitude": 0.7892,
+    "obscuration": 0.6229,
+    "subLunar": {
+      "lat": -22.5963,
+      "lng": -148.5373
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -22.517,
+        "lng": -114.556
+      },
+      "u1": {
+        "lat": -22.554,
+        "lng": -129.67
+      },
+      "u2": null,
+      "peak": {
+        "lat": -22.596,
+        "lng": -148.536
+      },
+      "u3": null,
+      "u4": {
+        "lat": -22.633,
+        "lng": -167.401
+      },
+      "p4": {
+        "lat": -22.659,
+        "lng": 177.49
+      }
+    },
+    "umbralMag": 0.7892,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 9464,
+    "penumbralDurSec": 17045,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004865,
+      "rho_umbra": 0.013596,
+      "rho_penum": 0.022928,
+      "sep": 0.01232,
+      "pa": 3.195042
+    }
+  },
+  {
+    "date": "2075-12-22",
+    "kind": "Partial",
+    "times": {
+      "p1": "2075-12-22T05:54:10Z",
+      "u1": "2075-12-22T07:11:42Z",
+      "u2": null,
+      "peak": "2075-12-22T08:53:22Z",
+      "u3": null,
+      "u4": "2075-12-22T10:35:03Z",
+      "p4": "2075-12-22T11:52:34Z"
+    },
+    "magnitude": 0.971,
+    "obscuration": 0.9429,
+    "subLunar": {
+      "lat": 22.9839,
+      "lng": -134.8406
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.834,
+        "lng": -91.525
+      },
+      "u1": {
+        "lat": 22.901,
+        "lng": -110.265
+      },
+      "u2": null,
+      "peak": {
+        "lat": 22.984,
+        "lng": -134.837
+      },
+      "u3": null,
+      "u4": {
+        "lat": 23.062,
+        "lng": -159.413
+      },
+      "p4": {
+        "lat": 23.117,
+        "lng": -178.147
+      }
+    },
+    "umbralMag": 0.971,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 12201,
+    "penumbralDurSec": 21504,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.0043,
+      "rho_umbra": 0.011323,
+      "rho_penum": 0.020967,
+      "sep": 0.007801,
+      "pa": 6.179514
+    }
+  },
+  {
+    "date": "2076-06-17",
+    "kind": "Total",
+    "times": {
+      "p1": "2076-06-16T23:54:18Z",
+      "u1": "2076-06-17T00:49:26Z",
+      "u2": "2076-06-17T01:46:54Z",
+      "peak": "2076-06-17T02:37:17Z",
+      "u3": "2076-06-17T03:27:41Z",
+      "u4": "2076-06-17T04:25:08Z",
+      "p4": "2076-06-17T05:20:17Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -23.4062,
+      "lng": -40.2034
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -23.19,
+        "lng": -1.133
+      },
+      "u1": {
+        "lat": -23.265,
+        "lng": -14.35
+      },
+      "u2": {
+        "lat": -23.341,
+        "lng": -28.125
+      },
+      "peak": {
+        "lat": -23.406,
+        "lng": -40.201
+      },
+      "u3": {
+        "lat": -23.469,
+        "lng": -52.28
+      },
+      "u4": {
+        "lat": -23.538,
+        "lng": -66.048
+      },
+      "p4": {
+        "lat": -23.602,
+        "lng": -79.264
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 6047,
+    "partialDurSec": 12942,
+    "penumbralDurSec": 19559,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004763,
+      "rho_umbra": 0.013211,
+      "rho_penum": 0.02255,
+      "sep": 0.000788,
+      "pa": 0.129854
+    }
+  },
+  {
+    "date": "2076-12-10",
+    "kind": "Total",
+    "times": {
+      "p1": "2076-12-10T08:35:53Z",
+      "u1": "2076-12-10T09:41:40Z",
+      "u2": "2076-12-10T10:46:33Z",
+      "peak": "2076-12-10T11:32:18Z",
+      "u3": "2076-12-10T12:18:03Z",
+      "u4": "2076-12-10T13:22:56Z",
+      "p4": "2076-12-10T14:28:43Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 23.1022,
+      "lng": -176.0102
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.806,
+        "lng": -133.489
+      },
+      "u1": {
+        "lat": 22.919,
+        "lng": -149.344
+      },
+      "u2": {
+        "lat": 23.027,
+        "lng": -164.982
+      },
+      "peak": {
+        "lat": 23.102,
+        "lng": -176.008
+      },
+      "u3": {
+        "lat": 23.176,
+        "lng": 172.966
+      },
+      "u4": {
+        "lat": 23.278,
+        "lng": 157.329
+      },
+      "p4": {
+        "lat": 23.379,
+        "lng": 141.475
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5490,
+    "partialDurSec": 13276,
+    "penumbralDurSec": 21171,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004485,
+      "rho_umbra": 0.012023,
+      "rho_penum": 0.021657,
+      "sep": 0.003465,
+      "pa": 2.95313
+    }
+  },
+  {
+    "date": "2077-06-06",
+    "kind": "Partial",
+    "times": {
+      "p1": "2077-06-06T12:30:13Z",
+      "u1": "2077-06-06T13:54:18Z",
+      "u2": null,
+      "peak": "2077-06-06T14:57:23Z",
+      "u3": null,
+      "u4": "2077-06-06T16:00:29Z",
+      "p4": "2077-06-06T17:24:34Z"
+    },
+    "magnitude": 0.4941,
+    "obscuration": 0.2442,
+    "subLunar": {
+      "lat": -23.4201,
+      "lng": 134.0421
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -23.145,
+        "lng": 169.498
+      },
+      "u1": {
+        "lat": -23.303,
+        "lng": 149.241
+      },
+      "u2": null,
+      "peak": {
+        "lat": -23.42,
+        "lng": 134.046
+      },
+      "u3": null,
+      "u4": {
+        "lat": -23.534,
+        "lng": 118.848
+      },
+      "p4": {
+        "lat": -23.683,
+        "lng": 98.599
+      }
+    },
+    "umbralMag": 0.4941,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 7570,
+    "penumbralDurSec": 17661,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004523,
+      "rho_umbra": 0.012305,
+      "rho_penum": 0.021654,
+      "sep": 0.013925,
+      "pa": 0.206155
+    }
+  },
+  {
+    "date": "2077-11-29",
+    "kind": "Partial",
+    "times": {
+      "p1": "2077-11-29T19:16:52Z",
+      "u1": "2077-11-29T20:40:11Z",
+      "u2": null,
+      "peak": "2077-11-29T21:33:13Z",
+      "u3": null,
+      "u4": "2077-11-29T22:26:15Z",
+      "p4": "2077-11-29T23:49:34Z"
+    },
+    "magnitude": 0.4044,
+    "obscuration": 0.1635,
+    "subLunar": {
+      "lat": 22.3575,
+      "lng": 32.4333
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 21.999,
+        "lng": 65.183
+      },
+      "u1": {
+        "lat": 22.22,
+        "lng": 45.172
+      },
+      "u2": null,
+      "peak": {
+        "lat": 22.358,
+        "lng": 32.435
+      },
+      "u3": null,
+      "u4": {
+        "lat": 22.493,
+        "lng": 19.699
+      },
+      "p4": {
+        "lat": 22.702,
+        "lng": -0.307
+      }
+    },
+    "umbralMag": 0.4044,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 6365,
+    "penumbralDurSec": 16362,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004737,
+      "rho_umbra": 0.012975,
+      "rho_penum": 0.022593,
+      "sep": 0.015403,
+      "pa": 2.876262
+    }
+  },
+  {
+    "date": "2078-04-27",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2078-04-27T02:33:36Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2078-04-27T04:33:14Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2078-04-27T06:32:52Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -12.602,
+      "lng": -69.4801
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -12.195,
+        "lng": -40.406
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -12.602,
+        "lng": -69.478
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -13.006,
+        "lng": -98.548
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 14355,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004278,
+      "rho_umbra": 0.01135,
+      "rho_penum": 0.020778,
+      "sep": 0.019195,
+      "pa": 3.575107
+    }
+  },
+  {
+    "date": "2078-10-21",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2078-10-21T01:12:42Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2078-10-21T03:05:32Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2078-10-21T04:58:23Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 9.4042,
+      "lng": -50.7751
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 8.878,
+        "lng": -23.566
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 9.404,
+        "lng": -50.771
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 9.928,
+        "lng": -77.977
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 13540,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004849,
+      "rho_umbra": 0.013436,
+      "rho_penum": 0.022964,
+      "sep": 0.019613,
+      "pa": 5.818823
+    }
+  },
+  {
+    "date": "2078-11-19",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2078-11-19T12:03:22Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2078-11-19T12:37:29Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2078-11-19T13:11:36Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 20.8249,
+      "lng": 165.3007
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 20.708,
+        "lng": 173.487
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 20.825,
+        "lng": 165.302
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 20.941,
+        "lng": 157.117
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 4094,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004871,
+      "rho_umbra": 0.013484,
+      "rho_penum": 0.023083,
+      "sep": 0.02709,
+      "pa": 2.810842
+    }
+  },
+  {
+    "date": "2079-04-16",
+    "kind": "Partial",
+    "times": {
+      "p1": "2079-04-16T02:12:44Z",
+      "u1": "2079-04-16T03:26:03Z",
+      "u2": null,
+      "peak": "2079-04-16T05:08:08Z",
+      "u3": null,
+      "u4": "2079-04-16T06:50:13Z",
+      "p4": "2079-04-16T08:03:32Z"
+    },
+    "magnitude": 0.9886,
+    "obscuration": 0.9773,
+    "subLunar": {
+      "lat": -9.3895,
+      "lng": -77.9157
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -8.716,
+        "lng": -35.298
+      },
+      "u1": {
+        "lat": -8.998,
+        "lng": -53.111
+      },
+      "u2": null,
+      "peak": {
+        "lat": -9.389,
+        "lng": -77.914
+      },
+      "u3": null,
+      "u4": {
+        "lat": -9.778,
+        "lng": -102.716
+      },
+      "p4": {
+        "lat": -10.056,
+        "lng": -120.528
+      }
+    },
+    "umbralMag": 0.9886,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 12250,
+    "penumbralDurSec": 21048,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004354,
+      "rho_umbra": 0.011619,
+      "rho_penum": 0.021076,
+      "sep": 0.007669,
+      "pa": 3.614327
+    }
+  },
+  {
+    "date": "2079-10-10",
+    "kind": "Total",
+    "times": {
+      "p1": "2079-10-10T14:45:40Z",
+      "u1": "2079-10-10T15:48:12Z",
+      "u2": "2079-10-10T17:05:55Z",
+      "peak": "2079-10-10T17:27:54Z",
+      "u3": "2079-10-10T17:49:53Z",
+      "u4": "2079-10-10T19:07:36Z",
+      "p4": "2079-10-10T20:10:09Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 6.1042,
+      "lng": 93.9026
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 5.365,
+        "lng": 133.171
+      },
+      "u1": {
+        "lat": 5.65,
+        "lng": 118.035
+      },
+      "u2": {
+        "lat": 6.004,
+        "lng": 99.226
+      },
+      "peak": {
+        "lat": 6.104,
+        "lng": 93.906
+      },
+      "u3": {
+        "lat": 6.204,
+        "lng": 88.585
+      },
+      "u4": {
+        "lat": 6.557,
+        "lng": 69.778
+      },
+      "p4": {
+        "lat": 6.841,
+        "lng": 54.643
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 2638,
+    "partialDurSec": 11964,
+    "penumbralDurSec": 19469,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004659,
+      "rho_umbra": 0.012741,
+      "rho_penum": 0.02224,
+      "sep": 0.007258,
+      "pa": 5.790409
+    }
+  },
+  {
+    "date": "2080-04-04",
+    "kind": "Total",
+    "times": {
+      "p1": "2080-04-04T08:31:28Z",
+      "u1": "2080-04-04T09:33:50Z",
+      "u2": "2080-04-04T10:39:29Z",
+      "peak": "2080-04-04T11:20:57Z",
+      "u3": "2080-04-04T12:02:25Z",
+      "u4": "2080-04-04T13:08:04Z",
+      "p4": "2080-04-04T14:10:26Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -5.9437,
+      "lng": -170.7244
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -5.189,
+        "lng": -129.654
+      },
+      "u1": {
+        "lat": -5.467,
+        "lng": -144.766
+      },
+      "u2": {
+        "lat": -5.76,
+        "lng": -160.673
+      },
+      "peak": {
+        "lat": -5.944,
+        "lng": -170.721
+      },
+      "u3": {
+        "lat": -6.128,
+        "lng": 179.231
+      },
+      "u4": {
+        "lat": -6.418,
+        "lng": 163.324
+      },
+      "p4": {
+        "lat": -6.693,
+        "lng": 148.212
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4976,
+    "partialDurSec": 12854,
+    "penumbralDurSec": 20338,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004583,
+      "rho_umbra": 0.012463,
+      "rho_penum": 0.021949,
+      "sep": 0.004628,
+      "pa": 0.496766
+    }
+  },
+  {
+    "date": "2080-09-29",
+    "kind": "Total",
+    "times": {
+      "p1": "2080-09-28T22:52:51Z",
+      "u1": "2080-09-29T00:01:01Z",
+      "u2": "2080-09-29T01:12:43Z",
+      "peak": "2080-09-29T01:50:02Z",
+      "u3": "2080-09-29T02:27:22Z",
+      "u4": "2080-09-29T03:39:03Z",
+      "p4": "2080-09-29T04:47:14Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 2.5323,
+      "lng": -31.1545
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 1.79,
+        "lng": 11.905
+      },
+      "u1": {
+        "lat": 2.075,
+        "lng": -4.661
+      },
+      "u2": {
+        "lat": 2.376,
+        "lng": -22.084
+      },
+      "peak": {
+        "lat": 2.532,
+        "lng": -31.152
+      },
+      "u3": {
+        "lat": 2.689,
+        "lng": -40.224
+      },
+      "u4": {
+        "lat": 2.989,
+        "lng": -57.641
+      },
+      "p4": {
+        "lat": 3.275,
+        "lng": -74.208
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4479,
+    "partialDurSec": 13082,
+    "penumbralDurSec": 21263,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004411,
+      "rho_umbra": 0.011827,
+      "rho_penum": 0.021297,
+      "sep": 0.005192,
+      "pa": 2.6351
+    }
+  },
+  {
+    "date": "2081-03-25",
+    "kind": "Partial",
+    "times": {
+      "p1": "2081-03-24T22:12:40Z",
+      "u1": "2081-03-24T23:44:45Z",
+      "u2": null,
+      "peak": "2081-03-25T00:19:14Z",
+      "u3": null,
+      "u4": "2081-03-25T00:53:43Z",
+      "p4": "2081-03-25T02:25:49Z"
+    },
+    "magnitude": 0.2133,
+    "obscuration": 0.0455,
+    "subLunar": {
+      "lat": -2.4061,
+      "lng": -4.8595
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -1.777,
+        "lng": 25.717
+      },
+      "u1": {
+        "lat": -2.235,
+        "lng": 3.473
+      },
+      "u2": null,
+      "peak": {
+        "lat": -2.406,
+        "lng": -4.857
+      },
+      "u3": null,
+      "u4": {
+        "lat": -2.577,
+        "lng": -13.187
+      },
+      "p4": {
+        "lat": -3.034,
+        "lng": -35.435
+      }
+    },
+    "umbralMag": 0.2133,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 4138,
+    "penumbralDurSec": 15189,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00481,
+      "rho_umbra": 0.013296,
+      "rho_penum": 0.022811,
+      "sep": 0.017103,
+      "pa": 0.50571
+    }
+  },
+  {
+    "date": "2081-09-18",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2081-09-18T01:14:27Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2081-09-18T03:32:43Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2081-09-18T05:50:58Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -1.2257,
+      "lng": -56.1796
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -1.769,
+        "lng": -22.519
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -1.226,
+        "lng": -56.179
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -0.682,
+        "lng": -89.836
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 16590,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004279,
+      "rho_umbra": 0.011348,
+      "rho_penum": 0.020787,
+      "sep": 0.016888,
+      "pa": 2.635677
+    }
+  },
+  {
+    "date": "2082-02-13",
+    "kind": "Partial",
+    "times": {
+      "p1": "2082-02-13T04:22:43Z",
+      "u1": "2082-02-13T06:11:41Z",
+      "u2": null,
+      "peak": "2082-02-13T06:26:42Z",
+      "u3": null,
+      "u4": "2082-02-13T06:41:43Z",
+      "p4": "2082-02-13T08:30:40Z"
+    },
+    "magnitude": 0.0605,
+    "obscuration": 0.0037,
+    "subLunar": {
+      "lat": 14.4999,
+      "lng": -93.8368
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 15.029,
+        "lng": -63.96
+      },
+      "u1": {
+        "lat": 14.564,
+        "lng": -90.217
+      },
+      "u2": null,
+      "peak": {
+        "lat": 14.5,
+        "lng": -93.836
+      },
+      "u3": null,
+      "u4": {
+        "lat": 14.435,
+        "lng": -97.455
+      },
+      "p4": {
+        "lat": 13.964,
+        "lng": -123.713
+      }
+    },
+    "umbralMag": 0.0605,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 1802,
+    "penumbralDurSec": 14877,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004797,
+      "rho_umbra": 0.013203,
+      "rho_penum": 0.022813,
+      "sep": 0.017787,
+      "pa": 3.576572
+    }
+  },
+  {
+    "date": "2082-08-08",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2082-08-08T12:28:33Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2082-08-08T14:43:52Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2082-08-08T16:59:11Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -17.1001,
+      "lng": 139.6981
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -17.557,
+        "lng": 172.452
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -17.1,
+        "lng": 139.7
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -16.637,
+        "lng": 106.94
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 16239,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004451,
+      "rho_umbra": 0.012033,
+      "rho_penum": 0.021389,
+      "sep": 0.016666,
+      "pa": 5.886061
+    }
+  },
+  {
+    "date": "2083-02-02",
+    "kind": "Total",
+    "times": {
+      "p1": "2083-02-02T15:34:16Z",
+      "u1": "2083-02-02T16:39:19Z",
+      "u2": "2083-02-02T17:50:16Z",
+      "peak": "2083-02-02T18:24:03Z",
+      "u3": "2083-02-02T18:57:50Z",
+      "u4": "2083-02-02T20:08:47Z",
+      "p4": "2083-02-02T21:13:50Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 17.2347,
+      "lng": 86.3542
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 17.817,
+        "lng": 127.371
+      },
+      "u1": {
+        "lat": 17.595,
+        "lng": 111.657
+      },
+      "u2": {
+        "lat": 17.352,
+        "lng": 94.518
+      },
+      "peak": {
+        "lat": 17.235,
+        "lng": 86.356
+      },
+      "u3": {
+        "lat": 17.117,
+        "lng": 78.194
+      },
+      "u4": {
+        "lat": 16.869,
+        "lng": 61.053
+      },
+      "p4": {
+        "lat": 16.64,
+        "lng": 45.335
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4053,
+    "partialDurSec": 12568,
+    "penumbralDurSec": 20374,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004561,
+      "rho_umbra": 0.012311,
+      "rho_penum": 0.021939,
+      "sep": 0.005796,
+      "pa": 3.528555
+    }
+  },
+  {
+    "date": "2083-07-29",
+    "kind": "Total",
+    "times": {
+      "p1": "2083-07-28T22:18:29Z",
+      "u1": "2083-07-28T23:16:02Z",
+      "u2": "2083-07-29T00:17:13Z",
+      "peak": "2083-07-29T01:02:49Z",
+      "u3": "2083-07-29T01:48:24Z",
+      "u4": "2083-07-29T02:49:35Z",
+      "p4": "2083-07-29T03:47:08Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -19.2042,
+      "lng": -15.1639
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -19.735,
+        "lng": 24.396
+      },
+      "u1": {
+        "lat": -19.551,
+        "lng": 10.544
+      },
+      "u2": {
+        "lat": -19.353,
+        "lng": -4.185
+      },
+      "peak": {
+        "lat": -19.204,
+        "lng": -15.164
+      },
+      "u3": {
+        "lat": -19.055,
+        "lng": -26.139
+      },
+      "u4": {
+        "lat": -18.852,
+        "lng": -40.873
+      },
+      "p4": {
+        "lat": -18.66,
+        "lng": -54.734
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5471,
+    "partialDurSec": 12812,
+    "penumbralDurSec": 19720,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004699,
+      "rho_umbra": 0.012969,
+      "rho_penum": 0.022312,
+      "sep": 0.003686,
+      "pa": 5.940754
+    }
+  },
+  {
+    "date": "2084-01-22",
+    "kind": "Total",
+    "times": {
+      "p1": "2084-01-22T20:08:53Z",
+      "u1": "2084-01-22T21:21:45Z",
+      "u2": "2084-01-22T22:39:24Z",
+      "peak": "2084-01-22T23:10:14Z",
+      "u3": "2084-01-22T23:41:04Z",
+      "u4": "2084-01-23T00:58:43Z",
+      "p4": "2084-01-23T02:11:35Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 19.4631,
+      "lng": 13.9961
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 19.932,
+        "lng": 57.907
+      },
+      "u1": {
+        "lat": 19.745,
+        "lng": 40.265
+      },
+      "u2": {
+        "lat": 19.544,
+        "lng": 21.463
+      },
+      "peak": {
+        "lat": 19.463,
+        "lng": 13.997
+      },
+      "u3": {
+        "lat": 19.382,
+        "lng": 6.531
+      },
+      "u4": {
+        "lat": 19.176,
+        "lng": -12.273
+      },
+      "p4": {
+        "lat": 18.98,
+        "lng": -29.919
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 3701,
+    "partialDurSec": 13018,
+    "penumbralDurSec": 21762,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004338,
+      "rho_umbra": 0.011469,
+      "rho_penum": 0.021109,
+      "sep": 0.00575,
+      "pa": 0.323754
+    }
+  },
+  {
+    "date": "2084-07-17",
+    "kind": "Partial",
+    "times": {
+      "p1": "2084-07-17T14:26:41Z",
+      "u1": "2084-07-17T15:25:03Z",
+      "u2": null,
+      "peak": "2084-07-17T16:56:02Z",
+      "u3": null,
+      "u4": "2084-07-17T18:27:02Z",
+      "p4": "2084-07-17T19:25:24Z"
+    },
+    "magnitude": 0.9754,
+    "obscuration": 0.9514,
+    "subLunar": {
+      "lat": -20.6185,
+      "lng": 106.1898
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.034,
+        "lng": 142.002
+      },
+      "u1": {
+        "lat": -20.874,
+        "lng": 128.009
+      },
+      "u2": null,
+      "peak": {
+        "lat": -20.619,
+        "lng": 106.193
+      },
+      "u3": null,
+      "u4": {
+        "lat": -20.358,
+        "lng": 84.37
+      },
+      "p4": {
+        "lat": -20.188,
+        "lng": 70.371
+      }
+    },
+    "umbralMag": 0.9754,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 10919,
+    "penumbralDurSec": 17924,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004858,
+      "rho_umbra": 0.013566,
+      "rho_penum": 0.022901,
+      "sep": 0.009483,
+      "pa": 2.86357
+    }
+  },
+  {
+    "date": "2085-01-10",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2085-01-10T20:06:46Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2085-01-10T22:29:37Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2085-01-11T00:52:29Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 20.9973,
+      "lng": 23.0378
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 21.27,
+        "lng": 57.622
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 20.997,
+        "lng": 23.041
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 20.715,
+        "lng": -11.55
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 17143,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004281,
+      "rho_umbra": 0.011253,
+      "rho_penum": 0.0209,
+      "sep": 0.016431,
+      "pa": 0.247191
+    }
+  },
+  {
+    "date": "2085-06-08",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2085-06-08T00:40:06Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2085-06-08T02:14:55Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2085-06-08T03:49:44Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -24.0385,
+      "lng": -35.2086
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -24.026,
+        "lng": -12.468
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -24.038,
+        "lng": -35.208
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -24.044,
+        "lng": -57.946
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 11378,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004702,
+      "rho_umbra": 0.012977,
+      "rho_penum": 0.022326,
+      "sep": 0.021995,
+      "pa": 0.001721
+    }
+  },
+  {
+    "date": "2085-07-07",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2085-07-07T08:29:47Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2085-07-07T10:01:55Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2085-07-07T11:34:04Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -21.347,
+      "lng": -150.7492
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.531,
+        "lng": -128.654
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -21.347,
+        "lng": -150.746
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -21.157,
+        "lng": -172.844
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 11057,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004803,
+      "rho_umbra": 0.013364,
+      "rho_penum": 0.022696,
+      "sep": 0.022393,
+      "pa": 2.937339
+    }
+  },
+  {
+    "date": "2085-12-01",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2085-12-01T06:32:53Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2085-12-01T08:22:36Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2085-12-01T10:12:18Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 22.8994,
+      "lng": -129.7254
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.826,
+        "lng": -103.332
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 22.899,
+        "lng": -129.725
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 22.965,
+        "lng": -156.115
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 13164,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004559,
+      "rho_umbra": 0.012307,
+      "rho_penum": 0.021927,
+      "sep": 0.020402,
+      "pa": 3.080784
+    }
+  },
+  {
+    "date": "2086-05-28",
+    "kind": "Partial",
+    "times": {
+      "p1": "2086-05-28T09:54:33Z",
+      "u1": "2086-05-28T11:05:47Z",
+      "u2": null,
+      "peak": "2086-05-28T12:40:55Z",
+      "u3": null,
+      "u4": "2086-05-28T14:16:03Z",
+      "p4": "2086-05-28T15:27:17Z"
+    },
+    "magnitude": 0.9275,
+    "obscuration": 0.8603,
+    "subLunar": {
+      "lat": -21.9022,
+      "lng": 167.8193
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.776,
+        "lng": -152.064
+      },
+      "u1": {
+        "lat": -21.832,
+        "lng": -169.241
+      },
+      "u2": null,
+      "peak": {
+        "lat": -21.902,
+        "lng": 167.821
+      },
+      "u3": null,
+      "u4": {
+        "lat": -21.967,
+        "lng": 144.885
+      },
+      "p4": {
+        "lat": -22.013,
+        "lng": 127.713
+      }
+    },
+    "umbralMag": 0.9275,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 11417,
+    "penumbralDurSec": 19965,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004454,
+      "rho_umbra": 0.01204,
+      "rho_penum": 0.021403,
+      "sep": 0.009124,
+      "pa": 0.071893
+    }
+  },
+  {
+    "date": "2086-11-20",
+    "kind": "Partial",
+    "times": {
+      "p1": "2086-11-20T17:41:43Z",
+      "u1": "2086-11-20T18:42:24Z",
+      "u2": null,
+      "peak": "2086-11-20T20:16:48Z",
+      "u3": null,
+      "u4": "2086-11-20T21:51:12Z",
+      "p4": "2086-11-20T22:51:53Z"
+    },
+    "magnitude": 0.9992,
+    "obscuration": 0.9984,
+    "subLunar": {
+      "lat": 20.1299,
+      "lng": 50.9038
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 19.905,
+        "lng": 88.096
+      },
+      "u1": {
+        "lat": 19.995,
+        "lng": 73.544
+      },
+      "u2": null,
+      "peak": {
+        "lat": 20.13,
+        "lng": 50.907
+      },
+      "u3": null,
+      "u4": {
+        "lat": 20.259,
+        "lng": 28.27
+      },
+      "p4": {
+        "lat": 20.338,
+        "lng": 13.719
+      }
+    },
+    "umbralMag": 0.9992,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 11328,
+    "penumbralDurSec": 18611,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004796,
+      "rho_umbra": 0.013201,
+      "rho_penum": 0.022802,
+      "sep": 0.008449,
+      "pa": 3.012594
+    }
+  },
+  {
+    "date": "2087-05-17",
+    "kind": "Total",
+    "times": {
+      "p1": "2087-05-17T12:46:38Z",
+      "u1": "2087-05-17T13:56:48Z",
+      "u2": "2087-05-17T15:04:33Z",
+      "peak": "2087-05-17T15:52:27Z",
+      "u3": "2087-05-17T16:40:22Z",
+      "u4": "2087-05-17T17:48:07Z",
+      "p4": "2087-05-17T18:58:17Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -19.015,
+      "lng": 119.7824
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -18.784,
+        "lng": 164.76
+      },
+      "u1": {
+        "lat": -18.873,
+        "lng": 147.777
+      },
+      "u2": {
+        "lat": -18.957,
+        "lng": 131.379
+      },
+      "peak": {
+        "lat": -19.015,
+        "lng": 119.785
+      },
+      "u3": {
+        "lat": -19.072,
+        "lng": 108.189
+      },
+      "u4": {
+        "lat": -19.152,
+        "lng": 91.793
+      },
+      "p4": {
+        "lat": -19.233,
+        "lng": 74.812
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5749,
+    "partialDurSec": 13879,
+    "penumbralDurSec": 22299,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00429,
+      "rho_umbra": 0.011417,
+      "rho_penum": 0.0208,
+      "sep": 0.003154,
+      "pa": 3.28011
+    }
+  },
+  {
+    "date": "2087-11-10",
+    "kind": "Total",
+    "times": {
+      "p1": "2087-11-10T09:24:06Z",
+      "u1": "2087-11-10T10:19:03Z",
+      "u2": "2087-11-10T11:17:50Z",
+      "peak": "2087-11-10T12:02:38Z",
+      "u3": "2087-11-10T12:47:26Z",
+      "u4": "2087-11-10T13:46:13Z",
+      "p4": "2087-11-10T14:41:11Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 16.7227,
+      "lng": 174.1159
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 16.391,
+        "lng": -147.861
+      },
+      "u1": {
+        "lat": 16.507,
+        "lng": -161.04
+      },
+      "u2": {
+        "lat": 16.63,
+        "lng": -175.137
+      },
+      "peak": {
+        "lat": 16.723,
+        "lng": 174.119
+      },
+      "u3": {
+        "lat": 16.814,
+        "lng": 163.376
+      },
+      "u4": {
+        "lat": 16.932,
+        "lng": 149.28
+      },
+      "p4": {
+        "lat": 17.041,
+        "lng": 136.101
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5376,
+    "partialDurSec": 12430,
+    "penumbralDurSec": 19025,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004867,
+      "rho_umbra": 0.013479,
+      "rho_penum": 0.023058,
+      "sep": 0.00365,
+      "pa": 6.095301
+    }
+  },
+  {
+    "date": "2088-05-05",
+    "kind": "Partial",
+    "times": {
+      "p1": "2088-05-05T13:44:30Z",
+      "u1": "2088-05-05T15:34:24Z",
+      "u2": null,
+      "peak": "2088-05-05T16:13:49Z",
+      "u3": null,
+      "u4": "2088-05-05T16:53:15Z",
+      "p4": "2088-05-05T18:43:09Z"
+    },
+    "magnitude": 0.222,
+    "obscuration": 0.0493,
+    "subLunar": {
+      "lat": -15.4672,
+      "lng": 114.656
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -15.207,
+        "lng": 150.819
+      },
+      "u1": {
+        "lat": -15.399,
+        "lng": 124.205
+      },
+      "u2": null,
+      "peak": {
+        "lat": -15.467,
+        "lng": 114.659
+      },
+      "u3": null,
+      "u4": {
+        "lat": -15.535,
+        "lng": 105.11
+      },
+      "p4": {
+        "lat": -15.72,
+        "lng": 78.497
+      }
+    },
+    "umbralMag": 0.222,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 4731,
+    "penumbralDurSec": 17919,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.00432,
+      "rho_umbra": 0.011515,
+      "rho_penum": 0.020922,
+      "sep": 0.014892,
+      "pa": 3.339578
+    }
+  },
+  {
+    "date": "2088-10-30",
+    "kind": "Partial",
+    "times": {
+      "p1": "2088-10-30T00:45:50Z",
+      "u1": "2088-10-30T02:12:57Z",
+      "u2": null,
+      "peak": "2088-10-30T03:00:27Z",
+      "u3": null,
+      "u4": "2088-10-30T03:47:57Z",
+      "p4": "2088-10-30T05:15:05Z"
+    },
+    "magnitude": 0.3385,
+    "obscuration": 0.1146,
+    "subLunar": {
+      "lat": 12.7748,
+      "lng": -50.207
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 12.447,
+        "lng": -17.792
+      },
+      "u1": {
+        "lat": 12.66,
+        "lng": -38.768
+      },
+      "u2": null,
+      "peak": {
+        "lat": 12.775,
+        "lng": -50.204
+      },
+      "u3": null,
+      "u4": {
+        "lat": 12.889,
+        "lng": -61.639
+      },
+      "p4": {
+        "lat": 13.096,
+        "lng": -82.614
+      }
+    },
+    "umbralMag": 0.3385,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 5700,
+    "penumbralDurSec": 16155,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004716,
+      "rho_umbra": 0.012928,
+      "rho_penum": 0.022481,
+      "sep": 0.015836,
+      "pa": 6.045055
+    }
+  },
+  {
+    "date": "2089-03-26",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2089-03-26T07:31:48Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2089-03-26T09:31:11Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2089-03-26T11:30:33Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -3.1001,
+      "lng": -142.915
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -2.736,
+        "lng": -114.094
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -3.1,
+        "lng": -142.915
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -3.462,
+        "lng": -171.732
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 14324,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004657,
+      "rho_umbra": 0.012727,
+      "rho_penum": 0.022239,
+      "sep": 0.018861,
+      "pa": 0.311455
+    }
+  },
+  {
+    "date": "2089-09-19",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2089-09-19T20:01:46Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2089-09-19T22:08:21Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2089-09-20T00:14:56Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -0.4061,
+      "lng": 24.7935
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -0.743,
+        "lng": 55.503
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -0.406,
+        "lng": 24.796
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -0.068,
+        "lng": -5.91
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15190,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004356,
+      "rho_umbra": 0.011632,
+      "rho_penum": 0.021076,
+      "sep": 0.0183,
+      "pa": 2.832123
+    }
+  },
+  {
+    "date": "2090-03-15",
+    "kind": "Total",
+    "times": {
+      "p1": "2090-03-15T21:09:31Z",
+      "u1": "2090-03-15T22:06:25Z",
+      "u2": "2090-03-15T23:13:26Z",
+      "peak": "2090-03-15T23:45:29Z",
+      "u3": "2090-03-16T00:17:31Z",
+      "u4": "2090-03-16T01:24:33Z",
+      "p4": "2090-03-16T02:21:27Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 1.7792,
+      "lng": 4.4973
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 2.288,
+        "lng": 42.033
+      },
+      "u1": {
+        "lat": 2.103,
+        "lng": 28.34
+      },
+      "u2": {
+        "lat": 1.884,
+        "lng": 12.212
+      },
+      "peak": {
+        "lat": 1.779,
+        "lng": 4.499
+      },
+      "u3": {
+        "lat": 1.675,
+        "lng": -3.21
+      },
+      "u4": {
+        "lat": 1.456,
+        "lng": -19.343
+      },
+      "p4": {
+        "lat": 1.27,
+        "lng": -33.037
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 3845,
+    "partialDurSec": 11888,
+    "penumbralDurSec": 18716,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004848,
+      "rho_umbra": 0.013428,
+      "rho_penum": 0.022968,
+      "sep": 0.006529,
+      "pa": 0.30872
+    }
+  },
+  {
+    "date": "2090-09-08",
+    "kind": "Total",
+    "times": {
+      "p1": "2090-09-08T19:48:03Z",
+      "u1": "2090-09-08T21:02:29Z",
+      "u2": "2090-09-08T22:32:18Z",
+      "peak": "2090-09-08T22:49:24Z",
+      "u3": "2090-09-08T23:06:30Z",
+      "u4": "2090-09-09T00:36:19Z",
+      "p4": "2090-09-09T01:50:45Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -5.3347,
+      "lng": 15.715
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -5.781,
+        "lng": 59.748
+      },
+      "u1": {
+        "lat": -5.598,
+        "lng": 41.677
+      },
+      "u2": {
+        "lat": -5.377,
+        "lng": 19.87
+      },
+      "peak": {
+        "lat": -5.335,
+        "lng": 15.718
+      },
+      "u3": {
+        "lat": -5.293,
+        "lng": 11.566
+      },
+      "u4": {
+        "lat": -5.07,
+        "lng": -10.242
+      },
+      "p4": {
+        "lat": -4.885,
+        "lng": -28.315
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 2051,
+    "partialDurSec": 12831,
+    "penumbralDurSec": 21762,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004278,
+      "rho_umbra": 0.011355,
+      "rho_penum": 0.020771,
+      "sep": 0.006683,
+      "pa": 2.844796
+    }
+  },
+  {
+    "date": "2091-03-05",
+    "kind": "Total",
+    "times": {
+      "p1": "2091-03-05T13:17:27Z",
+      "u1": "2091-03-05T14:14:18Z",
+      "u2": "2091-03-05T15:18:27Z",
+      "peak": "2091-03-05T15:55:14Z",
+      "u3": "2091-03-05T16:32:02Z",
+      "u4": "2091-03-05T17:36:11Z",
+      "p4": "2091-03-05T18:33:02Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 6.5846,
+      "lng": 122.9295
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 7.074,
+        "lng": 160.898
+      },
+      "u1": {
+        "lat": 6.899,
+        "lng": 147.219
+      },
+      "u2": {
+        "lat": 6.699,
+        "lng": 131.783
+      },
+      "peak": {
+        "lat": 6.585,
+        "lng": 122.932
+      },
+      "u3": {
+        "lat": 6.47,
+        "lng": 114.078
+      },
+      "u4": {
+        "lat": 6.268,
+        "lng": 98.641
+      },
+      "p4": {
+        "lat": 6.089,
+        "lng": 84.962
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4415,
+    "partialDurSec": 12113,
+    "penumbralDurSec": 18935,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004833,
+      "rho_umbra": 0.013357,
+      "rho_penum": 0.022925,
+      "sep": 0.005709,
+      "pa": 3.437722
+    }
+  },
+  {
+    "date": "2091-08-29",
+    "kind": "Total",
+    "times": {
+      "p1": "2091-08-28T21:38:20Z",
+      "u1": "2091-08-28T22:46:16Z",
+      "u2": "2091-08-28T23:58:27Z",
+      "peak": "2091-08-29T00:35:22Z",
+      "u3": "2091-08-29T01:12:16Z",
+      "u4": "2091-08-29T02:24:28Z",
+      "p4": "2091-08-29T03:32:24Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -10.0729,
+      "lng": -9.6953
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -10.498,
+        "lng": 33.177
+      },
+      "u1": {
+        "lat": -10.336,
+        "lng": 16.727
+      },
+      "u2": {
+        "lat": -10.162,
+        "lng": -0.754
+      },
+      "peak": {
+        "lat": -10.073,
+        "lng": -9.694
+      },
+      "u3": {
+        "lat": -9.983,
+        "lng": -18.631
+      },
+      "u4": {
+        "lat": -9.808,
+        "lng": -36.118
+      },
+      "p4": {
+        "lat": -9.642,
+        "lng": -52.572
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 4429,
+    "partialDurSec": 13092,
+    "penumbralDurSec": 21244,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004402,
+      "rho_umbra": 0.011831,
+      "rho_penum": 0.021223,
+      "sep": 0.005286,
+      "pa": 6.009433
+    }
+  },
+  {
+    "date": "2092-02-23",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2092-02-23T03:11:25Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2092-02-23T05:17:57Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2092-02-23T07:24:29Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 11.2753,
+      "lng": -77.1145
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 11.608,
+        "lng": -46.582
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 11.275,
+        "lng": -77.111
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 10.937,
+        "lng": -107.64
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15184,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004623,
+      "rho_umbra": 0.01256,
+      "rho_penum": 0.022152,
+      "sep": 0.017844,
+      "pa": 3.414821
+    }
+  },
+  {
+    "date": "2092-07-19",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2092-07-19T00:03:38Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2092-07-19T00:38:42Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2092-07-19T01:13:47Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -19.4094,
+      "lng": -9.5577
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -19.445,
+        "lng": -1.14
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -19.409,
+        "lng": -9.555
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -19.374,
+        "lng": -17.973
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 4209,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004761,
+      "rho_umbra": 0.013204,
+      "rho_penum": 0.02254,
+      "sep": 0.026449,
+      "pa": 3.046786
+    }
+  },
+  {
+    "date": "2092-08-17",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2092-08-17T07:07:01Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2092-08-17T09:10:47Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2092-08-17T11:14:32Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -14.4501,
+      "lng": -137.6972
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -14.743,
+        "lng": -107.874
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -14.45,
+        "lng": -137.697
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -14.152,
+        "lng": -167.521
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 14851,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004646,
+      "rho_umbra": 0.012755,
+      "rho_penum": 0.022125,
+      "sep": 0.018025,
+      "pa": 6.042402
+    }
+  },
+  {
+    "date": "2093-01-12",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2093-01-12T15:49:53Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2093-01-12T17:56:57Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2093-01-12T20:04:01Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 20.5744,
+      "lng": 91.4423
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 20.645,
+        "lng": 122.171
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 20.574,
+        "lng": 91.444
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 20.497,
+        "lng": 60.716
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 15248,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.0043,
+      "rho_umbra": 0.011324,
+      "rho_penum": 0.020971,
+      "sep": 0.018516,
+      "pa": 0.061515
+    }
+  },
+  {
+    "date": "2093-07-08",
+    "kind": "Partial",
+    "times": {
+      "p1": "2093-07-08T15:03:09Z",
+      "u1": "2093-07-08T16:09:48Z",
+      "u2": null,
+      "peak": "2093-07-08T17:21:10Z",
+      "u3": null,
+      "u4": "2093-07-08T18:32:31Z",
+      "p4": "2093-07-08T19:39:10Z"
+    },
+    "magnitude": 0.6725,
+    "obscuration": 0.4523,
+    "subLunar": {
+      "lat": -21.6844,
+      "lng": 99.6439
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -21.718,
+        "lng": 132.667
+      },
+      "u1": {
+        "lat": -21.703,
+        "lng": 116.72
+      },
+      "u2": null,
+      "peak": {
+        "lat": -21.684,
+        "lng": 99.644
+      },
+      "u3": null,
+      "u4": {
+        "lat": -21.662,
+        "lng": 82.572
+      },
+      "p4": {
+        "lat": -21.637,
+        "lng": 66.624
+      }
+    },
+    "umbralMag": 0.6725,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 8563,
+    "penumbralDurSec": 16561,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004865,
+      "rho_umbra": 0.013596,
+      "rho_penum": 0.022928,
+      "sep": 0.013631,
+      "pa": 3.119969
+    }
+  },
+  {
+    "date": "2094-01-01",
+    "kind": "Partial",
+    "times": {
+      "p1": "2094-01-01T13:58:21Z",
+      "u1": "2094-01-01T15:15:55Z",
+      "u2": null,
+      "peak": "2094-01-01T16:56:57Z",
+      "u3": null,
+      "u4": "2094-01-01T18:37:59Z",
+      "p4": "2094-01-01T19:55:34Z"
+    },
+    "magnitude": 0.9646,
+    "obscuration": 0.9304,
+    "subLunar": {
+      "lat": 22.5597,
+      "lng": 105.2799
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.532,
+        "lng": 148.443
+      },
+      "u1": {
+        "lat": 22.546,
+        "lng": 129.699
+      },
+      "u2": null,
+      "peak": {
+        "lat": 22.56,
+        "lng": 105.284
+      },
+      "u3": null,
+      "u4": {
+        "lat": 22.568,
+        "lng": 80.868
+      },
+      "p4": {
+        "lat": 22.572,
+        "lng": 62.119
+      }
+    },
+    "umbralMag": 0.9646,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 12124,
+    "penumbralDurSec": 21433,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004305,
+      "rho_umbra": 0.011341,
+      "rho_penum": 0.020989,
+      "sep": 0.007932,
+      "pa": 6.261387
+    }
+  },
+  {
+    "date": "2094-06-28",
+    "kind": "Total",
+    "times": {
+      "p1": "2094-06-28T07:15:10Z",
+      "u1": "2094-06-28T08:10:33Z",
+      "u2": "2094-06-28T09:08:06Z",
+      "peak": "2094-06-28T09:58:43Z",
+      "u3": "2094-06-28T10:49:19Z",
+      "u4": "2094-06-28T11:46:52Z",
+      "p4": "2094-06-28T12:42:16Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -23.2641,
+      "lng": -150.2169
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -23.176,
+        "lng": -111.015
+      },
+      "u1": {
+        "lat": -23.208,
+        "lng": -124.291
+      },
+      "u2": {
+        "lat": -23.239,
+        "lng": -138.085
+      },
+      "peak": {
+        "lat": -23.264,
+        "lng": -150.217
+      },
+      "u3": {
+        "lat": -23.287,
+        "lng": -162.344
+      },
+      "u4": {
+        "lat": -23.311,
+        "lng": -176.136
+      },
+      "p4": {
+        "lat": -23.332,
+        "lng": 170.587
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 6073,
+    "partialDurSec": 12979,
+    "penumbralDurSec": 19626,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004751,
+      "rho_umbra": 0.013167,
+      "rho_penum": 0.0225,
+      "sep": 0.000501,
+      "pa": 3.195322
+    }
+  },
+  {
+    "date": "2094-12-21",
+    "kind": "Total",
+    "times": {
+      "p1": "2094-12-21T16:57:23Z",
+      "u1": "2094-12-21T18:02:46Z",
+      "u2": "2094-12-21T19:07:10Z",
+      "peak": "2094-12-21T19:53:19Z",
+      "u3": "2094-12-21T20:39:29Z",
+      "u4": "2094-12-21T21:43:52Z",
+      "p4": "2094-12-21T22:49:16Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 23.6139,
+      "lng": 59.7774
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 23.446,
+        "lng": 102.146
+      },
+      "u1": {
+        "lat": 23.511,
+        "lng": 86.401
+      },
+      "u2": {
+        "lat": 23.572,
+        "lng": 70.893
+      },
+      "peak": {
+        "lat": 23.614,
+        "lng": 59.78
+      },
+      "u3": {
+        "lat": 23.655,
+        "lng": 48.663
+      },
+      "u4": {
+        "lat": 23.709,
+        "lng": 33.16
+      },
+      "p4": {
+        "lat": 23.762,
+        "lng": 17.411
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5539,
+    "partialDurSec": 13266,
+    "penumbralDurSec": 21113,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004498,
+      "rho_umbra": 0.012066,
+      "rho_penum": 0.021709,
+      "sep": 0.003336,
+      "pa": 3.034861
+    }
+  },
+  {
+    "date": "2095-06-17",
+    "kind": "Partial",
+    "times": {
+      "p1": "2095-06-17T19:24:18Z",
+      "u1": "2095-06-17T20:43:04Z",
+      "u2": null,
+      "peak": "2095-06-17T21:57:00Z",
+      "u3": null,
+      "u4": "2095-06-17T23:10:56Z",
+      "p4": "2095-06-18T00:29:43Z"
+    },
+    "magnitude": 0.6324,
+    "obscuration": 0.3999,
+    "subLunar": {
+      "lat": -24.0766,
+      "lng": 29.509
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -23.896,
+        "lng": 66.28
+      },
+      "u1": {
+        "lat": -23.991,
+        "lng": 47.313
+      },
+      "u2": null,
+      "peak": {
+        "lat": -24.077,
+        "lng": 29.512
+      },
+      "u3": null,
+      "u4": {
+        "lat": -24.159,
+        "lng": 11.713
+      },
+      "p4": {
+        "lat": -24.242,
+        "lng": -7.252
+      }
+    },
+    "umbralMag": 0.6324,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 8872,
+    "penumbralDurSec": 18325,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004507,
+      "rho_umbra": 0.012252,
+      "rho_penum": 0.021591,
+      "sep": 0.012665,
+      "pa": 0.130542
+    }
+  },
+  {
+    "date": "2095-12-11",
+    "kind": "Partial",
+    "times": {
+      "p1": "2095-12-11T03:54:57Z",
+      "u1": "2095-12-11T05:16:45Z",
+      "u2": null,
+      "peak": "2095-12-11T06:11:44Z",
+      "u3": null,
+      "u4": "2095-12-11T07:06:43Z",
+      "p4": "2095-12-11T08:28:31Z"
+    },
+    "magnitude": 0.4293,
+    "obscuration": 0.1843,
+    "subLunar": {
+      "lat": 23.754,
+      "lng": -96.2902
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 23.497,
+        "lng": -63.484
+      },
+      "u1": {
+        "lat": 23.652,
+        "lng": -83.101
+      },
+      "u2": null,
+      "peak": {
+        "lat": 23.754,
+        "lng": -96.287
+      },
+      "u3": null,
+      "u4": {
+        "lat": 23.853,
+        "lng": -109.472
+      },
+      "p4": {
+        "lat": 23.996,
+        "lng": -129.087
+      }
+    },
+    "umbralMag": 0.4293,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 6598,
+    "penumbralDurSec": 16414,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004749,
+      "rho_umbra": 0.013011,
+      "rho_penum": 0.022644,
+      "sep": 0.015248,
+      "pa": 2.953699
+    }
+  },
+  {
+    "date": "2096-05-07",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2096-05-07T09:32:29Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2096-05-07T11:21:28Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2096-05-07T13:10:27Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -15.7172,
+      "lng": -172.1192
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -15.386,
+        "lng": -145.662
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -15.717,
+        "lng": -172.118
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -16.046,
+        "lng": 161.429
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 13077,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004277,
+      "rho_umbra": 0.011358,
+      "rho_penum": 0.020761,
+      "sep": 0.020249,
+      "pa": 3.527722
+    }
+  },
+  {
+    "date": "2096-06-06",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2096-06-06T02:25:43Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2096-06-06T02:40:29Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2096-06-06T02:55:15Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": -23.9926,
+      "lng": -42.153
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -23.968,
+        "lng": -38.581
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": -23.993,
+        "lng": -42.151
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": -24.017,
+        "lng": -45.72
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 1772,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004312,
+      "rho_umbra": 0.011515,
+      "rho_penum": 0.020865,
+      "sep": 0.024891,
+      "pa": 0.207468
+    }
+  },
+  {
+    "date": "2096-10-31",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2096-10-31T09:37:07Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2096-10-31T11:27:13Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2096-10-31T13:17:19Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 13.0311,
+      "lng": -176.7579
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 12.559,
+        "lng": -150.24
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 13.031,
+        "lng": -176.756
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 13.499,
+        "lng": 156.732
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 13213,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004844,
+      "rho_umbra": 0.013403,
+      "rho_penum": 0.022959,
+      "sep": 0.020099,
+      "pa": 5.857312
+    }
+  },
+  {
+    "date": "2096-11-29",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2096-11-29T20:39:14Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2096-11-29T21:19:07Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2096-11-29T21:59:00Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 23.01,
+      "lng": 35.5189
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 22.902,
+        "lng": 45.074
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 23.01,
+        "lng": 35.521
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 23.117,
+        "lng": 25.97
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 4786,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004872,
+      "rho_umbra": 0.013479,
+      "rho_penum": 0.023098,
+      "sep": 0.026869,
+      "pa": 2.880472
+    }
+  },
+  {
+    "date": "2097-04-26",
+    "kind": "Partial",
+    "times": {
+      "p1": "2097-04-26T09:22:37Z",
+      "u1": "2097-04-26T10:37:00Z",
+      "u2": null,
+      "peak": "2097-04-26T12:14:58Z",
+      "u3": null,
+      "u4": "2097-04-26T13:52:56Z",
+      "p4": "2097-04-26T15:07:20Z"
+    },
+    "magnitude": 0.9406,
+    "obscuration": 0.8847,
+    "subLunar": {
+      "lat": -12.9725,
+      "lng": 174.5781
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -12.354,
+        "lng": -143.589
+      },
+      "u1": {
+        "lat": -12.622,
+        "lng": -161.642
+      },
+      "u2": null,
+      "peak": {
+        "lat": -12.972,
+        "lng": 174.581
+      },
+      "u3": null,
+      "u4": {
+        "lat": -13.32,
+        "lng": 150.806
+      },
+      "p4": {
+        "lat": -13.583,
+        "lng": 132.751
+      }
+    },
+    "umbralMag": 0.9406,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 11756,
+    "penumbralDurSec": 20683,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004364,
+      "rho_umbra": 0.011671,
+      "rho_penum": 0.0211,
+      "sep": 0.008616,
+      "pa": 3.578809
+    }
+  },
+  {
+    "date": "2097-10-21",
+    "kind": "Total",
+    "times": {
+      "p1": "2097-10-20T22:45:43Z",
+      "u1": "2097-10-20T23:49:36Z",
+      "u2": "2097-10-21T01:17:57Z",
+      "peak": "2097-10-21T01:27:35Z",
+      "u3": "2097-10-21T01:37:13Z",
+      "u4": "2097-10-21T03:05:33Z",
+      "p4": "2097-10-21T04:09:27Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 10.0302,
+      "lng": -26.8512
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 9.332,
+        "lng": 12.304
+      },
+      "u1": {
+        "lat": 9.608,
+        "lng": -3.15
+      },
+      "u2": {
+        "lat": 9.989,
+        "lng": -24.52
+      },
+      "peak": {
+        "lat": 10.03,
+        "lng": -26.85
+      },
+      "u3": {
+        "lat": 10.072,
+        "lng": -29.18
+      },
+      "u4": {
+        "lat": 10.45,
+        "lng": -50.542
+      },
+      "p4": {
+        "lat": 10.724,
+        "lng": -65.994
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 1157,
+    "partialDurSec": 11757,
+    "penumbralDurSec": 19424,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004646,
+      "rho_umbra": 0.012676,
+      "rho_penum": 0.022204,
+      "sep": 0.007853,
+      "pa": 5.816165
+    }
+  },
+  {
+    "date": "2098-04-15",
+    "kind": "Total",
+    "times": {
+      "p1": "2098-04-15T16:12:00Z",
+      "u1": "2098-04-15T17:13:15Z",
+      "u2": "2098-04-15T18:16:35Z",
+      "peak": "2098-04-15T19:01:28Z",
+      "u3": "2098-04-15T19:46:21Z",
+      "u4": "2098-04-15T20:49:42Z",
+      "p4": "2098-04-15T21:50:57Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": -9.8682,
+      "lng": 73.1918
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -9.14,
+        "lng": 114.219
+      },
+      "u1": {
+        "lat": -9.404,
+        "lng": 99.392
+      },
+      "u2": {
+        "lat": -9.676,
+        "lng": 84.06
+      },
+      "peak": {
+        "lat": -9.868,
+        "lng": 73.195
+      },
+      "u3": {
+        "lat": -10.06,
+        "lng": 62.33
+      },
+      "u4": {
+        "lat": -10.329,
+        "lng": 46.995
+      },
+      "p4": {
+        "lat": -10.588,
+        "lng": 32.169
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5386,
+    "partialDurSec": 12987,
+    "penumbralDurSec": 20337,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004598,
+      "rho_umbra": 0.012531,
+      "rho_penum": 0.021989,
+      "sep": 0.003832,
+      "pa": 0.473661
+    }
+  },
+  {
+    "date": "2098-10-10",
+    "kind": "Total",
+    "times": {
+      "p1": "2098-10-10T06:17:34Z",
+      "u1": "2098-10-10T07:25:46Z",
+      "u2": "2098-10-10T08:34:51Z",
+      "peak": "2098-10-10T09:16:36Z",
+      "u3": "2098-10-10T09:58:21Z",
+      "u4": "2098-10-10T11:07:26Z",
+      "p4": "2098-10-10T12:15:38Z"
+    },
+    "magnitude": 1,
+    "obscuration": 1,
+    "subLunar": {
+      "lat": 6.6164,
+      "lng": -143.8343
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 5.887,
+        "lng": -100.335
+      },
+      "u1": {
+        "lat": 6.165,
+        "lng": -116.905
+      },
+      "u2": {
+        "lat": 6.446,
+        "lng": -133.689
+      },
+      "peak": {
+        "lat": 6.616,
+        "lng": -143.832
+      },
+      "u3": {
+        "lat": 6.786,
+        "lng": -153.975
+      },
+      "u4": {
+        "lat": 7.067,
+        "lng": -170.757
+      },
+      "p4": {
+        "lat": 7.344,
+        "lng": 172.677
+      }
+    },
+    "umbralMag": 1,
+    "penumbralMag": null,
+    "totalDurSec": 5010,
+    "partialDurSec": 13301,
+    "penumbralDurSec": 21483,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004399,
+      "rho_umbra": 0.011769,
+      "rho_penum": 0.021267,
+      "sep": 0.004444,
+      "pa": 2.647499
+    }
+  },
+  {
+    "date": "2099-04-05",
+    "kind": "Partial",
+    "times": {
+      "p1": "2099-04-05T06:18:14Z",
+      "u1": "2099-04-05T07:42:43Z",
+      "u2": null,
+      "peak": "2099-04-05T08:27:28Z",
+      "u3": null,
+      "u4": "2099-04-05T09:12:12Z",
+      "p4": "2099-04-05T10:36:41Z"
+    },
+    "magnitude": 0.3187,
+    "obscuration": 0.1016,
+    "subLunar": {
+      "lat": -6.5417,
+      "lng": -127.942
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": -5.908,
+        "lng": -96.74
+      },
+      "u1": {
+        "lat": -6.323,
+        "lng": -117.138
+      },
+      "u2": null,
+      "peak": {
+        "lat": -6.542,
+        "lng": -127.942
+      },
+      "u3": null,
+      "u4": {
+        "lat": -6.76,
+        "lng": -138.742
+      },
+      "p4": {
+        "lat": -7.171,
+        "lng": -159.138
+      }
+    },
+    "umbralMag": 0.3187,
+    "penumbralMag": null,
+    "totalDurSec": null,
+    "partialDurSec": 5369,
+    "penumbralDurSec": 15507,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004818,
+      "rho_umbra": 0.013341,
+      "rho_penum": 0.022827,
+      "sep": 0.016453,
+      "pa": 0.49515
+    }
+  },
+  {
+    "date": "2099-09-29",
+    "kind": "Penumbral",
+    "times": {
+      "p1": "2099-09-29T08:08:39Z",
+      "u1": null,
+      "u2": null,
+      "peak": "2099-09-29T10:33:12Z",
+      "u3": null,
+      "u4": null,
+      "p4": "2099-09-29T12:57:46Z"
+    },
+    "magnitude": 0,
+    "obscuration": 0,
+    "subLunar": {
+      "lat": 2.8772,
+      "lng": -162.4642
+    },
+    "contactPoints": {
+      "p1": {
+        "lat": 2.308,
+        "lng": -127.271
+      },
+      "u1": null,
+      "u2": null,
+      "peak": {
+        "lat": 2.877,
+        "lng": -162.462
+      },
+      "u3": null,
+      "u4": null,
+      "p4": {
+        "lat": 3.446,
+        "lng": 162.345
+      }
+    },
+    "umbralMag": 0,
+    "penumbralMag": 0,
+    "totalDurSec": null,
+    "partialDurSec": null,
+    "penumbralDurSec": 17347,
+    "saros": null,
+    "glyph": {
+      "sd_primary": 0.004277,
+      "rho_umbra": 0.011327,
+      "rho_penum": 0.020795,
+      "sep": 0.015982,
+      "pa": 2.635128
+    }
   }
 ]

@@ -69,6 +69,9 @@ const AppState = (() => {
     const on = Object.keys(_layers).filter((k) => _layers[k].isOn());
     if (on.length) p.set('layers', on.join(','));
 
+    // ---- Trajectories ----
+    _emitParam(p, 'traj');
+
     // ---- Interaction ----
     // Compass lock flag (c) is appended as a third comma-separated field of obs
     // (obs=lat,lng,1) so the two semantically coupled values share one URL key.
@@ -148,6 +151,12 @@ const AppState = (() => {
         else Asterism.show();
       }
     }
+
+    // ---- Trajectories ----
+    // Applied after view + time above so each restored trajectory anchors to the
+    // permalink instant and viewport, not the page-load defaults.
+    const traj = p.get('traj');
+    if (traj && _params['traj'] && _params['traj'].set) _params['traj'].set(traj);
 
     // ---- Interaction ----
     // obs must be applied before the compass flag (compass attaches to the

@@ -18,6 +18,8 @@ const Comet = (() => {
           return '';
         };
   const DEG = Math.PI / 180;
+  // Obliquity of the ecliptic (J2000) — shared by earthPosition and toRaDec.
+  const OBL = 23.4393 * DEG;
   const AU_KM = 149597870.7;
   const COPY_OFFSETS = [-360, 0, 360];
 
@@ -26,6 +28,7 @@ const Comet = (() => {
   let _comets = [];
   let _markers = [];
   let _unsub = false;
+  let _loading = null; // in-flight roster load, shared by the layer and trajectory paths
 
   let _popup = null;
   let _popupBuilder = null;
@@ -99,15 +102,18 @@ const Comet = (() => {
     return { x, y, z, r };
   }
 
-  // Earth position (simplified - use Astronomy Engine if available)
+  // Earth position in heliocentric ecliptic frame (to match cometPosition's frame).
   function earthPosition(jd) {
     if (typeof Astronomy !== 'undefined') {
       const time = Astronomy.MakeTime(new Date((jd - 2440587.5) * 86400000));
+      // AE HelioVector returns EQJ (equatorial J2000); rotate to ecliptic so
+      // subtraction from cometPosition's ecliptic vector is frame-consistent.
       const earth = Astronomy.HelioVector('Earth', time);
-      return { x: earth.x, y: earth.y, z: earth.z };
+      const ce = Math.cos(OBL),
+        se = Math.sin(OBL);
+      return { x: earth.x, y: earth.y * ce + earth.z * se, z: -earth.y * se + earth.z * ce };
     }
-    // Rough approximation
-    const T = (jd - 2451545.0) / 365.25;
+    // Rough approximation (already in ecliptic plane, z≈0 valid)
     const L = (280.46 + 360.9856474 * (jd - 2451545.0)) * DEG;
     return { x: -Math.cos(L), y: -Math.sin(L), z: 0 };
   }
@@ -118,8 +124,8 @@ const Comet = (() => {
     const gy = hy - earth.y;
     const gz = hz - earth.z;
 
-    // Ecliptic to equatorial (obliquity ~23.4393°)
-    const eps = 23.4393 * DEG;
+    // Ecliptic to equatorial
+    const eps = OBL;
     const eqX = gx;
     const eqY = gy * Math.cos(eps) - gz * Math.sin(eps);
     const eqZ = gy * Math.sin(eps) + gz * Math.cos(eps);
@@ -337,10 +343,21 @@ const Comet = (() => {
           symM.on('contextmenu', (ev) => {
             L.DomEvent.stopPropagation(ev);
             if (ev.originalEvent) ev.originalEvent.preventDefault();
+            // Trajectory ids carry a `comet:` prefix so BodyTrajectory resolves them to
+            // the shared comet spec without a roster lookup (see body-trajectory.js).
+            const trajId = 'comet:' + String(c.designation || c.name).toLowerCase();
+            const extra =
+              typeof BodyTrajectory !== 'undefined'
+                ? [{ label: _t('sky.menu.trajectory'), onClick: () => BodyTrajectory.toggle(trajId) }]
+                : undefined;
             if (window._showBodyContextMenu) {
-              window._showBodyContextMenu(ev, () => {
-                if (window.activateCelestialVis) window.activateCelestialVis(rd.ra, rd.dec);
-              });
+              window._showBodyContextMenu(
+                ev,
+                () => {
+                  if (window.activateCelestialVis) window.activateCelestialVis(rd.ra, rd.dec);
+                },
+                extra
+              );
             } else if (window.activateCelestialVis) {
               window.activateCelestialVis(rd.ra, rd.dec);
             }
@@ -393,6 +410,35 @@ const Comet = (() => {
     }
   }
 
+  // Public: load the roster once (deduped), whether the comet layer is on or not — a
+  // trajectory or search can need a sub-point before the layer has ever been shown.
+  // On completion it nudges any open trajectory to rebuild, since it may have sampled
+  // an empty roster (e.g. a permalink `?traj=comet:12p` restored at boot).
+  function ensureLoaded() {
+    if (_comets.length) return Promise.resolve();
+    if (!_loading) {
+      _loading = _loadData().then(() => {
+        if (typeof BodyTrajectory !== 'undefined' && BodyTrajectory.update) BodyTrajectory.update();
+      });
+    }
+    return _loading;
+  }
+
+  // Public: sub-stellar point {lat,lng} for a comet by id (its designation or name,
+  // case-insensitive), used by Planets.getSearchLatLng for trajectory sampling.
+  // Returns null (and kicks off a load) when the roster is not yet available.
+  function subPointById(id, date) {
+    const key = String(id).toLowerCase();
+    const c = _comets.find(
+      (x) => (x.designation && x.designation.toLowerCase() === key) || (x.name && x.name.toLowerCase() === key)
+    );
+    if (!c) {
+      ensureLoaded();
+      return null;
+    }
+    return locate(c, date);
+  }
+
   function init(map) {
     _map = map;
     _layer = L.layerGroup();
@@ -401,7 +447,7 @@ const Comet = (() => {
   async function addTo(map) {
     if (!_layer) init(map);
     _layer.addTo(map);
-    if (!_comets.length) await _loadData();
+    await ensureLoaded();
     _render(TimeState.current);
     if (!_unsub && typeof TimeState !== 'undefined') {
       _unsub = true;
@@ -442,5 +488,16 @@ const Comet = (() => {
     }
   }
 
-  return { init, addTo, removeFrom, isOn, toggle, locate, showSearchPopup, computeRaDec };
+  return {
+    init,
+    addTo,
+    removeFrom,
+    isOn,
+    toggle,
+    locate,
+    showSearchPopup,
+    computeRaDec,
+    ensureLoaded,
+    subPointById,
+  };
 })();

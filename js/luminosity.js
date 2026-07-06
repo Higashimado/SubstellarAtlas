@@ -17,8 +17,18 @@ const Lum = (() => {
   const R_GLOW_MAX = 22;
 
   const A_GLARE = 2.5;
-  const LNB_GLARE_ON = 6.5; // ~mag -1
+  const LNB_GLARE_ON = 5.0; // ~mag -0.5 (lowered from 6.5/mag-1 so 0-1 mag stars
+  // — Vega, Arcturus, Capella — also gain a faint glare, restoring bright-end
+  // dynamic range that used to saturate flat above mag -1)
   const R_GLARE_MAX = 60;
+
+  // Diffraction spikes — a four-ray cross drawn only for the very brightest
+  // stars, the Stellarium cue that reads instantly as "this one is bright".
+  // Onset a touch above glare so only headline stars (Sirius, planets, Vega)
+  // spike, not every glaring star.
+  const LNB_SPIKE_ON = 5.5; // ~mag -0.2
+  const A_SPIKE = 8.0; // ray length per lnB above onset (px, ×zoomScale)
+  const R_SPIKE_MAX = 60;
 
   // Zoom scaling — 1.15^(z-Z_REF), Z_REF anchored to map's minZoom=2.
   // Replaces prior linear 1 + 0.10·(z-3); see STAR_RENDERING_SPEC plan §4.
@@ -82,9 +92,14 @@ const Lum = (() => {
     // Sub-pixel regime: lock radius at R_CORE_MIN, attenuate alpha by area
     // ratio (idealArea / minArea). Floor prevents complete disappearance —
     // very dim stars (mag > 6.5) all land here at ≈floor, looking like dust.
+    // Every catalog dust star (mag 8-13) has A_CORE·ln < 0 → ideal 0 → ratio 0,
+    // so alphaK collapses to exactly `floor·dustGain`; those two knobs are the
+    // only levers on the whole dust field's brightness (coreOpacity's own floor
+    // never bites until mag ≈ 17.6, past the V≤13 catalog).
     const floor = typeof params !== 'undefined' && params.subPxAlphaFloor !== undefined ? params.subPxAlphaFloor : 0.04;
+    const gain = typeof params !== 'undefined' && params.dustGain !== undefined ? params.dustGain : 1.0;
     const ratio = ideal / R_CORE_MIN;
-    return { r: R_CORE_MIN, alphaK: Math.max(floor, ratio * ratio) };
+    return { r: R_CORE_MIN, alphaK: Math.min(1, Math.max(floor, ratio * ratio) * gain) };
   }
 
   function glowRadius(ln, zS) {
@@ -99,6 +114,17 @@ const Lum = (() => {
 
   function glareRadius(ln) {
     return clamp(0, R_GLARE_MAX, A_GLARE * Math.max(0, ln - LNB_GLARE_ON));
+  }
+
+  // Half-length of a diffraction-spike ray for a star of brightness `ln`. Reads
+  // Lum.params (spikeOn/spikeLenK/spikeMax) each call so the effect is live
+  // tunable; returns 0 for all but the brightest handful, so the canvas skips
+  // the per-ray draw for ordinary stars.
+  function spikeRadius(ln) {
+    const on = typeof params !== 'undefined' && params.spikeOn !== undefined ? params.spikeOn : LNB_SPIKE_ON;
+    const k = typeof params !== 'undefined' && params.spikeLenK !== undefined ? params.spikeLenK : A_SPIKE;
+    const max = typeof params !== 'undefined' && params.spikeMax !== undefined ? params.spikeMax : R_SPIKE_MAX;
+    return clamp(0, max, k * Math.max(0, ln - on));
   }
 
   function spriteRadii(mag, zS) {
@@ -358,13 +384,21 @@ const Lum = (() => {
     glowZoomBoost: 2.0, // How much LNB_GLOW_ON drops per unit zS above 1
     // (glowRadius reads this each call → live editable)
     // sub-pixel intensity ramp knobs.
-    coreFloor: 0.15, // coreOpacity() lower clamp; live (baseOpacity
-    // uncached) — Sky.update() to apply. Value is
-    // hard-coded in coreOpacity for perf; this entry
-    // is the reference / doc.
-    subPxAlphaFloor: 0.04, // Minimum alphaK returned by coreRadiusEx for the
-    // faintest sub-pixel stars. Live editable: lower
-    // to fade dim stars to dust; raise for more pop.
+    coreFloor: 0.15, // coreOpacity() lower clamp (hard-coded there for perf;
+    // this entry is doc-only). Note it only bites past
+    // mag ≈ 17.6, so it has NO effect on the V≤13 catalog —
+    // brighten dust via subPxAlphaFloor/dustGain instead.
+    subPxAlphaFloor: 0.1, // Minimum alphaK returned by coreRadiusEx for the
+    // faintest sub-pixel stars — the dominant lever on
+    // dust-field brightness (all mag>6.5 stars pin here).
+    // Live editable: lower to fade dust; raise for pop.
+    dustGain: 1.0, // Multiplier on the sub-pixel alphaK (dust only),
+    // clamped to 1. Bump above 1 to brighten the whole
+    // dust field without touching bright-star cores.
+    magEdge: 0.75, // Width (mag) of the soft cutoff over which a star
+    // fades in as the zoom mag-cutoff climbs past it —
+    // kills the hard pop-in, giving invisible→dust
+    // continuity (read by sky-canvas-layer _doRedraw).
     // zoom-vs-color A/B knobs. coreColor reads these each call.
     // zoomDesat > 0: zoom-in preserves spectral color (current default).
     // zoomDesat = 0: zoom-independent white-core threshold.
@@ -372,9 +406,17 @@ const Lum = (() => {
     zoomDesat: 0.5,
     cmKM: 0.7, // Brightness coefficient for white-core clip.
     cmPM: 0.07, // Brightness power for white-core clip.
-    // glare halo peak alpha. Conservative 0.05 (up from 0.035).
-    // Don't exceed 0.07 — Stellarium gets bug reports above that.
-    glareAlphaPeak: 0.05,
+    // glare halo peak alpha. 0.06 (Stellarium caps advice at 0.07 — above
+    // that "large halo" bug reports; stay under).
+    glareAlphaPeak: 0.06,
+    // Diffraction-spike knobs (spikeRadius reads spikeOn/spikeLenK/spikeMax;
+    // sky-canvas-layer reads spikeAlpha). spikeAlpha 0 disables spikes with no
+    // UI toggle. spike8=true adds the 45° diagonal rays (8-point star).
+    spikeAlpha: 0.5,
+    spike8: false,
+    // Peak opacity of the synthetic starlight underlight (StarlightCanvasLayer),
+    // before the daylight + zoom-crossfade factors. 0 hides the layer.
+    starlightAlpha: 0.06,
     // Moon disk display floor (px). Stellarium-style — keep the
     // moon visible as a phased disk even at low zoom instead of letting
     // the angular footprint collapse to a 1px white dot. Live editable:
@@ -406,6 +448,7 @@ const Lum = (() => {
     coreRadiusEx,
     glowRadius,
     glareRadius,
+    spikeRadius,
     spriteRadii,
     coreOpacity,
     zoomScale,

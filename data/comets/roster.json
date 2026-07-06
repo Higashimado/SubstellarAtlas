@@ -1,0 +1,208 @@
+{
+  "note": "Hand-maintained calibration layer for tools/build-comets.mjs. Orbital elements (q/e/i/node/peri/tp_jd/epoch_jd) are fetched from JPL SBDB by designation and merged with the h/g here at build time; only photometry (h = absolute total magnitude H, g = activity index n, so apparent mag = h + 5·log10(Δ) + g·2.5·log10(r)) is curated by hand, because SBDB's M1/K1 are unreliable near perigee and must be back-solved from observed peaks (aerith.net / COBS). A periodic comet whose SBDB tp falls outside the build window is advanced by whole orbital periods to its first apparition inside it.",
+  "comets": [
+    {
+      "name": "Tsuchinshan-ATLAS",
+      "designation": "C/2023 A3",
+      "h": 6.5,
+      "g": 4,
+      "note": "h/g calibrated to Oct 2024 perigee (delta~0.47 AU, r~0.52 AU, observed ~mag 2)"
+    },
+    {
+      "name": "ATLAS",
+      "designation": "C/2024 G3",
+      "h": 7,
+      "g": 4,
+      "note": "near-sungrazer (q=0.093 AU), disintegrated Jan 2025; SBDB K1=12.5 unreliable, h/g estimated"
+    },
+    {
+      "name": "Pons-Brooks",
+      "designation": "12P",
+      "h": 5,
+      "g": 4,
+      "note": "h/g calibrated to 2024 perihelion (~mag 4.5)"
+    },
+    {
+      "name": "Encke",
+      "designation": "2P",
+      "h": 12.5,
+      "g": 4,
+      "note": "h calibrated to ~mag 5 at best geometry (Encke 2003 apparition)"
+    },
+    {
+      "name": "Wirtanen",
+      "designation": "46P",
+      "h": 9,
+      "g": 4,
+      "note": "h calibrated to 2018 perigee (delta=0.077 AU, r=1.055 AU, observed ~mag 3.9)"
+    },
+    {
+      "name": "Schwassmann-Wachmann 1",
+      "designation": "29P",
+      "h": 10.1,
+      "g": 4.5,
+      "note": "q=5.78 AU (Jupiter-family), next perihelion ~2034 outside window; always faint"
+    },
+    {
+      "name": "Olbers",
+      "designation": "13P",
+      "h": 6.3,
+      "g": 4,
+      "note": "h/g calibrated to 2024 perihelion (~mag 7, r=1.17 AU, delta~1.0 AU)"
+    },
+    {
+      "name": "ATLAS",
+      "designation": "C/2024 S1",
+      "h": 15.3,
+      "g": 4.5,
+      "note": "Kreutz sungrazer (q=0.008 AU), disintegrated Oct 2024"
+    },
+    {
+      "name": "Halley",
+      "designation": "1P",
+      "h": 5.5,
+      "g": 4,
+      "note": "next perihelion ~2061, outside window"
+    },
+    {
+      "name": "d'Arrest",
+      "designation": "6P",
+      "h": 7,
+      "g": 4,
+      "note": "h calibrated to ~mag 8.5 at perihelion"
+    },
+    {
+      "name": "Tuttle-Giacobini-Kresak",
+      "designation": "41P",
+      "h": 11,
+      "g": 4,
+      "note": "h calibrated to quiescent baseline (~mag 10); known for unpredictable outbursts"
+    },
+    {
+      "name": "Kopff",
+      "designation": "22P",
+      "h": 7.6,
+      "g": 4,
+      "note": "h calibrated to ~mag 9.5 at perihelion"
+    },
+    {
+      "name": "Honda-Mrkos-Pajdusakova",
+      "designation": "45P",
+      "h": 15,
+      "g": 4,
+      "note": "h calibrated to 2017 perigee (delta=0.085 AU, ~mag 7)"
+    },
+    {
+      "name": "Lemmon",
+      "designation": "C/2025 A6",
+      "h": 7.5,
+      "g": 4,
+      "note": "2026 addition; peaked ~mag 4 Oct-Nov 2025 (perihelion 2025-11-08, r=0.53 AU), fading through early 2026; h back-solved from observed peak"
+    },
+    {
+      "name": "SWAN",
+      "designation": "C/2025 R2",
+      "h": 10,
+      "g": 4,
+      "note": "2026 addition; perihelion 2025-09, close Earth pass 0.26 AU 2025-10 (~mag 5.5); h back-solved from observed peak"
+    },
+    {
+      "name": "Tempel 2",
+      "designation": "10P",
+      "h": 8.5,
+      "g": 4,
+      "note": "2026 addition; Jupiter-family, perihelion 2026-08 (~mag 8-9, telescopic); h calibrated to recent apparition baseline"
+    },
+    {
+      "name": "LINEAR",
+      "designation": "C/1999 S4",
+      "h": 9.3,
+      "g": 4,
+      "note": "naked-eye bright comet 2000; peaked ~mag 6 late Jul 2000 before fragmenting; h back-solved from observed peak"
+    },
+    {
+      "name": "LINEAR",
+      "designation": "C/2001 A2-A",
+      "h": 6,
+      "g": 4,
+      "note": "naked-eye bright comet 2001; the primary fragmented, so SBDB carries the principal fragment A2-A; brightened via fragmentation to ~mag 3.3 May 2001 (q=0.779 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "Ikeya-Zhang",
+      "designation": "C/2002 C1",
+      "h": 7.1,
+      "g": 4,
+      "note": "naked-eye bright comet 2002; peaked ~mag 3.5 late Mar 2002 (q=0.507 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "Machholz",
+      "designation": "C/2004 Q2",
+      "h": 4.5,
+      "g": 4,
+      "note": "naked-eye bright comet 2005; peaked ~mag 3.5 early Jan 2005 (close Earth pass 0.35 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "McNaught",
+      "designation": "C/2006 P1",
+      "h": 7.5,
+      "g": 4,
+      "note": "Great Comet of 2007; peaked ~mag −5.5 mid-Jan 2007 but at very low solar elongation (daytime), so the observable events are the dusk-visible ~mag 1 moments the elongation gate admits; q=0.171 AU"
+    },
+    {
+      "name": "Lulin",
+      "designation": "C/2007 N3",
+      "h": 4.6,
+      "g": 4,
+      "note": "naked-eye bright comet 2009; peaked ~mag 5 late Feb 2009 (close Earth pass 0.41 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "PANSTARRS",
+      "designation": "C/2011 L4",
+      "h": 6,
+      "g": 4,
+      "note": "naked-eye bright comet 2013; peaked ~mag 1 mid-Mar 2013 (q=0.302 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "Lovejoy",
+      "designation": "C/2013 R1",
+      "h": 8.2,
+      "g": 4,
+      "note": "naked-eye bright comet 2013; peaked ~mag 4.5 late Nov 2013 (close Earth pass 0.40 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "Lovejoy",
+      "designation": "C/2014 Q2",
+      "h": 3.6,
+      "g": 4,
+      "note": "naked-eye bright comet 2015; peaked ~mag 3.8 early Jan 2015 (close Earth pass 0.47 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "Catalina",
+      "designation": "C/2013 US10",
+      "h": 5.7,
+      "g": 4,
+      "note": "naked-eye bright comet 2015-16; peaked ~mag 6 around perihelion/perigee late 2015; h back-solved from observed peak"
+    },
+    {
+      "name": "NEOWISE",
+      "designation": "C/2020 F3",
+      "h": 5.9,
+      "g": 4,
+      "note": "Great Comet of 2020; peaked ~mag 0.9 mid-Jul 2020 (q=0.295 AU, close Earth pass 0.69 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "Leonard",
+      "designation": "C/2021 A1",
+      "h": 6.6,
+      "g": 4,
+      "note": "naked-eye bright comet 2021; peaked ~mag 2.6 mid-Dec 2021 (close Earth pass 0.23 AU); h back-solved from observed peak"
+    },
+    {
+      "name": "ZTF",
+      "designation": "C/2022 E3",
+      "h": 7.1,
+      "g": 4,
+      "note": "naked-eye bright comet 2023; peaked ~mag 4.6 early Feb 2023 (close Earth pass 0.28 AU); h back-solved from observed peak"
+    }
+  ]
+}

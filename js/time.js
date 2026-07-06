@@ -19,11 +19,22 @@ const TimeState = (() => {
     subscribers.forEach((fn) => fn(date));
   }
 
+  // Discrete-navigation channel, separate from `subscribers`. Only jumpTo() fires
+  // it, so a listener here reacts to deliberate one-shot jumps (event cards,
+  // ecliptic click, sunrise) but not to slider scrub, playback, or programmatic
+  // setTime — that distinction is what lets trajectory reset skip continuous
+  // scrubbing and the trajectory-marker's own click-to-jump.
+  const _jumpSubs = [];
+
+  function _notifyJump() {
+    _jumpSubs.forEach((fn) => fn());
+  }
+
   // ---- Valid range clamp + out-of-range notification ----
   // All date mutations funnel through here so the supported window
-  // (2000-01-01 – 2049-12-31 UTC) cannot be escaped by any entry point.
+  // (2000-01-01 – 2099-12-31 UTC) cannot be escaped by any entry point.
   const _RANGE_MIN = Date.UTC(2000, 0, 1, 0, 0, 0);
-  const _RANGE_MAX = Date.UTC(2049, 11, 31, 23, 59, 59);
+  const _RANGE_MAX = Date.UTC(2099, 11, 31, 23, 59, 59);
   const _rangeSubs = [];
 
   // Clamp `date` to the valid range, reporting whether it was changed.
@@ -203,6 +214,22 @@ const TimeState = (() => {
 
     subscribe(fn) {
       subscribers.push(fn);
+    },
+
+    /** Register a callback fired only on discrete jumps (jumpTo), not on scrub/playback. */
+    subscribeJump(fn) {
+      _jumpSubs.push(fn);
+    },
+
+    /**
+     * Set the time as a discrete navigation jump: notify jump-listeners first
+     * (so e.g. trajectory reset runs before any regular subscriber rebuilds at
+     * the new time), then apply it. Continuous scrub / playback / restore stay
+     * on setTime and are unaffected.
+     */
+    jumpTo(date) {
+      _notifyJump();
+      this.setTime(date);
     },
 
     /** Register a callback fired whenever a date is clamped to the valid range. */
@@ -439,7 +466,7 @@ const TimeState = (() => {
       return `${h}:${m}`;
     },
 
-    /** Clamp a Date to the valid range (2000-01-01 – 2049-12-31 UTC). */
+    /** Clamp a Date to the valid range (2000-01-01 – 2099-12-31 UTC). */
     clampDate(date) {
       return _clampWithFlag(date).date;
     },
@@ -472,7 +499,14 @@ const TimeState = (() => {
       return '2000-01-01 00:00:00';
     },
     get VALID_MAX() {
-      return '2049-12-31 23:59:59';
+      return '2099-12-31 23:59:59';
+    },
+
+    // Exclusive year boundary (derived from _RANGE_MAX, not a second hardcoded
+    // literal) for copy like "no more events before {year}" that must track
+    // the site's supported range without a separate edit on every extension.
+    get RANGE_END_YEAR_EXCLUSIVE() {
+      return new Date(_RANGE_MAX).getUTCFullYear() + 1;
     },
   };
 })();

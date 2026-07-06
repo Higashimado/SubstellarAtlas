@@ -3,12 +3,11 @@
 [简体中文](../zh-Hans/README.md) · [繁體中文](../zh-Hant/README.md) · [English](../en/README.md) · [Français](../fr/README.md) · [Español](../es/README.md) · **Italiano** · [日本語](../ja/README.md)
 
 <p align="center">
-  <img src="../docs/demo/world_map.png" width="100%">
+  <img src="../docs/demo/constellation.png" width="100%">
 </p>
 
 **Sito web**: https://higashimado.github.io/SubstellarAtlas/
-
-Substellar Atlas è una visualizzazione costruita sul concetto di *punto sottostellare*. La sfera celeste viene proiettata sulla superficie della Terra, e le due vengono sovrapposte. Su questa mappa ogni corpo celeste si trova nella posizione geografica del suo punto sottostellare, spostandosi con la Terra e ruotando lentamente con un periodo di 23 h 56 min. L'interazione tra cielo e Terra rivela in modo naturale dove ogni tipo di evento astronomico è visibile in tutto il globo: giorno e notte, pianeti, oggetti del cielo profondo, eclissi, aurore, satelliti artificiali e altro ancora.
+Substellar Atlas è una visualizzazione costruita sul concetto di *punto sottostellare*. La sfera celeste viene proiettata sulla superficie della Terra, e le due vengono sovrapposte. Su questa mappa ogni corpo celeste si trova nella posizione geografica del suo punto sottostellare, spostandosi con la Terra e ruotando lentamente con un periodo di 23 h 56 min. L'interazione tra cielo e Terra rivela in modo naturale dove ogni tipo di evento astronomico è visibile in tutto il globo: giorno e notte, pianeti, comete, oggetti del cielo profondo, eclissi, aurore, satelliti artificiali e altro ancora.
 
 ## Concetto
 
@@ -17,7 +16,7 @@ Substellar Atlas è una visualizzazione costruita sul concetto di *punto sottost
 > *— Sima Qian, Memorie storiche, «Trattato degli uffici celesti» (I sec. a.C.): a seconda della dimora lunare presso cui Mercurio appare agli equinozi e ai solstizi, a ciascuna regione del regno (Qi, Chu, Han, gli Stati Centrali) viene assegnato il proprio quadrante del cielo. Una prima formulazione del fēnyě.*
 
 <p align="center">
-  <img src="../docs/demo/xingguan_wuzhuhou.png" width="100%">
+  <img src="../docs/demo/xingguan.png" width="100%">
 </p>
 
 Il cielo ha le sue costellazioni; la Terra ha le sue regioni. Collegare i fenomeni del cielo alle aree del suolo è un'idea antica quanto l'astronomia e l'astrologia stesse: l'antica Cina associò le ventotto dimore lunari alle Nove Province e agli stati feudali tramite il **分野** (*fēnyě*, «assegnazione dei campi»), mentre nel mondo greco-romano Tolomeo propose corrispondenze tra i dodici segni dello zodiaco e le nazioni. Alcuni giudicarono lo schema inverosimile, ma esso rivelava una simmetria e un isomorfismo tra cielo e Terra, una corrispondenza che ha nutrito l'immaginazione e la riflessione di ogni epoca successiva.
@@ -26,7 +25,7 @@ La geodesia moderna conferisce a questo legame una forma rigorosa: ```lat = Dec,
 
 * **Rotazione verso ovest**: la mappa stellare ruota con la sfera celeste nell'arco di un giorno siderale, esattamente al contrario della rotazione propria della Terra, così che le stelle si spostano lentamente verso ovest sul suolo fisso.
 * **Est-ovest invertito**: l'osservatore guarda la mappa stellare dall'esterno, al contrario dello sguardo rivolto al cielo notturno dall'interno, così che est e ovest risultano invertiti rispetto all'osservazione abituale.
-* **Più vicino appare più grande**: i corpi sono disegnati alla loro dimensione apparente, non fisica. La Luna, vicina alla Terra, occupa un'area assai maggiore dei pianeti o degli oggetti del cielo profondo.
+* **Più vicino appare più grande**: i corpi sono disegnati alla loro dimensione apparente, non fisica; la Luna, vicina alla Terra, appare assai più grande dei pianeti lontani.
 
 ## Caratteristiche
 
@@ -36,8 +35,9 @@ La mappa di base usa un tema scuro: [CARTO Dark Matter](https://github.com/carto
 
 | Categoria | Livelli |
 |---|---|
-| Stelle / Costellazioni / Xingguan | Stelle, oggetti del cielo profondo, sciami meteorici, costellazioni / xingguan / asterismi, etichette multilingue, linee di riferimento delle coordinate |
-| Sole / Luna / Pianeti | Resa dei dischi, resa delle fasi, veli di luce solare / lunare |
+| Stelle / Costellazioni / Xingguan | Stelle, oggetti del cielo profondo, la Via Lattea, sciami meteorici, costellazioni / xingguan / asterismi, etichette multilingue, linee di riferimento delle coordinate |
+| Sole / Luna | Resa dei dischi, resa delle fasi, veli di luce solare / lunare |
+| Pianeti / Comete | Resa dei dischi, resa delle fasi, lune gioviane / saturniane, asteroidi, comete, elenco degli eventi |
 | Eclissi | Elenco degli eventi, area di visibilità, circostanze locali e diagrammi |
 | Inquinamento luminoso | Resa dei dati (D. J. Lorenz) |
 | Ovale aurorale | Resa dei dati (NOAA SWPC OVATION) |
@@ -57,9 +57,38 @@ Un clic su un'icona o un'etichetta della bussola estende il suo **raggio di azim
   <img src="../docs/demo/compass_sunrise.png" width="100%">
 </p>
 
+### Veli di luce solare e lunare
+
+L'attivazione del livello del Sole o della Luna fa comparire anche il suo velo di luce. Il velo solare è formato da quattro fasce di luminosità costante, corrispondenti rispettivamente al giorno pieno e ai crepuscoli civile, nautico e astronomico. Il velo lunare varia di luminosità secondo l'illuminazione della Luna: il più luminoso alla Luna piena, quasi invisibile in prossimità della Luna nuova. Durante un'eclissi di Luna assume una tinta rosso ruggine che si accentua con la magnitudine dell'ombra. Il controllo dei livelli in alto a destra attiva e disattiva i veli di luce.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
+### Incisioni celesti
+
+Il Sole, la Luna, i pianeti e alcune comete (i corpi che mostrano un disco visibile) compaiono sulla mappa come icone in stile incisione, sul modello delle tavole incise che il costruttore di strumenti ottici e cartografo britannico [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) pubblicò nelle *Monthly Notices of the Royal Astronomical Society* nel 1870. Ogni disco sottende esattamente il suo diametro apparente sulla mappa e varia quindi con la distanza del corpo dalla Terra; l'ombra sul disco è resa a partire dal suo angolo di fase. Per i corpi del Sistema solare, la dimensione di resa sulla mappa corrisponde al diametro apparente come segue:
+
+- il Sole e la Luna si estendono al massimo per circa 0,53°, ossia circa 60 km proiettati sulla superficie della Terra, la dimensione di una città gigante;
+- Giove si estende al massimo per circa 50″, ossia circa 1 km in superficie, la dimensione di un grande quartiere;
+- Urano si estende al massimo per circa 4″, ossia circa 80 m in superficie, la dimensione di un campo da calcio regolamentare.
+
+
+<p align="center">
+  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
+</p>
+
+### Traiettorie dei corpi
+
+Il livello Pianeti e Comete offre un elenco di eventi legati a congiunzioni e opposizioni, con filtri associati a corpi specifici; un clic su un evento porta al punto in cui il corpo si trova nell'istante in cui l'evento si verifica. All'arrivo, il percorso del pianeta o della cometa nei giorni intorno all'evento si apre automaticamente, segnandone la posizione a date successive a un intervallo prestabilito. Un clic su un'etichetta oraria lungo la traiettoria porta a quell'istante. Oltre alla Luna e ai pianeti, l'elenco degli eventi copre attualmente tre dei maggiori asteroidi (Cerere, Pallade, Vesta) e le comete luminose scoperte tra il 2000 e il 2025 che raggiungono una magnitudine apparente pari o superiore a 6 (come [Tsuchinshan–ATLAS](https://it.wikipedia.org/wiki/Cometa_Tsuchinshan-ATLAS)).
+
+<p align="center">
+  <img src="../docs/demo/planet_tracks.png" width="100%">
+</p>
+
 ### Interazione con le eclissi
 
-Durante un'eclissi, la mappa mostra le curve di inviluppo precaricate della sua area di visibilità insieme all'anello di inviluppo calcolato in tempo reale per l'area di visibilità istantanea. Il pannello di sinistra presenta l'elenco delle eclissi dal 2000 al 2049; il pannello di destra presenta la prossima eclissi visibile dal luogo selezionato, insieme alle circostanze locali di qualsiasi eclissi in corso.
+Durante un'eclissi, la mappa mostra le curve di inviluppo precaricate della sua area di visibilità insieme all'anello di inviluppo calcolato in tempo reale per l'area di visibilità istantanea. Il pannello di sinistra presenta l'elenco delle eclissi dal 2000 al 2099; il pannello di destra presenta la prossima eclissi visibile dal luogo selezionato, insieme alle circostanze locali di qualsiasi eclissi in corso.
 
 <p align="center">
   <img src="../docs/demo/total_solar_eclipse_envelope.png" width="100%">
@@ -74,38 +103,10 @@ Il diagramma dell'eclissi di Luna si presenta su uno sfondo di **mappa dell'ombr
   <br>
 </p>
 
-### Veli di luce solare e lunare
 
-I livelli del Sole e della Luna comprendono veli di luce che ne simulano le aree di visibilità. Il velo solare è formato da quattro fasce di luminosità costante, corrispondenti rispettivamente al giorno pieno e ai crepuscoli civile, nautico e astronomico. Il velo lunare varia di luminosità secondo l'illuminazione della Luna: il più luminoso alla Luna piena, quasi invisibile in prossimità della Luna nuova. Durante un'eclissi di Luna assume una tinta rosso ruggine che si accentua con la magnitudine dell'ombra. Il controllo dei livelli in alto a destra attiva e disattiva i veli di luce.
+### Ovale aurorale, inquinamento luminoso e satelliti
 
-<p align="center">
-  <img src="../docs/demo/moonlight.png" width="100%">
-</p>
-
-### Incisioni celesti
-
-Il Sole, la Luna e i pianeti (i corpi che mostrano un disco visibile) compaiono sulla mappa come icone in stile incisione, sul modello delle tavole incise che il costruttore di strumenti ottici e cartografo britannico [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) pubblicò nelle *Monthly Notices of the Royal Astronomical Society* nel 1870. Ogni disco sottende esattamente il suo diametro apparente sulla mappa e varia quindi con la distanza del corpo dalla Terra; l'ombra sul disco è resa a partire dal suo angolo di fase. Per i corpi del Sistema solare, la dimensione di resa sulla mappa corrisponde al diametro apparente come segue:
-
-- il Sole e la Luna si estendono al massimo per circa 0,53°, ossia circa 60 km proiettati sulla superficie della Terra, la dimensione di una città gigante;
-- Giove si estende al massimo per circa 50″, ossia circa 1 km in superficie, la dimensione di un grande quartiere;
-- Urano si estende al massimo per circa 4″, ossia circa 80 m in superficie, la dimensione di un campo da calcio regolamentare.
-
-
-<p align="center">
-  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
-</p>
-
-### Graduazioni dell'eclittica
-
-Per offrire un riferimento alle posizioni del Sole e degli altri corpi, si tracciano linee di riferimento delle coordinate per l'eclittica, l'equatore celeste, il percorso della Luna, l'equatore galattico e altro ancora, ciascuna attivabile o disattivabile dal controllo dei livelli in alto a destra. In quanto linea di riferimento su cui giace il Sole, l'eclittica è disegnata come una banda di bronzo a doppio binario; la banda segna le longitudini eclittiche dei solstizi e degli equinozi, insieme a tacche di grado ogni 1°. Passando il cursore sull'etichetta di un solstizio o di un equinozio si mostra l'istante esatto della sua prossima comparsa. Attiva il livello xingguan per vedere le ventotto dimore lunari disposte attorno all'eclittica.
-
-<p align="center">
-  <img src="../docs/demo/eclipse_belt.png" width="100%">
-</p>
-
-### Sovrapposizione dei dati
-
-Oltre ai livelli astronomici, il progetto integra i dati di inquinamento luminoso, ovale aurorale e satelliti, che possono essere sovrapposti tutti insieme. Per evitare che le informazioni si confondano, un meccanismo di conflitto tra livelli chiude automaticamente i livelli incompatibili. I livelli delle costellazioni e dell'inquinamento luminoso, ad esempio, non possono essere aperti contemporaneamente. I livelli di inquinamento luminoso e di ovale aurorale seguono le convenzioni di colore dei rispettivi siti di origine. Il livello dei satelliti disegna le tracce al suolo in verde bronzo, e i tratti dorati segnalano i punti in cui il lampo di un satellite può essere osservato da terra. Le sezioni inquinamento luminoso, aurora e satelliti del pannello informativo a destra forniscono informazioni di osservazione dettagliate. Si noti che i dati di ovale aurorale e di satelliti sono previsioni in tempo quasi reale: una volta scaduti i dati, il livello viene bloccato e ingrigito.
+Oltre ai livelli astronomici, il progetto integra i dati di inquinamento luminoso, ovale aurorale e satelliti, che possono essere sovrapposti tutti insieme. Per evitare che le informazioni si confondano, un meccanismo di conflitto tra livelli chiude automaticamente i livelli incompatibili. I livelli delle costellazioni e dell'inquinamento luminoso, ad esempio, non possono essere aperti contemporaneamente. I livelli di inquinamento luminoso e di ovale aurorale seguono le convenzioni di colore dei rispettivi siti di origine. Il livello dei satelliti disegna le tracce al suolo in verde bronzo, e i tratti dorati segnalano i punti in cui il lampo di un satellite può essere osservato da terra. Le sezioni inquinamento luminoso, aurora e satelliti del pannello informativo a destra forniscono informazioni di osservazione dettagliate. I dati di ovale aurorale e di satelliti sono previsioni in tempo quasi reale: una volta scaduti i dati, il livello viene bloccato e ingrigito.
 
 <p align="center">
   <img src="../docs/demo/multi_layers.png" width="100%">
@@ -113,9 +114,9 @@ Oltre ai livelli astronomici, il progetto integra i dati di inquinamento luminos
 
 ## Set di dati
 
-### Eclissi (2000–2049)
+### Eclissi (2000–2099)
 
-Il progetto utilizza i vettori di posizione del Sole e della Luna forniti da [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 per calcolare le 112 eclissi di Sole e 114 eclissi di Luna tra il 2000 e il 2049. Il set di dati contiene gli elementi di Bessel impiegati per determinare gli orari e le posizioni dei contatti di ciascuna eclissi di Sole, insieme alle curve di inviluppo al suolo che ne descrivono l'area di visibilità (linea centrale dell'ombra, limiti nord e sud dell'ombra, linee di isomagnitudine, limiti nord e sud della penombra, linee di massimo al sorgere e al tramonto del Sole, curve di levata e tramonto, ecc.); il set di dati delle eclissi di Luna contiene solo un indice.
+Il progetto utilizza i vettori di posizione del Sole e della Luna forniti da [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 per calcolare le 226 eclissi di Sole e 228 eclissi di Luna tra il 2000 e il 2099. Il set di dati contiene gli elementi di Bessel impiegati per determinare gli orari e le posizioni dei contatti di ciascuna eclissi di Sole, insieme alle curve di inviluppo al suolo che ne descrivono l'area di visibilità (linea centrale dell'ombra, limiti nord e sud dell'ombra, linee di isomagnitudine, limiti nord e sud della penombra, linee di massimo al sorgere e al tramonto del Sole, curve di levata e tramonto, ecc.); il set di dati delle eclissi di Luna contiene solo un indice.
 
 **Nota:** l'ombra in tempo reale e l'area di visibilità di un'eclissi di Sole, così come l'area di visibilità di un'eclissi di Luna, non fanno parte del set di dati: vengono calcolate in tempo reale dagli stessi algoritmi.
 
@@ -176,8 +177,10 @@ Il codice proprio del progetto è rilasciato sotto [**GNU General Public License
 | Calendario lunare | [lunar-javascript](https://github.com/6tail/lunar-javascript) 1.7.7 | 6tail | MIT |
 | Linee delle costellazioni | [d3-celestial](https://github.com/ofrohn/d3-celestial) | Olaf Frohn | BSD |
 | Dati stellari | [HYG database](https://www.astronexus.com/projects/hyg) | David Nash | CC BY-SA 4.0 |
+| Dati stellari | [Gaia DR3](https://www.cosmos.esa.int/gaia) | ESA / Gaia / DPAC | CC BY-NC 3.0 IGO |
 | Nomi stellari tradizionali cinesi | [Stellarium](https://stellarium.org/) | comunità Stellarium | CC BY-SA |
 | Nomi stellari tradizionali cinesi | [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement) | Guanjin0562 | GPL-2.0 |
+| Lune di Saturno | [TASS 1.7](https://ftp.imcce.fr/pub/ephem/satel/tass17/) | Vienne & Duriez / J. Gajdosik | MIT |
 | Comete / Asteroidi | [JPL](https://ssd.jpl.nasa.gov/) · [MPC](https://www.minorplanetcenter.net/) | JPL · MPC | Dominio pubblico |
 | Oggetti del cielo profondo | [OpenNGC](https://github.com/mattiaverga/OpenNGC) | Mattia Verga | CC BY-SA 4.0 |
 | Eclissi | [EclipseWise](https://www.eclipsewise.com/) | Fred Espenak | © Espenak |
@@ -187,6 +190,7 @@ Il codice proprio del progetto è rilasciato sotto [**GNU General Public License
 | Elementi orbitali dei satelliti (TLE) | [CelesTrak](https://celestrak.org/) | T. S. Kelso | Dominio pubblico |
 | Ricerca di toponimi | [GeoNames](https://www.geonames.org/) | GeoNames | CC BY 4.0 |
 | Luoghi della Cina continentale | [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage) | OSMChina | GPL-3.0 |
-| Caratteri latini | [Source Serif](https://github.com/adobe-fonts/source-serif) | Adobe | OFL |
+| Caratteri latini | [Spectral](https://fonts.google.com/specimen/Spectral) | Production Type | OFL |
 | Caratteri CJK | [Source Han Serif](https://github.com/adobe-fonts/source-han-serif) | Adobe | OFL |
+| Carattere epigrafico | [Cinzel](https://fonts.google.com/specimen/Cinzel) | Natanael Gama | OFL |
 | Decompressione | [Pako](https://github.com/nodeca/pako) 2.1.0 | Nodeca | MIT |

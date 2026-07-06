@@ -92,12 +92,14 @@ function createGreatCircleLayer(cfg) {
   function _placeLabel(lat, lng, angleDeg, text, date) {
     const a = _adaptAt(lat, lng, date);
     const font = 'font-family:var(--font-serif);font-size:15px;letter-spacing:0.05em;';
+    // Soft coaxial halo in the adaptive casing colour — engraved look instead
+    // of the old 5px hard stroke, still separating on the bright day veil.
+    const halo = 'text-shadow:0 0 6px ' + a.halo + ',0 0 3px ' + a.halo + ',0 0 1.5px ' + a.halo + ';';
     const html =
       '<span style="color:' +
       a.text +
-      ';-webkit-text-stroke:5px ' +
-      a.halo +
-      ';paint-order:stroke;' +
+      ';' +
+      halo +
       font +
       'transform:rotate(' +
       angleDeg.toFixed(1) +

@@ -587,7 +587,7 @@ function bootTimeControl() {
     clearTimeout(showTimeToast._t);
     showTimeToast._t = setTimeout(() => toast.classList.remove('visible'), 3500);
   }
-  // Fired whenever any entry point clamps a date to the 2000–2049 window.
+  // Fired whenever any entry point clamps a date to the 2000–2099 window.
   // (`_t` is the module-scope translation helper declared above.)
   TimeState.onRangeClamp(() => {
     showTimeToast(_t('time.range.limit'));
@@ -620,7 +620,7 @@ function bootTimeControl() {
       try {
         btn.setPointerCapture(e.pointerId);
       } catch (_) {
-        // ignore — capture is a nicety for tracking the hold, not required to fire
+        // Ignore — capture is a nicety for tracking the hold, not required to fire
       }
       timer = setTimeout(() => {
         interval = setInterval(() => fire(btn), REPEAT_MS);
@@ -751,8 +751,8 @@ function bootTimeControl() {
       if (raw === '') return { v: cur[k], raw: null };
       return { v: Math.max(lo, Math.min(hi, parseInt(raw, 10) || 0)), raw: parseInt(raw, 10) };
     };
-    const yr = read('y', 2000, 2049);
-    if (yr.raw != null && (yr.raw < 2000 || yr.raw > 2049)) showTimeToast(_t('time.range.limit'));
+    const yr = read('y', 2000, 2099);
+    if (yr.raw != null && (yr.raw < 2000 || yr.raw > 2099)) showTimeToast(_t('time.range.limit'));
     const y = yr.v;
     const mo = read('mo', 1, 12).v;
     const maxD = new Date(Date.UTC(y, mo, 0)).getUTCDate();

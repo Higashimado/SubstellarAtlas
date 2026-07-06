@@ -457,7 +457,7 @@ const Asterism = (() => {
 
           const hitV = L.circleMarker([0, 0], {
             pane: 'asterism',
-            radius: 18,
+            radius: HitWidths.VERTEX,
             opacity: 0,
             fillOpacity: 0,
             interactive: true,
@@ -510,6 +510,20 @@ const Asterism = (() => {
             a._revealTimer = null;
           }
           a._revealTimer = setTimeout(() => setReveal(a, false), 50);
+        });
+        h.on('click', () => {
+          // Touch path: taps arrive as click, so this is the only reveal
+          // trigger on a hoverless device. A tap also fires a synthetic
+          // mouseover just before its click — the recency guard keeps that
+          // pair from revealing and instantly un-revealing on the first tap;
+          // only a click well after the reveal toggles it off.
+          if (!a._fit) return;
+          if (a._revealTimer) {
+            clearTimeout(a._revealTimer);
+            a._revealTimer = null;
+          }
+          if (a._revealed && Date.now() - (a._revealAt || 0) > 600) setReveal(a, false);
+          else setReveal(a, true);
         });
       }
     }
@@ -612,6 +626,7 @@ const Asterism = (() => {
 
   function setReveal(a, on) {
     a._revealed = on;
+    if (on) a._revealAt = Date.now();
     for (const l of a._lines) l.getElement()?.classList.toggle('reveal', on);
     for (const v of a._verts) v.getElement()?.classList.toggle('reveal', on);
     for (const lb of a._labels) {

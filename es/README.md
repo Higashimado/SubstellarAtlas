@@ -3,12 +3,11 @@
 [简体中文](../zh-Hans/README.md) · [繁體中文](../zh-Hant/README.md) · [English](../en/README.md) · [Français](../fr/README.md) · **Español** · [Italiano](../it/README.md) · [日本語](../ja/README.md)
 
 <p align="center">
-  <img src="../docs/demo/world_map.png" width="100%">
+  <img src="../docs/demo/constellation.png" width="100%">
 </p>
 
 **Sitio web**: https://higashimado.github.io/SubstellarAtlas/
-
-Substellar Atlas es una visualización construida sobre el concepto del *punto subestelar*. La esfera celeste se proyecta sobre la superficie de la Tierra, y ambas se superponen. En este mapa, cada cuerpo celeste se sitúa en la ubicación geográfica de su punto subestelar, desplazándose con la Tierra y girando lentamente con un período de 23 h 56 min. La interacción entre el cielo y la Tierra revela de forma natural dónde es visible cada tipo de evento astronómico en todo el globo: día y noche, planetas, objetos de cielo profundo, eclipses, auroras, satélites artificiales y más.
+Substellar Atlas es una visualización construida sobre el concepto del *punto subestelar*. La esfera celeste se proyecta sobre la superficie de la Tierra, y ambas se superponen. En este mapa, cada cuerpo celeste se sitúa en la ubicación geográfica de su punto subestelar, desplazándose con la Tierra y girando lentamente con un período de 23 h 56 min. La interacción entre el cielo y la Tierra revela de forma natural dónde es visible cada tipo de evento astronómico en todo el globo: día y noche, planetas, cometas, objetos de cielo profundo, eclipses, auroras, satélites artificiales y más.
 
 ## Concepto
 
@@ -17,7 +16,7 @@ Substellar Atlas es una visualización construida sobre el concepto del *punto s
 > *— Sima Qian, Memorias históricas, «Tratado de los oficios celestes» (siglo I a. C.): según la mansión lunar junto a la que aparece Mercurio en los equinoccios y los solsticios, a cada región del reino (Qi, Chu, Han, los Estados Centrales) se le asigna su propio cuadrante del cielo. Una formulación temprana del fēnyě.*
 
 <p align="center">
-  <img src="../docs/demo/xingguan_wuzhuhou.png" width="100%">
+  <img src="../docs/demo/xingguan.png" width="100%">
 </p>
 
 El cielo tiene sus constelaciones; la Tierra tiene sus regiones. Vincular los fenómenos del cielo con las áreas del suelo es una idea tan antigua como la astronomía y la astrología mismas: la antigua China asoció las veintiocho mansiones lunares con las Nueve Provincias y los estados feudales mediante el **分野** (*fēnyě*, «asignación de campos»), mientras que en el mundo grecorromano Ptolomeo propuso correspondencias entre los doce signos del zodíaco y las naciones. Algunos tacharon el esquema de descabellado, pero revelaba una simetría y un isomorfismo entre el cielo y la Tierra, una correspondencia que ha alimentado la imaginación y la reflexión de todas las épocas desde entonces.
@@ -26,7 +25,7 @@ La geodesia moderna da a este vínculo una forma rigurosa: ```lat = Dec, lon = R
 
 * **Rotación hacia el oeste**: el mapa estelar gira con la esfera celeste a lo largo de un día sidéreo, exactamente al revés que la rotación propia de la Tierra, de modo que las estrellas se desplazan lentamente hacia el oeste sobre el suelo fijo.
 * **Este-oeste invertido**: el observador mira el mapa estelar desde fuera, lo contrario de mirar el cielo nocturno desde dentro, de modo que el este y el oeste quedan invertidos respecto a la observación habitual.
-* **Lo más cercano se ve más grande**: los cuerpos se dibujan a su tamaño aparente, no físico. La Luna, cercana a la Tierra, ocupa un área mucho mayor que los planetas o los objetos de cielo profundo.
+* **Lo más cercano se ve más grande**: los cuerpos se dibujan a su tamaño aparente, no físico; la Luna, cercana, se ve mucho mayor que los planetas lejanos.
 
 ## Características
 
@@ -36,8 +35,9 @@ El mapa base usa un tema oscuro: [CARTO Dark Matter](https://github.com/cartodb/
 
 | Categoría | Capas |
 |---|---|
-| Estrellas / Constelaciones / Xingguan | Estrellas, objetos de cielo profundo, lluvias de meteoros, constelaciones / xingguan / asterismos, etiquetas multilingües, líneas de referencia de coordenadas |
-| Sol / Luna / Planetas | Renderizado de discos, renderizado de fases, velos de luz solar / lunar |
+| Estrellas / Constelaciones / Xingguan | Estrellas, objetos de cielo profundo, la Vía Láctea, lluvias de meteoros, constelaciones / xingguan / asterismos, etiquetas multilingües, líneas de referencia de coordenadas |
+| Sol / Luna | Renderizado de discos, renderizado de fases, velos de luz solar / lunar |
+| Planetas / Cometas | Renderizado de discos, renderizado de fases, lunas jovianas / saturnianas, asteroides, cometas, lista de eventos |
 | Eclipses | Lista de eventos, zona de visibilidad, circunstancias locales y diagramas |
 | Contaminación lumínica | Renderizado de datos (D. J. Lorenz) |
 | Óvalo auroral | Renderizado de datos (NOAA SWPC OVATION) |
@@ -57,9 +57,38 @@ Un clic en un icono o una etiqueta de la brújula extiende su **rayo de azimut**
   <img src="../docs/demo/compass_sunrise.png" width="100%">
 </p>
 
+### Velos de luz solar y lunar
+
+Al activar la capa del Sol o de la Luna también aparece su velo de luz. El velo solar se compone de cuatro bandas de brillo constante, correspondientes respectivamente al día pleno y a los crepúsculos civil, náutico y astronómico. El velo lunar varía en brillo según la iluminación de la Luna: el más brillante en la Luna llena, casi invisible cerca de la Luna nueva. Durante un eclipse de Luna, adquiere un tono rojo herrumbre que se intensifica con la magnitud de la umbra. El control de capas en la esquina superior derecha activa y desactiva los velos de luz.
+
+<p align="center">
+  <img src="../docs/demo/moonlight.png" width="100%">
+</p>
+
+### Grabados celestes
+
+El Sol, la Luna, los planetas y algunos cometas (los cuerpos que muestran un disco visible) aparecen en el mapa como iconos al estilo de grabado, al modo de las láminas grabadas que el fabricante de instrumentos ópticos y cartógrafo británico [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) publicó en *Monthly Notices of the Royal Astronomical Society* en 1870. Cada disco subtiende exactamente su diámetro aparente en el mapa y varía, por tanto, con la distancia del cuerpo a la Tierra; la sombra sobre el disco se representa a partir de su ángulo de fase. Para los cuerpos del Sistema Solar, el tamaño de representación en el mapa corresponde al diámetro aparente como sigue:
+
+- el Sol y la Luna abarcan como máximo unos 0,53°, es decir, alrededor de 60 km proyectados sobre la superficie de la Tierra, el tamaño de una ciudad gigante;
+- Júpiter abarca como máximo unos 50″, es decir, alrededor de 1 km en la superficie, el tamaño de un barrio grande;
+- Urano abarca como máximo unos 4″, es decir, alrededor de 80 m en la superficie, el tamaño de un campo de fútbol reglamentario.
+
+
+<p align="center">
+  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
+</p>
+
+### Trayectorias de los cuerpos
+
+La capa de Planetas y Cometas ofrece una lista de eventos relacionados con conjunciones y oposiciones, con filtros vinculados a cuerpos concretos; al hacer clic en un evento se salta al lugar donde se encuentra el cuerpo en el instante en que ocurre. Al llegar, la trayectoria del planeta o del cometa durante los días en torno al evento se abre automáticamente, marcando su posición en fechas sucesivas a un intervalo fijo. Un clic en una etiqueta de hora a lo largo de la trayectoria lleva a ese instante. Más allá de la Luna y los planetas, la lista de eventos abarca actualmente tres de los asteroides más grandes (Ceres, Palas, Vesta) y los cometas brillantes descubiertos entre 2000 y 2025 que alcanzan una magnitud aparente de 6 o más brillante (como [Tsuchinshan–ATLAS](https://es.wikipedia.org/wiki/Cometa_Tsuchinshan-ATLAS)).
+
+<p align="center">
+  <img src="../docs/demo/planet_tracks.png" width="100%">
+</p>
+
 ### Interacción con los eclipses
 
-Durante un eclipse, el mapa muestra las curvas envolventes precargadas de su zona de visibilidad junto con el anillo envolvente calculado en tiempo real para la zona de visibilidad instantánea. El panel de la izquierda presenta la lista de eclipses de 2000 a 2049; el panel de la derecha presenta el próximo eclipse visible desde el lugar seleccionado, junto con las circunstancias locales de cualquier eclipse en curso.
+Durante un eclipse, el mapa muestra las curvas envolventes precargadas de su zona de visibilidad junto con el anillo envolvente calculado en tiempo real para la zona de visibilidad instantánea. El panel de la izquierda presenta la lista de eclipses de 2000 a 2099; el panel de la derecha presenta el próximo eclipse visible desde el lugar seleccionado, junto con las circunstancias locales de cualquier eclipse en curso.
 
 <p align="center">
   <img src="../docs/demo/total_solar_eclipse_envelope.png" width="100%">
@@ -74,38 +103,9 @@ El diagrama de eclipse de Luna se presenta sobre un fondo de **mapa de la sombra
   <br>
 </p>
 
-### Velos de luz solar y lunar
+### Óvalo auroral, contaminación lumínica y satélites
 
-Las capas del Sol y de la Luna incorporan velos de luz que simulan sus zonas de visibilidad. El velo solar se compone de cuatro bandas de brillo constante, correspondientes respectivamente al día pleno y a los crepúsculos civil, náutico y astronómico. El velo lunar varía en brillo según la iluminación de la Luna: el más brillante en la Luna llena, casi invisible cerca de la Luna nueva. Durante un eclipse de Luna, adquiere un tono rojo herrumbre que se intensifica con la magnitud de la umbra. El control de capas en la esquina superior derecha activa y desactiva los velos de luz.
-
-<p align="center">
-  <img src="../docs/demo/moonlight.png" width="100%">
-</p>
-
-### Grabados celestes
-
-El Sol, la Luna y los planetas (los cuerpos que muestran un disco visible) aparecen en el mapa como iconos al estilo de grabado, al modo de las láminas grabadas que el fabricante de instrumentos ópticos y cartógrafo británico [John Browning](https://en.wikipedia.org/wiki/John_Browning_(scientific_instrument_maker)) publicó en *Monthly Notices of the Royal Astronomical Society* en 1870. Cada disco subtiende exactamente su diámetro aparente en el mapa y varía, por tanto, con la distancia del cuerpo a la Tierra; la sombra sobre el disco se representa a partir de su ángulo de fase. Para los cuerpos del Sistema Solar, el tamaño de representación en el mapa corresponde al diámetro aparente como sigue:
-
-- el Sol y la Luna abarcan como máximo unos 0,53°, es decir, alrededor de 60 km proyectados sobre la superficie de la Tierra, el tamaño de una ciudad gigante;
-- Júpiter abarca como máximo unos 50″, es decir, alrededor de 1 km en la superficie, el tamaño de un barrio grande;
-- Urano abarca como máximo unos 4″, es decir, alrededor de 80 m en la superficie, el tamaño de un campo de fútbol reglamentario.
-
-
-<p align="center">
-  <img src="../docs/demo/jupiter_over_hong_kong.png" width="100%">
-</p>
-
-### Graduaciones de la eclíptica
-
-Para ofrecer una referencia de las posiciones del Sol y de los demás cuerpos, se dibujan líneas de referencia de coordenadas para la eclíptica, el ecuador celeste, la trayectoria de la Luna, el ecuador galáctico y más, cada una de las cuales puede activarse o desactivarse desde el control de capas en la esquina superior derecha. Como línea de referencia sobre la que se encuentra el Sol, la eclíptica se dibuja como una banda de bronce de doble riel; la banda señala las longitudes eclípticas de los solsticios y los equinoccios, junto con marcas de grado cada 1°. Al pasar el cursor sobre la etiqueta de un solsticio o un equinoccio se muestra el instante exacto de su próxima aparición. Active la capa de xingguan para ver las veintiocho mansiones lunares dispuestas alrededor de la eclíptica.
-
-<p align="center">
-  <img src="../docs/demo/eclipse_belt.png" width="100%">
-</p>
-
-### Superposición de datos
-
-Además de las capas astronómicas, el proyecto integra datos de contaminación lumínica, óvalo auroral y satélites, que pueden superponerse todos simultáneamente. Para evitar que la información se mezcle, un mecanismo de conflicto de capas cierra automáticamente las capas incompatibles. Las capas de constelaciones y de contaminación lumínica, por ejemplo, no pueden estar abiertas a la vez. Las capas de contaminación lumínica y de óvalo auroral siguen las convenciones de color de sus sitios de origen. La capa de satélites dibuja las trazas en tierra en verde bronce, y los tramos dorados marcan los lugares donde puede verse el destello de un satélite desde el suelo. Las secciones de contaminación lumínica, aurora y satélites del panel de información de la derecha ofrecen datos de observación detallados. Téngase en cuenta que los datos de óvalo auroral y de satélites son predicciones casi en tiempo real: una vez caducados los datos, la capa queda bloqueada y en gris.
+Además de las capas astronómicas, el proyecto integra datos de contaminación lumínica, óvalo auroral y satélites, que pueden superponerse todos simultáneamente. Para evitar que la información se mezcle, un mecanismo de conflicto de capas cierra automáticamente las capas incompatibles. Las capas de constelaciones y de contaminación lumínica, por ejemplo, no pueden estar abiertas a la vez. Las capas de contaminación lumínica y de óvalo auroral siguen las convenciones de color de sus sitios de origen. La capa de satélites dibuja las trazas en tierra en verde bronce, y los tramos dorados marcan los lugares donde puede verse el destello de un satélite desde el suelo. Las secciones de contaminación lumínica, aurora y satélites del panel de información de la derecha ofrecen datos de observación detallados. Los datos de óvalo auroral y de satélites son predicciones casi en tiempo real: una vez caducados los datos, la capa queda bloqueada y en gris.
 
 <p align="center">
   <img src="../docs/demo/multi_layers.png" width="100%">
@@ -113,9 +113,9 @@ Además de las capas astronómicas, el proyecto integra datos de contaminación 
 
 ## Conjuntos de datos
 
-### Eclipses (2000–2049)
+### Eclipses (2000–2099)
 
-El proyecto utiliza los vectores de posición del Sol y la Luna proporcionados por [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 para calcular los 112 eclipses de Sol y 114 eclipses de Luna entre 2000 y 2049. El conjunto de datos contiene los elementos de Bessel empleados para determinar las horas y posiciones de los contactos de cada eclipse de Sol, junto con las curvas envolventes en tierra que describen su zona de visibilidad (línea central de la umbra, límites norte y sur de la umbra, líneas de isomagnitud, límites norte y sur de la penumbra, líneas de máximo en la salida y la puesta del Sol, curvas de salida y puesta, etc.); el conjunto de datos de eclipses de Luna solo contiene un índice.
+El proyecto utiliza los vectores de posición del Sol y la Luna proporcionados por [Astronomy Engine](https://github.com/cosinekitty/astronomy) 2.1.19 para calcular los 226 eclipses de Sol y 228 eclipses de Luna entre 2000 y 2099. El conjunto de datos contiene los elementos de Bessel empleados para determinar las horas y posiciones de los contactos de cada eclipse de Sol, junto con las curvas envolventes en tierra que describen su zona de visibilidad (línea central de la umbra, límites norte y sur de la umbra, líneas de isomagnitud, límites norte y sur de la penumbra, líneas de máximo en la salida y la puesta del Sol, curvas de salida y puesta, etc.); el conjunto de datos de eclipses de Luna solo contiene un índice.
 
 **Nota:** la sombra en tiempo real y la zona de visibilidad de un eclipse de Sol, así como la zona de visibilidad de un eclipse de Luna, quedan fuera del conjunto de datos: se representan en tiempo real mediante los mismos algoritmos.
 
@@ -176,8 +176,10 @@ El código propio del proyecto se publica bajo [**GNU General Public License v3.
 | Calendario lunar | [lunar-javascript](https://github.com/6tail/lunar-javascript) 1.7.7 | 6tail | MIT |
 | Líneas de constelaciones | [d3-celestial](https://github.com/ofrohn/d3-celestial) | Olaf Frohn | BSD |
 | Datos estelares | [HYG database](https://www.astronexus.com/projects/hyg) | David Nash | CC BY-SA 4.0 |
+| Datos estelares | [Gaia DR3](https://www.cosmos.esa.int/gaia) | ESA / Gaia / DPAC | CC BY-NC 3.0 IGO |
 | Nombres tradicionales chinos de estrellas | [Stellarium](https://stellarium.org/) | comunidad Stellarium | CC BY-SA |
 | Nombres tradicionales chinos de estrellas | [Guanjin0562](https://github.com/Guanjin0562/stellarium/tree/chinese-skyculture-enhancement) | Guanjin0562 | GPL-2.0 |
+| Satélites de Saturno | [TASS 1.7](https://ftp.imcce.fr/pub/ephem/satel/tass17/) | Vienne & Duriez / J. Gajdosik | MIT |
 | Cometas / Asteroides | [JPL](https://ssd.jpl.nasa.gov/) · [MPC](https://www.minorplanetcenter.net/) | JPL · MPC | Dominio público |
 | Objetos de cielo profundo | [OpenNGC](https://github.com/mattiaverga/OpenNGC) | Mattia Verga | CC BY-SA 4.0 |
 | Eclipses | [EclipseWise](https://www.eclipsewise.com/) | Fred Espenak | © Espenak |
@@ -187,6 +189,7 @@ El código propio del proyecto se publica bajo [**GNU General Public License v3.
 | Elementos orbitales de satélites (TLE) | [CelesTrak](https://celestrak.org/) | T. S. Kelso | Dominio público |
 | Búsqueda de topónimos | [GeoNames](https://www.geonames.org/) | GeoNames | CC BY 4.0 |
 | Lugares de China continental | [OSMChina-coverage](https://github.com/OSMChina/OSMChina-coverage) | OSMChina | GPL-3.0 |
-| Fuentes latinas | [Source Serif](https://github.com/adobe-fonts/source-serif) | Adobe | OFL |
+| Fuentes latinas | [Spectral](https://fonts.google.com/specimen/Spectral) | Production Type | OFL |
 | Fuentes CJK | [Source Han Serif](https://github.com/adobe-fonts/source-han-serif) | Adobe | OFL |
+| Fuente de inscripción | [Cinzel](https://fonts.google.com/specimen/Cinzel) | Natanael Gama | OFL |
 | Descompresión | [Pako](https://github.com/nodeca/pako) 2.1.0 | Nodeca | MIT |

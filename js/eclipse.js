@@ -552,6 +552,9 @@ const Eclipse = (() => {
   // Find the next future event visible from (lat,lng) for each of the four
   // categories. Each slot is { event, time, phase } or null. Scans forward by
   // peak time; stops once all four are filled or the catalog is exhausted.
+  // No fixed scan cap: a hardcoded limit sized for the old 2000-2049 catalog
+  // (226 events) would run out mid-catalog after the 2050-2099 append doubled
+  // it, silently hiding rare categories (e.g. total eclipses) past that point.
   function nextVisible(lat, lng, fromDate) {
     if (!_loaded || !solarEvents || !solarEvents.length) return null;
     const all = getAllSorted();
@@ -559,7 +562,7 @@ const Eclipse = (() => {
     const slots = { solarPartial: null, solarTotal: null, lunarPartial: null, lunarTotal: null };
     let remaining = 4,
       scanned = 0;
-    for (let i = 0; i < all.length && remaining > 0 && scanned < 220; i++) {
+    for (let i = 0; i < all.length && remaining > 0 && scanned < all.length; i++) {
       const e = all[i];
       if (e._peakMs <= fromMs) continue;
       if (e._kind === 'solar') {
@@ -1682,6 +1685,7 @@ const Eclipse = (() => {
       u4: CURVE_STYLE.lunarPartial,
       p4: CURVE_STYLE.lunarPenumbral,
     };
+
     const ORDER = ['p1', 'u1', 'u2', 'peak', 'u3', 'u4', 'p4'];
     for (const k of ORDER) {
       const pt = cp[k];
@@ -1975,5 +1979,6 @@ const Eclipse = (() => {
     solarLocalContacts: solarLocalContactsCached,
     classifyLunar,
     openEvent,
+    getAllSorted,
   };
 })();

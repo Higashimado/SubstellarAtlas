@@ -29,6 +29,7 @@
   // Star labels get extra resolution from their dim modifier class.
   const CLASS_PRIORITY = [
     // [selector, priority]
+    ['btraj-marker', 110], // motion-trajectory date/time markers — win every overlap (they sit above all bodies)
     ['body-symbol-label', 100],
     ['ecliptic-label', 55], // spring equinox / summer solstice / autumn equinox / winter solstice — semantic anchors
     ['sky-label-iau', 72], // constellation name (rank 1-2 default)
@@ -186,6 +187,17 @@
   function _screenRect(el) {
     const pos = el._leaflet_pos;
     if (!pos) return el.getBoundingClientRect();
+    // Trajectory date markers rotate their label (CSS transform) and pin it with
+    // absolute positioning, so the divIcon root collapses to a 0×0 anchor: offsetWidth
+    // reads zero and the fast path would drop the marker from collision entirely. And a
+    // transform is invisible to offsetWidth anyway (a pre-transform layout value), so
+    // the rotated box has no correct math form here. Measure the rendered label child
+    // directly — getBoundingClientRect is transform-aware and returns the same viewport
+    // coordinates the fast path yields, so it slots in unchanged downstream.
+    if (el.classList.contains('btraj-marker')) {
+      const lbl = el.querySelector('.btraj-time');
+      return lbl ? lbl.getBoundingClientRect() : { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 };
+    }
     const sz = _measureSize(el);
     const cp = _map.layerPointToContainerPoint(pos);
     const left = _containerOx + cp.x + sz.mx;

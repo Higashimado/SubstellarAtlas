@@ -243,12 +243,14 @@ const Ecliptic = (() => {
   function _placeEclipticLabel(lat, lng, angleDeg, text, date) {
     const a = _adaptAt(lat, lng, date);
     const font = 'font-family:var(--font-serif);font-size:15px;letter-spacing:0.05em;';
+    // Soft coaxial halo in the adaptive casing colour — engraved look instead
+    // of the old 5px hard stroke, still separating on the bright day veil.
+    const halo = 'text-shadow:0 0 6px ' + a.halo + ',0 0 3px ' + a.halo + ',0 0 1.5px ' + a.halo + ';';
     const html =
       '<span style="color:' +
       a.text +
-      ';-webkit-text-stroke:5px ' +
-      a.halo +
-      ';paint-order:stroke;' +
+      ';' +
+      halo +
       font +
       'transform:rotate(' +
       angleDeg.toFixed(1) +
@@ -265,13 +267,15 @@ const Ecliptic = (() => {
 
   function _placeTickLabel(lat, lng, angleDeg, text, date) {
     const a = _adaptAt(lat, lng, date);
-    const font = 'font-family:var(--font-serif);font-size:12px;letter-spacing:0.04em;';
+    // Inscription face: the solar-term degree figures render in Cinzel, the
+    // CJK term name falls through to Source Han Serif inside the same stack.
+    const font = 'font-family:var(--font-inscription);font-size:12px;letter-spacing:0.05em;';
+    const halo = 'text-shadow:0 0 6px ' + a.halo + ',0 0 3px ' + a.halo + ',0 0 1.5px ' + a.halo + ';';
     const html =
       '<span style="color:' +
       a.text +
-      ';-webkit-text-stroke:5px ' +
-      a.halo +
-      ';paint-order:stroke;' +
+      ';' +
+      halo +
       font +
       'transform:rotate(' +
       angleDeg.toFixed(1) +
@@ -331,8 +335,9 @@ const Ecliptic = (() => {
       ev.stopPropagation();
       const d = _nextTermDate(lambda);
       if (!d || typeof TimeState === 'undefined') return;
-      // setTime clamps past-2049 jumps to the time wall on its own.
-      TimeState.setTime(d);
+      // jumpTo (discrete navigation) clears open trajectories, then clamps
+      // past-2099 jumps to the time wall on its own.
+      TimeState.jumpTo(d);
       if (typeof CelestialSearch !== 'undefined' && CelestialSearch.select) {
         CelestialSearch.select({ kind: 'sun', refKey: 'sun' }, _map);
       }

@@ -3,12 +3,14 @@
  *
  * Mirrors the lazy-load + index pattern of places.js, but over stars,
  * constellations (IAU + Chinese xingguan), deep-sky objects, comets, meteor-shower
- * radiants, and the Sun / Moon / planets. Results are layer-gated: a category
- * is only searchable while its map layer is on (see _enabledKinds).
+ * radiants, the Sun / Moon / planets, and solar/lunar eclipses. Every category is
+ * always searchable regardless of layer state; selecting a result turns on the
+ * layer it lives on (see select → _ensureLayerOn) so the jump never lands blind.
  *
  * Positioning reuses GeoUtils.subStellarPoint (fixed RA/Dec objects) and the
- * owning modules for ephemeris bodies (Comet / Meteor / Planets). Popups are
- * delegated to the owning modules so locale-refresh keeps working.
+ * owning modules for ephemeris bodies (Comet / Meteor / Planets); eclipses fly to
+ * their greatest point and hand off to Eclipse.openEvent. Popups are delegated to
+ * the owning modules so locale-refresh keeps working.
  */
 const CelestialSearch = (() => {
   const LANGS = ['en', 'fr', 'es', 'it', 'ja', 'zh-Hans', 'zh-Hant'];
@@ -24,6 +26,8 @@ const CelestialSearch = (() => {
     dso: {},
     comet: {},
     meteor: {},
+    asteroid: {},
+    eclipse: {},
   };
 
   let _stars = [];
@@ -45,7 +49,7 @@ const CelestialSearch = (() => {
     comet: '☄',
     meteor: '✦',
     sun: '☉',
-    moon: '☽',
+    moon: '☾',
     pmoon: '◦',
     satellite: '🛰',
   };
@@ -59,6 +63,9 @@ const CelestialSearch = (() => {
     uranus: '⛢',
     neptune: '♆',
   };
+
+  // Traditional Unicode symbols for the first four numbered asteroids.
+  const ASTEROID_SYM = { 1: '⚳', 2: '⚴', 3: '⚵', 4: '⚶' };
 
   // ---- Locale Helpers ----
   function _locale() {
@@ -147,10 +154,22 @@ const CelestialSearch = (() => {
           _refs.comet[c.designation || c.name] = c;
         });
       }),
+      _fetchOpt('data/asteroids/elements.json').then((d) => {
+        const arr = d ? (Array.isArray(d) ? d : d.asteroids || []) : [];
+        arr.forEach((a) => {
+          _refs.asteroid[a.num] = a;
+        });
+      }),
       _fetchOpt('data/meteors/showers.json').then((d) => {
         (d || []).forEach((s) => {
           _refs.meteor[s.code] = s;
         });
+      }),
+      // Eclipse events load through Eclipse's own catalog fetch, not a raw JSON
+      // read here — so the index shares the same parsed records openEvent drives.
+      new Promise((res) => {
+        if (typeof Eclipse !== 'undefined' && Eclipse.ready) Eclipse.ready(() => res());
+        else res();
       }),
     ];
     for (const lang of LANGS) {
@@ -265,6 +284,20 @@ const CelestialSearch = (() => {
       if (c.designation) add(c.designation, 'comet', key, w);
     }
 
+    // Asteroids: name + catalog number + symbol (for ⚳⚴⚵⚶) + per-language names.
+    for (const num in _refs.asteroid) {
+      const a = _refs.asteroid[num];
+      const w = Math.max(0, 12 - (a.peakV != null ? a.peakV : 10));
+      add(a.name, 'asteroid', num, w + 2);
+      add('' + a.num, 'asteroid', num, w);
+      const sym = ASTEROID_SYM[a.num];
+      if (sym) add(sym, 'asteroid', num, w + 2);
+      for (const lang of LANGS) {
+        const nm = _ui[lang] && _ui[lang]['asteroid.name.' + num];
+        if (nm && nm !== a.name) add(nm, 'asteroid', num, w + 2);
+      }
+    }
+
     // Meteor showers: English name + code + per-language names.
     for (const code in _refs.meteor) {
       const s = _refs.meteor[code];
@@ -285,7 +318,7 @@ const CelestialSearch = (() => {
         const nm = _ui[lang] && _ui[lang]['planet.' + id];
         if (nm) add(nm, kind, id, 12);
       }
-      const sym = id === 'sun' ? '☉' : id === 'moon' ? '☽' : PLANET_SYM[id];
+      const sym = id === 'sun' ? '☉' : id === 'moon' ? '☾' : PLANET_SYM[id];
       if (sym) add(sym, kind, id, 12);
     }
 
@@ -311,19 +344,54 @@ const CelestialSearch = (() => {
         for (const a of s.aliases) add(a, 'satellite', s.noradId, 11);
       }
     }
+
+    // Eclipse events: ISO date + year + localized type name ("日全食") + generic
+    // category words ("eclipse"/"solar"/"日食"…), so a date, a phrase, or a bare
+    // "eclipse" all surface them. refKey pairs the date with the kind so a solar
+    // and lunar eclipse on the same date stay distinct.
+    if (typeof Eclipse !== 'undefined' && Eclipse.getAllSorted) {
+      for (const e of Eclipse.getAllSorted()) {
+        if (!e.date) continue;
+        const grp = e._kind === 'solar' ? 'solar' : 'lunar';
+        const refKey = e.date + '|' + grp;
+        _refs.eclipse[refKey] = e;
+        add(e.date, 'eclipse', refKey, 6);
+        add(e.date.slice(0, 4), 'eclipse', refKey, 3);
+        add('eclipse', 'eclipse', refKey, 1);
+        add(grp, 'eclipse', refKey, 1);
+        const kindKey = (e.kind || '').toLowerCase();
+        for (const lang of LANGS) {
+          const typeName = _ui[lang] && _ui[lang]['eclipse.type.' + grp + '.' + kindKey];
+          if (typeName) add(typeName, 'eclipse', refKey, 5);
+          const cat = _ui[lang] && _ui[lang]['eclipse.filter.' + grp];
+          if (cat) add(cat, 'eclipse', refKey, 2);
+        }
+      }
+    }
   }
 
   // ---- Gating ----
+  // Everything is always searchable, independent of which layers are on: hunting
+  // for an object is exactly when you can't see it yet. Selecting a result turns
+  // on whatever layer it lives on (see select → _ensureLayerOn), so the jump never
+  // lands on a blank map.
+  const ALL_KINDS = [
+    'star',
+    'constellation',
+    'xingguan',
+    'dso',
+    'comet',
+    'meteor',
+    'sun',
+    'moon',
+    'planet',
+    'pmoon',
+    'asteroid',
+    'satellite',
+    'eclipse',
+  ];
   function _enabledKinds() {
-    const set = new Set();
-    const skyOn = typeof Sky !== 'undefined' && Sky.getMode && Sky.getMode() !== 'off';
-    if (skyOn) ['star', 'constellation', 'xingguan', 'dso', 'comet', 'meteor'].forEach((k) => set.add(k));
-    // Solar-system bodies stay searchable regardless of layer state — selecting one
-    // turns its layer on (see select → _ensureLayerOn), so the jump never lands blind.
-    ['sun', 'moon', 'planet', 'pmoon'].forEach((k) => set.add(k));
-    // Artificial satellites keep their gating: only searchable while the Sat layer is on.
-    if (typeof Sat !== 'undefined' && Sat.isOn && Sat.isOn()) set.add('satellite');
-    return set;
+    return new Set(ALL_KINDS);
   }
 
   // ---- Display ----
@@ -351,6 +419,11 @@ const CelestialSearch = (() => {
       }
       case 'comet':
         return _refs.comet[refKey].name || refKey;
+      case 'asteroid': {
+        const a = _refs.asteroid[refKey];
+        if (!a) return refKey;
+        return (_ui[loc] && _ui[loc]['asteroid.name.' + refKey]) || a.name;
+      }
       case 'meteor': {
         const nm = _ui[loc] && _ui[loc]['meteor.name.' + refKey];
         return nm || (_refs.meteor[refKey] && _refs.meteor[refKey].name) || refKey;
@@ -363,6 +436,14 @@ const CelestialSearch = (() => {
       }
       case 'satellite':
         return (_sats[refKey] && _sats[refKey].label) || '' + refKey;
+      case 'eclipse': {
+        const e = _refs.eclipse[refKey];
+        if (!e) return refKey;
+        const grp = e._kind === 'solar' ? 'solar' : 'lunar';
+        const kindKey = (e.kind || '').toLowerCase();
+        const typeName = (_ui[loc] && _ui[loc]['eclipse.type.' + grp + '.' + kindKey]) || e.kind || '';
+        return typeName ? e.date + ' ' + typeName : e.date;
+      }
     }
     return refKey;
   }
@@ -384,9 +465,15 @@ const CelestialSearch = (() => {
       }
       case 'comet':
         return _refs.comet[refKey].designation || '';
+      case 'asteroid':
+        return '';
       case 'satellite': {
         const s = _sats[refKey];
         return (s && s.aliases && s.aliases[0]) || '';
+      }
+      case 'eclipse': {
+        const e = _refs.eclipse[refKey];
+        return e && e.saros ? 'Saros ' + e.saros : '';
       }
       default:
         return '';
@@ -395,6 +482,13 @@ const CelestialSearch = (() => {
 
   function _badge(kind, refKey) {
     if (kind === 'planet') return PLANET_SYM[refKey] || '●';
+    if (kind === 'asteroid') return ASTEROID_SYM[parseInt(refKey, 10)] || '⬡';
+    // Solar vs lunar can't be read off the type name in every locale (English says
+    // "Total eclipse" for both), so the Sun/Moon glyph carries the distinction.
+    if (kind === 'eclipse') {
+      const e = _refs.eclipse[refKey];
+      return e && e._kind === 'lunar' ? '☾' : '☉';
+    }
     return BADGE[kind] || '✦';
   }
 
@@ -424,6 +518,7 @@ const CelestialSearch = (() => {
       .slice(0, 9)
       .map((x) => {
         const pos = _getRADec(x.kind, x.refKey, date);
+        const geo = x.kind === 'eclipse' ? _eclipseGeo(x.refKey) : null;
         return {
           kind: x.kind,
           refKey: x.refKey,
@@ -432,9 +527,28 @@ const CelestialSearch = (() => {
           badge: _badge(x.kind, x.refKey),
           ra: pos ? pos.ra : null,
           dec: pos ? pos.dec : null,
+          lat: geo ? geo.lat : null,
+          lng: geo ? geo.lng : null,
           isCelestial: true,
         };
       });
+  }
+
+  // Greatest-eclipse ground point for a search row. A solar eclipse's umbral
+  // Greatest-eclipse sub-point (peak.lat/lng) exists for every solar kind: for a
+  // partial the shadow axis misses Earth, but Astronomy Engine still reports the
+  // point where it passes closest to the surface (a high-latitude spot near the
+  // grazed pole), so partials carry a real position too. A lunar eclipse always
+  // has a sub-lunar point at mid-eclipse (subLunar.lat/lng), penumbral included.
+  function _eclipseGeo(refKey) {
+    const e = _refs.eclipse[refKey];
+    if (!e) return null;
+    if (e._kind === 'solar') {
+      const g = e.peak;
+      return g && g.lat != null && g.lng != null ? { lat: g.lat, lng: g.lng } : null;
+    }
+    const g = e.subLunar;
+    return g && g.lat != null && g.lng != null ? { lat: g.lat, lng: g.lng } : null;
   }
 
   function _getRADec(kind, refKey, date) {
@@ -463,6 +577,11 @@ const CelestialSearch = (() => {
         const c = _refs.comet[refKey];
         if (!c || typeof Comet === 'undefined' || !Comet.computeRaDec) return null;
         return Comet.computeRaDec(c, date);
+      }
+      case 'asteroid': {
+        const a = _refs.asteroid[refKey];
+        if (!a || typeof Asteroids === 'undefined' || !Asteroids.computeRaDec) return null;
+        return Asteroids.computeRaDec(a, date);
       }
       case 'sun':
       case 'moon':
@@ -498,6 +617,10 @@ const CelestialSearch = (() => {
       }
       case 'comet':
         return Comet.locate(_refs.comet[refKey], date);
+      case 'asteroid': {
+        const a = _refs.asteroid[refKey];
+        return a && typeof Asteroids !== 'undefined' ? Asteroids.locate(a, date) : null;
+      }
       case 'meteor':
         return Meteor.locate(_refs.meteor[refKey], date);
       case 'sun':
@@ -507,18 +630,31 @@ const CelestialSearch = (() => {
         return Planets.getSearchLatLng(refKey, date);
       case 'satellite':
         return typeof Sat !== 'undefined' && Sat.getSearchLatLng ? Sat.getSearchLatLng(refKey, date) : null;
+      case 'eclipse': {
+        // Fly to the eclipse's greatest point: the central peak (solar) or the
+        // sub-lunar point at mid-eclipse (lunar). The clock is reset onto this
+        // instant by Eclipse.openEvent, so the shadow actually sits here.
+        const e = _refs.eclipse[refKey];
+        if (!e) return null;
+        const p = e._kind === 'solar' ? e.peak : e.subLunar || (e.contactPoints && e.contactPoints.peak);
+        return p && typeof p.lat === 'number' ? { lat: p.lat, lng: p.lng } : null;
+      }
     }
     return null;
   }
 
   // Turn on the layer a jumped-to body lives on, so the fly never lands on an
   // empty map. Centralized here (not in callers) so the search box and the
-  // sidebar share one source of truth. Sky-gated kinds are skipped: they are
-  // only searchable while their layer is already on, so there is nothing to open.
+  // sidebar share one source of truth. Deep-sky kinds wake a dormant sky; the
+  // eclipse kind is handled by Eclipse.openEvent, which opens its own layers.
   function _ensureLayerOn(kind, map) {
     const setOn = (k) => {
       if (typeof AppState !== 'undefined' && AppState.setLayerOn && !AppState.isLayerOn(k))
         AppState.setLayerOn(k, true);
+    };
+
+    const skyMode = (mode) => {
+      if (typeof Sky !== 'undefined' && Sky.setMode) Sky.setMode(mode);
     };
     switch (kind) {
       case 'sun':
@@ -529,13 +665,52 @@ const CelestialSearch = (() => {
         break;
       case 'planet':
       case 'pmoon':
-        // Moons render off their parent planet's layer, gated by zoom (see select).
+      case 'asteroid':
+        // Asteroids ride the planet layer; moons render off the parent planet's layer.
         setOn('planets');
         break;
       case 'satellite':
         if (typeof Sat !== 'undefined' && Sat.isOn && !Sat.isOn() && Sat.toggle) Sat.toggle(map);
         break;
+      case 'star':
+      case 'dso':
+      case 'comet':
+      case 'meteor':
+        // Deep-sky objects show under any non-off sky mode; only wake a dormant
+        // sky, never override a mode the observer already picked (iau/cn).
+        if (typeof Sky !== 'undefined' && Sky.getMode && Sky.getMode() === 'off') skyMode('stars');
+        break;
+      case 'constellation':
+        // The IAU figure/name only renders in 'iau' mode; force it so the jump lands
+        // on a labelled constellation rather than a bare star field.
+        skyMode('iau');
+        break;
+      case 'xingguan':
+        skyMode('cn');
+        break;
+      // eclipse: Eclipse.openEvent opens the eclipse layers itself (see select).
     }
+  }
+
+  // Clamp a fly-to center so the destination viewport stays inside maxBounds,
+  // mirroring Leaflet's internal _limitCenter. Without this, a center near the
+  // pole / longitude wall overshoots and maxBoundsViscosity:1 snaps it back
+  // mid-flight — a jarring bounce. When the viewport is larger than the bounds
+  // on an axis, fall back to the bounds midpoint (no clamp possible).
+  function _clampCenter(map, lat, lng, zoom) {
+    const mb = map.options.maxBounds;
+    if (!mb || !mb.isValid || !mb.isValid()) return L.latLng(lat, lng);
+    const half = map.getSize().divideBy(2);
+    const nw = map.project(mb.getNorthWest(), zoom);
+    const se = map.project(mb.getSouthEast(), zoom);
+    const pt = map.project([lat, lng], zoom);
+    const minX = nw.x + half.x,
+      maxX = se.x - half.x;
+    const minY = nw.y + half.y,
+      maxY = se.y - half.y;
+    pt.x = minX <= maxX ? Math.min(Math.max(pt.x, minX), maxX) : (minX + maxX) / 2;
+    pt.y = minY <= maxY ? Math.min(Math.max(pt.y, minY), maxY) : (minY + maxY) / 2;
+    return map.unproject(pt, zoom);
   }
 
   function select(r, map) {
@@ -552,8 +727,11 @@ const CelestialSearch = (() => {
     // below that), so a moon jump must zoom in far enough to actually reveal them.
     const zoom = Math.max(map.getZoom(), r.kind === 'pmoon' ? 9 : 4);
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Anchor the popup at the body's true position, but fly to a bounds-clamped
+    // center so the viewport never overshoots the pole / longitude wall.
     const latlng = [pos.lat, targetLng];
-    map.flyTo(latlng, zoom, { animate: !reduced });
+    const center = _clampCenter(map, pos.lat, targetLng, zoom);
+    map.flyTo(center, zoom, { animate: !reduced });
 
     switch (r.kind) {
       case 'star':
@@ -564,6 +742,11 @@ const CelestialSearch = (() => {
         break;
       case 'comet':
         Comet.showSearchPopup(_refs.comet[r.refKey], date, latlng, map);
+        break;
+      case 'asteroid':
+        if (typeof Asteroids !== 'undefined' && Asteroids.showSearchPopup) {
+          Asteroids.showSearchPopup(_refs.asteroid[r.refKey], date, latlng, map);
+        }
         break;
       case 'meteor':
         Meteor.showSearchPopup(_refs.meteor[r.refKey], date, latlng, map);
@@ -581,11 +764,19 @@ const CelestialSearch = (() => {
       case 'xingguan':
         Sky.showConstellationPopup(r.kind, r.refKey, latlng);
         break;
+      case 'eclipse':
+        // The fly-to above already framed the greatest point; openEvent resets the
+        // clock onto peak, opens the eclipse layers, and draws the card + curves.
+        if (typeof Eclipse !== 'undefined' && Eclipse.openEvent) {
+          Eclipse.openEvent(_refs.eclipse[r.refKey], { resetTime: true });
+        }
+        break;
     }
   }
 
-  // True when at least one celestial category is currently searchable (its
-  // layer is on). Cheap — does not require the index to be loaded.
+  // Always true now: every category is searchable regardless of layer state, so
+  // the search box never suppresses celestial results. Kept as a stable hook for
+  // callers (places.js) that gate whether to query the celestial index at all.
   function isActive() {
     return _enabledKinds().size > 0;
   }

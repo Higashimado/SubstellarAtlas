@@ -750,6 +750,29 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* ---- Cinzel ---- */
+/* Self-hosted Cinzel (OFL-1.1, Google Fonts v26) — Trajan-lineage inscriptional
+   capitals, variable weight 400–900 in one file per subset. This is the map's
+   "engraved numeral" voice (dates, degrees, coordinates cut into the plate).
+   Latin + digits only by design: CJK text in mixed labels falls through to
+   Source Han Serif via the --font-inscription stack. */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('fonts/Cinzel-latin-vf.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('fonts/Cinzel-latin-ext-vf.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* ---- Design Tokens ---- */
 /* SubstellarAtlas v1.0 palette: deep navy + antique gold + serif tan.
    Both spec-named and legacy-named tokens are exported so existing rules keep working. */
@@ -814,6 +837,18 @@
   --const-line:        #dad6ca;
   --const-line-shadow: #0e1014;
 
+  /* ---- Engraved label shadow ---- */
+  /* Replaces the old 4-corner 1px hard outline on map labels. The offset pair
+     fakes chisel lighting (dark upper lip, lit lower lip of an incision); the
+     two coaxial soft glows buy separation from starfield and lines beneath
+     without reading as a sticker edge. Light-background (day-veil) labels keep
+     their own adaptive halo — this token is for labels on the night plate. */
+  --engraved-shadow:
+    0 -0.5px 0 rgba(0, 0, 0, 0.45),
+    0 0.5px 0 rgba(255, 255, 255, 0.05),
+    0 0 5px rgba(10, 12, 16, 0.6),
+    0 0 2px rgba(10, 12, 16, 0.8);
+
   /* ---- Lapidary surface (engraved texture + chiseled bevel) ---- */
   --engrave-hatch: repeating-linear-gradient(45deg, var(--brass) 0 0.5px, transparent 0.5px 4px);
   --engrave-op:    0.03;
@@ -821,10 +856,23 @@
      surfaces that can't host the ::before overlay (e.g. <input> elements):
      layer this over the element's solid background-color. */
   --engrave-hatch-baked: repeating-linear-gradient(45deg,
-    color-mix(in srgb, var(--brass) 4%, transparent) 0 0.5px,
+    color-mix(in srgb, var(--brass) 3%, transparent) 0 0.5px,
     transparent 0.5px 4px);
   --bevel-light:   rgba(255,255,255,.06);
   --bevel-groove:  rgba(0,0,0,.38);
+  /* Chiseled-slab edge ring: a faint brass hairline (box-shadow, not border,
+     so it never shifts layout) that every dockable stone surface — sidebars,
+     rail, toolbar controls, flyouts — shares as its outer edge. Keeps the
+     whole chrome family reading as one material instead of some panels
+     getting a gilt edge and others a plain grey border. */
+  --gilt-ring: rgba(179, 148, 104, 0.12);
+  /* Fine stone grain: a warm-tinted fractal-noise tile (SVG feTurbulence) whose
+     alpha rides the noise up to ~4%, so it reads as material rather than dirt.
+     Combined with the 45° hatch in --surface-texture — the standard chrome
+     surface treatment (panels, rails, dropdown). Locked from the "双层·轻"
+     preset in files/texture-tuner.html (hatch 3% / grain 4%). */
+  --grain-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='144' height='144'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.83 0 0 0 0 0.79 0 0 0 0 0.70 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='144' height='144' filter='url(%23g)'/%3E%3C/svg%3E");
+  --surface-texture: var(--grain-img), var(--engrave-hatch-baked);
 
   /* ---- Asterism (celestite overlay) ---- */
   --asterism:       #93b1b2;
@@ -854,6 +902,14 @@
     'Noto Sans SC', 'PingFang SC', sans-serif;
   --font-symbol:
     'Noto Sans Symbols 2', 'Source Serif 4', 'Segoe UI Symbol', serif;
+  /* Engraved-numeral voice for on-map instrument text (trajectory dates,
+     degree ticks, coordinates). Latin/digits render in Cinzel; CJK falls
+     through to Source Han Serif. Sidebar data tables stay on --font-serif —
+     the inscription face is reserved for text cut into the plate. */
+  --font-inscription:
+    'Cinzel',
+    'Source Han Serif CN', 'Source Han Serif HK', 'Source Han Serif JP',
+    'Noto Serif SC', 'Spectral', Georgia, serif;
 
   /* ---- Font scale ---- */
   --text-xs:   13px;
@@ -934,4 +990,19 @@
   --ecl-schem-path:      #8a93a3;  /* crossing-trajectory dashed line */
   --ecl-schem-label:     #9aa4b2;  /* contact-key labels */
   --ecl-schem-axis:      #6f7787;  /* × shadow centre + ecliptic line */
+}
+
+/* ---- Phone type step-down ----
+   The desktop panel scale reads oversized inside a ≤480px sheet, so every UI
+   step drops one notch; 12px stays the chrome floor (matching the scale note
+   above). Width-gated, not pointer-gated: type size is a space budget, not an
+   input-device question. Inputs keep ≥16px separately (see style.css Touch
+   Adaptation) so iOS never auto-zooms a focused field. */
+@media (max-width: 480px) {
+  :root {
+    --fs-title:   16px;
+    --fs-body:    14px;
+    --fs-sub:     13px;
+    --fs-caption: 12px;
+  }
 }

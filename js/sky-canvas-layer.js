@@ -279,9 +279,37 @@ const SkyCanvasLayer =
           // which trigger _reset() → a fresh redraw, so this stays valid per frame.
           const origin = map.getPixelOrigin();
 
+          // Soft magnitude edge: a star fades in over the last `magEdge` mag
+          // below the cutoff instead of popping into full brightness the instant
+          // it crosses. Since the cutoff climbs with zoom, each star ramps
+          // invisible→dust continuously as you zoom in. Applied only to the core
+          // alpha (near-cutoff stars are far too dim to carry a glow anyway).
+          const magEdge = Lum.params && Lum.params.magEdge !== undefined ? Lum.params.magEdge : 0.75;
+          const spikeAlpha = Lum.params && Lum.params.spikeAlpha !== undefined ? Lum.params.spikeAlpha : 0.5;
+          const spike8 = !!(Lum.params && Lum.params.spike8);
+          // Four axis-aligned rays, plus the two 45° diagonals when spike8 is set.
+          const spikeDirs = spike8
+            ? [
+                [1, 0],
+                [-1, 0],
+                [0, 1],
+                [0, -1],
+                [0.707, 0.707],
+                [0.707, -0.707],
+                [-0.707, 0.707],
+                [-0.707, -0.707],
+              ]
+            : [
+                [1, 0],
+                [-1, 0],
+                [0, 1],
+                [0, -1],
+              ];
+
           iterFn((entry) => {
             const s = entry.star;
-            if (s.mag > cutoff) return;
+            const magFade = 1 - Lum.smoothstep(cutoff - magEdge, cutoff, s.mag);
+            if (magFade <= 0) return;
             const adaptF = entry._adaptAf != null ? entry._adaptAf : 1;
             if (adaptF < 0.02) return;
 
@@ -297,17 +325,21 @@ const SkyCanvasLayer =
             const grEff = Lum.glowRadius(ln, scale);
             const glowR = grEff > 0 ? (entry.visualR + grEff) * scale : 0;
             const glareR = (entry._glareR || 0) * scale;
+            // Computed live (not cached) so spikeOn/spikeLenK edits apply without
+            // a catalog rebuild; 0 for all but the brightest few.
+            const spikeR = spikeAlpha > 0 ? Lum.spikeRadius(ln) * scale : 0;
 
             const coreColor = Lum.coreColor(entry._tint, s.mag, scale);
             // Opacity computed live each redraw — coreFloor edits take
-            // effect immediately without page reload.
-            const baseOp = Lum.coreOpacity(ln) * adaptF * cr.alphaK;
+            // effect immediately without page reload. magFade adds the soft
+            // cutoff ramp so a star dims to nothing as it nears the cutoff.
+            const baseOp = Lum.coreOpacity(ln) * adaptF * cr.alphaK * magFade;
 
             // Substellar (lat, lon) — where this star is at zenith.
             let lon0 = ((((s.ra - gmst) % 360) + 540) % 360) - 180;
             const lat0 = s.dec;
 
-            const margin = Math.max(glowR, glareR, coreR) + 8;
+            const margin = Math.max(glowR, glareR, coreR, spikeR) + 8;
 
             for (let k = 0; k < wraps.length; k++) {
               const dLon = wraps[k];
@@ -325,6 +357,26 @@ const SkyCanvasLayer =
                 const sp = this._getSprite(entry._glowTint || entry._tint, 'glare');
                 ctx.globalAlpha = adaptF * 0.6;
                 ctx.drawImage(sp, cx - glareR, cy - glareR, glareR * 2, glareR * 2);
+              }
+              if (spikeR > 1) {
+                // Drawn directly rather than as a scaled sprite: the rays are
+                // only ~1px wide, and shrinking a sprite to spikeR would thin
+                // them to nothing. Each ray fades from the core color at the
+                // center to transparent at the tip. Few stars reach here.
+                ctx.globalAlpha = 1;
+                ctx.lineWidth = Math.max(1, scale * 0.6);
+                for (let d = 0; d < spikeDirs.length; d++) {
+                  const ex = cx + spikeDirs[d][0] * spikeR;
+                  const ey = cy + spikeDirs[d][1] * spikeR;
+                  const grad = ctx.createLinearGradient(cx, cy, ex, ey);
+                  grad.addColorStop(0, Lum._rgba(coreColor, adaptF * spikeAlpha));
+                  grad.addColorStop(1, Lum._rgba(coreColor, 0));
+                  ctx.strokeStyle = grad;
+                  ctx.beginPath();
+                  ctx.moveTo(cx, cy);
+                  ctx.lineTo(ex, ey);
+                  ctx.stroke();
+                }
               }
               if (glowR > 0) {
                 const sp = this._getSprite(entry._glowTint || entry._tint, 'glow');

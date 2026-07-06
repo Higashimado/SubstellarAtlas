@@ -1164,6 +1164,7 @@ const VEIL_OUTER_RING = [
   [90.5, 1440],
   [90.5, -1080],
 ];
+
 const VEIL_WRAP_RANGE = 3;
 // Night-cap circle resolution for the veil polygons (twilight / day-brighten /
 // moonlight). Each veil level draws one cap per wrap copy (7×) and Leaflet
@@ -1343,6 +1344,19 @@ function initMap() {
   }).setView([35, 105], 4);
   _mapRef = map; // v3 perf: expose for visibleWrapsFromBounds() at module scope.
 
+  // The auto-flip patch (_updatePosition) only recomputes on zoom/viewreset, not
+  // on pan. A search fly-to is often a pure pan (zoom unchanged), so the popup
+  // picks its direction against the pre-fly position and can end up clipped once
+  // the pan settles. Re-run the flip once the movement ends. Covers every
+  // sky-star-popup caller (asteroids/planets/comets/…), not just search.
+  map.on('popupopen', function (e) {
+    const el = e.popup._container;
+    if (!el || !el.classList.contains('sky-star-popup')) return;
+    map.once('moveend', function () {
+      if (e.popup._map && e.popup._updatePosition) e.popup._updatePosition();
+    });
+  });
+
   L.control.zoom({ position: 'topright' }).addTo(map);
 
   if (typeof Places !== 'undefined' && Places.mountSearchBox) {
@@ -1399,6 +1413,7 @@ function initMap() {
   // ║500–599 ║  Deep-sky icon/frame layer (all BELOW twilight mask) ║
   // ║        ║    milkyway(500)                                     ║
   // ║        ║    sky-bounds(505) sky-lines(505) asterism(508)      ║
+  // ║        ║    starlight(510) integrated-starlight underlight    ║
   // ║        ║    sky-stars(520)                                    ║
   // ║        ║    [525–599 reserved for future comet icons]         ║
   // ║600–699 ║  Label / reference layer (split by veil trio)        ║
@@ -1409,6 +1424,7 @@ function initMap() {
   // ║        ║  ── above veil (visible in daylight) ──             ║
   // ║        ║    equator(615) galactic-equator(616)                ║
   // ║        ║    lunar-path(617) ecliptic(618)                     ║
+  // ║        ║    body-trajectory(619) motion-trajectory ribbons    ║
   // ║        ║    equator-lbl(620) galactic-lbl(621)                ║
   // ║        ║    lunar-path-lbl(622) ecliptic-lbl(623)             ║
   // ║        ║    meteor-labels(626)                                ║
@@ -1429,6 +1445,9 @@ function initMap() {
   // ║741–749 ║  Sun/Mercury/Venus dynamic zone: sorted by          ║
   // ║        ║    geocentric distance each tick (3 z per body)      ║
   // ║750–752 ║  body-moon label/glow/core (always closest)         ║
+  // ║  760   ║  body-trajectory-markers: disk+time markers, kept    ║
+  // ║        ║    above all body labels so a trajectory's dates     ║
+  // ║        ║    stay legible over the planets they belong to      ║
   // ║800–899 ║  sat(800) satellites                                 ║
   // ║900–999 ║  (reserved)                                         ║
   // ║        ║  observer compass stack (bottom→top):               ║
@@ -1769,6 +1788,7 @@ function initMap() {
     'body-uranus',
     'body-neptune',
   ];
+
   let _twilightActive = false;
   // Glow checkbox state — single control for both day-mask (when Sun is on)
   // and moon-mask (when Sun is off but Moon is on). Mutually exclusive: Sun
@@ -2748,10 +2768,12 @@ function initMap() {
     ctxMenu.style.display = '';
   }
 
-  // Right-click context menu (single option: "Visible range").
-  // Uses the same floating .map-context-menu DIV as the location-marker
-  // lock/remove menu so both look and behave identically.
-  function _showBodyContextMenu(ev, onVisibleRange) {
+  // Right-click context menu for a celestial body. Always carries "Visible range";
+  // solar-system bodies (Sun / Moon / planets) pass extraItems to append a "Motion
+  // trajectory" toggle. Generic bodies (stars / comets / meteors) omit it, so those
+  // call sites stay two-arg and unchanged. Uses the same floating .map-context-menu
+  // DIV as the location-marker lock/remove menu so both look and behave identically.
+  function _showBodyContextMenu(ev, onVisibleRange, extraItems) {
     const _t = typeof I18n !== 'undefined' ? I18n.t.bind(I18n) : (k) => k;
     let clickPx = ev && ev.containerPoint ? ev.containerPoint : null;
     if (!clickPx && ev && ev.originalEvent) {
@@ -2761,7 +2783,20 @@ function initMap() {
     }
     if (!clickPx && ev && ev.latlng) clickPx = map.latLngToContainerPoint(ev.latlng);
     if (!clickPx) return;
-    showCtxMenu(clickPx, [{ label: _t('sky.menu.visible_range'), onClick: onVisibleRange }]);
+    const items = [{ label: _t('sky.menu.visible_range'), onClick: onVisibleRange }];
+    if (extraItems) items.push.apply(items, extraItems);
+    showCtxMenu(clickPx, items);
+  }
+
+  // Menu item that toggles a solar-system body's motion trajectory (js/body-trajectory.js).
+  function _trajectoryMenuItem(bodyId) {
+    const _t = typeof I18n !== 'undefined' ? I18n.t.bind(I18n) : (k) => k;
+    return {
+      label: _t('sky.menu.trajectory'),
+      onClick: function () {
+        if (typeof BodyTrajectory !== 'undefined') BodyTrajectory.toggle(bodyId);
+      },
+    };
   }
 
   // Activate "body mode" for a planet/moon entry: ensure its marker + altitude
@@ -2860,10 +2895,10 @@ function initMap() {
     }
   }
 
-  // Body right-click → context menu with "Visible range"
+  // Body right-click → context menu with "Visible range" + "Motion trajectory"
   function onBodyContextMenu(entry, ev) {
     if (!ev) return;
-    _showBodyContextMenu(ev, () => activateBodyMode(entry));
+    _showBodyContextMenu(ev, () => activateBodyMode(entry), [_trajectoryMenuItem(entry.config.id)]);
   }
 
   // Sun left-click → info popup (+ great-circle toggle when compass active)
@@ -2876,10 +2911,10 @@ function initMap() {
     }
   }
 
-  // Sun right-click → context menu
+  // Sun right-click → context menu (visible range + motion trajectory)
   function onSunContextMenu(ev) {
     if (!ev) return;
-    _showBodyContextMenu(ev, activateSunMode);
+    _showBodyContextMenu(ev, activateSunMode, [_trajectoryMenuItem('sun')]);
   }
 
   // ---- Planet / Celestial-Body Layers ----
@@ -2888,6 +2923,9 @@ function initMap() {
   // as its own toggle, so split it out for the layer buttons.
   const moonEntry = planetEntries.find((e) => e.config.id === 'moon') || null;
   const planetsOnlyEntries = planetEntries.filter((e) => e.config.id !== 'moon');
+
+  // ---- Motion-Trajectory Overlay (per-body, right-click toggle) ----
+  if (typeof BodyTrajectory !== 'undefined') BodyTrajectory.init(map);
 
   // ---- Celestial Overlays: Ecliptic, Lunar Path, Equator ----
   Ecliptic.init(map);
@@ -3093,13 +3131,14 @@ function initMap() {
         var labelText = t.ra + '°';
         var tickHalo = GeoUtils.lerpHex(_EQ_CASING, _eqCasingDay, _eqT);
         var tickText = GeoUtils.lerpHex(_EQ_COLOR, _EQ_COLOR_DAY, _eqT);
-        var eqTickFont = 'font-family:var(--font-serif);font-size:12px;letter-spacing:0.04em;';
+        // Inscription face + soft adaptive halo (engraved look, no hard stroke).
+        var eqTickFont = 'font-family:var(--font-inscription);font-size:12px;letter-spacing:0.05em;';
+        var eqTickHalo = 'text-shadow:0 0 6px ' + tickHalo + ',0 0 3px ' + tickHalo + ',0 0 1.5px ' + tickHalo + ';';
         var html =
           '<span style="color:' +
           tickText +
-          ';-webkit-text-stroke:5px ' +
-          tickHalo +
-          ';paint-order:stroke;' +
+          ';' +
+          eqTickHalo +
           eqTickFont +
           'transform:translateX(8px);">' +
           labelText +
@@ -3145,16 +3184,8 @@ function initMap() {
       var nameHalo = GeoUtils.lerpHex(_EQ_CASING, _eqCasingDay, _nT);
       var nameColor = GeoUtils.lerpHex(_EQ_COLOR, _EQ_COLOR_DAY, _nT);
       var eqNameFont = 'font-family:var(--font-serif);font-size:15px;letter-spacing:0.05em;';
-      var nHtml =
-        '<span style="color:' +
-        nameColor +
-        ';-webkit-text-stroke:5px ' +
-        nameHalo +
-        ';paint-order:stroke;' +
-        eqNameFont +
-        '">' +
-        nameText +
-        '</span>';
+      var eqNameHalo = 'text-shadow:0 0 6px ' + nameHalo + ',0 0 3px ' + nameHalo + ',0 0 1.5px ' + nameHalo + ';';
+      var nHtml = '<span style="color:' + nameColor + ';' + eqNameHalo + eqNameFont + '">' + nameText + '</span>';
       for (var j4 = 0; j4 < offsets.length; j4++) {
         L.marker([0, nLng + offsets[j4]], {
           pane: 'equator-labels',
@@ -3310,6 +3341,7 @@ function initMap() {
       if (typeof LunarPath !== 'undefined' && LunarPath.isOn()) LunarPath.update(date);
       if (typeof GalacticEquator !== 'undefined' && GalacticEquator.isOn()) GalacticEquator.update(date);
       if (CelestialEquator.isOn()) _rebuildEquator(date);
+      if (typeof BodyTrajectory !== 'undefined') BodyTrajectory.onViewChange();
       refreshTimeMasks(date);
     }, 150);
   });
@@ -3335,6 +3367,7 @@ function initMap() {
     if (Ecliptic.isOn()) Ecliptic.update(d);
     if (typeof LunarPath !== 'undefined' && LunarPath.isOn()) LunarPath.update(d);
     if (typeof GalacticEquator !== 'undefined' && GalacticEquator.isOn()) GalacticEquator.update(d);
+    if (typeof BodyTrajectory !== 'undefined') BodyTrajectory.onViewChange();
     // v6: planets/sun/moon also place via placeWrappedLumBody → wraps depend
     // on viewport. Without rebuild here, cross-wrap pan leaves the body's old
     // wrap copy stale and the new wrap copy absent. Same bug pattern as the
@@ -3489,6 +3522,7 @@ function initMap() {
     if (Ecliptic.isOn()) Ecliptic.update(date);
     if (typeof LunarPath !== 'undefined' && LunarPath.isOn()) LunarPath.update(date);
     if (typeof GalacticEquator !== 'undefined' && GalacticEquator.isOn()) GalacticEquator.update(date);
+    if (typeof BodyTrajectory !== 'undefined') BodyTrajectory.update(date);
     if (CelestialEquator.isOn()) _rebuildEquator(date);
     syncLpClip(); // also re-applies twilight clip-paths
     _refreshDimPlanetClips(); // re-evaluate dim-planet visibility after mag/illum changes
@@ -3810,6 +3844,7 @@ function initMap() {
 
   // ---- Eclipse Layer ----
   const eclipseCtl = typeof Eclipse !== 'undefined' ? Eclipse.init(map) : null;
+  if (typeof PlanetEvents !== 'undefined') PlanetEvents.init(map);
 
   // ---- Declarative Layer Conflict System ----
   // Rules are implicit (hidden from user). When a trigger layer activates,
@@ -4059,6 +4094,11 @@ function initMap() {
             // Still clean up contour if showing — no orphans.
             if (map.hasLayer(moonEntry.contourLayer)) map.removeLayer(moonEntry.contourLayer);
             if (activeContourLayer === moonEntry.contourLayer) activeContourLayer = null;
+            // The Planets & Comets list rides either layer; only release the moon's
+            // claim on it when the planets layer isn't still holding the panel open.
+            if (typeof Sidebar !== 'undefined' && !(typeof AppState !== 'undefined' && AppState.isLayerOn('planets'))) {
+              Sidebar.onLayerToggle('planet-events', false);
+            }
           } else {
             // Marker only — contour is opt-in via clicking the moon
             // marker (activateBodyMode). Same UX as planets now.
@@ -4067,6 +4107,15 @@ function initMap() {
             // OFF→ON: auto-reset glow so moonlight (or daylight if Sun is on)
             // comes back when reopening the Moon layer.
             if (!_conflictStash.has('eclipse-masks')) _glowExplicitlyOn = true;
+            // Open the shared left-panel list (lunar phases live here too now). Yields
+            // to the eclipse list via the sidebar owner arbiter, same as the planets
+            // button; harmless if the planets layer already opened it.
+            if (typeof Sidebar !== 'undefined' && typeof PlanetEvents !== 'undefined') {
+              Sidebar.onLayerToggle('planet-events', true);
+              PlanetEvents.ready(function () {
+                Sidebar.showPlanetEventList(PlanetEvents.makeListController(), null);
+              });
+            }
           }
           // refreshCelestialOverlays() centrally manages moonMaskGroup
           // add/remove via the glow precedence logic.
@@ -4095,11 +4144,28 @@ function initMap() {
           // parent marker being on the map; re-run the marker pass so they clear
           // immediately instead of lingering until the next time/zoom tick.
           Planets.updateMarkers(map, planetEntries, TimeState.current);
+          if (typeof Asteroids !== 'undefined') Asteroids.removeFrom(map);
+          if (typeof Comet !== 'undefined') Comet.removeFrom(map);
+          // Keep the shared Planets & Comets list open if the moon layer is still
+          // holding it; only release the planets' claim when neither layer wants it.
+          if (typeof Sidebar !== 'undefined' && !(typeof AppState !== 'undefined' && AppState.isLayerOn('moon'))) {
+            Sidebar.onLayerToggle('planet-events', false);
+          }
         } else {
           for (var j = 0; j < planetsOnlyEntries.length; j++) {
             if (!map.hasLayer(planetsOnlyEntries[j].markerLayer)) map.addLayer(planetsOnlyEntries[j].markerLayer);
           }
           Planets.updateMarkers(map, planetEntries, TimeState.current);
+          if (typeof Asteroids !== 'undefined') Asteroids.addTo(map);
+          if (typeof Comet !== 'undefined') Comet.addTo(map);
+          // Open the left-panel planetary-events list (yields to the eclipse list
+          // when that layer is also on — the sidebar owner arbiter enforces it).
+          if (typeof Sidebar !== 'undefined' && typeof PlanetEvents !== 'undefined') {
+            Sidebar.onLayerToggle('planet-events', true);
+            PlanetEvents.ready(function () {
+              Sidebar.showPlanetEventList(PlanetEvents.makeListController(), null);
+            });
+          }
         }
         refreshCelestialOverlays();
       });
@@ -4401,6 +4467,7 @@ function initMap() {
         sat: 'layer.sat',
         more: 'layer.more',
       };
+
       var container = this._container || this.getContainer();
       if (!container) return;
       var btns = container.querySelectorAll('.layer-btn');
@@ -4437,6 +4504,7 @@ function initMap() {
       if (typeof LunarPath !== 'undefined' && LunarPath.isOn()) LunarPath.update(TimeState.current);
       if (typeof GalacticEquator !== 'undefined' && GalacticEquator.isOn()) GalacticEquator.update(TimeState.current);
       if (CelestialEquator.isOn()) _rebuildEquator(TimeState.current);
+      if (typeof BodyTrajectory !== 'undefined') BodyTrajectory.refreshLocale();
       _syncOverlayCheckboxes();
     });
     // Body name labels live as HTML inside Leaflet panes, so their text is frozen
@@ -4501,6 +4569,25 @@ function initMap() {
       setOn: function (on) {
         for (var i = 0; i < planetsOnlyEntries.length; i++) {
           on ? map.addLayer(planetsOnlyEntries[i].markerLayer) : map.removeLayer(planetsOnlyEntries[i].markerLayer);
+        }
+        if (typeof Asteroids !== 'undefined') {
+          if (on) Asteroids.addTo(map);
+          else Asteroids.removeFrom(map);
+        }
+        if (typeof Comet !== 'undefined') {
+          if (on) Comet.addTo(map);
+          else Comet.removeFrom(map);
+        }
+        // Keep the left-panel planetary-events list in step on permalink restore.
+        if (typeof Sidebar !== 'undefined') {
+          if (on && typeof PlanetEvents !== 'undefined') {
+            Sidebar.onLayerToggle('planet-events', true);
+            PlanetEvents.ready(function () {
+              Sidebar.showPlanetEventList(PlanetEvents.makeListController(), null);
+            });
+          } else if (!on) {
+            Sidebar.onLayerToggle('planet-events', false);
+          }
         }
       },
     });
