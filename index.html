@@ -1,235 +1,468 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh">
-<head>
-  <base href="/SubstellarAtlas/">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SubstellarAtlas</title>
-  <meta name="description" content="An open-source interactive visualization that projects the night sky onto Earth.">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="SubstellarAtlas">
-  <meta property="og:description" content="An open-source interactive visualization that projects the night sky onto Earth.">
-  <meta property="og:url" content="https://Higashimado.github.io/SubstellarAtlas/">
-  <meta property="og:image" content="https://Higashimado.github.io/SubstellarAtlas/img/mark.svg">
-  <meta name="twitter:card" content="summary">
-  <link rel="icon" type="image/svg+xml" href="img/mark.svg">
+  <head>
+    <base href="/SubstellarAtlas/">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SubstellarAtlas</title>
+    <meta
+      name="description"
+      content="An open-source interactive visualization that projects the night sky onto Earth."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SubstellarAtlas" />
+    <meta
+      property="og:description"
+      content="An open-source interactive visualization that projects the night sky onto Earth."
+    />
+    <meta property="og:url" content="https://Higashimado.github.io/SubstellarAtlas/" />
+    <meta property="og:image" content="https://Higashimado.github.io/SubstellarAtlas/img/mark.svg" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="img/mark.svg" />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css" />
 
-  <link rel="stylesheet" href="css/tokens.css?v=2">
-  <link rel="stylesheet" href="css/style.css?v=5">
-</head>
-<body>
+    <link rel="stylesheet" href="css/tokens.css?v=2" />
+    <link rel="stylesheet" href="css/style.css?v=6" />
+  </head>
+  <body>
+    <div id="map"></div>
 
-  <div id="map"></div>
-
-  <!-- ---- Map attribution — bottom-right, above the rail ---- -->
-  <div class="attr-row">
-    <div id="map-attribution" class="map-attribution">
-      <a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>
-      <span class="map-attribution-sep">|</span>
-      © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors
-      <span class="map-attribution-sep">|</span>
-      <a id="atlas-info-link" href="https://github.com/Higashimado/SubstellarAtlas/blob/main/en/README.md" target="_blank" rel="noopener" data-i18n="footer.atlasInfo">Site Info</a>
+    <!-- ---- Map attribution — bottom-right, above the rail ---- -->
+    <div class="attr-row">
+      <div id="map-attribution" class="map-attribution">
+        <a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>
+        <span class="map-attribution-sep">|</span>
+        ©
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors
+        <span class="map-attribution-sep">|</span>
+        <a
+          id="atlas-info-link"
+          href="https://github.com/Higashimado/SubstellarAtlas/blob/main/en/README.md"
+          target="_blank"
+          rel="noopener"
+          data-i18n="footer.atlasInfo"
+          >Site Info</a
+        >
+      </div>
+      <a
+        class="attr-github"
+        href="https://github.com/Higashimado/SubstellarAtlas"
+        target="_blank"
+        rel="noopener"
+        aria-label="GitHub"
+        data-tip="GitHub"
+        ><svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            fill="currentColor"
+            d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"
+          /></svg
+      ></a>
     </div>
-    <a class="attr-github" href="https://github.com/Higashimado/SubstellarAtlas" target="_blank" rel="noopener" aria-label="GitHub" data-tip="GitHub"><svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"/></svg></a>
-  </div>
 
-
-  <!-- ---- Time control (floating bottom-center panel) ---- -->
-  <div id="time-bar" class="rail">
-   <!-- Inner wrapper: holds the fixed-width readout/controls + flexible scale.
+    <!-- ---- Time control (floating bottom-center panel) ---- -->
+    <div id="time-bar" class="rail">
+      <!-- Inner wrapper: holds the fixed-width readout/controls + flexible scale.
         Carries the flex layout + a min-width so the rail can scroll horizontally
         on screens narrower than the bar's minimum usable width. -->
-   <div class="rail-inner">
-    <!-- Left: readout (two lines) -->
-    <div class="rail-read">
-      <div class="rail-time num" id="tc-fields">
-        <span class="tc-field" data-unit="y">
-          <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
-          <button class="tc-step up"   data-unit="y" data-dir="1"  tabindex="-1" type="button" aria-hidden="true"></button>
-          <input class="tc-in tc-in-y" id="tc-in-y" inputmode="numeric" maxlength="4" autocomplete="off" spellcheck="false">
-          <button class="tc-step down" data-unit="y" data-dir="-1" tabindex="-1" type="button" aria-hidden="true"></button>
-        </span><span class="tc-sep">-</span>
-        <span class="tc-field" data-unit="mo">
-          <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
-          <button class="tc-step up"   data-unit="mo" data-dir="1"  tabindex="-1" type="button" aria-hidden="true"></button>
-          <input class="tc-in" id="tc-in-mo" inputmode="numeric" maxlength="2" autocomplete="off" spellcheck="false">
-          <button class="tc-step down" data-unit="mo" data-dir="-1" tabindex="-1" type="button" aria-hidden="true"></button>
-        </span><span class="tc-sep">-</span>
-        <span class="tc-field" data-unit="d">
-          <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
-          <button class="tc-step up"   data-unit="d" data-dir="1"  tabindex="-1" type="button" aria-hidden="true"></button>
-          <input class="tc-in" id="tc-in-d" inputmode="numeric" maxlength="2" autocomplete="off" spellcheck="false">
-          <button class="tc-step down" data-unit="d" data-dir="-1" tabindex="-1" type="button" aria-hidden="true"></button>
-        </span>
-        <span class="tc-gap">&nbsp;</span>
-        <span class="tc-field tc-time-col" data-unit="h">
-          <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
-          <button class="tc-step up"   data-unit="h" data-dir="1"  tabindex="-1" type="button" aria-hidden="true"></button>
-          <input class="tc-in" id="tc-in-h" inputmode="numeric" maxlength="2" autocomplete="off" spellcheck="false">
-          <button class="tc-step down" data-unit="h" data-dir="-1" tabindex="-1" type="button" aria-hidden="true"></button>
-        </span><span class="tc-sep tc-time-col">:</span>
-        <span class="tc-field tc-time-col" data-unit="mi">
-          <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
-          <button class="tc-step up"   data-unit="mi" data-dir="1"  tabindex="-1" type="button" aria-hidden="true"></button>
-          <input class="tc-in" id="tc-in-mi" inputmode="numeric" maxlength="2" autocomplete="off" spellcheck="false">
-          <button class="tc-step down" data-unit="mi" data-dir="-1" tabindex="-1" type="button" aria-hidden="true"></button>
-        </span><span class="tc-sep tc-time-col">:</span>
-        <span class="tc-field tc-time-col" data-unit="s">
-          <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
-          <button class="tc-step up"   data-unit="s" data-dir="1"  tabindex="-1" type="button" aria-hidden="true"></button>
-          <input class="tc-in" id="tc-in-s" inputmode="numeric" maxlength="2" autocomplete="off" spellcheck="false">
-          <button class="tc-step down" data-unit="s" data-dir="-1" tabindex="-1" type="button" aria-hidden="true"></button>
-        </span>
-        <span class="rail-tz" id="tc-tz" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="时区">
-          <span class="rail-tz-label" id="tc-tz-label">UTC</span>
-        </span>
-      </div>
-      <div class="rail-moon">
-        <span id="tc-lunar">—</span>
-        <span class="rail-dot" id="tc-phase-dot">·</span>
-        <span id="tc-phase">—</span>
-      </div>
-    </div>
-
-    <!-- Center: engraved scale -->
-    <div class="scale" id="tc-track" role="slider" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0" aria-label="时刻">
-      <div class="scale-wash"></div>
-      <div class="scale-daylight"></div>
-      <svg class="scale-sun-curve" id="tc-sun-curve" xmlns="http://www.w3.org/2000/svg"
-           viewBox="0 0 100 18" preserveAspectRatio="none"></svg>
-      <div class="scale-ticks"></div>
-      <div class="scale-base"></div>
-      <svg class="scale-needle" id="tc-cursor" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div class="scale-labels num" id="tc-labels"></div>
-    </div>
-
-    <!-- Right: controls (two lines, right-aligned) -->
-    <div class="rail-ctrl">
-      <div class="rail-row1">
-        <div class="rail-zone-play">
-          <button class="rail-play rail-play-main" id="tc-play" aria-label="播放" aria-pressed="false" data-i18n-aria="time.play"><svg class="rail-play-icon" viewBox="0 0 16 16" width="14" height="14"><path class="play-shape" d="M3,2 L14,8 L3,14 Z"/></svg></button>
-        </div>
-        <span class="rail-rate-sep"></span>
-        <div class="rail-zone-rates">
-          <div class="rail-rates" id="tc-speed">
-            <button class="rail-rate" data-speed="1">1x</button>
-            <button class="rail-rate" data-speed="10">10x</button>
-            <button class="rail-rate active" data-speed="60">60x</button>
-            <button class="rail-rate" data-speed="360">360x</button>
-            <button class="rail-rate" data-speed="3600">3600x</button>
+      <div class="rail-inner">
+        <!-- Left: readout (two lines) -->
+        <div class="rail-read">
+          <div class="rail-time num" id="tc-fields">
+            <span class="tc-field" data-unit="y">
+              <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
+              <button
+                class="tc-step up"
+                data-unit="y"
+                data-dir="1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+              <input
+                class="tc-in tc-in-y"
+                id="tc-in-y"
+                inputmode="numeric"
+                maxlength="4"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                class="tc-step down"
+                data-unit="y"
+                data-dir="-1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button> </span
+            ><span class="tc-sep">-</span>
+            <span class="tc-field" data-unit="mo">
+              <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
+              <button
+                class="tc-step up"
+                data-unit="mo"
+                data-dir="1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+              <input
+                class="tc-in"
+                id="tc-in-mo"
+                inputmode="numeric"
+                maxlength="2"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                class="tc-step down"
+                data-unit="mo"
+                data-dir="-1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button> </span
+            ><span class="tc-sep">-</span>
+            <span class="tc-field" data-unit="d">
+              <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
+              <button
+                class="tc-step up"
+                data-unit="d"
+                data-dir="1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+              <input
+                class="tc-in"
+                id="tc-in-d"
+                inputmode="numeric"
+                maxlength="2"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                class="tc-step down"
+                data-unit="d"
+                data-dir="-1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+            </span>
+            <span class="tc-gap">&nbsp;</span>
+            <span class="tc-field tc-time-col" data-unit="h">
+              <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
+              <button
+                class="tc-step up"
+                data-unit="h"
+                data-dir="1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+              <input
+                class="tc-in"
+                id="tc-in-h"
+                inputmode="numeric"
+                maxlength="2"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                class="tc-step down"
+                data-unit="h"
+                data-dir="-1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button> </span
+            ><span class="tc-sep tc-time-col">:</span>
+            <span class="tc-field tc-time-col" data-unit="mi">
+              <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
+              <button
+                class="tc-step up"
+                data-unit="mi"
+                data-dir="1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+              <input
+                class="tc-in"
+                id="tc-in-mi"
+                inputmode="numeric"
+                maxlength="2"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                class="tc-step down"
+                data-unit="mi"
+                data-dir="-1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button> </span
+            ><span class="tc-sep tc-time-col">:</span>
+            <span class="tc-field tc-time-col" data-unit="s">
+              <span class="tc-zone-up"></span><span class="tc-zone-down"></span>
+              <button
+                class="tc-step up"
+                data-unit="s"
+                data-dir="1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+              <input
+                class="tc-in"
+                id="tc-in-s"
+                inputmode="numeric"
+                maxlength="2"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button
+                class="tc-step down"
+                data-unit="s"
+                data-dir="-1"
+                tabindex="-1"
+                type="button"
+                aria-hidden="true"
+              ></button>
+            </span>
+            <span
+              class="rail-tz"
+              id="tc-tz"
+              tabindex="0"
+              role="button"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-label="时区"
+            >
+              <span class="rail-tz-label" id="tc-tz-label">UTC</span>
+            </span>
+          </div>
+          <div class="rail-moon">
+            <span id="tc-lunar">—</span>
+            <span class="rail-dot" id="tc-phase-dot">·</span>
+            <span id="tc-phase">—</span>
           </div>
         </div>
-        <span class="rail-rate-sep"></span>
-        <div class="rail-zone-lang">
-          <span class="rail-lang" id="tc-lang" tabindex="0" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="语言">
-            <span class="rail-lang-label" id="tc-lang-label">中文</span>
-          </span>
-        </div>
-      </div>
-      <div class="rail-row2">
-        <button class="rail-jump" data-jump="-1y">-1y</button>
-        <button class="rail-jump" data-jump="-1m">-1m</button>
-        <button class="rail-jump" data-jump="-1d">-1d</button>
-        <button class="rail-jump" data-jump="-1h">-1h</button>
-        <button class="rail-jump rail-jump-now" data-jump="now" id="tc-now" data-i18n="time.now">Now</button>
-        <button class="rail-jump" data-jump="+1h">+1h</button>
-        <button class="rail-jump" data-jump="+1d">+1d</button>
-        <button class="rail-jump" data-jump="+1m">+1m</button>
-        <button class="rail-jump" data-jump="+1y">+1y</button>
-      </div>
-    </div>
 
-    <!-- Narrow-screen layout helpers: zero-height full-width flex breaks (≤768px).
+        <!-- Center: engraved scale -->
+        <div
+          class="scale"
+          id="tc-track"
+          role="slider"
+          aria-valuemin="0"
+          aria-valuemax="24"
+          aria-valuenow="0"
+          aria-label="时刻"
+        >
+          <div class="scale-wash"></div>
+          <div class="scale-daylight"></div>
+          <svg
+            class="scale-sun-curve"
+            id="tc-sun-curve"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 100 18"
+            preserveAspectRatio="none"
+          ></svg>
+          <div class="scale-ticks"></div>
+          <div class="scale-base"></div>
+          <svg class="scale-needle" id="tc-cursor" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="scale-labels num" id="tc-labels"></div>
+        </div>
+
+        <!-- Right: controls (two lines, right-aligned) -->
+        <div class="rail-ctrl">
+          <div class="rail-row1">
+            <div class="rail-zone-play">
+              <button
+                class="rail-play rail-play-main"
+                id="tc-play"
+                aria-label="播放"
+                aria-pressed="false"
+                data-i18n-aria="time.play"
+              >
+                <svg class="rail-play-icon" viewBox="0 0 16 16" width="14" height="14">
+                  <path class="play-shape" d="M3,2 L14,8 L3,14 Z" />
+                </svg>
+              </button>
+            </div>
+            <span class="rail-rate-sep"></span>
+            <div class="rail-zone-rates">
+              <div class="rail-rates" id="tc-speed">
+                <button class="rail-rate" data-speed="1">1x</button>
+                <button class="rail-rate" data-speed="10">10x</button>
+                <button class="rail-rate active" data-speed="60">60x</button>
+                <button class="rail-rate" data-speed="360">360x</button>
+                <button class="rail-rate" data-speed="3600">3600x</button>
+              </div>
+            </div>
+            <span class="rail-rate-sep"></span>
+            <div class="rail-zone-lang">
+              <span
+                class="rail-lang"
+                id="tc-lang"
+                tabindex="0"
+                role="button"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-label="语言"
+              >
+                <span class="rail-lang-label" id="tc-lang-label">中文</span>
+              </span>
+            </div>
+          </div>
+          <div class="rail-row2">
+            <button class="rail-jump" data-jump="-1y">-1y</button>
+            <button class="rail-jump" data-jump="-1m">-1m</button>
+            <button class="rail-jump" data-jump="-1d">-1d</button>
+            <button class="rail-jump" data-jump="-1h">-1h</button>
+            <button class="rail-jump rail-jump-now" data-jump="now" id="tc-now" data-i18n="time.now">Now</button>
+            <button class="rail-jump" data-jump="+1h">+1h</button>
+            <button class="rail-jump" data-jump="+1d">+1d</button>
+            <button class="rail-jump" data-jump="+1m">+1m</button>
+            <button class="rail-jump" data-jump="+1y">+1y</button>
+          </div>
+        </div>
+
+        <!-- Narrow-screen layout helpers: zero-height full-width flex breaks (≤768px).
          rail-break-row1 forces the shortened timeline onto its own first line;
          rail-break forces the jump row onto its own line under the readout. -->
-    <i class="rail-break-row1" aria-hidden="true"></i>
-    <i class="rail-break" aria-hidden="true"></i>
+        <i class="rail-break-row1" aria-hidden="true"></i>
+        <i class="rail-break" aria-hidden="true"></i>
 
-    <!-- Narrow-screen drawer handle: collapses/expands the timeline + speed +
+        <!-- Narrow-screen drawer handle: collapses/expands the timeline + speed +
          jumps. Hidden on wide screens via CSS; wired in js/app.js. -->
-    <button class="rail-handle" id="tc-handle" type="button"
-            aria-label="时间轴" data-i18n-aria="time.timeline" aria-expanded="false">
-      <svg class="rail-handle-icon" viewBox="0 0 16 10" width="15" height="10" aria-hidden="true">
-        <polyline points="2,7.5 8,2.5 14,7.5" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
-   </div><!-- /.rail-inner -->
-  </div>
+        <button
+          class="rail-handle"
+          id="tc-handle"
+          type="button"
+          aria-label="时间轴"
+          data-i18n-aria="time.timeline"
+          aria-expanded="false"
+        >
+          <svg class="rail-handle-icon" viewBox="0 0 16 10" width="15" height="10" aria-hidden="true">
+            <polyline
+              points="2,7.5 8,2.5 14,7.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- /.rail-inner -->
+    </div>
 
-  <!-- ---- Left sidebar (eclipse list + detail) ---- -->
-  <aside id="sidebar-left" class="sidebar sidebar--left" data-state="closed">
-    <button class="sidebar-toggle" type="button" aria-expanded="false" aria-label="切换左侧栏" data-i18n-aria="sidebar.toggle_left">
-      <svg class="sidebar-chevron" viewBox="0 0 10 16" width="10" height="15" aria-hidden="true"><polyline points="7.5,2 2.5,8 7.5,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <div id="sidebar-left-content"></div>
-  </aside>
+    <!-- ---- Left sidebar (eclipse list + detail) ---- -->
+    <aside id="sidebar-left" class="sidebar sidebar--left" data-state="closed">
+      <button
+        class="sidebar-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-label="切换左侧栏"
+        data-i18n-aria="sidebar.toggle_left"
+      >
+        <svg class="sidebar-chevron" viewBox="0 0 10 16" width="10" height="15" aria-hidden="true">
+          <polyline
+            points="7.5,2 2.5,8 7.5,14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+      <div id="sidebar-left-content"></div>
+    </aside>
 
-  <!-- ---- Right sidebar (clicked location info) ---- -->
-  <aside id="sidebar-right" class="sidebar sidebar--right" data-state="closed">
-    <button class="sidebar-toggle" type="button" aria-expanded="false" aria-label="切换右侧栏" data-i18n-aria="sidebar.toggle_right">
-      <svg class="sidebar-chevron" viewBox="0 0 10 16" width="10" height="15" aria-hidden="true"><polyline points="2.5,2 7.5,8 2.5,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <div id="sidebar-right-content"></div>
-  </aside>
+    <!-- ---- Right sidebar (clicked location info) ---- -->
+    <aside id="sidebar-right" class="sidebar sidebar--right" data-state="closed">
+      <button
+        class="sidebar-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-label="切换右侧栏"
+        data-i18n-aria="sidebar.toggle_right"
+      >
+        <svg class="sidebar-chevron" viewBox="0 0 10 16" width="10" height="15" aria-hidden="true">
+          <polyline
+            points="2.5,2 7.5,8 2.5,14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+      <div id="sidebar-right-content"></div>
+    </aside>
 
-  <!-- ---- Libraries ---- -->
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
-  <!-- Sub-pixel positioning patch — must load right after Leaflet, before any layer module. -->
-  <script src="js/leaflet-subpixel.js?v=1"></script>
-  <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@joergdietrich/leaflet.terminator@1.1.0/L.Terminator.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.7/lunar.js"></script>
+    <!-- ---- Libraries ---- -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+    <!-- Sub-pixel positioning patch — must load right after Leaflet, before any layer module. -->
+    <script src="js/leaflet-subpixel.js?v=1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/suncalc@1.9.0/suncalc.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joergdietrich/leaflet.terminator@1.1.0/L.Terminator.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.7.7/lunar.js"></script>
 
-  <!-- ---- App modules (order matters: dependencies first) ---- -->
-  <script src="js/i18n.js?v=7"></script>
-  <script src="js/glossary-tip.js?v=2"></script>
-  <script src="js/spectral.js?v=1"></script>
-  <script src="js/fade.js?v=1"></script>
-  <script src="js/time.js?v=1"></script>
-  <script src="js/astro.js?v=3"></script>
-  <script src="js/lp.js?v=2"></script>
-  <script src="js/weather.js"></script>
-  <script src="js/clouds.js"></script>
-  <script src="js/hit-widths.js?v=2"></script>
-  <script src="js/geo-utils.js?v=2"></script>
-  <script src="js/places.js?v=4"></script>
-  <script src="js/celestial-search.js?v=1"></script>
-  <script src="js/eclipse-glyph.js?v=3"></script>
-  <script src="js/sidebar.js?v=12"></script>
-  <script src="js/bessel-runtime.js?v=3"></script>
-  <script src="js/eclipse.js?v=5"></script>
-  <script src="js/planet-events.js?v=1"></script>
-  <script src="js/luminosity.js?v=2"></script>
-  <script src="js/saturn-moons.js?v=1"></script>
-  <script src="js/planets.js?v=10"></script>
-  <script src="js/great-circle-layer.js?v=3"></script>
-  <script src="js/ecliptic.js?v=1"></script>
-  <script src="js/lunar-path.js?v=1"></script>
-  <script src="js/galactic-equator.js?v=1"></script>
-  <script src="js/body-trajectory.js?v=1"></script>
-  <script src="js/observer.js?v=7"></script>
-  <script src="js/sky-canvas-layer.js?v=3"></script>
-  <script src="js/body-canvas-layer.js?v=1"></script>
-  <script src="js/veil-canvas-layer.js?v=4"></script>
-  <script src="js/starlight-layer.js?v=1"></script>
-  <script src="js/sky.js?v=3"></script>
-  <script src="js/asterism.js?v=2"></script>
-  <script src="js/aurora.js?v=2"></script>
-  <script src="js/sat.js?v=3"></script>
-  <script src="js/comet.js?v=1"></script>
-  <script src="js/asteroids.js?v=1"></script>
-  <script src="js/meteor.js?v=1"></script>
-  <script src="js/milkyway.js?v=1"></script>
-  <script src="js/state.js?v=3"></script>
-  <script src="js/label-collider.js?v=1"></script>
-  <script src="js/map.js?v=16"></script>
-  <script src="js/app.js?v=6"></script>
-
-</body>
+    <!-- ---- App modules (order matters: dependencies first) ---- -->
+    <script src="js/i18n.js?v=7"></script>
+    <script src="js/glossary-tip.js?v=2"></script>
+    <script src="js/spectral.js?v=1"></script>
+    <script src="js/fade.js?v=1"></script>
+    <script src="js/time.js?v=1"></script>
+    <script src="js/astro.js?v=3"></script>
+    <script src="js/lp.js?v=2"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/clouds.js"></script>
+    <script src="js/hit-widths.js?v=2"></script>
+    <script src="js/geo-utils.js?v=2"></script>
+    <script src="js/places.js?v=4"></script>
+    <script src="js/celestial-search.js?v=1"></script>
+    <script src="js/eclipse-glyph.js?v=3"></script>
+    <script src="js/sidebar.js?v=13"></script>
+    <script src="js/bessel-runtime.js?v=3"></script>
+    <script src="js/eclipse.js?v=5"></script>
+    <script src="js/planet-events.js?v=1"></script>
+    <script src="js/luminosity.js?v=2"></script>
+    <script src="js/saturn-moons.js?v=1"></script>
+    <script src="js/planets.js?v=10"></script>
+    <script src="js/great-circle-layer.js?v=3"></script>
+    <script src="js/ecliptic.js?v=1"></script>
+    <script src="js/lunar-path.js?v=1"></script>
+    <script src="js/galactic-equator.js?v=1"></script>
+    <script src="js/body-trajectory.js?v=1"></script>
+    <script src="js/observer.js?v=7"></script>
+    <script src="js/sky-canvas-layer.js?v=3"></script>
+    <script src="js/body-canvas-layer.js?v=1"></script>
+    <script src="js/veil-canvas-layer.js?v=4"></script>
+    <script src="js/starlight-layer.js?v=1"></script>
+    <script src="js/sky.js?v=3"></script>
+    <script src="js/asterism.js?v=2"></script>
+    <script src="js/aurora.js?v=2"></script>
+    <script src="js/sat.js?v=3"></script>
+    <script src="js/comet.js?v=1"></script>
+    <script src="js/asteroids.js?v=1"></script>
+    <script src="js/meteor.js?v=1"></script>
+    <script src="js/milkyway.js?v=1"></script>
+    <script src="js/state.js?v=3"></script>
+    <script src="js/label-collider.js?v=1"></script>
+    <script src="js/map.js?v=16"></script>
+    <script src="js/app.js?v=7"></script>
+  </body>
 </html>

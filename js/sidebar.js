@@ -137,7 +137,11 @@ const Sidebar = (() => {
     const meta = LAYERS[layerId];
     if (!meta || !meta.defaultPanel) return;
     if (isOn) {
-      if (meta.autoOpen && sidebarState[meta.defaultPanel].manualOverride !== false) {
+      // Turning a layer on is a fresh intent to see its content, so it always
+      // pops the panel — even if the user had hand-collapsed it while another
+      // layer was already on (clear the manualOverride that would suppress it).
+      if (meta.autoOpen) {
+        sidebarState[meta.defaultPanel].manualOverride = null;
         setSidebar(meta.defaultPanel, true, 'auto');
       }
     } else {
@@ -166,10 +170,9 @@ const Sidebar = (() => {
       btn.addEventListener('click', (e) => {
         const aside = e.currentTarget.closest('.sidebar');
         const side = aside.classList.contains('sidebar--left') ? 'left' : 'right';
-        // On touch the tab is close-only: opening is by edge-swipe (wireEdgeSwipe),
-        // so an accidental tap on the protruding tab can't pop the panel out. A
-        // mouse keeps the full toggle — it has no swipe and no misfire complaint.
-        if (window.matchMedia('(pointer: coarse)').matches && !sidebarState[side].open) return;
+        // Tap the tab to open or close, on touch and mouse alike. An earlier
+        // edge-swipe-to-open path was dropped: its inward drag from the screen
+        // edge clashed with the browser's own back/forward edge gesture.
         setSidebar(side, !sidebarState[side].open, 'manual');
       });
     });
@@ -187,61 +190,10 @@ const Sidebar = (() => {
     });
   }
 
-  // Edge-swipe to open (touch): an inward horizontal drag from a screen-edge
-  // grabber opens the matching sidebar. Threshold-based rather than
-  // follow-the-finger for robustness; the grabber's touch-action:none (CSS) keeps
-  // the browser from stealing the drag as a scroll, and its z-index sits above the
-  // map so Leaflet never sees the gesture. Closing stays on the tab.
-  function wireEdgeSwipe() {
-    const OPEN_THRESHOLD = 48; // inward px before the panel commits to opening
-    document.querySelectorAll('.edge-swipe').forEach((strip) => {
-      const side = strip.classList.contains('edge-swipe--left') ? 'left' : 'right';
-      let startX = 0,
-        startY = 0,
-        tracking = false;
-      strip.addEventListener('pointerdown', (e) => {
-        tracking = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        try {
-          strip.setPointerCapture(e.pointerId);
-        } catch (_) {}
-      });
-      strip.addEventListener('pointermove', (e) => {
-        if (!tracking) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        // Horizontal must dominate (ignore a vertical scroll), and travel inward:
-        // rightward opens the left panel, leftward opens the right panel.
-        if (Math.abs(dx) <= Math.abs(dy)) return;
-        const inward = side === 'left' ? dx : -dx;
-        if (inward >= OPEN_THRESHOLD) {
-          tracking = false;
-          try {
-            strip.releasePointerCapture(e.pointerId);
-          } catch (_) {}
-          setSidebar(side, true, 'manual');
-        }
-      });
-      const end = (e) => {
-        tracking = false;
-        try {
-          strip.releasePointerCapture(e.pointerId);
-        } catch (_) {}
-      };
-      strip.addEventListener('pointerup', end);
-      strip.addEventListener('pointercancel', end);
-    });
-  }
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      wireToggles();
-      wireEdgeSwipe();
-    });
+    document.addEventListener('DOMContentLoaded', wireToggles);
   } else {
     wireToggles();
-    wireEdgeSwipe();
   }
 
   // ---- Coordinate Helpers ----

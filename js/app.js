@@ -970,6 +970,12 @@ function bootTimeControl() {
       // band, and never on a fixed mobile viewport.
       const restW = Math.min(MAX_W, Math.max(MIN_W, Math.round(searchRight - railRight - GAP)));
       input.style.setProperty('--search-rest', restW + 'px');
+      // Focus-expand width (compact mode): grow leftward until the box's left edge
+      // meets the rail's LEFT edge, so the expanded search — and its dropdown —
+      // line up flush with the layer toggle rail. Measured, not a hardcoded vw
+      // constant, so it stays exact as the rail inset or control widths change.
+      const railLeft = root.getBoundingClientRect().left;
+      input.style.setProperty('--search-focus', Math.round(searchRight - railLeft) + 'px');
       // `.toolbar-compact` means "search is squeezed below full width" — it only
       // switches the focus-expand behavior to a leftward map overlay. The resting
       // width itself comes from --search-rest above (no binary snap).

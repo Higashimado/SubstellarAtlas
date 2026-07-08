@@ -1040,35 +1040,6 @@ html[lang='ja'] .rail-lang-label {
   transform: translateX(100%);
 }
 
-/* ---- Edge-Swipe Grabbers ---- */
-/* Thin invisible strips pinned to the screen edges. On touch, an inward drag
-   from a strip opens the matching sidebar (wireEdgeSwipe in js/sidebar.js), so
-   the panel opens by a deliberate swipe rather than an easily-mistapped tab.
-   Inert by default (a mouse keeps the tab); enabled only on coarse pointers
-   while the panel is closed. They sit above the map but below the sidebars
-   (2000), and touch-action:none stops the browser reading the drag as a scroll. */
-.edge-swipe {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: 20px;
-  z-index: 1500;
-  pointer-events: none;
-  touch-action: none;
-}
-.edge-swipe--left {
-  left: 0;
-}
-.edge-swipe--right {
-  right: 0;
-}
-@media (max-width: 768px) and (pointer: coarse) {
-  #sidebar-left[data-state='closed'] ~ .edge-swipe--left,
-  #sidebar-right[data-state='closed'] ~ .edge-swipe--right {
-    pointer-events: auto;
-  }
-}
-
 /* Aurora data-source / last-update line inside the aurora panel.
    Dedicated footnote treatment: a dimmer cool-grey than --fg-muted so the
    attribution recedes and never reads as a data value. */
@@ -3507,10 +3478,11 @@ html[lang='ja'] .rail-lang-label {
   }
 
   /* Narrow: focused search expands further left so its (and the dropdown's) left
-     edge lines up with the left edge of the sky-layer toggle (.layer-toggle-root,
-     left:12px) — width = (100vw − 88, the right-anchored search right edge) − 12. */
+     edge lines up with the left edge of the layer toggle rail (.layer-toggle-root).
+     --search-focus = measured searchRight − railLeft (js/app.js _syncToolbarCompact),
+     so the alignment stays exact regardless of control widths or the edge inset. */
   .toolbar-compact .places-search input:focus {
-    width: calc(100vw - 100px);
+    width: var(--search-focus);
   }
 
   .rail-inner {
@@ -3550,6 +3522,15 @@ html[lang='ja'] .rail-lang-label {
     margin: 0 auto;
     height: 24px;
     transform: translateY(-2px);
+  }
+  /* The day/night wash bands are bottom-anchored (inset bottom), the axis
+     (.scale-base) top-anchored at y=18. At the shrunk 24px height the base
+     bottom inset of 12 lands the band bottom at y=12 — 6px shy of the axis, so
+     the glow no longer reaches it. Re-anchor the bottom to 24−18=6 so the band
+     bottom sits back on the axis, as it does at the wide 30px height. */
+  .scale-wash,
+  .scale-daylight {
+    inset: 5px 0 6px;
   }
   .rail-break-row1 {
     display: block;
