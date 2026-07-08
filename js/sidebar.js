@@ -166,6 +166,10 @@ const Sidebar = (() => {
       btn.addEventListener('click', (e) => {
         const aside = e.currentTarget.closest('.sidebar');
         const side = aside.classList.contains('sidebar--left') ? 'left' : 'right';
+        // On touch the tab is close-only: opening is by edge-swipe (wireEdgeSwipe),
+        // so an accidental tap on the protruding tab can't pop the panel out. A
+        // mouse keeps the full toggle — it has no swipe and no misfire complaint.
+        if (window.matchMedia('(pointer: coarse)').matches && !sidebarState[side].open) return;
         setSidebar(side, !sidebarState[side].open, 'manual');
       });
     });
@@ -182,10 +186,62 @@ const Sidebar = (() => {
       });
     });
   }
+
+  // Edge-swipe to open (touch): an inward horizontal drag from a screen-edge
+  // grabber opens the matching sidebar. Threshold-based rather than
+  // follow-the-finger for robustness; the grabber's touch-action:none (CSS) keeps
+  // the browser from stealing the drag as a scroll, and its z-index sits above the
+  // map so Leaflet never sees the gesture. Closing stays on the tab.
+  function wireEdgeSwipe() {
+    const OPEN_THRESHOLD = 48; // inward px before the panel commits to opening
+    document.querySelectorAll('.edge-swipe').forEach((strip) => {
+      const side = strip.classList.contains('edge-swipe--left') ? 'left' : 'right';
+      let startX = 0,
+        startY = 0,
+        tracking = false;
+      strip.addEventListener('pointerdown', (e) => {
+        tracking = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        try {
+          strip.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      });
+      strip.addEventListener('pointermove', (e) => {
+        if (!tracking) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        // Horizontal must dominate (ignore a vertical scroll), and travel inward:
+        // rightward opens the left panel, leftward opens the right panel.
+        if (Math.abs(dx) <= Math.abs(dy)) return;
+        const inward = side === 'left' ? dx : -dx;
+        if (inward >= OPEN_THRESHOLD) {
+          tracking = false;
+          try {
+            strip.releasePointerCapture(e.pointerId);
+          } catch (_) {}
+          setSidebar(side, true, 'manual');
+        }
+      });
+      const end = (e) => {
+        tracking = false;
+        try {
+          strip.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      };
+      strip.addEventListener('pointerup', end);
+      strip.addEventListener('pointercancel', end);
+    });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', wireToggles);
+    document.addEventListener('DOMContentLoaded', () => {
+      wireToggles();
+      wireEdgeSwipe();
+    });
   } else {
     wireToggles();
+    wireEdgeSwipe();
   }
 
   // ---- Coordinate Helpers ----
@@ -1197,7 +1253,14 @@ const Sidebar = (() => {
     const openRow = (labelKey, slot) => {
       // Per-row tooltip emphasises "next one visible from THIS location" (not the
       // next globally). Tooltip key derives from the label key + '.tooltip'.
-      const lbl = `<span class="label"${_glossTip(_t(labelKey + '.tooltip'))}>${_t(labelKey)}</span>`;
+      // Two inner spans carry full vs abbreviated text; CSS hides the full form on
+      // narrow panels (≤768px) where Romance-language strings overflow the row.
+      const abbr = _t(labelKey + '.abbr');
+      const lbl =
+        `<span class="label"${_glossTip(_t(labelKey + '.tooltip'))}>` +
+        `<span class="ecl-lbl-full">${_t(labelKey)}</span>` +
+        `<span class="ecl-lbl-abbr">${abbr}</span>` +
+        `</span>`;
       if (!slot)
         return (
           `<div class="info-row">${lbl}` +
@@ -1964,7 +2027,10 @@ const Sidebar = (() => {
     // view with cursorInWin pointing at the event nearest to current time.
     const content = ensureLeftStructure();
     if (!content) return;
-    setSidebar('left', true, 'auto');
+    // Pure DOM builder — never touches open/closed state. Opening is the caller's
+    // onLayerToggle('eclipse-list', true), which alone honours manualOverride. Opening here
+    // too would force the drawer open on every re-render (locale switch, card flip,
+    // sibling-layer release) and, on mobile, evict the right panel via the exclusivity rule.
 
     function cardHtmlFor(e, i) {
       const now = TimeState.current.getTime();
@@ -2694,6 +2760,122 @@ const Sidebar = (() => {
     return content;
   }
 
+  // Horizontal drag-to-scroll for the body-chip filter. On the narrow drawer the
+  // row overflows with its scrollbar hidden (see .pev-filter-bodies, style.css):
+  // touch pans it natively, but a mouse has nothing to grab. Translate a
+  // left-button press-drag into scrollLeft, and swallow the click that closes the
+  // gesture so a drag never toggles the chip it happens to end on. Skipped for
+  // touch (native panning is smoother) and when the row does not overflow (wide
+  // screens), so ordinary chip clicks there are untouched. Guarded to wire each
+  // row element once, since the same element survives non-flip re-renders.
+  function _wirePevDragScroll(row) {
+    if (!row || row.dataset.pevDragWired) return;
+    row.dataset.pevDragWired = '1';
+
+    // Keep the edge-fade honest: fade a side only while there is still hidden
+    // content that way. At scrollLeft 0 the left edge sits flush (no fade); at the
+    // far end the right edge does. A non-overflowing row fades neither. Driven by
+    // the row's own scroll event, so every frame of a smooth scroll converges here.
+    const updateFade = () => {
+      const max = row.scrollWidth - row.clientWidth;
+      row.classList.toggle('pev-fade-l', row.scrollLeft > 1);
+      row.classList.toggle('pev-fade-r', max > 1 && row.scrollLeft < max - 1);
+    };
+    row.addEventListener('scroll', updateFade, { passive: true });
+    // A viewport resize changes overflow (wide row fits → narrow row scrolls) but
+    // fires no scroll event, so recompute on resize too. Skip once the row leaves
+    // the DOM so a stale rebuilt row is never touched.
+    window.addEventListener('resize', () => {
+      if (row.isConnected) updateFade();
+    });
+    updateFade();
+
+    let down = false;
+    let dragged = false;
+    let startX = 0;
+    let startLeft = 0;
+    row.addEventListener(
+      'click',
+      (e) => {
+        if (dragged) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      },
+      true
+    );
+    row.addEventListener('pointerdown', (e) => {
+      dragged = false;
+      if (e.pointerType === 'touch' || e.button !== 0) return;
+      if (row.scrollWidth - row.clientWidth < 1) return;
+      down = true;
+      startX = e.clientX;
+      startLeft = row.scrollLeft;
+    });
+    row.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      // Capture only once a real drag begins. Capturing on pointerdown would
+      // redirect the closing click's target from the chip to this row, so a plain
+      // click would never reach the chip's toggle. Below the threshold this stays
+      // a normal click.
+      if (!dragged && Math.abs(dx) > 3) {
+        dragged = true;
+        row.setPointerCapture(e.pointerId);
+        row.classList.add('pev-dragging');
+      }
+      if (!dragged) return;
+      row.scrollLeft = startLeft - dx;
+      e.preventDefault();
+    });
+
+    const end = (e) => {
+      if (!down) return;
+      down = false;
+      row.classList.remove('pev-dragging');
+      try {
+        row.releasePointerCapture(e.pointerId);
+      } catch (_) {}
+    };
+    row.addEventListener('pointerup', end);
+    row.addEventListener('pointercancel', end);
+
+    // Edge nudge: clicking the chip sitting at the visible left/right edge scrolls
+    // the row to expose its hidden neighbour, so users who never try dragging
+    // still see there is more. Runs in the bubble phase, after the chip's own
+    // toggle; a drag-click is stopped in the capture phase above and never reaches
+    // here. The smooth scroll doubles as the discovery cue — the row visibly
+    // moves. No-op on wide screens, where the row does not overflow.
+    row.addEventListener('click', (e) => {
+      const chip = e.target.closest('.pev-body-chip');
+      if (!chip || row.scrollWidth - row.clientWidth < 1) return;
+      const rowRect = row.getBoundingClientRect();
+      const visible = [...row.querySelectorAll('.pev-body-chip')].filter((c) => {
+        const r = c.getBoundingClientRect();
+        return r.right > rowRect.left + 1 && r.left < rowRect.right - 1;
+      });
+      const inset = 24;
+      // Reveal the hidden neighbour past the clicked edge chip. When the edge chip
+      // is itself the first/last one (no neighbour) yet sits clipped under the fade,
+      // fall back to revealing the chip itself — a clipped seal must come fully into
+      // view on click, not stay half-eaten. Aiming past the true end overshoots, and
+      // the browser clamps scrollLeft to [0, max], so the chip lands flush. The
+      // direction guard scrolls only the way that exposes more, never jittering when
+      // the edge is already flush.
+      const prev = chip.previousElementSibling;
+      const next = chip.nextElementSibling;
+      if (chip === visible[0]) {
+        const target = prev || chip;
+        const d = target.getBoundingClientRect().left - (rowRect.left + inset);
+        if (d < 0) row.scrollTo({ left: row.scrollLeft + d, behavior: 'smooth' });
+      } else if (chip === visible[visible.length - 1]) {
+        const target = next || chip;
+        const d = target.getBoundingClientRect().right - (rowRect.right - inset);
+        if (d > 0) row.scrollTo({ left: row.scrollLeft + d, behavior: 'smooth' });
+      }
+    });
+  }
+
   // Fly the map to the event's sub-point(s) at event time, jump the clock, and
   // open trajectories for all participating planets. Stars return null from
   // getSearchLatLng and are skipped; BodyTrajectory.toggle guards star ids via
@@ -2737,7 +2919,9 @@ const Sidebar = (() => {
   function showPlanetEventList(controller, onSelect) {
     const content = ensurePlanetLeftStructure();
     if (!content) return;
-    setSidebar('left', true, 'auto');
+    // Pure DOM builder — see showEclipseList: opening is the caller's
+    // onLayerToggle('planet-events', true), so a re-render (locale switch, card
+    // flip) never forces the drawer open nor evicts the right panel on mobile.
 
     const earlierBtn = content.querySelector('.eclipse-load-earlier');
     const laterBtn = content.querySelector('.eclipse-load-later');
@@ -2870,6 +3054,7 @@ const Sidebar = (() => {
         renderCards();
       };
     });
+    _wirePevDragScroll(content.querySelector('.pev-filter-bodies'));
 
     // Click a card → expand its inline detail (appulse time, extra numbers).
     listEl.onclick = (ev) => {
@@ -3087,7 +3272,12 @@ const Sidebar = (() => {
         if (newScroll && savedScrollTop > 0) newScroll.scrollTop = savedScrollTop;
       }
       // Re-render whichever list owns the left sidebar with the new locale.
-      if (_leftOwner() && sidebarState.left.open) {
+      // No open-state guard: rebuild even while closed so the user sees the
+      // correct locale immediately on next open (without the guard, a language
+      // switch with the panel closed left stale DOM — title and chips stayed in
+      // the old locale because ensurePlanetLeftStructure's querySelector guard
+      // skipped the rebuild, and only renderCards ran on next open).
+      if (_leftOwner()) {
         _renderLeftOwner();
       }
     });

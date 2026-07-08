@@ -4363,15 +4363,16 @@ function initMap() {
         panel = this._overflowPanel;
       const root = this._container || this.getContainer();
       if (!root) return;
-      // Measure against a CONSTANT reserve for the right-hand control group at its
-      // FULL (expanded-search) width — always 460, even when `.toolbar-compact`
-      // has visually collapsed the search. Using the full reserve regardless of
-      // compact state keeps icon dropping MONOTONIC: collapsing the search never
-      // frees space that floods icons back onto the rail (which would cause a
-      // sawtooth at the compact threshold). The search collapse (handled in
-      // app.js _syncToolbarCompact, stage 2) is purely a final overlap guard.
-      // ≈460 = search 360 + zoom 22.5 + layers 45 + gaps + inset; railLeft (~65) stable.
-      const RIGHT_RESERVE = 460;
+      // Measure against a CONSTANT reserve for the right-hand control group with
+      // the search at its MINIMUM width — regardless of the search's live width. The
+      // constant keeps icon dropping MONOTONIC (no search-width feedback loop);
+      // reserving the *minimum* search defers icon overflow until the search has
+      // already shrunk to its floor, so the search yields space first and the layer
+      // rail keeps its full length until then (priority: search shrinks, icons last).
+      // Overflow only ever engages below 768px, where the zoom control is hidden, so
+      // the reserve omits it: ≈135 = search floor 68 + layers 45 + gap 4 + inset 12,
+      // plus a few px of slack so a floor-width search never touches the last icon.
+      const RIGHT_RESERVE = 135;
       const railLeft = root.getBoundingClientRect().left;
       const GUTTER = 12;
       const BTN = (btns[0] && btns[0].offsetWidth) || 40;

@@ -162,16 +162,34 @@ const Observer = (() => {
   const HORIZON_RADIUS_PX_MAX = 288;
   const HORIZON_ZOOM_BASE = 2;
   const HORIZON_ZOOM_MAX = 19;
+  // Narrow-screen keep-out on each side of the disc. The sidebar handles protrude 22px in
+  // at the vertical middle — exactly where the W/E cardinals sit. Budget handle(22) + widest
+  // glyph reach past the ring (~24px, Latin "W") + comfort gap(16), so letters never crowd a
+  // handle in any locale.
+  const HORIZON_RADIUS_EDGE_KEEPOUT = 62;
 
   const TRACE_STEP_HR = 0.25; // 15-min steps for day traces (96 pts/day)
   const POLAR_LAT = 66.5;
   const MOON_GLYPH_R = 8; // phase-disc moon icon radius (px) — matches sun outer radius (5×1.6)
 
+  // Effective max disc radius, capped on narrow viewports. At the fixed 288px max on a
+  // phone-width screen the cardinals fall off-screen and W/E collide with the edge handles.
+  // Bound it so half the viewport's short edge, minus the keep-out, still holds the ring.
+  // Short edges ≥ ~688px exceed 288, so the cap is inert and desktop is unchanged; BASE (min)
+  // is never touched.
+  function horizonRadiusMaxPx() {
+    if (!_map || !_map.getSize) return HORIZON_RADIUS_PX_MAX;
+    const size = _map.getSize();
+    const cap = Math.min(size.x, size.y) / 2 - HORIZON_RADIUS_EDGE_KEEPOUT;
+    return Math.max(HORIZON_RADIUS_PX_BASE, Math.min(HORIZON_RADIUS_PX_MAX, cap));
+  }
+
   function horizonRadiusPx(zoom) {
+    const rMax = horizonRadiusMaxPx();
     if (zoom <= HORIZON_ZOOM_BASE) return HORIZON_RADIUS_PX_BASE;
-    if (zoom >= HORIZON_ZOOM_MAX) return HORIZON_RADIUS_PX_MAX;
+    if (zoom >= HORIZON_ZOOM_MAX) return rMax;
     const t = (zoom - HORIZON_ZOOM_BASE) / (HORIZON_ZOOM_MAX - HORIZON_ZOOM_BASE);
-    return HORIZON_RADIUS_PX_BASE + (HORIZON_RADIUS_PX_MAX - HORIZON_RADIUS_PX_BASE) * t;
+    return HORIZON_RADIUS_PX_BASE + (rMax - HORIZON_RADIUS_PX_BASE) * t;
   }
 
   // ---- Marker (Observer Pin) + Lifecycle ----
@@ -2964,6 +2982,7 @@ const Observer = (() => {
     }
     map.on('move', _reposition); // smooth follow during drag
     map.on('zoomend moveend', sync);
+    map.on('resize', sync); // viewport short-edge change rescales the narrow-screen radius cap
 
     function watchButtons() {
       document.querySelectorAll('.layer-btn').forEach((btn) => {

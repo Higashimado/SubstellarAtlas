@@ -316,13 +316,13 @@ body {
   text-align: center;
 } /* observe window — header sits on the "–" */
 .body-almanac-table thead th:nth-child(3) {
-  width: 64px;
+  width: 52px;
 } /* visual magnitude */
 .body-almanac-table thead th:nth-child(4) {
-  width: 52px;
+  width: 46px;
 } /* apparent angular diameter */
 .body-almanac-table thead th:last-child {
-  width: 64px;
+  width: 52px;
 } /* peak altitude (right edge aligns with twilight table) */
 .body-almanac-table td {
   padding: 3px 6px;
@@ -685,6 +685,11 @@ body {
   height: 30px;
   min-width: 120px;
   cursor: pointer;
+  /* Custom pointer-drag slider (js/app.js). Without this the browser claims a
+     horizontal finger drag as a scroll/pinch gesture and fires pointercancel
+     mid-drag, so the slider can't be dragged on touch. `none` (not
+     `manipulation`, which still permits pan) hands every gesture to the JS. */
+  touch-action: none;
 }
 .scale-wash {
   position: absolute;
@@ -1035,6 +1040,35 @@ html[lang='ja'] .rail-lang-label {
   transform: translateX(100%);
 }
 
+/* ---- Edge-Swipe Grabbers ---- */
+/* Thin invisible strips pinned to the screen edges. On touch, an inward drag
+   from a strip opens the matching sidebar (wireEdgeSwipe in js/sidebar.js), so
+   the panel opens by a deliberate swipe rather than an easily-mistapped tab.
+   Inert by default (a mouse keeps the tab); enabled only on coarse pointers
+   while the panel is closed. They sit above the map but below the sidebars
+   (2000), and touch-action:none stops the browser reading the drag as a scroll. */
+.edge-swipe {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  z-index: 1500;
+  pointer-events: none;
+  touch-action: none;
+}
+.edge-swipe--left {
+  left: 0;
+}
+.edge-swipe--right {
+  right: 0;
+}
+@media (max-width: 768px) and (pointer: coarse) {
+  #sidebar-left[data-state='closed'] ~ .edge-swipe--left,
+  #sidebar-right[data-state='closed'] ~ .edge-swipe--right {
+    pointer-events: auto;
+  }
+}
+
 /* Aurora data-source / last-update line inside the aurora panel.
    Dedicated footnote treatment: a dimmer cool-grey than --fg-muted so the
    attribution recedes and never reads as a data value. */
@@ -1321,6 +1355,14 @@ html[lang='ja'] .rail-lang-label {
   width: 26px;
   height: 26px;
   border-radius: 50%;
+}
+/* Each chip carries data-gloss for a hover explanation, whose [data-gloss] rule
+   sets cursor: help. But a chip is first a filter toggle — its primary act is the
+   click, not the tip — so it must read as clickable. Same-specificity ordering
+   would let [data-gloss] win; the attribute-qualified selector outranks it and
+   restores the pointer. */
+.pev-body-chip[data-gloss] {
+  cursor: pointer;
 }
 .pev-body-chip:hover {
   color: var(--fg-primary);
@@ -1949,6 +1991,12 @@ html[lang='ja'] .rail-lang-label {
   color: var(--text-dim);
 }
 
+/* Eclipse forecast rows: .ecl-lbl-abbr hidden by default; shown only on narrow
+   panels (≤768px MQ below) where Romance-language labels would overflow. */
+.ecl-lbl-abbr {
+  display: none;
+}
+
 .info-row .value {
   font-variant-numeric: tabular-nums;
   font-weight: 500;
@@ -2478,7 +2526,7 @@ html[lang='ja'] .rail-lang-label {
 }
 /* Fix each time column; label column fills the rest (~141px at sidebar width) */
 .twilight-table thead th:not(:first-child) {
-  width: 86px;
+  width: 78px;
 }
 .twilight-table td {
   padding: 3px 6px;
@@ -2939,6 +2987,16 @@ html[lang='ja'] .rail-lang-label {
   white-space: nowrap;
 }
 
+/* Lift the whole top control container above the info sidebars (z-index:2000).
+   The layer-palette flyout and search dropdown carry z-index:2100, but that only
+   orders them WITHIN Leaflet's control container, whose corners default to
+   z-index:1000 — so the entire palette was trapped under the sidebars at the
+   root level, and raising the corner itself is the only lever. Stays below
+   geo-toast (2500), attribution (2900) and the rail (3000). */
+.leaflet-top {
+  z-index: 2100;
+}
+
 /* Leaflet top-left: layer toggle row (logo removed — sits in the corner) */
 .leaflet-top.leaflet-left {
   top: 12px;
@@ -3146,13 +3204,14 @@ html[lang='ja'] .rail-lang-label {
      map overlay (room exists there because rail icons have dropped). */
 }
 /* Squeezed search — when the top toolbar narrows, _syncToolbarCompact() in
-   js/app.js sets --search-rest to a continuously-shrinking width (down to a
-   still-usable ~120px floor) so the gap to the layer rail stays constant instead
-   of snapping. `.toolbar-compact` is added once the resting width drops below
-   full (360px); its only job is to switch focus-expansion to a leftward overlay
-   over the map. The right group is right-anchored, so growing leftward never
-   pushes the zoom/layers controls off-screen. The resting input stays fully
-   legible and editable at every width — no transparent / icon-only degradation. */
+   js/app.js sets --search-rest to a continuously-shrinking width so the search
+   yields space FIRST (keeping the layer rail full) down to a ~45px floor — one
+   layer-button wide, at which point the resting box shows only the search glyph.
+   `.toolbar-compact` is added once the resting width drops below full (360px);
+   its job is to switch focus-expansion to a leftward overlay over the map, which
+   is how the collapsed box grows back to a readable width (for its results) on
+   click. The right group is right-anchored, so growing leftward never pushes the
+   zoom/layers controls off-screen. */
 .toolbar-compact .places-search input:focus {
   /* Expand leftward until the left edge nears the sky-layer icon (~66px from left).
      search-right ≈ W − 88, so width = W − 88 − 66 = W − 154. */
@@ -3435,6 +3494,18 @@ html[lang='ja'] .rail-lang-label {
     display: contents;
   }
 
+  /* Drop the +/- zoom control on phones: pinch and double-tap already cover
+     zooming, and removing it hands the freed top-right width to the search box
+     (its resting width is driven from the measured toolbar geometry in
+     _syncToolbarCompact, js/app.js, so it reclaims the space automatically).
+     The search-to-layers gap widens to match the 12px screen-edge inset. */
+  .leaflet-control-zoom {
+    display: none;
+  }
+  .leaflet-top.leaflet-right {
+    gap: 12px;
+  }
+
   /* Narrow: focused search expands further left so its (and the dropdown's) left
      edge lines up with the left edge of the sky-layer toggle (.layer-toggle-root,
      left:12px) — width = (100vw − 88, the right-anchored search right edge) − 12. */
@@ -3609,10 +3680,24 @@ html[lang='ja'] .rail-lang-label {
     height: 18px;
     align-items: center;
     justify-content: center;
-    background: var(--bg-rail, #242628);
-    border: 0.5px solid var(--hairline, rgba(210, 215, 222, 0.16));
-    border-bottom: none;
+    /* Carry the same lapidary surface as the side tabs (.sidebar-toggle) and the
+       layer/search chrome: grain+hatch texture over the rail's own fill (kept as
+       --bg-rail, not the overlay tint, since the tab is part of the rail it grows
+       out of), plus a chiseled bevel + gilt-ring edge in place of a flat hairline.
+       The side tabs protrude sideways; this one protrudes UP, so the exposed edges
+       are top/left/right and the bottom is the seam with the rail (no ring/groove
+       there — the ::after apron below covers it). */
+    background-color: var(--bg-rail, #242628);
+    background-image: var(--surface-texture);
+    border: 0;
     border-radius: 7px 7px 0 0;
+    box-shadow:
+      inset 0 1px 0 var(--bevel-light),
+      inset 1px 0 0 var(--bevel-groove),
+      inset -1px 0 0 var(--bevel-groove),
+      0 -1px 0 var(--gilt-ring),
+      -1px 0 0 var(--gilt-ring),
+      1px 0 0 var(--gilt-ring);
     cursor: pointer;
     color: var(--text-mid, #9aa0aa);
     /* Hidden until the rail body is hovered (or the tab focused/expanded), so it
@@ -3639,6 +3724,7 @@ html[lang='ja'] .rail-lang-label {
   }
   .rail:hover .rail-handle,
   .rail-handle:focus-visible,
+  #time-bar.rail-touched .rail-handle,
   #time-bar.rail-expanded .rail-handle {
     opacity: 1;
     pointer-events: auto;
@@ -3659,11 +3745,106 @@ html[lang='ja'] .rail-lang-label {
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 100%;
-    max-width: 360px;
+    /* Narrower than the viewport so a strip of map stays visible on the
+       map-facing side and the panel no longer crowds the bottom rail handle.
+       312px ≈ screen−88px at 400px (Xiaomi 15), leaving ~88px map gutter vs 60px
+       at the old 340px — both panels open are mutually exclusive on mobile, but
+       the gutter also determines how far the closed-side handle sits from the
+       open-side handle. Material phone drawer: screen−56dp, max 280dp; data panels
+       can run slightly wider, so 312px is the widest that still respects gutter. */
+    width: min(86vw, 312px);
   }
+
+  /* On mobile both sidebars are mutually exclusive (JS closes the other when one
+     opens), but both handles remain visible — the open panel's handle protrudes
+     into the narrow gutter exactly where the closed panel's handle sits. At
+     top:50% both handles share the same y-band, creating a ≥8×76px overlap at
+     400px. Staggering them ±44px apart gives 88px center spacing, exceeding the
+     76px hit-box height (60px handle + 2×8px ::after inset), so they never
+     overlap regardless of which side is open. Left handle moves up; right moves
+     down — keeps both within the visible panel span even for short panel content. */
+  .sidebar--left .sidebar-toggle {
+    top: calc(50% - 44px);
+  }
+
+  .sidebar--right .sidebar-toggle {
+    top: calc(50% + 44px);
+  }
+
   /* Mobile exclusivity is enforced via JS (setSidebar closes the other side
      when one opens). Visual rules above already animate via transform. */
+
+  /* Planets & Comets body-chip filter: on the narrow drawer the ~12 seals no
+     longer fit on one row, so instead of wrapping to a second line the strip
+     scrolls horizontally. Chips lock their width (flex: none) so they overflow
+     rather than squeeze; the native bar is hidden and both edges fade to signal
+     the row can be swiped left/right. */
+  /* Eclipse forecast label swap: show the short form so Romance-language labels
+     (e.g. fr "Prochaine solaire totale/annulaire") fit in the compressed panel. */
+  .ecl-lbl-full {
+    display: none;
+  }
+
+  .ecl-lbl-abbr {
+    display: inline;
+  }
+
+  .list-filter-row.pev-filter-bodies {
+    flex-wrap: nowrap;
+    /* Making the row a scroll container drops its automatic min-height to 0, so
+       the height-capped flex column above would crush the 26px seals to a sliver
+       and clip them. Refuse vertical shrink; the row keeps its natural one-seal
+       height (matching the wide-screen row), and the event list below absorbs the
+       column's overflow through its own scroll. */
+    flex-shrink: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    /* The scrollbar is hidden, so a mouse has no handle: a press-drag scrolls the
+       row instead (wired in _wirePevDragScroll, js/sidebar.js). grab/grabbing cue
+       the affordance; touchscreens ignore cursor and pan natively. */
+    cursor: grab;
+    /* Edge fade signals "more chips this way". It must be honest: a faded edge
+       promises hidden neighbours, so each side fades only while the row can still
+       scroll toward it. _wirePevDragScroll toggles pev-fade-l/r from scrollLeft;
+       an un-toggled side keeps width 0 (transparent 0 → #000 0px = no fade), so a
+       scrolled-to-the-end edge shows its chip flush, not ghosted. */
+    --pev-fade-l: 0px;
+    --pev-fade-r: 0px;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--pev-fade-l),
+      #000 calc(100% - var(--pev-fade-r)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--pev-fade-l),
+      #000 calc(100% - var(--pev-fade-r)),
+      transparent 100%
+    );
+  }
+  .list-filter-row.pev-filter-bodies.pev-fade-l {
+    --pev-fade-l: 20px;
+  }
+  .list-filter-row.pev-filter-bodies.pev-fade-r {
+    --pev-fade-r: 20px;
+  }
+  .list-filter-row.pev-filter-bodies::-webkit-scrollbar {
+    display: none;
+  }
+  .pev-filter-bodies .pev-body-chip {
+    flex: 0 0 auto;
+  }
+  /* While a mouse drag is in progress: switch to the closed-hand cursor and
+     suppress glyph selection so the drag never paints a text selection. */
+  .list-filter-row.pev-filter-bodies.pev-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
 }
 
 /* =========================================================================
@@ -4378,6 +4559,14 @@ body.day-mask-active .star-glare > div {
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Press-and-hold jump buttons (attachHoldRepeat, js/app.js): `manipulation`
+     still permits pan, so a finger that drifts while held is read as a scroll →
+     pointercancel → the repeat stops early. These sit in a fixed rail with
+     nothing to scroll, so `none` keeps the hold alive regardless of drift. */
+  .rail-jump {
+    touch-action: none;
+  }
+
   /* The tap highlight above is suppressed, so every control needs a pressed
      state; mirror each control's existing hover treatment. */
   .rail-jump:active {
@@ -4485,13 +4674,12 @@ body.day-mask-active .star-glare > div {
 }
 
 @media (max-width: 768px) and (hover: none) {
-  /* The drawer tab is hover-revealed on desktop so it never covers the
-     attribution link; without hover that makes it a ghost control (first tap
-     synthesizes hover, second tap lands). Keep it always visible and a bit
-     taller on touch — covering the link is the lesser evil there. */
+  /* Touch has no true hover, so the tab is revealed by the `rail-touched` class
+     that js/app.js sets on a pointerdown over the rail, then auto-clears — the
+     handle shows only while the bar is being touched, not persistently (covering
+     the attribution link). It is a two-step reveal (touch bar → tap tab), which
+     is the requested behavior. Keep it a bit taller for a comfortable target. */
   .rail-handle {
-    opacity: 1;
-    pointer-events: auto;
     height: 24px;
     top: -24px;
   }

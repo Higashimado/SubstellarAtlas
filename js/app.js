@@ -711,6 +711,20 @@ function bootTimeControl() {
     });
   }
 
+  // Touch has no hover, so reveal the drawer tab when the bar itself is touched
+  // (pointerdown anywhere on the rail), then auto-hide after a lull — the handle
+  // is present only when a finger is on the bar, never permanently over the map.
+  // Desktop keeps the CSS :hover reveal; this touch/pen path is purely additive.
+  if (timeBar) {
+    let _handleHideTimer = null;
+    timeBar.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse') return;
+      timeBar.classList.add('rail-touched');
+      clearTimeout(_handleHideTimer);
+      _handleHideTimer = setTimeout(() => timeBar.classList.remove('rail-touched'), 2500);
+    });
+  }
+
   // ---- Play / Pause ----
   playBtn.addEventListener('click', () => {
     if (TimeState.isPlaying()) {
@@ -884,6 +898,18 @@ function bootTimeControl() {
     refreshDisplay(TimeState.current);
     if (typeof AppState !== 'undefined') {
       AppState.applyFromURL();
+      // First visit only: default the planets layer on. An empty query string is the
+      // bare-entry signal (the one applyFromURL early-returns on); any permalink carries a
+      // view/time param, so a shared state is honoured verbatim — even one that omits planets.
+      if (!new URLSearchParams(location.search).toString()) {
+        AppState.setLayerOn('planets', true);
+        // Keep the drawer setLayerOn opens collapsed at every width — it should expand only
+        // on a real user toggle, not this default-on. Open-then-close in one tick never
+        // flashes; 'auto' leaves manualOverride untouched so a later toggle still opens it.
+        if (typeof Sidebar !== 'undefined') {
+          Sidebar.setSidebar('left', false, 'auto');
+        }
+      }
       AppState.startWatching();
     }
 
@@ -929,14 +955,19 @@ function bootTimeControl() {
       const railRight = root.getBoundingClientRect().right;
       const searchRight = input.getBoundingClientRect().right; // right-anchored, stable
       const GAP = 16,
-        MIN_W = 120,
+        MIN_W = 68,
         MAX_W = 420,
         FULL_W = 360;
-      // Fluid fill: the search left edge is pinned a constant GAP from the rail's
-      // right edge. Capped at MAX_W so the box doesn't grow oversized on ultra-wide
-      // screens; excess space then pools between the rail and the search left edge.
-      // Floored at MIN_W; by the time the box would shrink past it, stage 1 has
-      // already shed icons into the flyout.
+      // Fluid fill: the search left edge is pinned a constant GAP from the LIVE rail
+      // right edge, so as the toolbar narrows the search shrinks FIRST (layer icons
+      // stay put) and, once icons do start shedding into the flyout, the search grows
+      // back to meet the shortened rail — closing the gap that discrete icons can't
+      // fill on their own. Capped at MAX_W so the box doesn't grow oversized on
+      // ultra-wide screens; floored at MIN_W (the resting box then shows just the
+      // search glyph, expanding on focus). Tracking the live rail means an icon-drop
+      // jolts the search width by ~one button, eased by its `transition: width`; that
+      // wobble only shows while live-dragging a desktop window through the narrow
+      // band, and never on a fixed mobile viewport.
       const restW = Math.min(MAX_W, Math.max(MIN_W, Math.round(searchRight - railRight - GAP)));
       input.style.setProperty('--search-rest', restW + 'px');
       // `.toolbar-compact` means "search is squeezed below full width" — it only
